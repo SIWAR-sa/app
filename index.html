@@ -38,14 +38,41 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
 /* طبقة البرنامج داخل التطبيق */
 #prog{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;background:var(--bg);transform:translateX(-100%);transition:transform .32s cubic-bezier(.2,.8,.2,1)}
 #prog.on{transform:none}
-.pbar{flex:none;display:flex;align-items:center;gap:8px;padding:calc(var(--top) + 6px) 10px 6px;background:rgba(253,250,245,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+/* البرنامج يملأ الشاشة كتطبيق: لا شريط علوي، والعودة للبوابة من مقبض صغير على حافة الشاشة */
+.pbar{display:none!important;flex:none;display:flex;align-items:center;gap:8px;padding:calc(var(--top) + 6px) 10px 6px;background:rgba(253,250,245,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .pbtn{display:inline-flex;align-items:center;gap:6px;height:40px;min-width:44px;padding:0 12px;border:0;border-radius:999px;background:transparent;color:var(--text);font:inherit;font-size:15px;font-weight:600;cursor:pointer}
 .pbtn:active{background:rgba(194,146,63,.12)}
 .pbtn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .ptitle{flex:1;min-width:0;text-align:center;font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pbody{position:relative;flex:1;min-height:0}
-.pload{position:absolute;inset:0;display:grid;place-items:center;background:var(--bg);transition:opacity .3s}
-.pload.out{opacity:0;pointer-events:none}
+.pbody{position:relative;flex:1;min-height:0;padding-top:var(--top)}
+#home{position:fixed;z-index:25;left:0;top:50%;width:26px;height:68px;margin-top:-34px;border:0;padding:0;border-radius:0 18px 18px 0;
+  background:linear-gradient(180deg,#16223A,#0B1222);box-shadow:0 6px 18px -6px rgba(10,15,30,.6),inset -1px 0 0 rgba(214,170,94,.55);
+  display:grid;place-items:center;cursor:pointer;touch-action:none;opacity:.92;transition:width .2s,opacity .2s}
+#home:active,#home.drag{width:34px;opacity:1}
+#home svg{width:14px;height:14px;stroke:#E3B66D;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+#home[hidden]{display:none}
+[dir="ltr"] #home{left:auto;right:0;border-radius:18px 0 0 18px}
+[dir="ltr"] #home svg{transform:scaleX(-1)}
+/* شاشة فتح البرنامج: خلفية بلون البرنامج نفسه مع إضاءة ذهبية ناعمة، وبطاقة زجاجية في الوسط */
+#prog{--pc:#101A2E}
+.pload{position:fixed;inset:0;z-index:2;display:grid;place-items:center;overflow:hidden;color:#F4E3BF;
+  background:radial-gradient(120% 70% at 50% -10%,color-mix(in srgb,var(--pc) 55%,#fff 18%) 0,transparent 60%),
+             radial-gradient(90% 60% at 50% 115%,color-mix(in srgb,var(--pc) 60%,#000 40%) 0,transparent 70%),var(--pc);
+  transition:opacity .45s ease,transform .45s ease}
+.pload::before,.pload::after{content:"";position:absolute;width:62vmax;height:62vmax;border-radius:50%;filter:blur(60px);opacity:.38;pointer-events:none}
+.pload::before{background:radial-gradient(circle,rgba(227,182,109,.55),transparent 65%);top:-28vmax;left:-22vmax;animation:orb1 9s ease-in-out infinite alternate}
+.pload::after{background:radial-gradient(circle,color-mix(in srgb,var(--pc) 40%,#fff 25%),transparent 65%);bottom:-30vmax;right:-24vmax;animation:orb2 11s ease-in-out infinite alternate}
+@keyframes orb1{to{transform:translate(12vmax,10vmax)}}
+@keyframes orb2{to{transform:translate(-10vmax,-12vmax)}}
+.pload.out{opacity:0;transform:scale(1.04);pointer-events:none}
+.pload .pin{position:relative;z-index:1;width:min(300px,78vw);padding:38px 26px 30px;border-radius:30px;gap:20px;
+  background:linear-gradient(160deg,rgba(255,255,255,.14),rgba(255,255,255,.04));backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%);
+  box-shadow:inset 0 0 0 1px rgba(227,182,109,.38),inset 0 1px 0 rgba(255,255,255,.18),0 30px 60px -24px rgba(0,0,0,.55);animation:in .7s cubic-bezier(.2,.8,.2,1) both}
+.pload .picon.glass{width:auto;height:auto;border-radius:0;background:none!important;box-shadow:none;overflow:visible}
+.pload .picon.glass img{width:min(210px,56vw);filter:drop-shadow(0 6px 14px rgba(0,0,0,.35))}
+.pload .pname{color:#F4E3BF;font-size:18px;letter-spacing:.2px;text-shadow:0 1px 8px rgba(0,0,0,.3)}
+.pload .bar{width:150px;height:2px;background:rgba(244,227,191,.16)}
+.pload .bar i{background:linear-gradient(90deg,transparent,#F3D58E,transparent);width:55%}
 .pin{display:flex;flex-direction:column;align-items:center;gap:18px}
 .picon{width:120px;height:120px;border-radius:32px;display:grid;place-items:center;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(214,178,112,.4),0 22px 40px -16px rgba(40,20,20,.5);animation:in .6s cubic-bezier(.2,.8,.2,1) both}
 .picon.round{border-radius:999px}.picon.wide{width:168px;height:120px;border-radius:28px}.picon.wide.round{border-radius:999px}
@@ -86,6 +113,8 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   </div>
   <div class="pbody" id="pbody"><div class="pload" id="pload"><div class="pin"><div class="picon" id="picon" hidden></div><div class="pname" id="pname"></div><div class="bar"><i></i></div></div></div></div>
 </div>
+
+<button id="home" hidden aria-label="العودة إلى البوابة"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
 
 <div id="install" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="iT">
@@ -160,11 +189,11 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   // أيقونة البرنامج على شاشة الفتح: لون سوار بالشعار، أو صورة البرنامج (روابط آمنة فقط)
   function setIcon(ic) {
     var box = $('picon'); box.innerHTML = ''; box.className = 'picon'; box.style.background = ''; box.hidden = true;
-    if (!ic) return;
+    $('prog').style.setProperty('--pc', ic && ic.kind === 'sw' && /^#[0-9a-f]{6}$/i.test(String(ic.color || '')) ? ic.color : '#101A2E');
+    if (!ic) { box.className = 'picon glass'; var l = document.createElement('img'); l.alt = ''; l.src = 'icons/logo.webp'; box.appendChild(l); box.hidden = false; return; }
     var img = document.createElement('img'); img.alt = '';
     if (ic.kind === 'sw' && /^#[0-9a-f]{6}$/i.test(String(ic.color || ''))) {
-      box.style.background = 'radial-gradient(120% 90% at 25% 8%,rgba(255,236,200,.14),transparent 55%),' + ic.color;
-      box.className = 'picon wide' + (ic.round ? ' round' : '');
+      box.className = 'picon glass';
       img.src = 'icons/logo.webp';
     } else if (ic.kind === 'img' && /^(https:\/\/[^\s"'<>]+|data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+\/=]+)$/.test(String(ic.src || ''))) {
       box.className = 'picon img'; img.src = ic.src;
@@ -186,17 +215,33 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     p.onload = function () { $('pload').className = 'pload out'; };
     p.src = url;
     body.appendChild(p);
-    $('prog').className = 'on'; $('prog').setAttribute('aria-hidden', 'false');
+    $('prog').className = 'on'; $('prog').setAttribute('aria-hidden', 'false'); $('home').hidden = false;
     if (!history.state || !history.state.prog) history.pushState({ prog: 1 }, '');
   }
   function closeProg(fromHistory) {
     if ($('prog').className !== 'on') return;
-    $('prog').className = ''; $('prog').setAttribute('aria-hidden', 'true');
+    $('prog').className = ''; $('prog').setAttribute('aria-hidden', 'true'); $('home').hidden = true;
     setTimeout(function () { var p = $('pbody').querySelector('iframe'); if (p) p.remove(); }, 350);
     progUrl = '';
     if (!fromHistory && history.state && history.state.prog) history.back();
   }
   $('back').onclick = function () { closeProg(false); };
+  // مقبض العودة: ضغطة تعيد للبوابة، وسحبه لأعلى أو لأسفل يغيّر مكانه (ويُحفظ)
+  (function () {
+    var h = $('home'), sy = 0, st = 0, moved = false;
+    try { var y = Number(localStorage.getItem('siwar_home_y')); if (y > 0) h.style.top = y + 'px'; } catch (e) {}
+    h.addEventListener('pointerdown', function (e) { sy = e.clientY; st = h.getBoundingClientRect().top + 34; moved = false; h.setPointerCapture(e.pointerId); h.classList.add('drag'); });
+    h.addEventListener('pointermove', function (e) {
+      if (!h.classList.contains('drag')) return;
+      var d = e.clientY - sy; if (Math.abs(d) > 6) moved = true;
+      if (moved) h.style.top = Math.max(80, Math.min(window.innerHeight - 80, st + d)) + 'px';
+    });
+    h.addEventListener('pointerup', function () {
+      h.classList.remove('drag');
+      if (moved) { try { localStorage.setItem('siwar_home_y', parseInt(h.style.top, 10)); } catch (e) {} }
+      else closeProg(false);
+    });
+  })();
   $('ext').onclick = function () { if (progUrl) window.open(progUrl, '_blank'); };
   window.addEventListener('popstate', function () { closeProg(true); });   // زر الرجوع في الجوال
 

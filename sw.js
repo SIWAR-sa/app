@@ -1,5 +1,5 @@
 /* عامل الخدمة: يحفظ ملفات صفحة التطبيق فقط (لا يحفظ أي بيانات من البوابة أو البرامج). */
-const CACHE = 'siwar-app-v4';
+const CACHE = 'siwar-app-v5';
 const FILES = ['./', './index.html', './config.js', './manifest.webmanifest', './icons/logo.webp', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/favicon-32.png'];
 
 self.addEventListener('install', e => {
