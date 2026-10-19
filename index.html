@@ -12,6 +12,8 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
 <script src="config.js"></script>
 <style>
 :root{--bg:#FDFAF5;--bg2:#F7EEE4;--text:#3F3A37;--muted:#6F6761;--gold:#C2923F;--gold-l:#E3B66D;--pink:#E2A6A4;--line:#EADFD1;
@@ -65,8 +67,10 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
 @keyframes orb1{to{transform:translate(12vmax,10vmax)}}
 @keyframes orb2{to{transform:translate(-10vmax,-12vmax)}}
 .pload.out{opacity:0;transform:scale(1.04);pointer-events:none}
+.pload.out::before,.pload.out::after,.pload.out .bar i,#splash.out .bar i{animation:none}
+.pload.gone{display:none}
 .pload .pin{position:relative;z-index:1;width:min(300px,78vw);padding:38px 26px 30px;border-radius:30px;gap:20px;
-  background:linear-gradient(160deg,rgba(255,255,255,.14),rgba(255,255,255,.04));backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%);
+  background:linear-gradient(160deg,rgba(255,255,255,.17),rgba(255,255,255,.06));
   box-shadow:inset 0 0 0 1px rgba(227,182,109,.38),inset 0 1px 0 rgba(255,255,255,.18),0 30px 60px -24px rgba(0,0,0,.55);animation:in .7s cubic-bezier(.2,.8,.2,1) both}
 .pload .picon.glass{width:auto;height:auto;border-radius:0;background:none!important;box-shadow:none;overflow:visible}
 .pload .picon.glass img{width:min(210px,56vw);filter:drop-shadow(0 6px 14px rgba(0,0,0,.35))}
@@ -169,8 +173,8 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     var f = document.createElement('iframe');
     f.title = 'سوار';
     f.allow = 'clipboard-read; clipboard-write; fullscreen';
-    // إطار بلا حسابات جوجل: تفتح البوابة حتى لو كان في المتصفح أكثر من حساب جوجل (لا تظهر «يتعذّر فتح الملف»)
-    f.setAttribute('credentialless', '');
+    // البوابة صفحة ثابتة من نفس موقع التطبيق (portal.html): تُفتح فوراً من ذاكرة الجهاز، وتكلّم الخادم مباشرة،
+    // فلا صفحة جوجل وسيطة ولا تعارض حسابات جوجل
     // رابط زر الإيميل (?open=…&go=…) يُمرَّر للبوابة لتفتح البرنامج مباشرة، ثم يُحذف من شريط العنوان
     var q = new URLSearchParams(location.search), deep = '';
     if (/^[A-Za-z0-9_-]{1,40}$/.test(q.get('open') || '')) {
@@ -179,11 +183,14 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
       if (go && go.length <= 300 && !/[\s<>"'`\\]/.test(go)) deep += '&go=' + encodeURIComponent(go);
       try { history.replaceState(null, '', location.pathname); } catch (e) {}
     }
-    f.src = PORTAL + '?app=1' + deep;
-    f.onload = function () { setTimeout(function () { $('splash').className = 'out'; }, 250); };
+    f.src = 'portal.html?app=1' + deep;
+    // شاشة تحميل واحدة: تبقى حتى تقول البوابة إنها جاهزة (والحد الأقصى 12 ثانية)
+    f.onload = function () { setTimeout(hideSplash, 8000); };
     $('portal').appendChild(f);
-    setTimeout(function () { $('splash').className = 'out'; }, 12000);
+    setTimeout(hideSplash, 12000);
   }
+
+  function hideSplash() { $('splash').className = 'out'; }
 
   /* ── فتح البرنامج داخل التطبيق ── */
   // أيقونة البرنامج على شاشة الفتح: لون سوار بالشعار، أو صورة البرنامج (روابط آمنة فقط)
@@ -200,28 +207,48 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     } else return;
     box.appendChild(img); box.hidden = false;
   }
-  function openProg(url, name, icon) {
-    progUrl = url;
+  var progHold = false, progReadyT = 0;
+  // بعد ظهور النظام تُخفى شاشة التحميل تماماً (لا تبقى حركاتها تعمل في الخلفية)
+  function hideLoad() {
+    clearTimeout(progReadyT); var l = $('pload'); l.className = 'pload out';
+    setTimeout(function () { if (l.className === 'pload out') l.className = 'pload out gone'; }, 460);
+  }
+  // شاشة فتح البرنامج تظهر مع الضغطة نفسها (prep)، والإطار يُحمَّل عند وصول الرابط (open)
+  function showProg(name, icon) {
     $('ptitle').textContent = name || '';
     $('pname').textContent = name || '';
     setIcon(icon);
-    var body = $('pbody'), old = body.querySelector('iframe');
-    if (old) old.remove();
+    dropFrame(true);
     $('pload').className = 'pload';
+    $('prog').className = 'on'; $('prog').setAttribute('aria-hidden', 'false'); $('home').hidden = false;
+    if (!history.state || !history.state.prog) history.pushState({ prog: 1 }, '');
+  }
+  function dropFrame(now) {
+    var old = $('pbody').querySelector('iframe');
+    if (!old) return;
+    var kill = function () { if (old.isConnected) { try { old.src = 'about:blank'; } catch (e) {} old.remove(); } };
+    if (now) kill(); else setTimeout(function () { if ($('prog').className !== 'on') kill(); }, 350);
+  }
+  function openProg(url, name, icon) {
+    if ($('prog').className !== 'on' || $('pload').className !== 'pload') showProg(name, icon);
+    progUrl = url;
+    var body = $('pbody');
+    dropFrame(true);
     var p = document.createElement('iframe');
     p.setAttribute('credentialless', '');
     p.title = name || T('prog');
     p.allow = 'clipboard-read; clipboard-write; fullscreen; camera; microphone; geolocation';
-    p.onload = function () { $('pload').className = 'pload out'; };
+    // شاشة التحميل تبقى حتى يجهز النظام: النظام الذي يرسل «hold» تُخفى عند «ready»، وغيره عند اكتمال تحميل الإطار
+    progHold = false; clearTimeout(progReadyT);
+    p.onload = function () { if (!progHold) hideLoad(); else progReadyT = setTimeout(hideLoad, 15000); };
     p.src = url;
     body.appendChild(p);
-    $('prog').className = 'on'; $('prog').setAttribute('aria-hidden', 'false'); $('home').hidden = false;
-    if (!history.state || !history.state.prog) history.pushState({ prog: 1 }, '');
   }
   function closeProg(fromHistory) {
     if ($('prog').className !== 'on') return;
     $('prog').className = ''; $('prog').setAttribute('aria-hidden', 'true'); $('home').hidden = true;
-    setTimeout(function () { var p = $('pbody').querySelector('iframe'); if (p) p.remove(); }, 350);
+    clearTimeout(progReadyT); $('pload').className = 'pload out gone';
+    dropFrame(false);
     progUrl = '';
     if (!fromHistory && history.state && history.state.prog) history.back();
   }
@@ -247,8 +274,11 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
 
   // الرسائل تُقبل من صفحات Apps Script فقط
   window.addEventListener('message', function (e) {
-    if (!/\.googleusercontent\.com$|^https:\/\/script\.google\.com$/.test(e.origin)) return;
+    var mine = e.origin === location.origin;   // البوابة (portal.html)
+    if (!mine && !/\.googleusercontent\.com$|^https:\/\/script\.google\.com$/.test(e.origin)) return;
     var d = e.data || {};
+    if (mine && d.siwar === 'portalReady') { hideSplash(); return; }
+    if (mine && d.siwar === 'prep') { showProg(String(d.name || ''), d.icon && typeof d.icon === 'object' ? d.icon : null); return; }
     // حفظ دخول البوابة ولغتها في صفحة التطبيق (إطار البوابة بلا تخزين دائم)
     if (d.siwar === 'storeGet') {
       var data = {};
@@ -260,10 +290,22 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
       try { if (d.siwar === 'storeSet') localStorage.setItem('pt_' + d.k, String(d.v).slice(0, 500)); else localStorage.removeItem('pt_' + d.k); } catch (x) {}
       return;
     }
-    if (d.siwar === 'open' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) openProg(String(d.url), String(d.name || ''), d.icon && typeof d.icon === 'object' ? d.icon : null);
+    if (d.siwar === 'open' && mine && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) openProg(String(d.url), String(d.name || ''), d.icon && typeof d.icon === 'object' ? d.icon : null);
     else if (d.siwar === 'lang') applyLang(String(d.lang || ''));
     else if (d.siwar === 'close' || d.siwar === 'logout') closeProg(false);
+    else if (d.siwar === 'hold') progHold = true;
+    else if (d.siwar === 'ready') hideLoad();
+    else if (d.siwar === 'reload' && !mine && $('prog').className === 'on') relaunch();
   });
+  // السحب لأسفل داخل النظام: شاشة التحميل فوراً، والبوابة تعيد فتحه بتذكرة جديدة
+  var relT = 0;
+  function relaunch() {
+    if (Date.now() - relT < 1500) return; relT = Date.now();
+    var pf = $('portal').querySelector('iframe');
+    if (!pf || !pf.contentWindow) return;
+    clearTimeout(progReadyT); $('pload').className = 'pload';
+    try { pf.contentWindow.postMessage({ siwar: 'relaunch' }, location.origin); } catch (e) {}
+  }
 
   /* ── التثبيت ── */
   var svgShare = '<svg viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>';
