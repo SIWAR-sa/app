@@ -1,14 +1,24 @@
-/* يحفظ غلاف التطبيق فقط ليفتح فورًا — بيانات النظام تأتي دائمًا من النظام مباشرة. */
-const V = 'siwar-shell-v6';
-const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png', 'favicon.png'];
-self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
-self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
+/* عامل الخدمة: يحفظ ملفات صفحة التطبيق فقط (لا يحفظ أي بيانات من البوابة أو البرامج). */
+const CACHE = 'siwar-app-v4';
+const FILES = ['./', './index.html', './config.js', './manifest.webmanifest', './icons/logo.webp', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/favicon-32.png'];
+
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
+});
+
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+});
+
+// الشبكة أولاً (فأي تحديث على GitHub يصل فوراً)، والنسخة المحفوظة عند انقطاع الإنترنت
 self.addEventListener('fetch', e => {
-  const u = new URL(e.request.url);
-  if (u.origin !== location.origin) return;
-  // الشبكة أولًا بمهلة 4 ثوانٍ — شبكة متعثرة لا تُبقي الغلاف معلقًا؛ بعدها النسخة المحفوظة
-  const net = fetch(e.request).then(r => { const c = r.clone(); caches.open(V).then(x => x.put(e.request, c)); return r; });
-  const slow = new Promise((_, rej) => setTimeout(() => rej(new Error('slow')), 4000));
-  const cached = () => caches.match(e.request).then(r => r || caches.match('index.html'));
-  e.respondWith(Promise.race([net, slow]).catch(() => cached().then(r => r || net)));
+  const url = new URL(e.request.url);
+  if (e.request.method !== 'GET' || url.origin !== location.origin) return;
+  e.respondWith(
+    fetch(e.request).then(res => {
+      const copy = res.clone();
+      caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {});
+      return res;
+    }).catch(() => caches.match(e.request, { ignoreSearch: true }).then(r => r || caches.match('./index.html')))
+  );
 });
