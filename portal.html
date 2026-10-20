@@ -1016,6 +1016,10 @@ tr.is-off .mx-user { opacity: .5; }
 .pv-load span { width: 34px; height: 34px; border-radius: 50%; border: 3px solid rgba(214,170,94,.25); border-top-color: #D6AA5E; animation: pvSpin .9s linear infinite; }
 @keyframes pvSpin { to { transform: rotate(360deg); } }
 /* ═════ الإدارة الموحدة ═════ */
+.u-xl { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.u-xl b { font-size: 15.5px; } .u-xl p { margin: 4px 0 0; }
+.u-pick { margin: 0; max-width: 420px; }
+.u-errs { margin: 6px 0 0; padding-inline-start: 20px; color: #9A3F38; font-size: 13px; line-height: 1.9; max-height: 240px; overflow: auto; }
 #uRoot { display: flex; flex-direction: column; gap: 16px; }
 .u-wait { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 60px 16px; color: var(--muted); }
 .u-spin { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border-strong); border-top-color: var(--gold-deep); animation: uspin .8s linear infinite; }
@@ -2634,6 +2638,7 @@ function uDiffN(p) {
   return n;
 }
 function uSummary(p) {
+  if (p.owner) return '<span class="u-tag u-tag-gold">المالك — كل الصلاحيات</span>';
   if (!p.profile) return '<span class="u-tag u-tag-grey">بلا وظيفة محددة</span>';
   const n = uDiffN(p);
   return n ? '<span class="u-tag u-tag-gold">' + (n === 1 ? 'مختلف في نقطة واحدة' : 'مختلف في ' + n + ' نقاط') + '</span>' : '<span class="u-tag">مثل باقي «' + esc(p.profile) + '»</span>';
@@ -2668,6 +2673,7 @@ function uHome() {
     card('systems', 'grid', 'كيف يعمل كل نظام؟', declared + ' من ' + D.apps.length + ' أنظمة ربطت إعداداتها') +
     card('shared', 'shield', 'ما الثابت في الشركتين؟', 'العطلة، العطلات الرسمية، الشركتان، الإدارات، المواقع…') +
     '</div>' +
+    '<section class="panel-box u-xl"><div><b>تعبئة جماعية من Excel</b><p class="u-muted">نزّل النموذج بقوائمه المنسدلة، عبّئ الوظائف والصلاحيات والإعدادات، ثم ارفعه. تظهر معاينة قبل أي تغيير.</p></div><div class="savebar-actions"><button class="btn btn-ghost" data-u="xlDown">' + ic('save') + '<span>تنزيل النموذج</span></button><button class="btn btn-primary" data-u="xlUp">' + ic('upload') + '<span>رفع النموذج</span></button></div></section>' +
     '<section class="panel-box u-todo"><h3>' + ic('alert') + '<span>يحتاج قرارك</span></h3>' + (todo.length ? todo.join('') : '<p class="u-muted">لا شيء الآن. كل شيء مرتب.</p>') + '</section>';
 }
 
@@ -2696,12 +2702,13 @@ function uPeople() {
 function uPerson() {
   const D = U.d, p = D.people.find(x => x.id === U.id);
   if (!p) return '<div class="empty"><span>غير موجود</span></div>';
-  const me = S.user && String(S.user.email || '').toLowerCase() === String(p.email || '').toLowerCase() && S.user.role !== 'owner';
+  const me = (S.user && String(S.user.email || '').toLowerCase() === String(p.email || '').toLowerCase() && S.user.role !== 'owner') || p.owner;
   const n = uDiffN(p);
   const head = '<div class="u-head"><span class="u-av u-av-lg">' + esc(String(p.name || '?').charAt(0)) + '</span><div><h3>' + esc(p.name) + '</h3>' +
     '<p>' + esc([p.title, p.dept, uCo(p.company), p.no ? 'رقم ' + p.no : ''].filter(Boolean).join(' · ')) + '</p>' +
     '<p class="u-muted">' + (p.email ? esc(p.email) + (p.userId ? (p.userStatus === 'Active' ? ' · يدخل البوابة' : ' · حسابه موقوف') : ' · لا حساب له في البوابة بعد') : 'لا بريد إلكتروني — لا يستطيع الدخول') + (uLeftP(p) ? ' · غادر الشركة' : '') + '</p></div></div>';
-  const line = p.profile
+  const pick = p.owner ? '' : '<label class="u-scope u-pick"><span>وظيفته:</span><select class="inp" data-uc="pProf"><option value="">' + esc(U_BYTITLE) + '</option>' + D.profiles.map(f => '<option value="' + esc(f.id) + '"' + (p.profileId === f.id ? ' selected' : '') + '>' + esc(f.nameAR) + '</option>').join('') + '</select></label>';
+  const line = p.owner ? '<div class="u-like">المالك: كل الصلاحيات في كل الأنظمة دائماً، ولا يستطيع أحد تقليلها.</div>' : p.profile
     ? '<div class="u-like">' + (n ? 'وظيفته «' + esc(p.profile) + '»، ومختلف عنها في ' + (n === 1 ? 'نقطة واحدة' : n + ' نقاط') + ' <button class="btn btn-ghost btn-sm" data-u="reset" data-id="' + esc(p.id) + '">' + ic('undo') + '<span>اجعله مثل وظيفته</span></button>' : 'مثل باقي «' + esc(p.profile) + '» تماماً') + '</div>'
     : '<div class="u-like u-like-grey">لا توجد وظيفة تطابق مسماه' + (p.title ? ' «' + esc(p.title) + '»' : '') + '. حدّد ما يستطيعه هنا، أو <button class="link-btn" data-u="newProfile" data-title="' + esc(p.title || '') + '">أنشئ وظيفة بهذا المسمى</button></div>';
   const cards = D.apps.map(a => {
@@ -2715,10 +2722,11 @@ function uPerson() {
         return '<label class="u-cap' + (own ? ' is-own' : '') + '"><input type="checkbox" data-uc="pCap" data-app="' + esc(a.id) + '" data-cap="' + esc(c.key) + '"' + (has ? ' checked' : '') + (me ? ' disabled' : '') + '><span>' + esc(c.label) + '</span>' + (c.sensitive ? '<em class="u-sens">حساس</em>' : '') + (own ? '<em>خاص به</em>' : '') + '</label>';
       }).join('') + '</div>').join('');
       if ((d.scopes || []).length) body += '<label class="u-scope"><span>يرى:</span><select class="inp" data-uc="pScope" data-app="' + esc(a.id) + '"' + (me ? ' disabled' : '') + '><option value="">حسب وظيفته</option>' + d.scopes.map(s => '<option value="' + esc(s.key) + '"' + (e.scope === s.key ? ' selected' : '') + '>' + esc(s.label) + '</option>').join('') + '</select></label>';
-    } else if (e.on && !(d && (d.caps || []).length)) body = '<p class="u-muted u-note">هذا النظام لم يربط قدراته بالبوابة بعد؛ يكفي الآن تشغيل الدخول أو إيقافه، وصلاحياته التفصيلية ما زالت داخله.</p>';
+    } else if (p.owner) body = '<p class="u-muted u-note">كل الصلاحيات.</p>';
+    else if (e.on && !(d && (d.caps || []).length)) body = '<p class="u-muted u-note">هذا النظام لم يربط قدراته بالبوابة بعد؛ يكفي الآن تشغيل الدخول أو إيقافه، وصلاحياته التفصيلية ما زالت داخله.</p>';
     return '<section class="panel-box u-sys' + (e.on ? '' : ' is-off') + '"><div class="u-sys-head">' + uIcon(a) + '<b>' + esc(a.nameAR) + '</b>' + sw + '</div>' + body + '</section>';
   }).join('');
-  return head + (me ? '<p class="u-muted u-note">لا يمكنك تعديل صلاحياتك بنفسك.</p>' : '') + line + '<div class="u-sys-grid">' + cards + '</div>';
+  return head + (me && !p.owner ? '<p class="u-muted u-note">لا يمكنك تعديل صلاحياتك بنفسك.</p>' : '') + line + pick + '<div class="u-sys-grid">' + cards + '</div>';
 }
 
 /* ── الوظائف ── */
@@ -2896,6 +2904,166 @@ function uOpenManual() {
     foot: '<button class="btn btn-primary" data-u="saveManual">' + ic('save') + '<span>حفظ</span></button>' });
 }
 
+/* ── نموذج Excel: تنزيل بقوائم منسدلة، ثم رفعه ── */
+const U_XL_SRC = 'https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js';
+function uXlLib() {
+  if (window.ExcelJS) return Promise.resolve(window.ExcelJS);
+  return U.xlP || (U.xlP = new Promise((res, rej) => { const s = document.createElement('script'); s.src = U_XL_SRC; s.onload = () => res(window.ExcelJS); s.onerror = () => { U.xlP = null; rej('ERR_NETWORK'); }; document.head.appendChild(s); }));
+}
+const U_EN = { '': 'حسب الوظيفة', yes: 'نعم', no: 'لا' };
+const U_BYTITLE = 'حسب مسماه في جسر';
+/** القوائم المسموحة (الاسم الظاهر ← المفتاح) — نفسها للتنزيل والقراءة حتى لا يختلف شيء. */
+function uXlMaps() {
+  const D = U.d, caps = {}, scopes = {}, people = {};
+  D.apps.forEach(a => {
+    const d = uReg(a.id) || {};
+    (d.caps || []).forEach(c => { let l = a.nameAR + ' — ' + c.label; if (caps[l]) l += ' (' + c.key + ')'; caps[l] = { appId: a.id, key: c.key }; });
+    (d.scopes || []).forEach(c => { scopes[a.nameAR + ' — ' + c.label] = { appId: a.id, key: c.key }; });
+  });
+  D.people.filter(p => !uLeftP(p) && !p.owner).forEach(p => { let l = p.name + (p.no ? ' · ' + p.no : p.email ? ' · ' + p.email : ''); if (people[l]) l += ' · ' + p.id; people[l] = p.id; });
+  return { caps: caps, scopes: scopes, people: people };
+}
+async function uXlDownload(btn) {
+  if (btn) btn.disabled = true;
+  try {
+    const X = await uXlLib(), D = U.d, M = uXlMaps(), wb = new X.Workbook();
+    wb.views = [{ rightToLeft: true }];
+    const head = (ws, cols) => { ws.views = [{ rightToLeft: true, state: 'frozen', ySplit: 1 }]; ws.columns = cols.map(c => ({ header: c[0], key: c[1], width: c[2] || 22 })); const r = ws.getRow(1); r.font = { bold: true, color: { argb: 'FF3F3A37' } }; r.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFBF0DC' } }; r.height = 24; };
+    const L = wb.addWorksheet('_lists', { state: 'veryHidden' });
+    const lists = {}; let col = 0;
+    const addList = (name, arr) => { col++; const letter = L.getColumn(col).letter; arr.forEach((v, i) => { L.getCell(letter + (i + 1)).value = v; }); lists[name] = arr.length ? "'_lists'!$" + letter + '$1:$' + letter + '$' + arr.length : null; };
+    const profNames = D.profiles.map(f => f.nameAR);
+    addList('prof', [U_BYTITLE].concat(profNames));
+    addList('en', ['حسب الوظيفة', 'نعم', 'لا']);
+    addList('grant', ['منح', 'منع']);
+    addList('caps', Object.keys(M.caps));
+    addList('scopes', Object.keys(M.scopes));
+    addList('people', Object.keys(M.people));
+    addList('yn', ['نعم', 'لا']);
+    D.apps.forEach(a => addList('sc_' + a.id, ((uReg(a.id) || {}).scopes || []).map(s => s.label)));
+    const N = 600;
+    const dv = (ws, colKey, listName, from, rows) => { const f = typeof listName === 'string' && listName.indexOf('!') < 0 ? lists[listName] : listName; if (!f) return; const c = ws.getColumn(colKey).letter; for (let r = from || 2; r <= (rows || N); r++) ws.getCell(c + r).dataValidation = { type: 'list', allowBlank: true, formulae: [f], showErrorMessage: true, errorStyle: 'stop', errorTitle: 'قيمة غير مسموحة', error: 'اختر من القائمة فقط' }; };
+
+    const R = wb.addWorksheet('اقرأني');
+    R.views = [{ rightToLeft: true }]; R.getColumn(1).width = 110;
+    ['نموذج الصلاحيات والإعدادات — سوار', '', '• عبّئ الأوراق التي تحتاجها فقط واترك الباقي كما هو. كل الخانات الملوّنة قوائم منسدلة: اختر منها فقط.',
+     '• «الوظائف»: كل صف = وظيفة + صلاحية في نظام. الوظيفة المذكورة تُعاد صلاحياتها في الأنظمة المذكورة لها كما في الملف.',
+     '• «مسميات جسر»: أي مسمى من جسر يأخذ أي وظيفة.', '• «الموظفون»: وظيفة محددة لموظف (أو حسب مسماه)، ودخوله لكل نظام، وما يراه.',
+     '• «صلاحيات خاصة»: منح أو منع صلاحية لموظف بعينه زيادة على وظيفته.', '• «الإعدادات»: غيّر عمود القيمة فقط.',
+     '• المالك له كل الصلاحيات دائماً ولا يظهر في الملف.', '• بعد الرفع تظهر معاينة وأي أخطاء؛ لا يتغير شيء قبل «اعتماد».']
+      .forEach((t, i) => { const c = R.getCell('A' + (i + 1)); c.value = t; if (!i) c.font = { bold: true, size: 15 }; c.alignment = { wrapText: true }; });
+
+    const F = wb.addWorksheet('الوظائف'); head(F, [['الوظيفة', 'p', 26], ['النظام — الصلاحية', 'c', 46], ['النظام — يرى', 's', 34]]);
+    D.profiles.forEach(f => Object.keys(f.grants || {}).forEach(aid => { const g = f.grants[aid], a = uApp(aid); const sc = g.scope ? Object.keys(M.scopes).find(l => M.scopes[l].appId === aid && M.scopes[l].key === g.scope) : '';
+      const cl = (g.caps || []).map(k => Object.keys(M.caps).find(l => M.caps[l].appId === aid && M.caps[l].key === k)).filter(Boolean);
+      if (!cl.length) F.addRow({ p: f.nameAR, c: '', s: sc || '' }); else cl.forEach((l, i) => F.addRow({ p: f.nameAR, c: l, s: i ? '' : (sc || '') })); }));
+    dv(F, 'c', 'caps'); dv(F, 's', 'scopes');
+
+    const T = wb.addWorksheet('مسميات جسر'); head(T, [['المسمى في جسر', 't', 34], ['الوظيفة', 'p', 30]]);
+    const titles = {}; D.people.forEach(p => { if (p.title) titles[p.title] = 1; });
+    Object.keys(titles).sort().forEach(t => { const f = D.profiles.find(x => (x.titles || []).indexOf(t) >= 0); T.addRow({ t: t, p: f ? f.nameAR : '' }); });
+    dv(T, 'p', "'الوظائف'!$A$2:$A$" + N, 2, Object.keys(titles).length + 1);
+
+    const Pcols = [['رمز', 'id', 12], ['الرقم', 'no', 9], ['الاسم', 'name', 26], ['المسمى في جسر', 'title', 22], ['الوظيفة', 'prof', 26]];
+    D.apps.forEach(a => { Pcols.push([a.nameAR + ' — الدخول', 'en_' + a.id, 18]); if (((uReg(a.id) || {}).scopes || []).length) Pcols.push([a.nameAR + ' — يرى', 'sc_' + a.id, 22]); });
+    const P = wb.addWorksheet('الموظفون'); head(P, Pcols);
+    const plist = D.people.filter(p => !uLeftP(p) && !p.owner);
+    plist.forEach(p => { const row = { id: p.id, no: p.no, name: p.name, title: p.title, prof: p.profileId ? (D.profiles.find(f => f.id === p.profileId) || {}).nameAR || U_BYTITLE : U_BYTITLE };
+      D.apps.forEach(a => { const e = p.access[a.id] || {}; row['en_' + a.id] = U_EN[e.en || '']; const s = ((uReg(a.id) || {}).scopes || []).find(x => x.key === e.scopeOwn); row['sc_' + a.id] = s ? s.label : ''; });
+      P.addRow(row); });
+    P.getColumn('id').hidden = true;
+    const pr = plist.length + 1;
+    dv(P, 'prof', lists.prof ? lists.prof.replace(/\$\d+$/, '$' + (D.profiles.length + 1)) : null, 2, pr);
+    D.apps.forEach(a => { dv(P, 'en_' + a.id, 'en', 2, pr); if (lists['sc_' + a.id]) dv(P, 'sc_' + a.id, lists['sc_' + a.id], 2, pr); });
+
+    const Sx = wb.addWorksheet('صلاحيات خاصة'); head(Sx, [['الموظف', 'p', 36], ['النظام — الصلاحية', 'c', 46], ['منح أو منع', 'g', 14]]);
+    D.people.filter(p => !uLeftP(p) && !p.owner).forEach(p => Object.keys(p.access).forEach(aid => Object.keys(p.access[aid].diff || {}).forEach(k => {
+      const pl = Object.keys(M.people).find(l => M.people[l] === p.id), cl = Object.keys(M.caps).find(l => M.caps[l].appId === aid && M.caps[l].key === k);
+      if (pl && cl) Sx.addRow({ p: pl, c: cl, g: p.access[aid].diff[k] ? 'منح' : 'منع' }); })));
+    dv(Sx, 'p', 'people'); dv(Sx, 'c', 'caps'); dv(Sx, 'g', 'grant');
+
+    const St = wb.addWorksheet('الإعدادات'); head(St, [['النظام', 'a', 18], ['الإعداد', 'q', 50], ['القيمة', 'v', 30], ['الوحدة', 'u', 10], ['المفتاح', 'k', 10]]);
+    D.apps.forEach(a => { const d = uReg(a.id); if (!d) return; const saved = (D.settings || {})[a.id] || {};
+      (d.settings || []).filter(s => !s.shared && (s.type || 'text') !== 'json').forEach(s => {
+        const v = s.key in saved ? saved[s.key].v : s.default, t = s.type || 'text';
+        const shown = t === 'bool' ? (v ? 'نعم' : 'لا') : t === 'choice' ? ((s.options || []).map(o => o && o.v != null ? o : { v: o, label: o }).find(o => String(o.v) === String(v)) || {}).label || '' : Array.isArray(v) ? (t === 'days' ? v.map(i => U_DAYS[i]) : v).join('، ') : (v == null ? '' : v);
+        const row = St.addRow({ a: a.nameAR, q: s.q || s.key, v: shown, u: s.unit || '', k: a.id + '|' + s.key }), c = row.getCell('v');
+        if (t === 'bool') c.dataValidation = { type: 'list', allowBlank: false, formulae: [lists.yn], showErrorMessage: true, error: 'نعم أو لا' };
+        if (t === 'choice') c.dataValidation = { type: 'list', allowBlank: false, formulae: ['"' + (s.options || []).map(o => String(o && o.label != null ? o.label : o).replace(/[",]/g, ' ')).join(',') + '"'], showErrorMessage: true, error: 'اختر من القائمة فقط' };
+        if (t === 'number') c.dataValidation = { type: 'decimal', operator: 'between', allowBlank: false, formulae: [s.min != null ? s.min : -1e9, s.max != null ? s.max : 1e9], showErrorMessage: true, error: 'رقم' + (s.min != null ? ' من ' + s.min : '') + (s.max != null ? ' إلى ' + s.max : '') };
+        ['a', 'q', 'u'].forEach(k => { row.getCell(k).font = { color: { argb: 'FF6F6761' } }; });
+        c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF8EC' } };
+      }); });
+    St.getColumn('k').hidden = true;
+    [F, T, P, Sx].forEach(ws => ws.eachRow((r, i) => { if (i > 1) r.alignment = { vertical: 'middle' }; }));
+
+    const buf = await wb.xlsx.writeBuffer();
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+    a.download = 'سوار_الصلاحيات_والإعدادات_' + new Date().toISOString().slice(0, 10) + '.xlsx'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+    toast('نُزّل النموذج', 'ok');
+  } catch (c) { showErr(typeof c === 'string' ? c : 'ERR_SERVER'); console.error(c); }
+  finally { if (btn) btn.disabled = false; }
+}
+function uXlOpenUpload() {
+  U.bulk = null;
+  openModal({ wide: true, title: 'رفع نموذج الصلاحيات والإعدادات', body:
+    '<p class="u-muted">اختر الملف الذي عبّأته (النموذج المنزّل من هنا). لا يتغير شيء قبل «اعتماد».</p><label class="btn btn-ghost u-file">' + ic('upload') + '<span>اختيار الملف</span><input type="file" id="uXlFile" accept=".xlsx" hidden></label><div id="uXlOut"></div>',
+    foot: '<button class="btn btn-primary" data-u="xlApply" id="uXlApply" disabled>' + ic('check') + '<span>اعتماد</span></button>' });
+  $('#uXlFile').onchange = e => { const f = e.target.files && e.target.files[0]; if (f) uXlRead(f); };
+}
+async function uXlRead(file) {
+  const out = $('#uXlOut'); out.innerHTML = '<div class="u-wait"><span class="u-spin"></span><span>قراءة الملف…</span></div>';
+  try {
+    const X = await uXlLib(), wb = new X.Workbook(); await wb.xlsx.load(await file.arrayBuffer());
+    const D = U.d, M = uXlMaps(), local = [];
+    const val = c => { let v = c && c.value; if (v && typeof v === 'object') v = v.result != null ? v.result : v.richText ? v.richText.map(x => x.text).join('') : v.text != null ? v.text : v instanceof Date ? v.toISOString().slice(0, 10) : ''; return v == null ? '' : (typeof v === 'string' ? v.trim() : v); };
+    const rows = (name, fn) => { const ws = wb.getWorksheet(name); if (!ws) return; const hdr = {}; ws.getRow(1).eachCell((c, i) => { hdr[String(val(c))] = i; }); ws.eachRow((r, i) => { if (i > 1) fn(k => val(r.getCell(hdr[k] || 999)), i, hdr, r); }); };
+    const payload = { profiles: [], titles: [], people: [], special: [], settings: [] };
+    const bad = (sheet, r, msg) => local.push({ sheet: sheet, row: r, msg: msg });
+    rows('الوظائف', (g, r) => { const p = String(g('الوظيفة')), c = g('النظام — الصلاحية'), s = g('النظام — يرى'); if (!p && !c) return;
+      if (c && !M.caps[c]) return bad('الوظائف', r, 'صلاحية ليست من القائمة'); if (s && !M.scopes[s]) return bad('الوظائف', r, 'نطاق ليس من القائمة');
+      if (!c && !s) return bad('الوظائف', r, 'اختر صلاحية أو نطاقاً');
+      payload.profiles.push({ r: r, profile: p, appId: (M.caps[c] || M.scopes[s]).appId, cap: c ? M.caps[c].key : '', scope: s && (!c || M.scopes[s].appId === M.caps[c].appId) ? M.scopes[s].key : '' }); });
+    rows('مسميات جسر', (g, r) => { const t = String(g('المسمى في جسر')); if (t) payload.titles.push({ r: r, title: t, profile: String(g('الوظيفة')) }); });
+    rows('الموظفون', (g, r, hdr) => { const id = String(g('رمز')); if (!id) return; const pr = String(g('الوظيفة'));
+      const person = D.people.find(p => p.id === id); if (!person) return bad('الموظفون', r, 'موظف غير معروف');
+      const access = {}; let changed = false;
+      D.apps.forEach(a => { const ev = String(g(a.nameAR + ' — الدخول')); const en = Object.keys(U_EN).find(k => U_EN[k] === ev);
+        if (ev && en === undefined) return bad('الموظفون', r, 'قيمة دخول ليست من القائمة');
+        const sl = String(g(a.nameAR + ' — يرى')), sc = sl ? ((uReg(a.id) || {}).scopes || []).find(x => x.label === sl) : null;
+        if (sl && !sc) return bad('الموظفون', r, 'نطاق ليس من القائمة');
+        const e = person.access[a.id] || {}, newEn = en === undefined ? (e.en || '') : en, newSc = sc ? sc.key : '';
+        if (newEn !== (e.en || '') || newSc !== (e.scopeOwn || '')) { access[a.id] = { en: newEn, scope: newSc }; changed = true; } });
+      const curProf = person.profileId ? (D.profiles.find(f => f.id === person.profileId) || {}).nameAR : U_BYTITLE;
+      const profile = pr && pr !== curProf ? (pr === U_BYTITLE ? '' : pr) : null;
+      if (changed || profile !== null) payload.people.push({ r: r, personId: id, profile: profile, access: access }); });
+    rows('صلاحيات خاصة', (g, r) => { const p = g('الموظف'), c = g('النظام — الصلاحية'), gr = g('منح أو منع'); if (!p && !c) return;
+      if (!M.people[p]) return bad('صلاحيات خاصة', r, 'موظف ليس من القائمة'); if (!M.caps[c]) return bad('صلاحيات خاصة', r, 'صلاحية ليست من القائمة');
+      if (gr !== 'منح' && gr !== 'منع') return bad('صلاحيات خاصة', r, 'اختر منح أو منع');
+      payload.special.push({ r: r, personId: M.people[p], appId: M.caps[c].appId, cap: M.caps[c].key, grant: gr === 'منح' }); });
+    rows('الإعدادات', (g, r) => { const k = String(g('المفتاح')); if (!k) return; const [aid, key] = k.split('|'), d = uReg(aid), s = d && (d.settings || []).find(x => x.key === key); if (!s) return;
+      let v = g('القيمة'); const t = s.type || 'text', saved = ((D.settings || {})[aid] || {})[key], cur = saved ? saved.v : s.default;
+      if (t === 'bool') { if (v !== 'نعم' && v !== 'لا') return bad('الإعدادات', r, 'نعم أو لا'); v = v === 'نعم'; }
+      else if (t === 'choice') { const o = (s.options || []).map(o => o && o.v != null ? o : { v: o, label: o }).find(o => String(o.label) === String(v)); if (!o) return bad('الإعدادات', r, 'اختر من القائمة'); v = o.v; }
+      else if (t === 'days') { const parts = String(v).split(/[,،\s]+/).filter(Boolean); if (parts.some(x => U_DAYS.indexOf(x) < 0)) return bad('الإعدادات', r, 'أيام غير صحيحة'); v = parts.map(x => U_DAYS.indexOf(x)); }
+      else if (t === 'list' || t === 'emails') v = String(v).split(/[,،;]+/).map(x => x.trim()).filter(Boolean);
+      else if (t === 'number') v = Number(v);
+      if (JSON.stringify(v) !== JSON.stringify(cur)) payload.settings.push({ r: r, appId: aid, key: key, value: v }); });
+    U.bulk = payload;
+    const res = await api('u_bulk', Object.assign({ apply: false }, payload));
+    const errs = local.concat(res.errors || []), c = res.counts;
+    out.innerHTML = '<div class="u-prev"><span><b>' + c.profiles + '</b> وظيفة</span><span><b>' + c.titles + '</b> مسمى</span><span><b>' + c.people + '</b> موظفاً تغيّر</span><span><b>' + c.special + '</b> صلاحية خاصة</span><span><b>' + c.settings + '</b> إعداداً تغيّر</span></div>' +
+      (errs.length ? '<p class="u-err">صحّح هذه في الملف ثم ارفعه من جديد:</p><ul class="u-errs">' + errs.slice(0, 40).map(e => '<li>' + esc(e.sheet) + ' · صف ' + esc(e.row) + ': ' + esc(e.msg) + '</li>').join('') + '</ul>' : '<p class="u-muted">لا أخطاء. اضغط «اعتماد» للتطبيق.</p>');
+    $('#uXlApply').disabled = !!errs.length || !(c.profiles + c.titles + c.people + c.special + c.settings);
+  } catch (c) { out.innerHTML = '<p class="u-err">تعذّرت قراءة الملف. تأكد أنه النموذج المنزّل من البوابة وبصيغة xlsx.</p>'; console.error(c); }
+}
+async function uXlApply() {
+  if (!U.bulk) return;
+  $('#uXlApply').disabled = true;
+  try { const r = await api('u_bulk', Object.assign({ apply: true }, U.bulk)); closeModal(true); toast(r.applied ? 'طُبّق الملف ووصل للأنظمة' : 'لم يُطبّق: راجع الأخطاء', r.applied ? 'ok' : 'err'); U.bulk = null; uLoad(); }
+  catch (c) { showErr(c); $('#uXlApply').disabled = false; }
+}
+
 /* ── الأحداث ── */
 function uAfter() {
   const q = $('#uQ');
@@ -2919,6 +3087,7 @@ function uOnChange(el) {
     if (k === 'pScope') { e.scopeOwn = el.value; e.scope = el.value; }
     uPersonSave(p, a); uRender(); return;
   }
+  if (k === 'pProf') { const p = D.people.find(x => x.id === U.id); p.profileId = el.value; uSave('u_setProfile', { personId: p.id, profileId: el.value }, 'حُفظ'); return; }
   if (k === 'fOn' || k === 'fCap' || k === 'fScope') {
     const f = U.draft, a = el.dataset.app, g = f.grants[a] || (f.grants[a] = { on: true, caps: [], scope: '' });
     if (k === 'fOn') { if (el.checked) g.on = true; else delete f.grants[a]; }
@@ -2977,7 +3146,7 @@ function uOnClick(el, e) {
     return api('u_fetchRegistry', { appId: el.dataset.id }).then(r => {
       el.disabled = false;
       if (!r.ok) { toast(r.code === 'NO_REGISTRY' ? 'هذا النظام لم يجهّز وصف إعداداته بعد' : 'تعذّر الوصول للنظام', 'err'); return; }
-      toast(r.settings + ' إعداداً و' + r.caps + ' صلاحية' + (r.imported ? ' · نُقلت ' + r.imported + ' قيمة من النظام' : ''), 'ok'); uLoad();
+      toast(r.settings + ' إعداداً و' + r.caps + ' صلاحية' + (r.imported ? ' · نُقلت ' + r.imported + ' قيمة من النظام' : '') + (r.importedAccess ? ' · نُقلت صلاحيات ' + r.importedAccess + ' موظفاً' : ''), 'ok'); uLoad();
     }).catch(c => { el.disabled = false; showErr(c); });
   }
   if (k === 'setDay') {
@@ -2997,6 +3166,9 @@ function uOnClick(el, e) {
   if (k === 'delRow') { el.closest('.u-row').remove(); return; }
   if (k === 'saveShared') { const key = el.dataset.k, v = uCollectRows(key); D.shared[key] = v; uRender(); return uSave('u_saveShared', { key: key, value: v }, 'حُفظ ووصل لكل الأنظمة'); }
   if (k === 'import') return uOpenImport();
+  if (k === 'xlDown') return uXlDownload(el);
+  if (k === 'xlUp') return uXlOpenUpload();
+  if (k === 'xlApply') return uXlApply();
   if (k === 'impPreview') return uImport(false);
   if (k === 'impApply') return uImport(true);
   if (k === 'manual') return uOpenManual();
