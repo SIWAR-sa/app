@@ -55,36 +55,51 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
 #home[hidden]{display:none}
 [dir="ltr"] #home{left:auto;right:0;border-radius:18px 0 0 18px}
 [dir="ltr"] #home svg{transform:scaleX(-1)}
-/* شاشة فتح البرنامج: خلفية بلون البرنامج نفسه مع إضاءة ذهبية ناعمة، وبطاقة زجاجية في الوسط */
+/* ── شاشة فتح النظام ──
+   الدائرة الذهبية تتقدّم مع مراحل الفتح الفعلية (التذكرة ← تحميل الصفحة ← جاهزية البيانات)،
+   والشعار ينتقل من أيقونة النظام في البوابة إلى منتصف الشاشة، والخلفية تنفتح دائرياً من موضع الضغطة */
 #prog{--pc:#101A2E}
-.pload{position:fixed;inset:0;z-index:2;display:grid;place-items:center;overflow:hidden;color:#F4E3BF;
-  background:radial-gradient(120% 70% at 50% -10%,color-mix(in srgb,var(--pc) 55%,#fff 18%) 0,transparent 60%),
-             radial-gradient(90% 60% at 50% 115%,color-mix(in srgb,var(--pc) 60%,#000 40%) 0,transparent 70%),var(--pc);
-  transition:opacity .45s ease,transform .45s ease}
-.pload::before,.pload::after{content:"";position:absolute;width:62vmax;height:62vmax;border-radius:50%;filter:blur(60px);opacity:.38;pointer-events:none}
-.pload::before{background:radial-gradient(circle,rgba(227,182,109,.55),transparent 65%);top:-28vmax;left:-22vmax;animation:orb1 9s ease-in-out infinite alternate}
-.pload::after{background:radial-gradient(circle,color-mix(in srgb,var(--pc) 40%,#fff 25%),transparent 65%);bottom:-30vmax;right:-24vmax;animation:orb2 11s ease-in-out infinite alternate}
-@keyframes orb1{to{transform:translate(12vmax,10vmax)}}
-@keyframes orb2{to{transform:translate(-10vmax,-12vmax)}}
-.pload.out{opacity:0;transform:scale(1.04);pointer-events:none}
-.pload.out::before,.pload.out::after,.pload.out .bar i,#splash.out .bar i{animation:none}
+.pf{position:absolute;inset:0;visibility:hidden}
+.pf.cur{visibility:visible}
+.pload{position:absolute;inset:0;z-index:3;display:grid;place-items:center;overflow:hidden;color:#F4E3BF;
+  --ox:50%;--oy:50%;clip-path:circle(150% at var(--ox) var(--oy));
+  background:radial-gradient(70% 50% at 50% 42%,color-mix(in srgb,var(--pc) 70%,#fff 14%) 0,transparent 70%),
+             linear-gradient(180deg,color-mix(in srgb,var(--pc) 82%,#000 18%),color-mix(in srgb,var(--pc) 70%,#000 30%));
+  transition:opacity .38s ease}
+.pload.enter{clip-path:circle(0 at var(--ox) var(--oy))}
+.pload.opening{transition:clip-path .48s cubic-bezier(.3,.7,.2,1),opacity .38s ease}
+.pload.out{opacity:0;pointer-events:none}
 .pload.gone{display:none}
-.pload .pin{position:relative;z-index:1;width:min(300px,78vw);padding:38px 26px 30px;border-radius:30px;gap:20px;
-  background:linear-gradient(160deg,rgba(255,255,255,.17),rgba(255,255,255,.06));
-  box-shadow:inset 0 0 0 1px rgba(227,182,109,.38),inset 0 1px 0 rgba(255,255,255,.18),0 30px 60px -24px rgba(0,0,0,.55);animation:in .7s cubic-bezier(.2,.8,.2,1) both}
-.pload .picon.glass{width:auto;height:auto;border-radius:0;background:none!important;box-shadow:none;overflow:visible}
-.pload .picon.glass img{width:min(210px,56vw);filter:drop-shadow(0 6px 14px rgba(0,0,0,.35))}
-.pload .pname{color:#F4E3BF;font-size:18px;letter-spacing:.2px;text-shadow:0 1px 8px rgba(0,0,0,.3)}
-.pload .bar{width:150px;height:2px;background:rgba(244,227,191,.16)}
-.pload .bar i{background:linear-gradient(90deg,transparent,#F3D58E,transparent);width:55%}
-.pin{display:flex;flex-direction:column;align-items:center;gap:18px}
-.picon{width:120px;height:120px;border-radius:32px;display:grid;place-items:center;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(214,178,112,.4),0 22px 40px -16px rgba(40,20,20,.5);animation:in .6s cubic-bezier(.2,.8,.2,1) both}
-.picon.round{border-radius:999px}.picon.wide{width:168px;height:120px;border-radius:28px}.picon.wide.round{border-radius:999px}
-.picon img{width:84%;height:auto}
-.picon.img{background:none;box-shadow:none;width:150px}
-.picon.img img{width:100%;height:auto}
-.pname{font-weight:700;font-size:17px}
-
+.pl-glow{position:absolute;left:50%;top:44%;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(243,213,142,.30),rgba(243,213,142,.08) 38%,transparent 66%);animation:plBreath 3.2s ease-in-out infinite;pointer-events:none}
+.pl-sheen{position:absolute;inset:-40% -60%;background:linear-gradient(105deg,transparent 42%,rgba(255,240,205,.07) 50%,transparent 58%);animation:plSheen 3.6s ease-in-out infinite;pointer-events:none}
+@keyframes plBreath{0%,100%{opacity:.55;transform:scale(.94)}50%{opacity:1;transform:scale(1.04)}}
+@keyframes plSheen{0%{transform:translateX(-30%)}100%{transform:translateX(30%)}}
+.pl-core{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:22px;margin-top:-4vh}
+.pl-em{position:relative;width:164px;height:164px;display:grid;place-items:center;will-change:transform}
+.pl-em.fly{transition:transform .5s cubic-bezier(.25,.8,.25,1)}
+.pl-med{position:absolute;inset:14px;border-radius:50%;
+  background:radial-gradient(circle at 50% 30%,rgba(255,255,255,.20),rgba(255,255,255,.05) 60%,rgba(0,0,0,.10));
+  box-shadow:inset 0 0 0 1px rgba(243,213,142,.45),inset 0 2px 0 rgba(255,255,255,.18),0 24px 50px -18px rgba(0,0,0,.6),0 0 0 6px rgba(243,213,142,.06)}
+.pl-ring{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg);overflow:visible}
+.pl-ring circle{fill:none;stroke-width:2.2;stroke-linecap:round}
+.pl-ring .trk{stroke:rgba(243,213,142,.16)}
+.pl-ring .prg{stroke:url(#plGold);stroke-dasharray:502.65;stroke-dashoffset:502.65;transition:stroke-dashoffset 1.2s cubic-bezier(.2,.7,.2,1);filter:drop-shadow(0 0 6px rgba(243,213,142,.55))}
+.pl-spin{position:absolute;inset:0;animation:plSpin 1.6s linear infinite}
+.pl-spin::after{content:"";position:absolute;left:50%;top:-1px;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:#FFF1CC;box-shadow:0 0 10px 3px rgba(243,213,142,.8)}
+@keyframes plSpin{to{transform:rotate(360deg)}}
+.pload.done .pl-spin{opacity:0;transition:opacity .2s}
+.picon{position:relative;z-index:1;display:grid;place-items:center;width:100%;height:100%}
+.picon img{width:74%;height:auto;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
+.picon.img img{width:58%;border-radius:18px;filter:none}
+.pname{font-weight:700;font-size:19px;letter-spacing:.3px;color:#F6E6C4;text-shadow:0 1px 10px rgba(0,0,0,.35);opacity:0;transform:translateY(6px);transition:opacity .4s .18s,transform .4s .18s}
+.pload.shown .pname{opacity:1;transform:none}
+.pl-err{display:none;flex-direction:column;align-items:center;gap:14px;font-size:15px;color:#F6E6C4}
+.pl-err button{height:44px;padding:0 26px;border:0;border-radius:999px;font:inherit;font-weight:700;font-size:15px;color:#2B2116;background:linear-gradient(180deg,#F6DCA0,#D9AD5E);box-shadow:0 10px 24px -10px rgba(0,0,0,.6);cursor:pointer}
+.pload.err .pl-err{display:flex}
+.pload.err .pl-spin{display:none}
+.pload.done .pl-em{transform:scale(1.06);opacity:.0;transition:transform .38s ease,opacity .38s ease}
+.pload.out .pl-glow,.pload.out .pl-sheen,.pload.out .pl-spin,.pload.gone .pl-glow,.pload.gone .pl-sheen,.pload.gone .pl-spin,#splash.out .bar i{animation:none}
 /* نافذة التثبيت */
 #install{position:fixed;inset:0;z-index:40;display:grid;align-items:end;justify-items:center;background:rgba(63,58,55,.28);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
 .sheet{width:min(460px,100%);margin:0 0 calc(12px + var(--bottom));padding:24px 22px 20px;border-radius:24px;background:#FFFDF9;box-shadow:0 24px 60px rgba(63,58,55,.25);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;animation:up .35s cubic-bezier(.2,.8,.2,1)}
@@ -115,7 +130,12 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     <div class="ptitle" id="ptitle"></div>
     <button class="pbtn" id="ext" aria-label="فتح في المتصفح" title="فتح في المتصفح"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg></button>
   </div>
-  <div class="pbody" id="pbody"><div class="pload" id="pload"><div class="pin"><div class="picon" id="picon" hidden></div><div class="pname" id="pname"></div><div class="bar"><i></i></div></div></div></div>
+  <div class="pbody" id="pbody"><div class="pload gone" id="pload"><div class="pl-glow"></div><div class="pl-sheen"></div>
+    <div class="pl-core"><div class="pl-em" id="plEm"><div class="pl-med"></div>
+      <svg class="pl-ring" viewBox="0 0 164 164" aria-hidden="true"><defs><linearGradient id="plGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF0C8"/><stop offset=".5" stop-color="#E9BE6E"/><stop offset="1" stop-color="#B9873A"/></linearGradient></defs><circle class="trk" cx="82" cy="82" r="80"/><circle class="prg" id="plRing" cx="82" cy="82" r="80"/></svg>
+      <div class="pl-spin" id="plSpin"></div><div class="picon" id="picon"></div></div>
+      <div class="pname" id="pname"></div>
+      <div class="pl-err"><span id="plErrTxt"></span><button id="plRetry"></button></div></div></div></div>
 </div>
 
 <button id="home" hidden aria-label="العودة إلى البوابة"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
@@ -192,68 +212,193 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
 
   function hideSplash() { $('splash').className = 'out'; }
 
-  /* ── فتح البرنامج داخل التطبيق ── */
-  // أيقونة البرنامج على شاشة الفتح: لون سوار بالشعار، أو صورة البرنامج (روابط آمنة فقط)
+  /* ── فتح البرنامج داخل التطبيق ──
+     كل نظام في إطار خاص به يبقى حياً بعد العودة للبوابة (حتى MAXF أنظمة)، فالرجوع إليه فوري.
+     شاشة الفتح تظهر مع الضغطة وتتقدّم مع مراحل الفتح الفعلية، وتختفي حين يقول النظام إنه جاهز. */
+  var MAXF = iOS || /Android/.test(ua) ? 2 : 3, FRAME_AGE = 6 * 3600000;
+  var frames = {}, cur = '', seq = 0;
+  var RING = 502.65;
+  var ERRT = { ar: { msg: 'تعذّر فتح النظام الآن.', retry: 'إعادة المحاولة' }, en: { msg: 'The system could not be opened right now.', retry: 'Try again' } };
+  function portalWin() { var pf = $('portal').querySelector('iframe'); return pf && pf.contentWindow; }
+  function toPortal(m) { var w = portalWin(); if (w) try { w.postMessage(m, location.origin); } catch (e) {} }
+  function sendAlive() { toPortal({ siwar: 'alive', ids: Object.keys(frames) }); }
+  function frameIdOf(src) {
+    for (var id in frames) {
+      var w = src;
+      for (var k = 0; k < 6 && w; k++) {
+        if (w === frames[id].f.contentWindow) return id;
+        try { if (w === w.parent) break; w = w.parent; } catch (e) { break; }
+      }
+    }
+    return '';
+  }
   function setIcon(ic) {
-    var box = $('picon'); box.innerHTML = ''; box.className = 'picon'; box.style.background = ''; box.hidden = true;
+    var box = $('picon'); box.innerHTML = ''; box.className = 'picon';
     $('prog').style.setProperty('--pc', ic && ic.kind === 'sw' && /^#[0-9a-f]{6}$/i.test(String(ic.color || '')) ? ic.color : '#101A2E');
-    if (!ic) { box.className = 'picon glass'; var l = document.createElement('img'); l.alt = ''; l.src = 'icons/logo.webp'; box.appendChild(l); box.hidden = false; return; }
     var img = document.createElement('img'); img.alt = '';
-    if (ic.kind === 'sw' && /^#[0-9a-f]{6}$/i.test(String(ic.color || ''))) {
-      box.className = 'picon glass';
-      img.src = 'icons/logo.webp';
-    } else if (ic.kind === 'img' && /^(https:\/\/[^\s"'<>]+|data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+\/=]+)$/.test(String(ic.src || ''))) {
-      box.className = 'picon img'; img.src = ic.src;
-    } else return;
-    box.appendChild(img); box.hidden = false;
+    if (ic && ic.kind === 'img' && /^(https:\/\/[^\s"'<>]+|data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+\/=]+)$/.test(String(ic.src || ''))) { box.className = 'picon img'; img.src = ic.src; }
+    else img.src = 'icons/logo.webp';
+    box.appendChild(img);
   }
-  var progHold = false, progReadyT = 0;
-  // بعد ظهور النظام تُخفى شاشة التحميل تماماً (لا تبقى حركاتها تعمل في الخلفية)
-  function hideLoad() {
-    clearTimeout(progReadyT); var l = $('pload'); l.className = 'pload out';
-    setTimeout(function () { if (l.className === 'pload out') l.className = 'pload out gone'; }, 460);
+  function ring(p) { $('plRing').style.strokeDashoffset = String(RING * (1 - Math.max(0, Math.min(1, p)))); }
+  // مرحلة الفتح: الدائرة تتقدم للمرحلة ثم تزحف ببطء نحو التالية، فلا تبدو متوقفة أثناء الانتظار
+  var creepT = 0;
+  function stage(p, next) {
+    clearTimeout(creepT); ring(p);
+    if (next) creepT = setTimeout(function () { $('plRing').style.transition = 'stroke-dashoffset 9s cubic-bezier(.1,.6,.3,1)'; ring(next); }, 1200);
   }
-  // شاشة فتح البرنامج تظهر مع الضغطة نفسها (prep)، والإطار يُحمَّل عند وصول الرابط (open)
-  function showProg(name, icon) {
-    $('ptitle').textContent = name || '';
+  function loaderShow(name, icon, rect) {
+    var L = $('pload');
     $('pname').textContent = name || '';
     setIcon(icon);
-    dropFrame(true);
-    $('pload').className = 'pload';
+    $('plRing').style.transition = 'none'; ring(0); void $('plRing').offsetWidth; $('plRing').style.transition = '';
+    var ox = '50%', oy = '50%', em = $('plEm');
+    em.className = 'pl-em'; em.style.transform = '';
+    var pf = $('portal').querySelector('iframe'), off = pf ? pf.getBoundingClientRect().top : 0;
+    if (rect && rect.w) {
+      var cx = rect.x + rect.w / 2, cy = rect.y + off + rect.h / 2;
+      ox = cx + 'px'; oy = cy + 'px';
+    }
+    L.style.setProperty('--ox', ox); L.style.setProperty('--oy', oy);
+    L.className = 'pload enter';
+    if (rect && rect.w) {
+      // الشعار يبدأ من مكان أيقونة النظام في البوابة ثم ينتقل للمنتصف
+      var r = em.getBoundingClientRect(), s = Math.max(.25, rect.w / r.width);
+      em.style.transform = 'translate(' + (cx - (r.left + r.width / 2)) + 'px,' + (cy - (r.top + r.height / 2)) + 'px) scale(' + s + ')';
+    }
+    void L.offsetWidth;
+    L.className = 'pload opening shown';
+    requestAnimationFrame(function () { em.className = 'pl-em fly'; em.style.transform = ''; });
+    stage(.16, .4);
+  }
+  function loaderDone() {
+    var L = $('pload'); if (/gone|out/.test(L.className)) return;
+    clearTimeout(creepT); $('plRing').style.transition = 'stroke-dashoffset .28s ease'; ring(1);
+    L.className = 'pload shown done';
+    setTimeout(function () { if (/done/.test(L.className)) L.className = 'pload out'; }, 260);
+    setTimeout(function () { if (L.className === 'pload out') L.className = 'pload gone'; }, 700);
+  }
+  function loaderErr() {
+    var L = $('pload'), t = ERRT[LANG] || ERRT.ar;
+    clearTimeout(creepT);
+    $('plErrTxt').textContent = t.msg; $('plRetry').textContent = t.retry;
+    L.className = 'pload shown err';
+  }
+  $('plRetry').onclick = function () { if (cur) relaunch(cur, true); };
+
+  function showLayer() {
     $('prog').className = 'on'; $('prog').setAttribute('aria-hidden', 'false'); $('home').hidden = false;
     if (!history.state || !history.state.prog) history.pushState({ prog: 1 }, '');
   }
-  function dropFrame(now) {
-    var old = $('pbody').querySelector('iframe');
-    if (!old) return;
-    var kill = function () { if (old.isConnected) { try { old.src = 'about:blank'; } catch (e) {} old.remove(); } };
-    if (now) kill(); else setTimeout(function () { if ($('prog').className !== 'on') kill(); }, 350);
+  function markCur(id) {
+    cur = id;
+    for (var k in frames) frames[k].f.className = 'pf' + (k === id ? ' cur' : '');
+    if (frames[id]) frames[id].seen = Date.now();
   }
-  function openProg(url, name, icon) {
-    if ($('prog').className !== 'on' || $('pload').className !== 'pload') showProg(name, icon);
-    progUrl = url;
-    var body = $('pbody');
-    dropFrame(true);
+  function dropFrame(id) {
+    var o = frames[id]; if (!o) return;
+    delete frames[id];
+    clearTimeout(o.wd); clearTimeout(o.wd2);
+    try { o.f.src = 'about:blank'; } catch (e) {}
+    o.f.remove();
+    sendAlive();
+  }
+  function trim(keep) {
+    var ids = Object.keys(frames).filter(function (k) { return k !== keep && k !== cur; });
+    while (Object.keys(frames).length > MAXF && ids.length) {
+      ids.sort(function (a, b) { return (frames[a].seen || 0) - (frames[b].seen || 0); });
+      dropFrame(ids.shift());
+    }
+  }
+  // النظام سليم إذا أرسل أي إشارة من الحارس (hold أو ready أو alive). صفحة خطأ جوجل لا ترسل شيئاً
+  function healthy(o) { return o.held || o.ready || o.alive; }
+  function makeFrame(id, url, name, icon, warm) {
+    var old = frames[id]; if (old) dropFrame(id);
     var p = document.createElement('iframe');
     p.setAttribute('credentialless', '');
     p.title = name || T('prog');
     p.allow = 'clipboard-read; clipboard-write; fullscreen; camera; microphone; geolocation';
-    // شاشة التحميل تبقى حتى يجهز النظام: النظام الذي يرسل «hold» تُخفى عند «ready»، وغيره عند اكتمال تحميل الإطار
-    progHold = false; clearTimeout(progReadyT);
-    p.onload = function () { if (!progHold) hideLoad(); else progReadyT = setTimeout(hideLoad, 15000); };
+    p.className = 'pf' + (cur === id ? ' cur' : '');
+    var o = { f: p, url: url, name: name, icon: icon, t: Date.now(), seen: warm ? 0 : Date.now(), tries: old ? old.tries : 0, n: ++seq };
+    frames[id] = o;
+    p.onload = function () {
+      if (frames[id] !== o || o.loaded) return;
+      o.loaded = true;
+      if (cur === id && !o.ready) stage(.7, .9);
+      // بعد اكتمال الصفحة: إن لم تصل أي إشارة خلال لحظات فهي صفحة خطأ من جوجل، فيُعاد الفتح تلقائياً مرة
+      o.wd2 = setTimeout(function () {
+        if (frames[id] !== o || healthy(o)) return;
+        if (o.tries < 1) { o.tries++; if (cur === id) relaunch(id, false); else dropFrame(id); }
+        else markReady(id);   // صفحة بلا إشارة (نادر): تُعرض كما هي
+      }, 1200);
+    };
+    // حد أقصى للانتظار
+    o.wd = setTimeout(function () {
+      if (frames[id] !== o || o.ready) return;
+      if (!o.loaded) { if (cur === id) loaderErr(); else dropFrame(id); }
+      else markReady(id);
+    }, 25000);
     p.src = url;
-    body.appendChild(p);
+    $('pbody').appendChild(p);
+    trim(id); sendAlive();
+    return o;
   }
-  function closeProg(fromHistory) {
+  function markReady(id) {
+    var o = frames[id]; if (!o) return;
+    o.ready = true; clearTimeout(o.wd);
+    if (cur === id) loaderDone();
+  }
+
+  /* أوامر البوابة */
+  function onPrep(id, name, icon, rect) {
+    if (frames[id]) dropFrame(id);
+    markCur(id);
+    loaderShow(name, icon, rect);
+    showLayer();
+  }
+  function onOpen(id, url, name, icon) {
+    if (cur !== id || $('prog').className !== 'on') { markCur(id); loaderShow(name, icon, null); showLayer(); }
+    progUrl = url;
+    var o = makeFrame(id, url, name, icon, false);
+    markCur(id);
+    stage(.42, .66);
+    return o;
+  }
+  function onShow(id) {
+    var o = frames[id];
+    if (!o || Date.now() - o.t > FRAME_AGE) { if (o) dropFrame(id); toPortal({ siwar: 'relaunch', id: id }); return; }
+    markCur(id);
+    if (o.ready) { $('pload').className = 'pload gone'; }
+    else { loaderShow(o.name, o.icon, null); stage(o.loaded ? .7 : .42, .9); }
+    showLayer();
+  }
+  function onWarm(id, url, name, icon) { if (!frames[id]) makeFrame(id, url, name, icon, true); }
+  function hideLayer(fromHistory) {
     if ($('prog').className !== 'on') return;
     $('prog').className = ''; $('prog').setAttribute('aria-hidden', 'true'); $('home').hidden = true;
-    clearTimeout(progReadyT); $('pload').className = 'pload out gone';
-    dropFrame(false);
-    progUrl = '';
+    clearTimeout(creepT);
+    var o = frames[cur];
+    if (o && !o.ready && !o.loaded) dropFrame(cur);   // نظام لم يكتمل فتحه لا يبقى في الخلفية
+    $('pload').className = 'pload gone';
+    cur = '';
+    for (var k in frames) frames[k].f.className = 'pf';
     if (!fromHistory && history.state && history.state.prog) history.back();
   }
-  $('back').onclick = function () { closeProg(false); };
-  // مقبض العودة: ضغطة تعيد للبوابة، وسحبه لأعلى أو لأسفل يغيّر مكانه (ويُحفظ)
+  // السحب لأسفل أو F5 أو «إعادة المحاولة»: يُعاد فتح النظام بتذكرة جديدة
+  var relT = 0;
+  function relaunch(id, force) {
+    if (!force && Date.now() - relT < 1500) return; relT = Date.now();
+    var o = frames[id];
+    var name = o ? o.name : $('pname').textContent, icon = o ? o.icon : null;
+    if (o) dropFrame(id);
+    markCur(id);
+    loaderShow(name, icon, null);
+    showLayer();
+    toPortal({ siwar: 'relaunch', id: id });
+  }
+
+  $('back').onclick = function () { hideLayer(false); };
+  // مقبض العودة: ضغطة تعيد للبوابة (والنظام يبقى حياً)، وسحبه لأعلى أو لأسفل يغيّر مكانه
   (function () {
     var h = $('home'), sy = 0, st = 0, moved = false;
     try { var y = Number(localStorage.getItem('siwar_home_y')); if (y > 0) h.style.top = y + 'px'; } catch (e) {}
@@ -266,20 +411,28 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     h.addEventListener('pointerup', function () {
       h.classList.remove('drag');
       if (moved) { try { localStorage.setItem('siwar_home_y', parseInt(h.style.top, 10)); } catch (e) {} }
-      else closeProg(false);
+      else hideLayer(false);
     });
   })();
   $('ext').onclick = function () { if (progUrl) window.open(progUrl, '_blank'); };
-  window.addEventListener('popstate', function () { closeProg(true); });   // زر الرجوع في الجوال
+  window.addEventListener('popstate', function () { hideLayer(true); });   // زر الرجوع في الجوال
 
-  // الرسائل تُقبل من صفحات Apps Script فقط
+  // الرسائل تُقبل من البوابة (نفس الموقع) ومن صفحات Apps Script فقط
   window.addEventListener('message', function (e) {
-    var mine = e.origin === location.origin;   // البوابة (portal.html)
+    var mine = e.origin === location.origin;
     if (!mine && !/\.googleusercontent\.com$|^https:\/\/script\.google\.com$/.test(e.origin)) return;
-    var d = e.data || {};
-    if (mine && d.siwar === 'portalReady') { hideSplash(); return; }
-    if (mine && d.siwar === 'prep') { showProg(String(d.name || ''), d.icon && typeof d.icon === 'object' ? d.icon : null); return; }
-    // حفظ دخول البوابة ولغتها في صفحة التطبيق (إطار البوابة بلا تخزين دائم)
+    var d = e.data || {}, ic = d.icon && typeof d.icon === 'object' ? d.icon : null, id = String(d.id || '');
+    if (mine) {
+      if (d.siwar === 'portalReady') { hideSplash(); sendAlive(); return; }
+      if (d.siwar === 'prep') { onPrep(id || '_', String(d.name || ''), ic, d.rect && typeof d.rect === 'object' ? d.rect : null); return; }
+      if (d.siwar === 'open' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onOpen(id || '_', String(d.url), String(d.name || ''), ic); return; }
+      if (d.siwar === 'show' && frames[id]) { onShow(id); return; }
+      if (d.siwar === 'show') { toPortal({ siwar: 'relaunch', id: id }); return; }
+      if (d.siwar === 'warm' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onWarm(id, String(d.url), String(d.name || ''), ic); return; }
+      if (d.siwar === 'close') { if (id && frames[id] && !frames[id].ready) dropFrame(id); hideLayer(false); return; }
+      if (d.siwar === 'logout') { hideLayer(false); Object.keys(frames).forEach(dropFrame); return; }
+    }
+    // حفظ دخول البوابة ولغتها في صفحة التطبيق (للإصدار السابق من البوابة)
     if (d.siwar === 'storeGet') {
       var data = {};
       ['sp_token', 'sp_lang', 'sp_theme', 'sp_direct_off'].forEach(function (k) { try { var v = localStorage.getItem('pt_' + k); if (v != null) data[k] = v; } catch (x) {} });
@@ -290,31 +443,25 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
       try { if (d.siwar === 'storeSet') localStorage.setItem('pt_' + d.k, String(d.v).slice(0, 500)); else localStorage.removeItem('pt_' + d.k); } catch (x) {}
       return;
     }
-    if (d.siwar === 'open' && mine && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) openProg(String(d.url), String(d.name || ''), d.icon && typeof d.icon === 'object' ? d.icon : null);
-    else if (d.siwar === 'lang') applyLang(String(d.lang || ''));
-    else if (d.siwar === 'close' || d.siwar === 'logout') closeProg(false);
-    else if (d.siwar === 'hold') progHold = true;
-    else if (d.siwar === 'ready') hideLoad();
-    else if (d.siwar === 'reload' && !mine && $('prog').className === 'on') relaunch();
+    if (d.siwar === 'lang') { applyLang(String(d.lang || '')); return; }
+    if (mine) return;
+    // من النظام نفسه: نحدد أي إطار أرسل
+    var fid = frameIdOf(e.source), o = frames[fid];
+    if (!o) return;
+    if (d.siwar === 'hold') { o.held = true; if (cur === fid && !o.ready) stage(.82, .95); }
+    else if (d.siwar === 'alive') o.alive = true;
+    else if (d.siwar === 'ready') markReady(fid);
+    else if (d.siwar === 'close' || d.siwar === 'logout') { if (cur === fid) hideLayer(false); dropFrame(fid); }
+    else if (d.siwar === 'reload' && cur === fid) relaunch(fid, false);
   });
   // F5 أو Ctrl+R على الكمبيوتر: تحديث ما على الشاشة (البوابة أو النظام المفتوح) بدل إعادة تحميل التطبيق كله
   window.addEventListener('keydown', function (e) {
     if (!(e.key === 'F5' || ((e.ctrlKey || e.metaKey) && !e.shiftKey && /^[rRق]$/.test(e.key)))) return;
-    var pf = $('portal').querySelector('iframe');
-    if (!pf || !pf.contentWindow) return;
+    if (!portalWin()) return;
     e.preventDefault();
-    if ($('prog').className === 'on') relaunch();
-    else try { pf.contentWindow.postMessage({ siwar: 'refresh' }, location.origin); } catch (x) {}
+    if ($('prog').className === 'on' && cur) relaunch(cur, false);
+    else toPortal({ siwar: 'refresh' });
   });
-  // السحب لأسفل داخل النظام: شاشة التحميل فوراً، والبوابة تعيد فتحه بتذكرة جديدة
-  var relT = 0;
-  function relaunch() {
-    if (Date.now() - relT < 1500) return; relT = Date.now();
-    var pf = $('portal').querySelector('iframe');
-    if (!pf || !pf.contentWindow) return;
-    clearTimeout(progReadyT); $('pload').className = 'pload';
-    try { pf.contentWindow.postMessage({ siwar: 'relaunch' }, location.origin); } catch (e) {}
-  }
 
   /* ── التثبيت ── */
   var svgShare = '<svg viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>';
