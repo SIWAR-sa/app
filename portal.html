@@ -2643,8 +2643,10 @@ async function uLoad() {
   catch (c) { showErr(c); if (!U.d) $('#uRoot').innerHTML = '<div class="empty">' + ic('alert') + '<span>تعذّر التحميل</span><button class="btn btn-ghost" data-u="reload">' + ic('refresh') + '<span>إعادة المحاولة</span></button></div>'; }
 }
 /** حفظ فوري: تُحدَّث الشاشة أولاً، والطلب يكمل في الخلفية؛ وعند الفشل تُعاد البيانات من الخادم. */
+/** بعد أي حفظ: إبلاغ الأنظمة في الخلفية (لا ينتظره المستخدم). */
+function uFlushSoon() { clearTimeout(U.ft); U.ft = setTimeout(() => { api('u_flush', {}).catch(() => {}); }, 800); }
 async function uSave(action, payload, okMsg) {
-  try { const r = await api(action, payload); if (okMsg) toast(okMsg, 'ok'); uLoad(); return r; }
+  try { const r = await api(action, payload); if (okMsg) toast(okMsg, 'ok'); uFlushSoon(); uLoad(); return r; }
   catch (c) { showErr(c); uLoad(); return null; }
 }
 const U_TOP = { home: 1, people: 1, profiles: 1, systems: 1, shared: 1 };
@@ -2944,7 +2946,7 @@ async function uImport(apply) {
   try {
     const r = await api('u_importJisr', { rows: rows, apply: apply });
     if (!r.ok) { out.innerHTML = '<p class="u-err">لم أجد عمودي «الرقم الوظيفي» و«الاسم». العناوين الموجودة: ' + esc((r.header || []).join('، ')) + '</p>'; return; }
-    if (r.applied) { closeModal(true); toast('تم: ' + r.counts.fresh + ' جديد · ' + r.counts.changed + ' تغيّر · ' + r.counts.left + ' غادر' + (r.counts.stopped ? ' (أُوقف ' + r.counts.stopped + ' حساباً)' : ''), 'ok'); uLoad(); return; }
+    if (r.applied) { uFlushSoon(); closeModal(true); toast('تم: ' + r.counts.fresh + ' جديد · ' + r.counts.changed + ' تغيّر · ' + r.counts.left + ' غادر' + (r.counts.stopped ? ' (أُوقف ' + r.counts.stopped + ' حساباً)' : ''), 'ok'); uLoad(); return; }
     const c = r.counts, sm = r.sample;
     out.innerHTML = '<div class="u-prev"><span><b>' + c.fresh + '</b> جديد</span><span><b>' + c.changed + '</b> تغيّرت بياناتهم</span><span><b>' + c.left + '</b> غادروا</span><span><b>' + c.same + '</b> بلا تغيير</span></div>' +
       (sm.left.length ? '<p class="u-err">سيُوقف دخول من غادر فوراً في كل الأنظمة: ' + esc(sm.left.join('، ')) + '</p>' : '') +
@@ -2976,7 +2978,7 @@ async function uSrc(action, title) {
 }
 async function uSrcApply() {
   $('#uSrcApply').disabled = true;
-  try { const r = await api(U.src, { apply: true }); closeModal(true); toast(U.src === 'u_importRestDays' ? 'نُقلت أيام الراحة لـ ' + r.matched + ' موظفاً' : 'نُقلت البيانات: ' + r.counts.fresh + ' جديد · ' + r.counts.changed + ' تغيّر', 'ok'); uLoad(); }
+  try { const r = await api(U.src, { apply: true }); closeModal(true); toast(U.src === 'u_importRestDays' ? 'نُقلت أيام الراحة لـ ' + r.matched + ' موظفاً' : 'نُقلت البيانات: ' + r.counts.fresh + ' جديد · ' + r.counts.changed + ' تغيّر', 'ok'); uFlushSoon(); uLoad(); }
   catch (c) { showErr(c); }
 }
 
@@ -3141,7 +3143,7 @@ async function uXlRead(file) {
 async function uXlApply() {
   if (!U.bulk) return;
   $('#uXlApply').disabled = true;
-  try { const r = await api('u_bulk', Object.assign({ apply: true }, U.bulk)); closeModal(true); toast(r.applied ? 'طُبّق الملف ووصل للأنظمة' : 'لم يُطبّق: راجع الأخطاء', r.applied ? 'ok' : 'err'); U.bulk = null; uLoad(); }
+  try { const r = await api('u_bulk', Object.assign({ apply: true }, U.bulk)); closeModal(true); toast(r.applied ? 'طُبّق الملف ووصل للأنظمة' : 'لم يُطبّق: راجع الأخطاء', r.applied ? 'ok' : 'err'); U.bulk = null; uFlushSoon(); uLoad(); }
   catch (c) { showErr(c); $('#uXlApply').disabled = false; }
 }
 
@@ -3228,7 +3230,7 @@ function uOnClick(el, e) {
     return api('u_fetchRegistry', { appId: el.dataset.id }).then(r => {
       el.disabled = false;
       if (!r.ok) { toast(r.code === 'NO_REGISTRY' ? 'هذا النظام لم يجهّز وصف إعداداته بعد' : 'تعذّر الوصول للنظام', 'err'); return; }
-      toast(r.settings + ' إعداداً و' + r.caps + ' صلاحية' + (r.imported ? ' · نُقلت ' + r.imported + ' قيمة من النظام' : '') + (r.importedAccess ? ' · نُقلت صلاحيات ' + r.importedAccess + ' موظفاً' : ''), 'ok'); uLoad();
+      toast(r.settings + ' إعداداً و' + r.caps + ' صلاحية' + (r.imported ? ' · نُقلت ' + r.imported + ' قيمة من النظام' : '') + (r.importedAccess ? ' · نُقلت صلاحيات ' + r.importedAccess + ' موظفاً' : ''), 'ok'); uFlushSoon(); uLoad();
     }).catch(c => { el.disabled = false; showErr(c); });
   }
   if (k === 'setDay') {
