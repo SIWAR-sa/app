@@ -2,8 +2,7 @@
 <html lang="ar" dir="rtl" data-theme="luxe">
 <head>
 <base target="_top">
-<meta charset="utf-8">
-<script src="config.js"></script>
+<meta charset="utf-8"><script src="config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>سوار</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1016,6 +1015,106 @@ tr.is-off .mx-user { opacity: .5; }
 .progview.is-loading .pv-load { display: grid; }
 .pv-load span { width: 34px; height: 34px; border-radius: 50%; border: 3px solid rgba(214,170,94,.25); border-top-color: #D6AA5E; animation: pvSpin .9s linear infinite; }
 @keyframes pvSpin { to { transform: rotate(360deg); } }
+/* ═════ الإدارة الموحدة ═════ */
+#uRoot { display: flex; flex-direction: column; gap: 16px; }
+.u-wait { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 60px 16px; color: var(--muted); }
+.u-spin { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border-strong); border-top-color: var(--gold-deep); animation: uspin .8s linear infinite; }
+@keyframes uspin { to { transform: rotate(360deg); } }
+.u-back { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--muted); padding: 4px 2px; }
+[dir="rtl"] .u-back .ic { transform: scaleX(-1); }
+.u-back:hover { color: var(--text); }
+.u-asks { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+.u-ask { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; text-align: start; padding: 22px; min-height: 150px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); transition: transform .2s, box-shadow .2s; }
+.u-ask:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+.u-ask b { font-size: 17px; line-height: 1.5; }
+.u-ask small { color: var(--muted); font-size: 13px; line-height: 1.7; }
+.u-ask-ic { width: 42px; height: 42px; display: grid; place-items: center; border-radius: var(--radius-sm); background: #FBF0DC; color: var(--gold-deep); }
+.u-ask-ic .ic { width: 22px; height: 22px; }
+.u-todo-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid var(--border); }
+.u-todo-row:first-of-type { border-top: 0; }
+.u-todo-row > span:nth-child(2) { flex: 1; }
+.u-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; background: var(--gold); }
+.u-dot-left { background: #C0574F; } .u-dot-nomail { background: var(--grey); }
+.u-muted { color: var(--muted); font-size: 13.5px; line-height: 1.8; margin: 0; }
+.u-lead { margin-bottom: 4px; }
+.u-note { margin-top: 6px; }
+.u-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.u-bar .input-wrap { flex: 1 1 240px; }
+.u-bar > .u-muted { flex: 1 1 300px; }
+.u-filter { font-size: 13px; color: var(--muted); }
+.u-list .row { width: 100%; text-align: start; }
+.u-av { width: 38px; height: 38px; flex: none; display: grid; place-items: center; border-radius: 50%; background: var(--pink-soft); color: #9A5A57; font-weight: 700; }
+.u-av .ic { width: 18px; height: 18px; }
+.u-av-lg { width: 56px; height: 56px; font-size: 22px; }
+.u-row-end { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.u-apps { display: inline-flex; gap: 4px; }
+.u-apps .app-icon { width: 24px; height: 24px; border-radius: 7px; }
+.u-apps .app-icon .ic, .u-apps .app-icon svg { width: 14px; height: 14px; }
+.u-tag { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: var(--pill); font-size: 12px; font-weight: 600; background: #EAF3EC; color: #3E6B4C; white-space: nowrap; }
+.u-tag-gold { background: #FBF0DC; color: #8C6524; } .u-tag-grey { background: var(--grey-soft); color: #6F665F; }
+.u-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.u-head > div { flex: 1; min-width: 200px; }
+.u-head h3 { margin: 0 0 4px; font-size: 20px; }
+.u-head p { margin: 0; }
+.u-head > .app-icon { width: 52px; height: 52px; }
+.u-like { padding: 12px 16px; border-radius: var(--radius-sm); background: #EAF3EC; color: #3E6B4C; font-weight: 600; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.u-like-grey { background: var(--grey-soft); color: var(--text); font-weight: 500; }
+.btn-sm { height: 34px; padding: 0 12px; font-size: 13px; }
+.u-sys-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; align-items: start; }
+.u-sys.is-off { opacity: .72; }
+.u-sys-head { display: flex; align-items: center; gap: 10px; }
+.u-sys-head b { flex: 1; font-size: 15.5px; }
+.u-sys-head .app-icon { width: 34px; height: 34px; }
+.u-capg { margin-top: 14px; display: flex; flex-direction: column; gap: 6px; }
+.u-capg > b { font-size: 12.5px; color: var(--muted); }
+.u-cap { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: var(--radius-sm); cursor: pointer; }
+.u-cap:hover { background: var(--surface-2); }
+.u-cap input { width: 18px; height: 18px; accent-color: var(--pink-deep); flex: none; }
+.u-cap span { flex: 1; font-size: 14px; }
+.u-cap em, .u-sens { font-style: normal; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: var(--pill); background: #FBF0DC; color: #8C6524; }
+.u-sens { background: #F9E1DE; color: #9A3F38; }
+.u-cap.is-own { background: #FFF8EC; }
+.u-scope { display: flex; align-items: center; gap: 10px; margin-top: 12px; font-size: 14px; }
+.u-scope .inp { flex: 1; height: 38px; }
+.u-form { display: flex; flex-direction: column; gap: 14px; }
+.u-chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.u-chips .chip small { color: var(--faint); }
+.chip.on { background: var(--pink-soft); color: var(--text); }
+.u-x { display: inline-grid; place-items: center; width: 22px; height: 22px; color: var(--muted); border-radius: 50%; }
+.u-x:hover { color: #9A3F38; background: rgba(0,0,0,.04); }
+.u-x .ic { width: 15px; height: 15px; }
+.u-add { width: auto; height: 36px; }
+.u-savebar { position: sticky; bottom: 12px; }
+.u-qs { display: flex; flex-direction: column; }
+.u-q { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px 16px; padding: 12px 0; border-top: 1px solid var(--border); }
+.u-q:first-child { border-top: 0; }
+.u-q-t { font-size: 14.5px; line-height: 1.7; }
+.u-q-v { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.u-q-v .inp { min-width: 180px; }
+.u-num { width: 110px !important; min-width: 0 !important; }
+.u-unit { color: var(--muted); font-size: 13px; }
+.u-by { grid-column: 1 / -1; color: var(--faint); font-size: 11.5px; }
+.u-days { display: flex; flex-wrap: wrap; gap: 6px; }
+.u-days .seg-btn { height: 34px; padding: 0 10px; font-size: 13px; }
+.u-json { min-width: 260px; font-family: ui-monospace, monospace; font-size: 12px; }
+.u-const .u-used { margin: 12px 0 0; font-size: 12.5px; color: var(--muted); }
+.u-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+.u-row { display: flex; gap: 8px; align-items: center; }
+.u-row .inp { flex: 1; min-width: 0; height: 40px; }
+.u-row .inp[readonly] { flex: 0 0 96px; font-size: 12px; color: var(--muted); }
+.u-foot { display: flex; justify-content: flex-end; margin-top: 10px; }
+.u-steps { margin: 0 0 12px; padding-inline-start: 20px; line-height: 2; color: var(--muted); }
+.u-paste { width: 100%; font-size: 12.5px; }
+.u-file { display: inline-block; margin-top: 8px; cursor: pointer; }
+.u-prev { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 8px; }
+.u-prev span { padding: 10px 14px; border-radius: var(--radius-sm); background: var(--surface-2); border: 1px solid var(--border); }
+.u-prev b { font-size: 18px; margin-inline-end: 4px; }
+.u-err { color: #9A3F38; font-size: 13.5px; line-height: 1.8; }
+@media (max-width: 720px) {
+  .u-q { grid-template-columns: 1fr; } .u-q-v { justify-content: flex-start; }
+  .u-row-end .u-apps { display: none; }
+  .u-sys-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -1115,6 +1214,7 @@ tr.is-off .mx-user { opacity: .5; }
   <main class="wrap">
     <div class="admin-head"><h2 data-i18n="adminPanel"></h2></div>
     <nav class="tabs" id="tabs">
+      <button class="tab" data-act="tab" data-tab="unified" data-min="admin"><i data-ic="users"></i><span data-i18n="tabUnified"></span></button>
       <button class="tab on" data-act="tab" data-tab="apps" data-min="admin"><i data-ic="grid"></i><span data-i18n="tabApps"></span><span class="count" id="cApps"></span></button>
       <button class="tab" data-act="tab" data-tab="users" data-min="supervisor"><i data-ic="users"></i><span data-i18n="tabUsers"></span><span class="count" id="cUsers"></span></button>
       <button class="tab" data-act="tab" data-tab="access" data-min="supervisor"><i data-ic="lockOpen"></i><span data-i18n="tabAccess"></span></button>
@@ -1217,6 +1317,8 @@ tr.is-off .mx-user { opacity: .5; }
       </div>
     </div>
 
+    <div class="panel" data-panel="unified"><div id="uRoot"></div></div>
+
     <div class="panel" data-panel="logs">
       <div class="panel-bar">
         <div class="input-wrap"><i data-ic="search"></i><input id="fltLogs" type="search" data-i18n-ph="search" autocomplete="off"></div>
@@ -1260,7 +1362,7 @@ const I18N = {
     morning: 'صباح الخير', evening: 'مساء الخير', sep: '، ', searchApps: 'ابحث عن برنامج', search: 'بحث',
     noApps: 'لا توجد برامج متاحة لحسابك حالياً.', noResults: 'لا توجد نتائج مطابقة.', opening: 'جارٍ فتح البرنامج…',
     adminPanel: 'لوحة الإدارة', programs: 'البرامج', changePin: 'تغيير كلمة المرور', signOut: 'تسجيل الخروج', myTheme: 'شكل الواجهة',
-    tabApps: 'البرامج', tabUsers: 'المستخدمون', tabAccess: 'الصلاحيات', tabSettings: 'الإعدادات', tabLogs: 'السجل', tabReview: 'المراجعة',
+    tabUnified: 'الموظفون والأنظمة', tabApps: 'البرامج', tabUsers: 'المستخدمون', tabAccess: 'الصلاحيات', tabSettings: 'الإعدادات', tabLogs: 'السجل', tabReview: 'المراجعة',
     sharedDevice: 'جهاز مشترك — لا تحفظ الدخول',
     shape: 'شكل الأيقونة', shape_circle: 'دائري', shape_free: 'مربع / كما هي',
     visField: 'لمن ليس له صلاحية', vis_hidden: 'لا يظهر له', vis_locked: 'يظهر باهتًا دون دخول', lockedTip: 'ليست لديك صلاحية الدخول إلى هذا البرنامج',
@@ -1334,7 +1436,7 @@ const I18N = {
     morning: 'Good morning', evening: 'Good evening', sep: ', ', searchApps: 'Search apps', search: 'Search',
     noApps: 'No apps are available for your account yet.', noResults: 'No matching results.', opening: 'Opening app…',
     adminPanel: 'Admin panel', programs: 'Apps', changePin: 'Change password', signOut: 'Sign out', myTheme: 'Interface style',
-    tabApps: 'Apps', tabUsers: 'Users', tabAccess: 'Access', tabSettings: 'Settings', tabLogs: 'Log', tabReview: 'Review',
+    tabUnified: 'People & systems', tabApps: 'Apps', tabUsers: 'Users', tabAccess: 'Access', tabSettings: 'Settings', tabLogs: 'Log', tabReview: 'Review',
     sharedDevice: 'Shared device — don’t keep me signed in',
     shape: 'Icon shape', shape_circle: 'Circle', shape_free: 'Square / as is',
     visField: 'Users without access', vis_hidden: 'Hidden from them', vis_locked: 'Shown dimmed, no entry', lockedTip: 'You do not have access to this app',
@@ -1526,7 +1628,7 @@ function hydrateIcons(root) {
 /* ═════ 3) الحالة والأدوات ═════ */
 const S = {
   lang: 'ar', token: null, user: null, apps: [], config: { nameAR: 'سوار', nameEN: 'SIWAR', theme: 'luxe', logo: '' },
-  screen: null, admin: null, tab: 'apps', draft: null, pendingTheme: null, healthDone: false, forgotUser: '', review: null, pending: null, pendingAt: 0
+  screen: null, admin: null, tab: 'unified', draft: null, pendingTheme: null, healthDone: false, forgotUser: '', review: null, pending: null, pendingAt: 0
 };
 const MEM = {};
 /* داخل تطبيق البوابة (صفحة GitHub) تُفتح البوابة في إطار بلا حسابات جوجل، وتخزينه مؤقت؛
@@ -1638,7 +1740,7 @@ let PAIR = (() => {
 // إن فشل الطلب المباشر على هذا الجهاز يُتذكّر ذلك يوماً، فلا يُنتظر فشله مع كل فتح
 let DIRECT_OK = /^https:\/\/script\.google\.com\/.+\/exec$/.test(EXEC_URL) && (STATIC || !(Number(store.get('sp_direct_off')) > Date.now()));
 // طلبات القراءة فقط: يجوز إعادتها بالطريقة الأصلية عند البطء أو الرد غير المفهوم، لأن إعادتها لا تكرر حفظاً
-const READ_ONLY = { init: 1, pending: 1, admin_load: 1, admin_review: 1, admin_invitePreview: 1 };
+const READ_ONLY = { init: 1, pending: 1, admin_load: 1, u_load: 1, admin_review: 1, admin_invitePreview: 1 };
 function postApi(action, payload) {
   const ro = !!READ_ONLY[action];
   const ac = ro && window.AbortController ? new AbortController() : null;
@@ -2498,6 +2600,415 @@ function openInstall() {
   if (w) { try { w.opener = null; } catch (e) {} } else toast(t('ERR_POPUP'), 'err');
 }
 
+/* ═════ 8-ب) الإدارة الموحدة: الموظفون وما يستطيعونه، وإعدادات الأنظمة، والثوابت ═════ */
+const U = { d: null, at: 0, view: 'home', id: '', back: [], q: '', co: '', ids: null, imp: null };
+const U_DAYS = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+const U_SHARED_ORDER = ['workweek', 'holidays', 'companies', 'departments', 'locations', 'contacts', 'mailGroups', 'brand'];
+
+function renderUnified() {
+  if (!U.d) { $('#uRoot').innerHTML = '<div class="u-wait"><span class="u-spin"></span><span>جارٍ تحميل بيانات الموظفين والأنظمة…</span></div>'; uLoad(); return; }
+  uRender();
+  if (Date.now() - U.at > 60000) uLoad();
+}
+async function uLoad() {
+  try { U.d = await api('u_load', {}); U.at = Date.now(); if (S.tab === 'unified') uRender(); }
+  catch (c) { showErr(c); if (!U.d) $('#uRoot').innerHTML = '<div class="empty">' + ic('alert') + '<span>تعذّر التحميل</span><button class="btn btn-ghost" data-u="reload">' + ic('refresh') + '<span>إعادة المحاولة</span></button></div>'; }
+}
+/** حفظ فوري: تُحدَّث الشاشة أولاً، والطلب يكمل في الخلفية؛ وعند الفشل تُعاد البيانات من الخادم. */
+async function uSave(action, payload, okMsg) {
+  try { const r = await api(action, payload); if (okMsg) toast(okMsg, 'ok'); uLoad(); return r; }
+  catch (c) { showErr(c); uLoad(); return null; }
+}
+function uGo(view, id) { U.back.push({ view: U.view, id: U.id }); U.view = view; U.id = id || ''; uRender(); try { $('#uRoot').scrollIntoView({ block: 'start', behavior: 'smooth' }); } catch (e) {} }
+function uBack() { const b = U.back.pop() || { view: 'home', id: '' }; U.view = b.view; U.id = b.id; uRender(); }
+
+const uApp = id => (U.d.apps || []).find(a => a.id === id) || { id: id, nameAR: id };
+const uIcon = a => '<span class="app-icon tint-' + esc(a.tint || 'gold') + imgCls(a.icon) + '">' + iconHtml(a.icon) + '</span>';
+const uReg = id => { const r = (U.d.registry || {})[id]; return r && r.d ? r.d : null; };
+const uDeclared = id => { const d = uReg(id); return !!(d && (d.caps || []).length); };
+const uCo = code => { const c = ((U.d.shared || {}).companies || []).find(x => x.code === code); return c ? c.nameAR : (code || ''); };
+const uLeftP = p => /مستقيل|إنهاء|انهاء|منته|غادر|terminated|resigned|left/i.test(String(p.status || ''));
+function uDiffN(p) {
+  let n = 0;
+  Object.keys(p.access || {}).forEach(k => { const e = p.access[k]; n += Object.keys(e.diff || {}).length; if (e.en && ((e.en === 'yes') !== !!e.profileOn)) n++; });
+  return n;
+}
+function uSummary(p) {
+  if (!p.profile) return '<span class="u-tag u-tag-grey">بلا وظيفة محددة</span>';
+  const n = uDiffN(p);
+  return n ? '<span class="u-tag u-tag-gold">' + (n === 1 ? 'مختلف في نقطة واحدة' : 'مختلف في ' + n + ' نقاط') + '</span>' : '<span class="u-tag">مثل باقي «' + esc(p.profile) + '»</span>';
+}
+
+function uRender() {
+  const root = $('#uRoot'); if (!root || !U.d) return;
+  const v = U.view;
+  const html = ({ home: uHome, people: uPeople, person: uPerson, profiles: uProfiles, profile: uProfile, systems: uSystems, system: uSystem, shared: uSharedV })[v] || uHome;
+  root.innerHTML = (v !== 'home' ? '<button class="u-back" data-u="back">' + ic('arrow') + '<span>رجوع</span></button>' : '') + html();
+  uAfter();
+}
+
+/* ── الرئيسية: أربعة أسئلة + «يحتاج قرارك» ── */
+function uHome() {
+  const D = U.d, P = D.people.filter(p => !uLeftP(p));
+  const byCo = {}; P.forEach(p => { byCo[p.company] = (byCo[p.company] || 0) + 1; });
+  const coLine = ((D.shared.companies || []).map(c => (byCo[c.code] || 0) + ' ' + c.nameAR)).join(' · ');
+  const differ = P.filter(p => p.profile && uDiffN(p)).length;
+  const declared = D.apps.filter(a => uReg(a.id)).length;
+  const card = (go, icon, q, sub) => '<button class="u-ask" data-u="go" data-v="' + go + '"><span class="u-ask-ic">' + ic(icon) + '</span><b>' + q + '</b><small>' + sub + '</small></button>';
+  const todo = (D.todo || []).map(x => {
+    const txt = x.kind === 'left' ? x.n + ' غادروا الشركة في جسر وحسابهم ما زال يعمل' : x.kind === 'fresh' ? x.n + ' بلا وظيفة محددة ولا صلاحيات' : x.n + ' بلا بريد إلكتروني — لا يستطيعون الدخول';
+    return '<div class="u-todo-row"><span class="u-dot u-dot-' + x.kind + '"></span><span>' + esc(txt) + '</span><button class="link-btn" data-u="showIds" data-ids="' + esc(x.ids.join(',')) + '">عرضهم</button></div>';
+  });
+  if (!D.people.some(p => p.source === 'jisr')) todo.unshift('<div class="u-todo-row"><span class="u-dot u-dot-fresh"></span><span>لم تُستورد بيانات الموظفين من جسر بعد</span><button class="link-btn" data-u="import">استيراد الآن</button></div>');
+  const undeclared = D.apps.filter(a => !uReg(a.id)).length;
+  if (undeclared) todo.push('<div class="u-todo-row"><span class="u-dot u-dot-nomail"></span><span>' + undeclared + ' من الأنظمة لم تربط إعداداتها بالبوابة بعد</span><button class="link-btn" data-u="go" data-v="systems">عرضها</button></div>');
+  return '<div class="u-asks">' +
+    card('people', 'users', 'مَن يعمل في الشركتين؟', P.length + ' موظفاً' + (coLine ? ' · ' + esc(coLine) : '')) +
+    card('profiles', 'lockOpen', 'ماذا يستطيع كل موظف أن يفعل؟', D.profiles.length + ' وظيفة' + (differ ? ' · ' + differ + ' مختلفون عن وظائفهم' : '')) +
+    card('systems', 'grid', 'كيف يعمل كل نظام؟', declared + ' من ' + D.apps.length + ' أنظمة ربطت إعداداتها') +
+    card('shared', 'shield', 'ما الثابت في الشركتين؟', 'العطلة، العطلات الرسمية، الشركتان، الإدارات، المواقع…') +
+    '</div>' +
+    '<section class="panel-box u-todo"><h3>' + ic('alert') + '<span>يحتاج قرارك</span></h3>' + (todo.length ? todo.join('') : '<p class="u-muted">لا شيء الآن. كل شيء مرتب.</p>') + '</section>';
+}
+
+/* ── الموظفون ── */
+function uPeople() {
+  const D = U.d, q = U.q.trim().toLowerCase();
+  let list = D.people.slice();
+  if (U.ids) list = list.filter(p => U.ids.indexOf(p.id) >= 0);
+  if (U.co) list = list.filter(p => p.company === U.co);
+  if (q) list = list.filter(p => [p.name, p.nameEN, p.email, p.title, p.dept, p.no].join(' ').toLowerCase().indexOf(q) >= 0);
+  list.sort((a, b) => (uLeftP(a) - uLeftP(b)) || String(a.name).localeCompare(String(b.name), 'ar'));
+  const cos = [{ code: '', nameAR: 'الكل' }].concat(D.shared.companies || []);
+  return '<div class="u-bar"><div class="input-wrap">' + ic('search') + '<input id="uQ" type="search" placeholder="ابحث بالاسم أو الوظيفة أو الرقم" value="' + esc(U.q) + '" autocomplete="off"></div>' +
+    '<div class="seg">' + cos.map(c => '<button class="seg-btn' + (U.co === c.code ? ' on' : '') + '" data-u="co" data-co="' + esc(c.code) + '">' + esc(c.nameAR) + '</button>').join('') + '</div>' +
+    '<div class="savebar-actions"><button class="btn btn-ghost" data-u="import">' + ic('upload') + '<span>استيراد من جسر</span></button><button class="btn btn-ghost" data-u="manual">' + ic('userPlus') + '<span>شخص من خارج جسر</span></button></div></div>' +
+    (U.ids ? '<div class="u-filter">عرض مجموعة محددة (' + list.length + ') <button class="link-btn" data-u="clearIds">عرض الكل</button></div>' : '') +
+    '<div class="list u-list">' + (list.length ? list.slice(0, 400).map((p, i) =>
+      '<button class="row u-person' + (uLeftP(p) ? ' is-off' : '') + '" data-u="person" data-id="' + esc(p.id) + '" style="--i:' + Math.min(i, 20) + '">' +
+        '<span class="u-av">' + esc(String(p.name || '?').trim().charAt(0)) + '</span>' +
+        '<div class="row-main"><div class="row-title">' + esc(p.name) + (uLeftP(p) ? ' <span class="badge badge-grey">غادر</span>' : '') + (!p.email ? ' <span class="badge badge-pink">بلا بريد</span>' : '') + '</div>' +
+        '<div class="row-sub">' + esc([p.title, p.dept, uCo(p.company)].filter(Boolean).join(' · ')) + '</div></div>' +
+        '<div class="u-row-end">' + uSummary(p) + '<span class="u-apps">' + D.apps.filter(a => p.access[a.id] && p.access[a.id].on).map(a => '<span title="' + esc(a.nameAR) + '">' + uIcon(a) + '</span>').join('') + '</span></div>' +
+      '</button>').join('') : '<div class="empty">' + ic('search') + '<span>لا نتائج</span></div>') + '</div>';
+}
+
+function uPerson() {
+  const D = U.d, p = D.people.find(x => x.id === U.id);
+  if (!p) return '<div class="empty"><span>غير موجود</span></div>';
+  const me = S.user && String(S.user.email || '').toLowerCase() === String(p.email || '').toLowerCase() && S.user.role !== 'owner';
+  const n = uDiffN(p);
+  const head = '<div class="u-head"><span class="u-av u-av-lg">' + esc(String(p.name || '?').charAt(0)) + '</span><div><h3>' + esc(p.name) + '</h3>' +
+    '<p>' + esc([p.title, p.dept, uCo(p.company), p.no ? 'رقم ' + p.no : ''].filter(Boolean).join(' · ')) + '</p>' +
+    '<p class="u-muted">' + (p.email ? esc(p.email) + (p.userId ? (p.userStatus === 'Active' ? ' · يدخل البوابة' : ' · حسابه موقوف') : ' · لا حساب له في البوابة بعد') : 'لا بريد إلكتروني — لا يستطيع الدخول') + (uLeftP(p) ? ' · غادر الشركة' : '') + '</p></div></div>';
+  const line = p.profile
+    ? '<div class="u-like">' + (n ? 'وظيفته «' + esc(p.profile) + '»، ومختلف عنها في ' + (n === 1 ? 'نقطة واحدة' : n + ' نقاط') + ' <button class="btn btn-ghost btn-sm" data-u="reset" data-id="' + esc(p.id) + '">' + ic('undo') + '<span>اجعله مثل وظيفته</span></button>' : 'مثل باقي «' + esc(p.profile) + '» تماماً') + '</div>'
+    : '<div class="u-like u-like-grey">لا توجد وظيفة تطابق مسماه' + (p.title ? ' «' + esc(p.title) + '»' : '') + '. حدّد ما يستطيعه هنا، أو <button class="link-btn" data-u="newProfile" data-title="' + esc(p.title || '') + '">أنشئ وظيفة بهذا المسمى</button></div>';
+  const cards = D.apps.map(a => {
+    const e = p.access[a.id] || { on: false, caps: [], diff: {} }, d = uReg(a.id);
+    const sw = '<label class="switch"><input type="checkbox" data-uc="pOn" data-app="' + esc(a.id) + '"' + (e.on ? ' checked' : '') + (me ? ' disabled' : '') + '><span></span></label>';
+    let body = '';
+    if (e.on && d && (d.caps || []).length) {
+      const groups = {}; d.caps.forEach(c => { (groups[c.group || ''] = groups[c.group || ''] || []).push(c); });
+      body = Object.keys(groups).map(g => '<div class="u-capg">' + (g ? '<b>' + esc(g) + '</b>' : '') + groups[g].map(c => {
+        const has = e.caps.indexOf(c.key) >= 0, own = c.key in (e.diff || {});
+        return '<label class="u-cap' + (own ? ' is-own' : '') + '"><input type="checkbox" data-uc="pCap" data-app="' + esc(a.id) + '" data-cap="' + esc(c.key) + '"' + (has ? ' checked' : '') + (me ? ' disabled' : '') + '><span>' + esc(c.label) + '</span>' + (c.sensitive ? '<em class="u-sens">حساس</em>' : '') + (own ? '<em>خاص به</em>' : '') + '</label>';
+      }).join('') + '</div>').join('');
+      if ((d.scopes || []).length) body += '<label class="u-scope"><span>يرى:</span><select class="inp" data-uc="pScope" data-app="' + esc(a.id) + '"' + (me ? ' disabled' : '') + '><option value="">حسب وظيفته</option>' + d.scopes.map(s => '<option value="' + esc(s.key) + '"' + (e.scope === s.key ? ' selected' : '') + '>' + esc(s.label) + '</option>').join('') + '</select></label>';
+    } else if (e.on && !(d && (d.caps || []).length)) body = '<p class="u-muted u-note">هذا النظام لم يربط قدراته بالبوابة بعد؛ يكفي الآن تشغيل الدخول أو إيقافه، وصلاحياته التفصيلية ما زالت داخله.</p>';
+    return '<section class="panel-box u-sys' + (e.on ? '' : ' is-off') + '"><div class="u-sys-head">' + uIcon(a) + '<b>' + esc(a.nameAR) + '</b>' + sw + '</div>' + body + '</section>';
+  }).join('');
+  return head + (me ? '<p class="u-muted u-note">لا يمكنك تعديل صلاحياتك بنفسك.</p>' : '') + line + '<div class="u-sys-grid">' + cards + '</div>';
+}
+
+/* ── الوظائف ── */
+function uProfiles() {
+  const D = U.d;
+  const holders = f => D.people.filter(p => !uLeftP(p) && p.profile === f.nameAR).length;
+  const titles = {}; D.people.forEach(p => { if (p.title && !uLeftP(p) && !p.profile) titles[p.title] = (titles[p.title] || 0) + 1; });
+  const free = Object.keys(titles).sort((a, b) => titles[b] - titles[a]);
+  return '<div class="u-bar"><p class="u-muted">لكل وظيفة ما يستطيعه أصحابها في كل نظام. الموظف يأخذ صلاحيات وظيفته تلقائياً من مسماه في جسر، ويمكن أن يختلف عنها في نقاط تحدّدها من صفحته.</p>' +
+    '<button class="btn btn-primary" data-u="newProfile">' + ic('plus') + '<span>وظيفة جديدة</span></button></div>' +
+    '<div class="list u-list">' + (D.profiles.length ? D.profiles.map(f =>
+      '<button class="row" data-u="profile" data-id="' + esc(f.id) + '"><span class="u-av">' + ic('users') + '</span><div class="row-main"><div class="row-title">' + esc(f.nameAR) + '</div>' +
+      '<div class="row-sub">' + esc((f.titles || []).join('، ') || 'لم تُربط بمسمى من جسر') + '</div></div>' +
+      '<div class="u-row-end"><span class="u-tag">' + holders(f) + ' موظفاً</span><span class="u-apps">' + D.apps.filter(a => f.grants[a.id] && f.grants[a.id].on !== false).map(a => uIcon(a)).join('') + '</span></div></button>').join('')
+      : '<div class="empty">' + ic('users') + '<span>لا وظائف بعد. ابدأ بالمسميات الأكثر عدداً أدناه.</span></div>') + '</div>' +
+    (free.length ? '<section class="panel-box"><h3>' + ic('info') + '<span>مسميات من جسر بلا وظيفة</span></h3><div class="u-chips">' + free.slice(0, 60).map(t2 => '<button class="chip" data-u="newProfile" data-title="' + esc(t2) + '">' + esc(t2) + ' <small>' + titles[t2] + '</small></button>').join('') + '</div></section>' : '');
+}
+function uProfile() {
+  const D = U.d;
+  const f = U.draft || (U.draft = JSON.parse(JSON.stringify(D.profiles.find(x => x.id === U.id) || { id: '', nameAR: '', titles: [], grants: {} })));
+  const allTitles = {}; D.people.forEach(p => { if (p.title) allTitles[p.title] = 1; });
+  const holders = D.people.filter(p => !uLeftP(p) && (f.titles || []).indexOf(p.title) >= 0).length;
+  const cards = D.apps.map(a => {
+    const g = f.grants[a.id] || { on: false, caps: [], scope: '' }, d = uReg(a.id), on = !!f.grants[a.id] && g.on !== false;
+    let body = '';
+    if (on && d && (d.caps || []).length) {
+      const groups = {}; d.caps.forEach(c => { (groups[c.group || ''] = groups[c.group || ''] || []).push(c); });
+      body = Object.keys(groups).map(gr => '<div class="u-capg">' + (gr ? '<b>' + esc(gr) + '</b>' : '') + groups[gr].map(c =>
+        '<label class="u-cap"><input type="checkbox" data-uc="fCap" data-app="' + esc(a.id) + '" data-cap="' + esc(c.key) + '"' + ((g.caps || []).indexOf(c.key) >= 0 ? ' checked' : '') + '><span>' + esc(c.label) + '</span>' + (c.sensitive ? '<em class="u-sens">حساس</em>' : '') + '</label>').join('') + '</div>').join('');
+      if ((d.scopes || []).length) body += '<label class="u-scope"><span>يرى:</span><select class="inp" data-uc="fScope" data-app="' + esc(a.id) + '"><option value="">—</option>' + d.scopes.map(s => '<option value="' + esc(s.key) + '"' + (g.scope === s.key ? ' selected' : '') + '>' + esc(s.label) + '</option>').join('') + '</select></label>';
+    } else if (on) body = '<p class="u-muted u-note">يدخل هذا النظام. صلاحياته التفصيلية ستظهر هنا عندما يربط النظام قدراته بالبوابة.</p>';
+    return '<section class="panel-box u-sys' + (on ? '' : ' is-off') + '"><div class="u-sys-head">' + uIcon(a) + '<b>' + esc(a.nameAR) + '</b><label class="switch"><input type="checkbox" data-uc="fOn" data-app="' + esc(a.id) + '"' + (on ? ' checked' : '') + '><span></span></label></div>' + body + '</section>';
+  }).join('');
+  return '<section class="panel-box"><div class="u-form">' +
+    '<label class="field"><span>اسم الوظيفة</span><input class="inp" id="uFName" maxlength="60" value="' + esc(f.nameAR) + '" placeholder="مثل: أمين مستودع"></label>' +
+    '<div class="field"><span>مسميات جسر التي تأخذ هذه الوظيفة</span><div class="u-chips">' + (f.titles || []).map(x => '<span class="chip on">' + esc(x) + ' <button class="u-x" data-u="fDelTitle" data-t="' + esc(x) + '" aria-label="حذف">' + ic('x') + '</button></span>').join('') +
+    '<select class="inp u-add" data-uc="fAddTitle"><option value="">+ إضافة مسمى</option>' + Object.keys(allTitles).sort().filter(x => (f.titles || []).indexOf(x) < 0).map(x => '<option>' + esc(x) + '</option>').join('') + '</select></div>' +
+    '<small class="hint">ينطبق الآن على ' + holders + ' موظفاً.</small></div></div></section>' +
+    '<div class="u-sys-grid">' + cards + '</div>' +
+    '<div class="savebar u-savebar"><b>' + (holders ? 'الحفظ يطبّق على ' + holders + ' موظفاً فوراً' : 'لا أحد يحمل هذه الوظيفة بعد') + '</b><div class="savebar-actions"><button class="btn btn-ghost" data-u="back">' + ic('undo') + '<span>إلغاء</span></button><button class="btn btn-primary" data-u="saveProfile">' + ic('save') + '<span>حفظ الوظيفة</span></button></div></div>';
+}
+
+/* ── الأنظمة وإعداداتها ── */
+function uSystems() {
+  const D = U.d;
+  return '<p class="u-muted u-lead">إعدادات كل نظام تُحفظ هنا فقط، والنظام يقرؤها من البوابة. النظام الذي لم يربط إعداداته بعد يظهر «لم يربط بعد».</p><div class="list u-list">' + D.apps.map(a => {
+    const d = uReg(a.id), r = (D.registry || {})[a.id];
+    return '<button class="row" data-u="system" data-id="' + esc(a.id) + '">' + uIcon(a) + '<div class="row-main"><div class="row-title">' + esc(a.nameAR) + '</div>' +
+      '<div class="row-sub">' + (d ? (d.settings || []).length + ' إعداداً · ' + (d.caps || []).length + ' صلاحية · آخر تحديث ' + esc(String(r.fetchedAt || '').slice(0, 10)) : 'لم يربط إعداداته بالبوابة بعد') + '</div></div>' +
+      '<span class="u-tag' + (d ? '' : ' u-tag-grey') + '">' + (d ? 'مربوط' : 'لم يربط بعد') + '</span></button>';
+  }).join('') + '</div>';
+}
+function uSystem() {
+  const D = U.d, a = uApp(U.id), d = uReg(a.id), saved = (D.settings || {})[a.id] || {};
+  const head = '<div class="u-head">' + uIcon(a) + '<div><h3>' + esc(a.nameAR) + '</h3><p class="u-muted">' + (d ? 'كل سؤال هنا إعداد من إعدادات النظام. التعديل يصل للنظام فوراً.' : 'لم يربط هذا النظام إعداداته بعد.') + '</p></div>' +
+    '<button class="btn btn-ghost" data-u="fetchReg" data-id="' + esc(a.id) + '">' + ic('refresh') + '<span>' + (d ? 'تحديث من النظام' : 'جلب إعداداته الآن') + '</span></button></div>';
+  if (!d) return head + '<section class="panel-box"><p class="u-muted">عندما يجهز النظام وصف إعداداته وصلاحياته (تعمل عليه محادثة النظام)، اضغط «جلب إعداداته الآن» فتظهر هنا أسئلته بقيمها الحالية، وتُنقل قيمه الحالية للبوابة مرة واحدة.</p></section>';
+  const groups = (d.groups || []).slice(); const known = {}; groups.forEach(g => { known[g.key] = 1; });
+  (d.settings || []).forEach(s => { if (s.group && !known[s.group]) { known[s.group] = 1; groups.push({ key: s.group, title: s.group }); } });
+  if ((d.settings || []).some(s => !s.group)) groups.push({ key: '', title: 'عام' });
+  return head + groups.map(g => {
+    const items = (d.settings || []).filter(s => (s.group || '') === g.key);
+    if (!items.length) return '';
+    return '<section class="panel-box"><h3>' + ic('settings') + '<span>' + esc(g.title) + '</span></h3><div class="u-qs">' + items.map(s => {
+      if (s.shared) return '<div class="u-q"><span class="u-q-t">' + esc(s.q || s.key) + '</span><span class="u-q-v"><span class="u-tag">موحّد لكل الأنظمة</span> <button class="link-btn" data-u="go" data-v="shared">' + esc((D.sharedLabels || {})[s.shared] || s.shared) + '</button></span></div>';
+      const has = s.key in saved, v = has ? saved[s.key].v : s.default;
+      return '<div class="u-q"><span class="u-q-t">' + esc(s.q || s.key) + (s.sensitive ? ' <em class="u-sens">حساس</em>' : '') + '</span><span class="u-q-v">' + uInput(a.id, s, v) + (s.unit ? '<span class="u-unit">' + esc(s.unit) + '</span>' : '') + '</span>' +
+        (has && saved[s.key].by ? '<small class="u-by">' + (saved[s.key].by === 'import' ? 'منقول من النظام' : 'عدّله ' + esc(saved[s.key].by)) + ' · ' + esc(String(saved[s.key].at || '').slice(0, 10)) + '</small>' : '<small class="u-by">القيمة الأساسية</small>') + '</div>';
+    }).join('') + '</div></section>';
+  }).join('');
+}
+function uInput(appId, s, v) {
+  const at = ' data-uc="set" data-app="' + esc(appId) + '" data-key="' + esc(s.key) + '"';
+  const t2 = s.type || 'text';
+  if (t2 === 'bool') return '<label class="switch"><input type="checkbox"' + at + (v === true ? ' checked' : '') + '><span></span></label>';
+  if (t2 === 'number') return '<input class="inp u-num" type="number"' + at + (s.min != null ? ' min="' + s.min + '"' : '') + (s.max != null ? ' max="' + s.max + '"' : '') + ' value="' + esc(v == null ? '' : v) + '">';
+  if (t2 === 'time') return '<input class="inp u-num" type="time"' + at + ' value="' + esc(v || '') + '">';
+  if (t2 === 'choice') return '<select class="inp"' + at + '>' + (s.options || []).map(o => { const ov = o && o.v != null ? o.v : o, ol = o && o.label != null ? o.label : o; return '<option value="' + esc(ov) + '"' + (String(ov) === String(v) ? ' selected' : '') + '>' + esc(ol) + '</option>'; }).join('') + '</select>';
+  if (t2 === 'days') return '<span class="u-days" data-days="' + esc(appId) + '|' + esc(s.key) + '">' + U_DAYS.map((n, i) => '<button class="seg-btn' + ((v || []).indexOf(i) >= 0 ? ' on' : '') + '" data-u="setDay" data-i="' + i + '">' + n + '</button>').join('') + '</span>';
+  if (t2 === 'list' || t2 === 'emails') return '<input class="inp"' + at + ' dir="' + (t2 === 'emails' ? 'ltr' : 'auto') + '" value="' + esc((v || []).join('، ')) + '" placeholder="افصل بينها بفاصلة">';
+  if (t2 === 'json') return '<textarea class="inp u-json"' + at + ' dir="ltr" rows="3">' + esc(JSON.stringify(v == null ? '' : v)) + '</textarea>';
+  return '<input class="inp"' + at + ' value="' + esc(v == null ? '' : v) + '">';
+}
+
+/* ── الثوابت ── */
+const U_SHARED_FORM = {
+  holidays: [{ k: 'name', l: 'العطلة' }, { k: 'from', l: 'من', t: 'date' }, { k: 'to', l: 'إلى', t: 'date' }],
+  companies: [{ k: 'code', l: 'الرمز', ro: 1 }, { k: 'nameAR', l: 'الاسم' }, { k: 'aliases', l: 'أسماؤها في الأنظمة', t: 'list' }],
+  locations: [{ k: 'nameAR', l: 'الموقع' }, { k: 'company', l: 'الشركة', t: 'co' }],
+  mailGroups: [{ k: 'nameAR', l: 'المجموعة' }, { k: 'emails', l: 'البريد', t: 'list' }]
+};
+function uSharedV() {
+  const D = U.d, sh = D.shared;
+  const usedBy = key => D.apps.filter(a => ((uReg(a.id) || {}).settings || []).some(s => s.shared === key)).map(a => a.nameAR);
+  const box = (key, inner, foot) => {
+    const u = usedBy(key);
+    return '<section class="panel-box u-const" id="uK-' + key + '"><h3>' + ic('shield') + '<span>' + esc(D.sharedLabels[key] || key) + '</span></h3>' + inner +
+      '<p class="u-used">' + (u.length ? 'تستخدمه: ' + esc(u.join('، ')) : 'لم يربطه أي نظام بعد') + '</p>' + (foot || '') + '</section>';
+  };
+  const saveBtn = key => '<div class="u-foot"><button class="btn btn-primary btn-sm" data-u="saveShared" data-k="' + key + '">' + ic('save') + '<span>حفظ</span></button></div>';
+  const rows = key => {
+    const f = U_SHARED_FORM[key], list = Array.isArray(sh[key]) ? sh[key] : [];
+    return '<div class="u-rows" data-rows="' + key + '">' + list.map((r, i) => uRowHtml(key, f, r, i)).join('') + '</div><button class="link-btn" data-u="addRow" data-k="' + key + '">+ إضافة</button>';
+  };
+  const ww = sh.workweek || { weekend: [] };
+  const people = D.people.filter(p => !uLeftP(p)).sort((a, b) => String(a.name).localeCompare(String(b.name), 'ar'));
+  const pick = role => '<label class="u-q"><span class="u-q-t">' + ({ gm: 'المدير العام', cfo: 'المدير المالي', hr: 'مسؤول الموارد البشرية' })[role] + '</span><select class="inp" data-uc="contact" data-r="' + role + '"><option value="">—</option>' +
+    people.map(p => '<option value="' + esc(p.id) + '"' + ((sh.contacts || {})[role] === p.id ? ' selected' : '') + '>' + esc(p.name) + '</option>').join('') + '</select></label>';
+  return '<p class="u-muted u-lead">الثابت يُكتب مرة واحدة هنا وتقرؤه كل الأنظمة؛ لا يُعدَّل داخل أي نظام.</p>' +
+    box('workweek', '<div class="u-q"><span class="u-q-t">أيام العطلة الأسبوعية</span><span class="u-days" data-wk="1">' + U_DAYS.map((n, i) => '<button class="seg-btn' + ((ww.weekend || []).indexOf(i) >= 0 ? ' on' : '') + '" data-u="wkDay" data-i="' + i + '">' + n + '</button>').join('') + '</span></div>') +
+    box('holidays', rows('holidays'), saveBtn('holidays')) +
+    box('companies', rows('companies'), saveBtn('companies')) +
+    box('departments', '<div class="u-chips">' + ((sh.departments || []).map(x => '<span class="chip">' + esc(x) + '</span>').join('') || '<span class="u-muted">تأتي من جسر عند الاستيراد</span>') + '</div><small class="hint">تُحدَّث تلقائياً من جسر.</small>') +
+    box('locations', rows('locations'), saveBtn('locations')) +
+    box('contacts', '<div class="u-qs">' + ['gm', 'cfo', 'hr'].map(pick).join('') + '</div>') +
+    box('mailGroups', rows('mailGroups'), saveBtn('mailGroups')) +
+    box('brand', '<label class="u-q"><span class="u-q-t">اسم المرسل في رسائل البريد</span><input class="inp" data-uc="brand" value="' + esc((sh.brand || {}).senderName || '') + '"></label>');
+}
+function uRowHtml(key, f, r, i) {
+  return '<div class="u-row" data-i="' + i + '">' + f.map(c => {
+    const v = r[c.k];
+    if (c.t === 'co') return '<select class="inp" data-f="' + c.k + '">' + (U.d.shared.companies || []).map(o => '<option value="' + esc(o.code) + '"' + (o.code === v ? ' selected' : '') + '>' + esc(o.nameAR) + '</option>').join('') + '</select>';
+    return '<input class="inp" data-f="' + c.k + '"' + (c.t === 'date' ? ' type="date"' : '') + (c.ro && v ? ' readonly' : '') + ' placeholder="' + esc(c.l) + '" value="' + esc(Array.isArray(v) ? v.join('، ') : (v || '')) + '">';
+  }).join('') + '<button class="u-x" data-u="delRow" aria-label="حذف">' + ic('trash') + '</button></div>';
+}
+function uCollectRows(key) {
+  const f = U_SHARED_FORM[key], old = Array.isArray(U.d.shared[key]) ? U.d.shared[key] : [];
+  return $$('[data-rows="' + key + '"] .u-row').map((el, i) => {
+    const j = Number(el.dataset.i), o = Object.assign({}, j >= 0 && old[j] ? old[j] : {});
+    f.forEach(c => { const v = (($('[data-f="' + c.k + '"]', el) || {}).value || '').trim(); o[c.k] = c.t === 'list' ? v.split(/[,،;]+/).map(x => x.trim()).filter(Boolean) : v; });
+    if (key === 'locations' || key === 'mailGroups') o.key = o.key || (o.nameAR || '').replace(/\s+/g, '_').toLowerCase() || ('k' + i);
+    if (key === 'companies' && !o.code) o.code = (o.nameAR || 'CO' + i).toUpperCase();
+    return o;
+  }).filter(o => f.some(c => c.t !== 'co' && (Array.isArray(o[c.k]) ? o[c.k].length : o[c.k])));
+}
+
+/* ── الاستيراد من جسر ── */
+function uOpenImport() {
+  U.imp = null;
+  openModal({ wide: true, title: 'استيراد الموظفين من جسر', body:
+    '<ol class="u-steps"><li>في جسر: الموظفون ← تصدير ← Excel.</li><li>افتح الملف، حدّد الجدول كله (Ctrl+A) وانسخه.</li><li>الصقه هنا ثم «معاينة». لا يتغير شيء قبل «اعتماد».</li></ol>' +
+    '<textarea class="inp u-paste" id="uPaste" dir="auto" rows="8" placeholder="الصق الجدول هنا (أول سطر: عناوين الأعمدة)"></textarea>' +
+    '<label class="link-btn u-file">أو اختر ملف CSV<input type="file" id="uFile" accept=".csv,.tsv,.txt" hidden></label><div id="uImpOut"></div>',
+    foot: '<button class="btn btn-ghost" data-u="impPreview">' + ic('eye') + '<span>معاينة</span></button><button class="btn btn-primary" data-u="impApply" id="uImpApply" disabled>' + ic('check') + '<span>اعتماد</span></button>' });
+  const f = $('#uFile'); if (f) f.onchange = () => { const file = f.files && f.files[0]; if (!file) return; const r = new FileReader(); r.onload = () => { $('#uPaste').value = String(r.result || ''); }; r.readAsText(file, 'utf-8'); };
+}
+function uParse(text) {
+  const lines = String(text || '').replace(/\r/g, '').split('\n').filter(l => l.trim());
+  if (!lines.length) return [];
+  const tab = lines[0].indexOf('\t') >= 0;
+  const csv = l => { const out = []; let cur = '', q = false; for (let i = 0; i < l.length; i++) { const c = l[i]; if (q) { if (c === '"' && l[i + 1] === '"') { cur += '"'; i++; } else if (c === '"') q = false; else cur += c; } else if (c === '"') q = true; else if (c === ',') { out.push(cur); cur = ''; } else cur += c; } out.push(cur); return out; };
+  return lines.map(l => (tab ? l.split('\t') : csv(l)).map(x => x.trim()));
+}
+async function uImport(apply) {
+  const rows = uParse($('#uPaste').value);
+  if (rows.length < 2) { toast('الصق الجدول أولاً', 'err'); return; }
+  const out = $('#uImpOut');
+  try {
+    const r = await api('u_importJisr', { rows: rows, apply: apply });
+    if (!r.ok) { out.innerHTML = '<p class="u-err">لم أجد عمودي «الرقم الوظيفي» و«الاسم». العناوين الموجودة: ' + esc((r.header || []).join('، ')) + '</p>'; return; }
+    if (r.applied) { closeModal(true); toast('تم: ' + r.counts.fresh + ' جديد · ' + r.counts.changed + ' تغيّر · ' + r.counts.left + ' غادر' + (r.counts.stopped ? ' (أُوقف ' + r.counts.stopped + ' حساباً)' : ''), 'ok'); uLoad(); return; }
+    const c = r.counts, sm = r.sample;
+    out.innerHTML = '<div class="u-prev"><span><b>' + c.fresh + '</b> جديد</span><span><b>' + c.changed + '</b> تغيّرت بياناتهم</span><span><b>' + c.left + '</b> غادروا</span><span><b>' + c.same + '</b> بلا تغيير</span></div>' +
+      (sm.left.length ? '<p class="u-err">سيُوقف دخول من غادر فوراً في كل الأنظمة: ' + esc(sm.left.join('، ')) + '</p>' : '') +
+      (sm.fresh.length ? '<p class="u-muted">جدد: ' + esc(sm.fresh.join('، ')) + (c.fresh > sm.fresh.length ? '…' : '') + '</p>' : '') +
+      (sm.changed.length ? '<p class="u-muted">تغييرات: ' + esc(sm.changed.join(' | ')) + '</p>' : '');
+    $('#uImpApply').disabled = false;
+  } catch (c) { showErr(c); }
+}
+function uOpenManual() {
+  openModal({ title: 'شخص من خارج جسر', body: '<div class="form-stack"><label class="field"><span>الاسم</span><input class="inp" id="uMName" maxlength="80"></label>' +
+    '<label class="field"><span>البريد الإلكتروني</span><input class="inp" id="uMEmail" dir="ltr" type="email"></label>' +
+    '<label class="field"><span>الصفة</span><input class="inp" id="uMTitle" placeholder="مثل: مورد، مشرفة خارجية"></label>' +
+    '<label class="field"><span>الشركة</span><select class="inp" id="uMCo">' + (U.d.shared.companies || []).map(c => '<option value="' + esc(c.code) + '">' + esc(c.nameAR) + '</option>').join('') + '</select></label></div>',
+    foot: '<button class="btn btn-primary" data-u="saveManual">' + ic('save') + '<span>حفظ</span></button>' });
+}
+
+/* ── الأحداث ── */
+function uAfter() {
+  const q = $('#uQ');
+  if (q) q.oninput = () => { U.q = q.value; clearTimeout(U.qt); U.qt = setTimeout(() => { const pos = q.selectionStart; uRender(); const n = $('#uQ'); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (e) {} } }, 160); };
+}
+function uPersonSave(p, appId) {
+  const e = p.access[appId];
+  uSave('u_savePerson', { personId: p.id, appId: appId, enabled: e.en === 'yes' ? true : e.en === 'no' ? false : null, caps: e.diff || {}, scope: e.scopeOwn || '' });
+}
+function uOnChange(el) {
+  const k = el.dataset.uc, D = U.d;
+  if (k === 'pOn' || k === 'pCap' || k === 'pScope') {
+    const p = D.people.find(x => x.id === U.id), a = el.dataset.app, e = p.access[a];
+    if (k === 'pOn') { e.on = el.checked; e.en = el.checked === !!e.profileOn ? '' : (el.checked ? 'yes' : 'no'); if (e.on && !e.caps.length) e.caps = (e.fromProfile || []).slice(); }
+    if (k === 'pCap') {
+      const c = el.dataset.cap, inBase = (e.fromProfile || []).indexOf(c) >= 0;
+      e.diff = e.diff || {};
+      if (el.checked === inBase) delete e.diff[c]; else e.diff[c] = el.checked;
+      e.caps = e.caps.filter(x => x !== c); if (el.checked) e.caps.push(c);
+    }
+    if (k === 'pScope') { e.scopeOwn = el.value; e.scope = el.value; }
+    uPersonSave(p, a); uRender(); return;
+  }
+  if (k === 'fOn' || k === 'fCap' || k === 'fScope') {
+    const f = U.draft, a = el.dataset.app, g = f.grants[a] || (f.grants[a] = { on: true, caps: [], scope: '' });
+    if (k === 'fOn') { if (el.checked) g.on = true; else delete f.grants[a]; }
+    if (k === 'fCap') { g.caps = (g.caps || []).filter(x => x !== el.dataset.cap); if (el.checked) g.caps.push(el.dataset.cap); }
+    if (k === 'fScope') g.scope = el.value;
+    f.nameAR = ($('#uFName') || {}).value || f.nameAR;
+    uRender(); return;
+  }
+  if (k === 'fAddTitle') { if (el.value) { U.draft.nameAR = ($('#uFName') || {}).value || U.draft.nameAR; U.draft.titles.push(el.value); uRender(); } return; }
+  if (k === 'set') {
+    const appId = el.dataset.app, key = el.dataset.key, d = uReg(appId), s = (d.settings || []).find(x => x.key === key);
+    let v = el.type === 'checkbox' ? el.checked : el.value;
+    if (s.type === 'list' || s.type === 'emails') v = String(v).split(/[,،;]+/).map(x => x.trim()).filter(Boolean);
+    if (s.type === 'json') { try { v = JSON.parse(v); } catch (e) { toast('الصيغة غير صحيحة', 'err'); return; } }
+    const go = () => { const st = (D.settings[appId] = D.settings[appId] || {}); st[key] = { v: v, by: S.user && S.user.username, at: new Date().toISOString() }; uSave('u_saveSetting', { appId: appId, key: key, value: v }, 'حُفظ ووصل للنظام'); };
+    if (s.sensitive) { uConfirm('هذا إعداد حساس في «' + uApp(appId).nameAR + '». سيتغير عمل النظام فوراً لكل مستخدميه. متأكد؟', go, () => uRender()); return; }
+    go(); return;
+  }
+  if (k === 'contact') { const c = Object.assign({}, D.shared.contacts || {}); c[el.dataset.r] = el.value; D.shared.contacts = c; uSave('u_saveShared', { key: 'contacts', value: c }, 'حُفظ'); return; }
+  if (k === 'brand') { const b = Object.assign({}, D.shared.brand || {}, { senderName: el.value.trim() }); D.shared.brand = b; uSave('u_saveShared', { key: 'brand', value: b }, 'حُفظ'); return; }
+}
+function uConfirm(msg, yes, no) {
+  openModal({ title: 'تأكيد', body: '<p>' + esc(msg) + '</p>', foot: '<button class="btn btn-ghost" data-u="cNo">إلغاء</button><button class="btn btn-primary" data-u="cYes">نعم، احفظ</button>' });
+  U.cf = { yes: yes, no: no };
+}
+function uOnClick(el, e) {
+  const k = el.dataset.u, D = U.d;
+  if (k === 'reload') return uLoad();
+  if (k === 'back') { U.draft = null; return uBack(); }
+  if (k === 'go') { U.ids = null; return uGo(el.dataset.v); }
+  if (k === 'showIds') { U.ids = el.dataset.ids.split(','); U.q = ''; U.co = ''; return uGo('people'); }
+  if (k === 'clearIds') { U.ids = null; return uRender(); }
+  if (k === 'co') { U.co = el.dataset.co; return uRender(); }
+  if (k === 'person') return uGo('person', el.dataset.id);
+  if (k === 'profile') { U.draft = null; return uGo('profile', el.dataset.id); }
+  if (k === 'system') return uGo('system', el.dataset.id);
+  if (k === 'newProfile') { U.draft = { id: '', nameAR: el.dataset.title || '', titles: el.dataset.title ? [el.dataset.title] : [], grants: {} }; return uGo('profile', ''); }
+  if (k === 'fDelTitle') { e.preventDefault(); U.draft.nameAR = ($('#uFName') || {}).value || U.draft.nameAR; U.draft.titles = U.draft.titles.filter(x => x !== el.dataset.t); return uRender(); }
+  if (k === 'saveProfile') {
+    const f = U.draft; f.nameAR = ($('#uFName').value || '').trim();
+    if (!f.nameAR) { toast('اكتب اسم الوظيفة', 'err'); return; }
+    U.draft = null; uBack();
+    return uSave('u_saveProfile', { profile: f }, 'حُفظت الوظيفة وطُبّقت');
+  }
+  if (k === 'reset') {
+    const p = D.people.find(x => x.id === el.dataset.id);
+    return uConfirm('سيُحذف كل ما يميّز ' + p.name + ' عن وظيفته «' + p.profile + '» في كل الأنظمة.', () => {
+      Object.keys(p.access).forEach(a => { const x = p.access[a]; x.diff = {}; x.en = ''; x.caps = (x.fromProfile || []).slice(); x.on = !!x.profileOn; });
+      uRender(); uSave('u_resetPerson', { personId: p.id }, 'أصبح مثل وظيفته');
+    });
+  }
+  if (k === 'cYes') { const f = U.cf; U.cf = null; closeModal(true); if (f && f.yes) f.yes(); return; }
+  if (k === 'cNo') { const f = U.cf; U.cf = null; closeModal(true); if (f && f.no) f.no(); return; }
+  if (k === 'fetchReg') {
+    el.disabled = true;
+    return api('u_fetchRegistry', { appId: el.dataset.id }).then(r => {
+      el.disabled = false;
+      if (!r.ok) { toast(r.code === 'NO_REGISTRY' ? 'هذا النظام لم يجهّز وصف إعداداته بعد' : 'تعذّر الوصول للنظام', 'err'); return; }
+      toast(r.settings + ' إعداداً و' + r.caps + ' صلاحية' + (r.imported ? ' · نُقلت ' + r.imported + ' قيمة من النظام' : ''), 'ok'); uLoad();
+    }).catch(c => { el.disabled = false; showErr(c); });
+  }
+  if (k === 'setDay') {
+    const box = el.closest('[data-days]'), [appId, key] = box.dataset.days.split('|');
+    el.classList.toggle('on');
+    const v = $$('.seg-btn', box).map((b, i) => b.classList.contains('on') ? i : -1).filter(i => i >= 0);
+    (D.settings[appId] = D.settings[appId] || {})[key] = { v: v, by: S.user && S.user.username, at: new Date().toISOString() };
+    return uSave('u_saveSetting', { appId: appId, key: key, value: v }, 'حُفظ');
+  }
+  if (k === 'wkDay') {
+    el.classList.toggle('on');
+    const v = Object.assign({}, D.shared.workweek || {}, { weekend: $$('[data-wk] .seg-btn').map((b, i) => b.classList.contains('on') ? i : -1).filter(i => i >= 0) });
+    D.shared.workweek = v;
+    return uSave('u_saveShared', { key: 'workweek', value: v }, 'حُفظ ووصل لكل الأنظمة');
+  }
+  if (k === 'addRow') { const key = el.dataset.k; $('[data-rows="' + key + '"]').insertAdjacentHTML('beforeend', uRowHtml(key, U_SHARED_FORM[key], {}, -1)); return; }
+  if (k === 'delRow') { el.closest('.u-row').remove(); return; }
+  if (k === 'saveShared') { const key = el.dataset.k, v = uCollectRows(key); D.shared[key] = v; uRender(); return uSave('u_saveShared', { key: key, value: v }, 'حُفظ ووصل لكل الأنظمة'); }
+  if (k === 'import') return uOpenImport();
+  if (k === 'impPreview') return uImport(false);
+  if (k === 'impApply') return uImport(true);
+  if (k === 'manual') return uOpenManual();
+  if (k === 'saveManual') {
+    const name = $('#uMName').value.trim(); if (!name) { toast('اكتب الاسم', 'err'); return; }
+    const person = { name: name, email: $('#uMEmail').value.trim(), title: $('#uMTitle').value.trim(), company: $('#uMCo').value };
+    closeModal(true); return uSave('u_saveManual', { person: person }, 'أُضيف');
+  }
+}
+document.addEventListener('click', e => { const el = e.target.closest('[data-u]'); if (!el || !(el.closest('#uRoot') || el.closest('#modal'))) return; if (el.tagName === 'BUTTON') e.preventDefault(); uOnClick(el, e); });
+document.addEventListener('change', e => { const el = e.target.closest('[data-uc]'); if (!el || !el.closest('#uRoot')) return; uOnChange(el); });
+
 /* ═════ 8) لوحة الإدارة ═════ */
 async function openAdmin() {
   closeMenu();
@@ -2535,7 +3046,7 @@ function renderAdmin() {
   cu.classList.toggle('alert', !!req);
   $$('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
   $$('.panel').forEach(p => p.classList.toggle('on', p.dataset.panel === S.tab));
-  ({ apps: renderAdminApps, users: renderAdminUsers, access: renderAccess, review: renderReview, settings: renderSettings, logs: renderLogs })[S.tab]();
+  ({ unified: renderUnified, apps: renderAdminApps, users: renderAdminUsers, access: renderAccess, review: renderReview, settings: renderSettings, logs: renderLogs })[S.tab]();
 }
 
 async function switchTab(tab) {
