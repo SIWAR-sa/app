@@ -2290,7 +2290,7 @@ function showLaunchPreview(app) {
 }
 
 /* ── «الموارد البشرية»: اختيار بين كوادر (داخل التطبيق) وجسر (تطبيق جسر على الجوال، وموقعه على الكمبيوتر) ── */
-const JISR = { web: 'https://signin.jisr.net/', ios: 'https://apps.apple.com/app/id1129820762', play: 'https://play.google.com/store/apps/details?id=ess.android', pkg: 'ess.android', androidLink: 'intent://signin.jisr.net/#Intent;scheme=https;package=ess.android;S.browser_fallback_url=' + encodeURIComponent('https://signin.jisr.net/') + ';end' };
+const JISR = { web: 'https://signin.jisr.net/', ios: 'https://apps.apple.com/app/id1129820762', play: 'https://play.google.com/store/apps/details?id=ess.android', pkg: 'ess.android', androidLink: 'intent://signin.jisr.net/home#Intent;scheme=https;package=ess.android;S.browser_fallback_url=' + encodeURIComponent('https://jisr.net/en/mobile-application') + ';end' };   // جُرّب على جوال محمد: يفتح شاشة جسر الرئيسية، وبدون التطبيق يفتح صفحة تحميله
 const DEV = (() => { const ua = navigator.userAgent || ''; return /Android/i.test(ua) ? 'android' : (/iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) ? 'ios' : 'desktop'; })();
 function openExternal(url) {
   const w = window.open(url, '_blank');
