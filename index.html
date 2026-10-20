@@ -215,7 +215,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   /* ── فتح البرنامج داخل التطبيق ──
      كل نظام في إطار خاص به يبقى حياً بعد العودة للبوابة (حتى MAXF أنظمة)، فالرجوع إليه فوري.
      شاشة الفتح تظهر مع الضغطة وتتقدّم مع مراحل الفتح الفعلية، وتختفي حين يقول النظام إنه جاهز. */
-  var MAXF = iOS || /Android/.test(ua) ? 2 : 3, FRAME_AGE = 6 * 3600000;
+  var MAXF = iOS || /Android/.test(ua) ? 3 : 5, FRAME_AGE = 6 * 3600000;   // كل الأنظمة الخمسة تبقى مفتوحة على الكمبيوتر، وثلاثة على الجوال: الرجوع لنظام فُتح فوري بلا تحميل
   var frames = {}, cur = '', seq = 0;
   var RING = 502.65;
   var ERRT = { ar: { msg: 'تعذّر فتح النظام الآن.', retry: 'إعادة المحاولة' }, en: { msg: 'The system could not be opened right now.', retry: 'Try again' } };
