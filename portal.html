@@ -224,6 +224,15 @@ input[dir="ltr"] { text-align: left; }
 #busy { position: fixed; top: 0; inset-inline: 0; height: 3px; z-index: 300; pointer-events: none; overflow: hidden; opacity: 0; transition: opacity .2s; }
 #busy.on { opacity: 1; }
 #busyPill { position: fixed; left: 50%; top: calc(env(safe-area-inset-top, 0px) + 12px); z-index: 301; display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 18px 0 12px; border-radius: 999px; background: rgba(16,26,46,.92); color: #F6E6C4; font-weight: 600; font-size: 14px; box-shadow: 0 12px 30px -10px rgba(0,0,0,.45), inset 0 0 0 1px rgba(233,190,110,.45); transform: translate(-50%, -70px); opacity: 0; transition: transform .32s cubic-bezier(.2,.8,.2,1), opacity .25s; pointer-events: none; }
+.hr-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 6px 0 4px; }
+.hr-opt { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 22px 10px 18px; border-radius: 22px; border: 1px solid var(--line, #EADFD1); background: linear-gradient(180deg, #FFFDF9, #FBF4EA); cursor: pointer; font: inherit; color: inherit; box-shadow: 0 10px 24px -16px rgba(110,80,40,.45); transition: transform .15s ease, box-shadow .15s ease; }
+.hr-opt:active { transform: scale(.97); }
+.hr-opt b { font-size: 16px; }
+.hr-opt .app-icon { width: 72px; height: 72px; }
+.hr-jisr { width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(160deg, #1E3B57, #10243A); box-shadow: inset 0 0 0 1px rgba(233,190,110,.5); }
+.hr-jisr svg { width: 34px; height: 34px; stroke: #F1CF86; }
+.hr-alt { display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; margin-top: 14px; }
+.hr-alt .link { border: 0; background: none; font: inherit; font-size: 13.5px; color: var(--muted, #6F6761); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 6px; }
 #busyPill.on { transform: translate(-50%, 0); opacity: 1; }
 #busyPill i { width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(233,190,110,.22); border-top-color: #F1CF86; animation: spin .8s linear infinite; }
 #busyPill:not(.on) i { animation: none; }
@@ -2280,9 +2289,51 @@ function showLaunchPreview(app) {
   setTimeout(() => { f.remove(); toast(t('demoLaunch'), 'info'); }, 3000);
 }
 
+/* ── «الموارد البشرية»: اختيار بين كوادر (داخل التطبيق) وجسر (تطبيق جسر على الجوال، وموقعه على الكمبيوتر) ── */
+const JISR = { web: 'https://signin.jisr.net/', ios: 'https://apps.apple.com/app/id1129820762', play: 'https://play.google.com/store/apps/details?id=ess.android', pkg: 'ess.android' };
+const DEV = (() => { const ua = navigator.userAgent || ''; return /Android/i.test(ua) ? 'android' : (/iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) ? 'ios' : 'desktop'; })();
+function openExternal(url) {
+  const w = window.open(url, '_blank');
+  if (w) { try { w.opener = null; } catch (e) {} } else toast(t('ERR_POPUP'), 'err');
+}
+function openJisr(how) {
+  closeModal(true);
+  if (how === 'web' || DEV === 'desktop') return openExternal(JISR.web);
+  if (how === 'store') return openExternal(DEV === 'ios' ? JISR.ios : JISR.play);
+  if (DEV === 'android') {
+    // يفتح تطبيق جسر إن كان مثبّتاً، وإلا صفحته في Google Play
+    return openExternal('intent:#Intent;package=' + JISR.pkg + ';action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;S.browser_fallback_url=' + encodeURIComponent(JISR.play) + ';end');
+  }
+  // آيفون: رابط جسر يفتح تطبيقه إن كان مثبّتاً ومسجّلاً للرابط، وإلا يفتح الموقع
+  openExternal(JISR.web);
+}
+function openHr(btn, app) {
+  if (app.jisrOnly) return openJisr('app');
+  const en = S.lang === 'en';
+  const kIcon = '<span class="app-icon' + imgCls(app.icon, app.shape) + ' tint-' + esc(app.tint || 'gold') + '">' + iconHtml(app.icon) + '</span>';
+  const jIcon = '<span class="hr-jisr">' + ic('users') + '</span>';
+  const sub = DEV === 'desktop' ? '' :
+    '<div class="hr-alt"><button class="link" data-hr="web">' + esc(en ? 'Open the Jisr website instead' : 'فتح موقع جسر بدلاً من التطبيق') + '</button>' +
+    '<button class="link" data-hr="store">' + esc(en ? 'Get the Jisr app' : 'تحميل تطبيق جسر') + '</button></div>';
+  openModal({
+    title: esc(en ? 'Human Resources' : 'الموارد البشرية'),
+    body: '<div class="hr-pick">' +
+      '<button class="hr-opt" data-hr="kawader">' + kIcon + '<b>' + esc(en ? (app.kNameEN || 'Kawader') : (app.kNameAR || 'كوادر')) + '</b></button>' +
+      '<button class="hr-opt" data-hr="app">' + jIcon + '<b>' + esc(en ? 'Jisr' : 'جسر') + '</b></button>' +
+      '</div>' + sub
+  });
+  $$('#modalBody [data-hr]').forEach(b => b.onclick = () => {
+    const k = b.dataset.hr;
+    if (k === 'kawader') { closeModal(true); const real = Object.assign({}, app); S.inApp ? launchInApp(btn, real) : launchApp(Object.assign(btn, { hrOk: true })); return; }
+    openJisr(k);
+  });
+}
+
 async function launchApp(btn) {
   if (btn.classList.contains('is-launching')) return;
   const app = S.apps.find(a => a.id === btn.dataset.id) || {};
+  if (app.hr && !btn.hrOk && !(btn.dataset && btn.dataset.go)) return openHr(btn, app);
+  btn.hrOk = false;
   if (DEMO) { showLaunchPreview(app); return; }
   if (S.inApp) return launchInApp(btn, app);
   const win = window.open('', '_blank');
@@ -2355,7 +2406,7 @@ function prefetchTickets(force) {
   if (!S.inApp || !S.token || DEMO || !S.apps || !S.apps.length) return Promise.resolve();
   if (!force && Date.now() - S.tix.at < 120000) return Promise.resolve();
   if (tixBusy) return tixBusy;
-  const ids = S.apps.filter(a => !a.locked).map(a => a.id);
+  const ids = S.apps.filter(a => !a.locked && !a.jisrOnly).map(a => a.id);
   tixBusy = postApi('launchMany', { appIds: ids }).then(r => {
     if (r && r.ok && r.data && r.data.urls) S.tix = { at: Date.now(), urls: r.data.urls };
   }).catch(() => {}).then(() => { tixBusy = null; });
