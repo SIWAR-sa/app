@@ -2290,7 +2290,7 @@ function showLaunchPreview(app) {
 }
 
 /* ── «الموارد البشرية»: اختيار بين كوادر (داخل التطبيق) وجسر (تطبيق جسر على الجوال، وموقعه على الكمبيوتر) ── */
-const JISR = { web: 'https://signin.jisr.net/', ios: 'https://apps.apple.com/app/id1129820762', play: 'https://play.google.com/store/apps/details?id=ess.android', pkg: 'ess.android' };
+const JISR = { web: 'https://signin.jisr.net/', ios: 'https://apps.apple.com/app/id1129820762', play: 'https://play.google.com/store/apps/details?id=ess.android', pkg: 'ess.android', androidLink: '' };
 const DEV = (() => { const ua = navigator.userAgent || ''; return /Android/i.test(ua) ? 'android' : (/iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) ? 'ios' : 'desktop'; })();
 function openExternal(url) {
   const w = window.open(url, '_blank');
@@ -2300,10 +2300,7 @@ function openJisr(how) {
   closeModal(true);
   if (how === 'web' || DEV === 'desktop') return openExternal(JISR.web);
   if (how === 'store') return openExternal(DEV === 'ios' ? JISR.ios : JISR.play);
-  if (DEV === 'android') {
-    // يفتح تطبيق جسر إن كان مثبّتاً، وإلا صفحته في Google Play
-    return openExternal('intent:#Intent;package=' + JISR.pkg + ';action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;S.browser_fallback_url=' + encodeURIComponent(JISR.play) + ';end');
-  }
+  if (DEV === 'android' && JISR.androidLink) return openExternal(JISR.androidLink);
   // آيفون: رابط جسر يفتح تطبيقه إن كان مثبّتاً ومسجّلاً للرابط، وإلا يفتح الموقع
   openExternal(JISR.web);
 }
