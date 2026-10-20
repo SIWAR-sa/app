@@ -2309,9 +2309,12 @@ function openHr(btn, app) {
   const en = S.lang === 'en';
   const kIcon = '<span class="app-icon' + imgCls(app.icon, app.shape) + ' tint-' + esc(app.tint || 'gold') + '">' + iconHtml(app.icon) + '</span>';
   const jIcon = '<span class="hr-jisr">' + ic('users') + '</span>';
-  const sub = DEV === 'desktop' ? '' :
+  // أندرويد: زر جسر يفتح التطبيق، وتحته رابطا الموقع والتحميل.
+  // آيفون: جسر لا يتيح فتح تطبيقه من رابط على الآيفون، فالزر يفتح موقعه، ورابط «تطبيق جسر» يفتح صفحته في App Store (فيها «فتح» إن كان مثبّتاً)
+  const sub = DEV === 'android' ?
     '<div class="hr-alt"><button class="link" data-hr="web">' + esc(en ? 'Open the Jisr website instead' : 'فتح موقع جسر بدلاً من التطبيق') + '</button>' +
-    '<button class="link" data-hr="store">' + esc(en ? 'Get the Jisr app' : 'تحميل تطبيق جسر') + '</button></div>';
+    '<button class="link" data-hr="store">' + esc(en ? 'Get the Jisr app' : 'تحميل تطبيق جسر') + '</button></div>' :
+    DEV === 'ios' ? '<div class="hr-alt"><button class="link" data-hr="store">' + esc(en ? 'Jisr app' : 'تطبيق جسر') + '</button></div>' : '';
   openModal({
     title: esc(en ? 'Human Resources' : 'الموارد البشرية'),
     body: '<div class="hr-pick">' +
