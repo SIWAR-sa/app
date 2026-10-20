@@ -1023,6 +1023,14 @@ tr.is-off .mx-user { opacity: .5; }
 .u-xl { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .u-xl b { font-size: 15.5px; } .u-xl p { margin: 4px 0 0; }
 .u-pick { margin: 0; max-width: 420px; }
+.u-savebar2 { position: fixed; z-index: 60; inset-inline: 0; bottom: 18px; margin: 0 auto; width: min(680px, calc(100% - 32px)); display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px 12px 18px; background: #2B2522; color: #FFF8EE; border-radius: 18px; box-shadow: 0 18px 50px rgba(43,37,34,.35); animation: uBarIn .35s cubic-bezier(.2,1.2,.4,1); }
+.u-savebar2[hidden] { display: none; }
+.u-savebar2 b { font-size: 14px; font-weight: 600; }
+.u-savebar2 .btn-ghost { background: transparent; color: #FFF8EE; border-color: rgba(255,248,238,.3); }
+.u-savebar2 .btn.is-busy { opacity: .7; pointer-events: none; }
+@keyframes uBarIn { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+.u-q.is-dirty .u-q-t::after { content: ' •'; color: var(--gold-deep); font-weight: 700; }
+#uRoot { padding-bottom: 80px; }
 .u-cov { overflow-x: auto; margin-top: 12px; }
 .u-cov table { border-collapse: collapse; width: 100%; font-size: 13px; }
 .u-cov th, .u-cov td { padding: 7px 8px; text-align: center; border-bottom: 1px solid var(--border); white-space: nowrap; }
@@ -2042,6 +2050,7 @@ function show(screen) {
   if (screen === 'home' && S.homeDirty) { S.homeDirty = false; renderHome(); }
   S.screen = screen;
   $$('.screen').forEach(s => s.classList.toggle('active', s.id === 'screen-' + screen));
+  try { if (U.dirty) uBar(); } catch (e) {}
   $('#topbar').hidden = screen === 'login';
   const nav = $('#navBtn');
   const isAdmin = myRank() >= RANK.supervisor;
@@ -2639,10 +2648,46 @@ function renderUnified() {
   if (Date.now() - U.at > 60000) uLoad();
 }
 async function uLoad() {
-  try { U.d = await api('u_load', {}); U.at = Date.now(); if (S.tab === 'unified') uRender(); }
+  if (U.dirty && U.dirty.size) return;
+  try { const d = await api('u_load', {}); if (U.dirty && U.dirty.size) return; const y = window.scrollY; U.d = d; U.at = Date.now(); if (S.tab === 'unified') { uRender(); window.scrollTo(0, y); } }
   catch (c) { showErr(c); if (!U.d) $('#uRoot').innerHTML = '<div class="empty">' + ic('alert') + '<span>تعذّر التحميل</span><button class="btn btn-ghost" data-u="reload">' + ic('refresh') + '<span>إعادة المحاولة</span></button></div>'; }
 }
 /** حفظ فوري: تُحدَّث الشاشة أولاً، والطلب يكمل في الخلفية؛ وعند الفشل تُعاد البيانات من الخادم. */
+/* ── التعديلات المعلّقة: لا شيء يُحفظ إلا بزر «حفظ»؛ كل تعديلات الشاشة تُرسل في طلب واحد ── */
+U.dirty = new Map(); U.base = null;
+function uMark(key, op) {
+  if (!U.base) U.base = JSON.parse(JSON.stringify(U.d));
+  U.dirty.set(key, op); uBar();
+}
+function uBar() {
+  let bar = $('#uSaveBar');
+  if (!bar) { document.body.insertAdjacentHTML('beforeend', '<div class="u-savebar2" id="uSaveBar" hidden><b id="uSaveN"></b><div class="savebar-actions"><button class="btn btn-ghost" data-u="discard">' + ic('undo') + '<span>تراجع</span></button><button class="btn btn-primary" data-u="commit" id="uCommit">' + ic('save') + '<span>حفظ</span></button></div></div>'); bar = $('#uSaveBar'); }
+  const n = U.dirty.size;
+  bar.hidden = !n || S.tab !== 'unified' || S.screen !== 'admin';
+  $('#uSaveN').textContent = n === 1 ? 'تعديل واحد لم يُحفظ' : n === 2 ? 'تعديلان لم يُحفظا' : n + ' تعديلات لم تُحفظ';
+}
+function uDiscard() { if (U.base) U.d = U.base; U.base = null; U.dirty.clear(); U.draft = null; uBar(); uRender(); }
+async function uCommit() {
+  if (!U.dirty.size) return;
+  const ops = Array.from(U.dirty.values());
+  const sens = ops.filter(o => o.t === 'setting' && ((uReg(o.appId) || {}).settings || []).some(z => z.key === o.key && z.sensitive));
+  const go = async () => {
+    const b = $('#uCommit'); b.disabled = true; b.classList.add('is-busy');
+    try {
+      const r = await api('u_batch', { ops: ops });
+      if (!r.ok) { toast(t(r.code || 'ERR_SERVER'), 'err'); return; }
+      U.dirty.clear(); U.base = null; uBar(); toast(ops.length === 1 ? 'حُفظ التعديل' : 'حُفظت ' + ops.length + ' تعديلات', 'ok'); uFlushSoon();
+      setTimeout(uLoad, 1500);   // تحديث هادئ لما يحسبه الخادم (لا يمس الشاشة إن بدأت تعديلاً جديداً)
+    } catch (c) { showErr(c); }
+    finally { b.disabled = false; b.classList.remove('is-busy'); }
+  };
+  if (sens.length) return uConfirm('بين التعديلات ' + (sens.length === 1 ? 'إعداد حساس' : sens.length + ' إعدادات حساسة') + ' سيتغير بها عمل النظام فوراً لكل مستخدميه. نحفظ؟', go);
+  go();
+}
+window.addEventListener('beforeunload', e => { if (U.dirty && U.dirty.size) { e.preventDefault(); e.returnValue = ''; } });
+document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S') && U.dirty.size && S.tab === 'unified') { e.preventDefault(); uCommit(); } });
+const uPOp = (p, a) => { const e = p.access[a]; return { t: 'person', personId: p.id, appId: a, enabled: e.en === 'yes' ? true : e.en === 'no' ? false : null, caps: e.diff || {}, scope: e.scopeOwn || '' }; };
+
 /** بعد أي حفظ: إبلاغ الأنظمة في الخلفية (لا ينتظره المستخدم). */
 function uFlushSoon() { clearTimeout(U.ft); U.ft = setTimeout(() => { api('u_flush', {}).catch(() => {}); }, 800); }
 async function uSave(action, payload, okMsg) {
@@ -2656,6 +2701,7 @@ function uNavMark() {
   $$('#uTabs .tab').forEach(b => b.classList.toggle('on', b.dataset.unav === cur));
 }
 async function uNav(v) {
+  if (!U_TOP[v] && U.dirty.size) { return uConfirm('عندك ' + U.dirty.size + ' تعديل لم يُحفظ. نحفظها قبل الانتقال؟', async () => { await uCommit(); uNav(v); }); }
   if (U_TOP[v]) { U.back = []; U.view = v; U.id = ''; U.ids = v === 'people' ? U.ids : null; U.draft = null; if (S.tab !== 'unified') await switchTab('unified'); else uRender(); }
   else await switchTab(v);
   uNavMark();
@@ -2688,7 +2734,7 @@ function uRender() {
   const v = U.view;
   const html = ({ home: uHome, people: uPeople, person: uPerson, profiles: uProfiles, profile: uProfile, systems: uSystems, system: uSystem, shared: uSharedV })[v] || uHome;
   root.innerHTML = (['person', 'profile', 'system'].indexOf(v) >= 0 ? '<button class="u-back" data-u="back">' + ic('arrow') + '<span>رجوع</span></button>' : '') + html();
-  uAfter(); uNavMark();
+  uAfter(); uNavMark(); uBar();
   const n = (U.d.todo || []).reduce((a, x) => a + (x.kind === 'nomail' ? 0 : x.n), 0), b = $('#uTodoN');
   if (b) { b.hidden = !n; b.textContent = n; }
 }
@@ -2871,7 +2917,7 @@ function uSharedV() {
     return '<section class="panel-box u-const" id="uK-' + key + '"><h3>' + ic('shield') + '<span>' + esc(D.sharedLabels[key] || key) + '</span></h3>' + inner +
       '<p class="u-used">' + (u.length ? 'تستخدمه: ' + esc(u.join('، ')) : 'لم يربطه أي نظام بعد') + '</p>' + (foot || '') + '</section>';
   };
-  const saveBtn = key => '<div class="u-foot"><button class="btn btn-primary btn-sm" data-u="saveShared" data-k="' + key + '">' + ic('save') + '<span>حفظ</span></button></div>';
+  const saveBtn = key => '<div class="u-foot"><button class="btn btn-ghost btn-sm" data-u="saveShared" data-k="' + key + '">' + ic('check') + '<span>تثبيت التعديل</span></button></div>';
   const rows = key => {
     const f = U_SHARED_FORM[key], list = Array.isArray(sh[key]) ? sh[key] : [];
     return '<div class="u-rows" data-rows="' + key + '">' + list.map((r, i) => uRowHtml(key, f, r, i)).join('') + '</div><button class="link-btn" data-u="addRow" data-k="' + key + '">+ إضافة</button>';
@@ -3152,13 +3198,11 @@ function uAfter() {
   const q = $('#uQ');
   if (q) q.oninput = () => { U.q = q.value; clearTimeout(U.qt); U.qt = setTimeout(() => { const pos = q.selectionStart; uRender(); const n = $('#uQ'); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (e) {} } }, 160); };
 }
-function uPersonSave(p, appId) {
-  const e = p.access[appId];
-  uSave('u_savePerson', { personId: p.id, appId: appId, enabled: e.en === 'yes' ? true : e.en === 'no' ? false : null, caps: e.diff || {}, scope: e.scopeOwn || '' });
-}
+function uPersonSave(p, appId) { uMark('p:' + p.id + ':' + appId, uPOp(p, appId)); }
 function uOnChange(el) {
   const k = el.dataset.uc, D = U.d;
   if (k === 'pOn' || k === 'pCap' || k === 'pScope') {
+    if (!U.base) U.base = JSON.parse(JSON.stringify(U.d));
     const p = D.people.find(x => x.id === U.id), a = el.dataset.app, e = p.access[a];
     if (k === 'pOn') { e.on = el.checked; e.en = el.checked === !!e.profileOn ? '' : (el.checked ? 'yes' : 'no'); if (e.on && !e.caps.length) e.caps = (e.fromProfile || []).slice(); }
     if (k === 'pCap') {
@@ -3168,9 +3212,9 @@ function uOnChange(el) {
       e.caps = e.caps.filter(x => x !== c); if (el.checked) e.caps.push(c);
     }
     if (k === 'pScope') { e.scopeOwn = el.value; e.scope = el.value; }
-    uPersonSave(p, a); uRender(); return;
+    uPersonSave(p, a); const y = window.scrollY; uRender(); window.scrollTo(0, y); return;
   }
-  if (k === 'pProf') { const p = D.people.find(x => x.id === U.id); p.profileId = el.value; uSave('u_setProfile', { personId: p.id, profileId: el.value }, 'حُفظ'); return; }
+  if (k === 'pProf') { const p = D.people.find(x => x.id === U.id); p.profileId = el.value; uMark('pf:' + p.id, { t: 'personProfile', personId: p.id, profileId: el.value }); return; }
   if (k === 'fOn' || k === 'fCap' || k === 'fScope') {
     const f = U.draft, a = el.dataset.app, g = f.grants[a] || (f.grants[a] = { on: true, caps: [], scope: '' });
     if (k === 'fOn') { if (el.checked) g.on = true; else delete f.grants[a]; }
@@ -3185,13 +3229,13 @@ function uOnChange(el) {
     let v = el.type === 'checkbox' ? el.checked : el.value;
     if (s.type === 'list' || s.type === 'emails') v = String(v).split(/[,،;]+/).map(x => x.trim()).filter(Boolean);
     if (s.type === 'json') { try { v = JSON.parse(v); } catch (e) { toast('الصيغة غير صحيحة', 'err'); return; } }
-    const go = () => { const st = (D.settings[appId] = D.settings[appId] || {}); st[key] = { v: v, by: S.user && S.user.username, at: new Date().toISOString() }; uSave('u_saveSetting', { appId: appId, key: key, value: v }, 'حُفظ ووصل للنظام'); };
-    if (s.sensitive) { uConfirm('هذا إعداد حساس في «' + uApp(appId).nameAR + '». سيتغير عمل النظام فوراً لكل مستخدميه. متأكد؟', go, () => uRender()); return; }
-    go(); return;
+    if (!U.base) U.base = JSON.parse(JSON.stringify(U.d));
+    (D.settings[appId] = D.settings[appId] || {})[key] = { v: v, by: S.user && S.user.username, at: new Date().toISOString() };
+    uMark('s:' + appId + ':' + key, { t: 'setting', appId: appId, key: key, value: v }); el.closest('.u-q') && el.closest('.u-q').classList.add('is-dirty'); return;
   }
-  if (k === 'contact') { const c = Object.assign({}, D.shared.contacts || {}); c[el.dataset.r] = el.value; D.shared.contacts = c; uSave('u_saveShared', { key: 'contacts', value: c }, 'حُفظ'); return; }
-  if (k === 'wkCap') { const v = Object.assign({}, D.shared.workweek || {}, { maxRestShare: Math.min(100, Math.max(10, Number(el.value) || 50)) }); D.shared.workweek = v; uRender(); uSave('u_saveShared', { key: 'workweek', value: v }, 'حُفظ'); return; }
-  if (k === 'brand') { const b = Object.assign({}, D.shared.brand || {}, { senderName: el.value.trim() }); D.shared.brand = b; uSave('u_saveShared', { key: 'brand', value: b }, 'حُفظ'); return; }
+  if (k === 'contact') { if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); const c = Object.assign({}, D.shared.contacts || {}); c[el.dataset.r] = el.value; D.shared.contacts = c; uMark('sh:contacts', { t: 'shared', key: 'contacts', value: c }); return; }
+  if (k === 'wkCap') { if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); const v = Object.assign({}, D.shared.workweek || {}, { maxRestShare: Math.min(100, Math.max(10, Number(el.value) || 50)) }); D.shared.workweek = v; uMark('sh:workweek', { t: 'shared', key: 'workweek', value: v }); const y = window.scrollY; uRender(); window.scrollTo(0, y); return; }
+  if (k === 'brand') { if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); const b = Object.assign({}, D.shared.brand || {}, { senderName: el.value.trim() }); D.shared.brand = b; uMark('sh:brand', { t: 'shared', key: 'brand', value: b }); return; }
 }
 function uConfirm(msg, yes, no) {
   openModal({ title: 'تأكيد', body: '<p>' + esc(msg) + '</p>', foot: '<button class="btn btn-ghost" data-u="cNo">إلغاء</button><button class="btn btn-primary" data-u="cYes">نعم، احفظ</button>' });
@@ -3200,6 +3244,8 @@ function uConfirm(msg, yes, no) {
 function uOnClick(el, e) {
   const k = el.dataset.u, D = U.d;
   if (k === 'reload') return uLoad();
+  if (k === 'commit') return uCommit();
+  if (k === 'discard') return uDiscard();
   if (k === 'back') { U.draft = null; return uBack(); }
   if (k === 'go') { U.ids = null; return uGo(el.dataset.v); }
   if (k === 'showIds') { U.ids = el.dataset.ids.split(','); U.q = ''; U.co = ''; return uGo('people'); }
@@ -3237,26 +3283,29 @@ function uOnClick(el, e) {
     const box = el.closest('[data-days]'), [appId, key] = box.dataset.days.split('|');
     el.classList.toggle('on');
     const v = $$('.seg-btn', box).map((b, i) => b.classList.contains('on') ? i : -1).filter(i => i >= 0);
+    if (!U.base) U.base = JSON.parse(JSON.stringify(U.d));
     (D.settings[appId] = D.settings[appId] || {})[key] = { v: v, by: S.user && S.user.username, at: new Date().toISOString() };
-    return uSave('u_saveSetting', { appId: appId, key: key, value: v }, 'حُفظ');
+    return uMark('s:' + appId + ':' + key, { t: 'setting', appId: appId, key: key, value: v });
   }
   if (k === 'wkDay') {
     el.classList.toggle('on');
     const v = Object.assign({}, D.shared.workweek || {}, { weekend: $$('[data-wk] .seg-btn').map((b, i) => b.classList.contains('on') ? i : -1).filter(i => i >= 0) });
+    if (!U.base) U.base = JSON.parse(JSON.stringify(U.d));
     D.shared.workweek = v;
-    return uSave('u_saveShared', { key: 'workweek', value: v }, 'حُفظ ووصل لكل الأنظمة');
+    return uMark('sh:workweek', { t: 'shared', key: 'workweek', value: v });
   }
   if (k === 'addRow') { const key = el.dataset.k; $('[data-rows="' + key + '"]').insertAdjacentHTML('beforeend', uRowHtml(key, U_SHARED_FORM[key], {}, -1)); return; }
   if (k === 'delRow') { el.closest('.u-row').remove(); return; }
-  if (k === 'saveShared') { const key = el.dataset.k, v = uCollectRows(key); D.shared[key] = v; uRender(); return uSave('u_saveShared', { key: key, value: v }, 'حُفظ ووصل لكل الأنظمة'); }
+  if (k === 'saveShared') { const key = el.dataset.k, v = uCollectRows(key); if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); D.shared[key] = v; uMark('sh:' + key, { t: 'shared', key: key, value: v }); const y = window.scrollY; uRender(); window.scrollTo(0, y); return; }
   if (k === 'import') return uOpenImport();
   if (k === 'srcKawader') return uSrc('u_importKawader', 'نقل بيانات الموظفين من كوادر');
   if (k === 'srcRest') return uSrc('u_importRestDays', 'نقل أيام الراحة من التحليلات');
   if (k === 'srcApply') return uSrcApply();
   if (k === 'pRest') {
     const p = D.people.find(x => x.id === U.id); el.classList.toggle('on');
+    if (!U.base) U.base = JSON.parse(JSON.stringify(U.d));
     p.restDays = $$('[data-prest] .seg-btn').map((b, i) => b.classList.contains('on') ? i : -1).filter(i => i >= 0);
-    return uSave('u_setPerson', { personId: p.id, restDays: p.restDays }, 'حُفظ');
+    return uMark('pr:' + p.id, { t: 'personRest', personId: p.id, restDays: p.restDays });
   }
   if (k === 'pStop' || k === 'pResume') {
     const p = D.people.find(x => x.id === U.id), stop = k === 'pStop';
@@ -3281,7 +3330,7 @@ function uOnClick(el, e) {
     closeModal(true); return uSave('u_saveManual', { person: person }, 'أُضيف');
   }
 }
-document.addEventListener('click', e => { const el = e.target.closest('[data-u]'); if (!el || !(el.closest('#uRoot') || el.closest('#modal'))) return; if (el.tagName === 'BUTTON') e.preventDefault(); uOnClick(el, e); });
+document.addEventListener('click', e => { const el = e.target.closest('[data-u]'); if (!el || !(el.closest('#uRoot') || el.closest('#modal') || el.closest('#uSaveBar'))) return; if (el.tagName === 'BUTTON') e.preventDefault(); uOnClick(el, e); });
 document.addEventListener('change', e => { const el = e.target.closest('[data-uc]'); if (!el || !el.closest('#uRoot')) return; uOnChange(el); });
 
 /* ═════ 8) لوحة الإدارة ═════ */
