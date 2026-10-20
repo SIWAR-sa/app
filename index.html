@@ -297,6 +297,15 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     else if (d.siwar === 'ready') hideLoad();
     else if (d.siwar === 'reload' && !mine && $('prog').className === 'on') relaunch();
   });
+  // F5 أو Ctrl+R على الكمبيوتر: تحديث ما على الشاشة (البوابة أو النظام المفتوح) بدل إعادة تحميل التطبيق كله
+  window.addEventListener('keydown', function (e) {
+    if (!(e.key === 'F5' || ((e.ctrlKey || e.metaKey) && !e.shiftKey && /^[rRق]$/.test(e.key)))) return;
+    var pf = $('portal').querySelector('iframe');
+    if (!pf || !pf.contentWindow) return;
+    e.preventDefault();
+    if ($('prog').className === 'on') relaunch();
+    else try { pf.contentWindow.postMessage({ siwar: 'refresh' }, location.origin); } catch (x) {}
+  });
   // السحب لأسفل داخل النظام: شاشة التحميل فوراً، والبوابة تعيد فتحه بتذكرة جديدة
   var relT = 0;
   function relaunch() {

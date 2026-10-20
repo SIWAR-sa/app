@@ -2326,8 +2326,9 @@ function ui(){if(el)return el;var st=document.createElement('style');st.textCont
 function hide(){if(!el)return;el.style.transition='transform .28s ease,opacity .28s ease';el.style.opacity='0';el.style.transform='translateY(-56px)';el.firstChild.style.animation=''}
 addEventListener('touchstart',function(e){y0=null;if(busy||e.touches.length!==1||up(e.target))return;y0=e.touches[0].clientY;x0=e.touches[0].clientX;d=0},{passive:true});
 addEventListener('touchmove',function(e){if(y0==null)return;var t=e.touches[0];d=t.clientY-y0;if(d<=0||Math.abs(t.clientX-x0)>d){if(d<-8||Math.abs(t.clientX-x0)>20){y0=null;hide()}return}var u=ui(),p=Math.min(d,TH*1.7);u.style.transition='none';u.style.opacity=String(Math.min(1,d/TH));u.style.transform='translateY('+(p*.62-14)+'px) rotate('+Math.round(d*2.6)+'deg)'},{passive:true});
-function end(){if(y0==null)return;y0=null;if(d<TH){hide();return}busy=true;var u=ui();u.style.transition='transform .2s ease';u.style.transform='translateY(30px)';u.firstChild.style.animation='siwarPtrSpin .75s linear infinite';var fin=false,done=function(){if(fin)return;fin=true;busy=false;hide()};setTimeout(done,9000);try{run(done)}catch(x){done()}}
-addEventListener('touchend',end,{passive:true});addEventListener('touchcancel',function(){y0=null;hide()},{passive:true})}
+function end(){if(y0==null)return;y0=null;if(d<TH){hide();return}go()}
+function go(){if(busy)return;busy=true;var u=ui();u.style.transition='transform .2s ease,opacity .2s ease';u.style.opacity='1';u.style.transform='translateY(30px)';u.firstChild.style.animation='siwarPtrSpin .75s linear infinite';var fin=false,done=function(){if(fin)return;fin=true;busy=false;hide()};setTimeout(done,9000);try{run(done)}catch(x){done()}}
+addEventListener('keydown',function(e){if(e.key==='F5'||((e.ctrlKey||e.metaKey)&&!e.shiftKey&&(e.key==='r'||e.key==='R'||e.key==='ق'))){e.preventDefault();go()}});addEventListener('touchend',end,{passive:true});addEventListener('touchcancel',function(){y0=null;hide()},{passive:true});return go}
 async function ptrRefresh(done) {
   if (S.screen !== 'home' || !S.token || document.querySelector('.modal.open')) { done(); return; }
   const pend = loadPending(true);
@@ -2348,8 +2349,8 @@ async function relaunchLast() {
 function setupInApp() {
   if (!SHELL || setupInApp.done) return;
   setupInApp.done = true;
-  SIWAR_PTR(ptrRefresh);
-  window.addEventListener('message', e => { if (e.origin === SHELL && e.source === window.top && e.data && e.data.siwar === 'relaunch') relaunchLast(); });
+  const go = SIWAR_PTR(ptrRefresh);
+  window.addEventListener('message', e => { if (e.origin === SHELL && e.source === window.top && e.data) { if (e.data.siwar === 'relaunch') relaunchLast(); else if (e.data.siwar === 'refresh') go(); } });
 }
 
 function openInstall() {
