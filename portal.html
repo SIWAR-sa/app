@@ -267,6 +267,7 @@ input[dir="ltr"] { text-align: left; }
 .brand-logo img { max-height: 76px; width: auto; }
 .brand-logo .mark { width: 64px; height: 64px; }
 .portal-title { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -.2px; }
+.login-card .portal-title { display: none; }
 .gold-rule { width: 64px; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
 .login-note { margin: 0; font-size: 13.5px; color: var(--muted); text-align: center; }
 .link-btn { align-self: center; font-size: 13px; font-weight: 600; color: #A65F5D; padding: 4px 8px; }
@@ -1649,7 +1650,13 @@ function api(action, payload) {
     if (DEMO) { setTimeout(() => done(Mock.call(action, payload || {})), 260); return; }
     const viaRun = () => google.script.run.withSuccessHandler(done).withFailureHandler(err => { busy(-1); S.lastErr = String(err && err.message || err || ''); reject('ERR_NETWORK'); }).api(action, payload || {}, S.token || '');
     if (!DIRECT_OK) { viaRun(); return; }
-    postApi(action, payload).then(done).catch(err => {
+    // خوادم جوجل ترفض أحياناً طلباً واحداً عند الضغط: طلب القراءة يُعاد تلقائياً مرتين قبل إظهار أي رسالة
+    const tries = READ_ONLY[action] ? [1200, 2600] : [];
+    const attempt = () => postApi(action, payload).catch(err => {
+      if (!tries.length || (err && err.name === 'AbortError')) throw err;
+      return new Promise(r => setTimeout(r, tries.shift())).then(attempt);
+    });
+    attempt().then(done).catch(err => {
       // البطء ليس عطلاً في طريقة الاتصال: لا يُوقف الطلب المباشر بسببه، ولا يُعاد الطلب مرتين
       if (STATIC || (err && err.name === 'AbortError')) { busy(-1); S.lastErr = String(err && err.message || err || ''); reject('ERR_NETWORK'); return; }
       // إن تعذّر الطلب المباشر (شبكة تمنعه مثلاً) تُستخدم الطريقة الأصلية لبقية الجلسة
@@ -1783,9 +1790,11 @@ async function boot() {
   S.lang = store.get('sp_lang') === 'en' ? 'en' : 'ar';
   S.token = store.get('sp_token') || sess.get('sp_token');
   if (S.token && sess.get('sp_token')) { store.set('sp_token', S.token); sess.del('sp_token'); }
+  try { const c = JSON.parse(localStorage.getItem('sp_cfg') || 'null'); if (c && c.nameAR) S.config = Object.assign(S.config, c); } catch (e) {}
   applyLang();
   bindEvents();
   setupInApp();
+  applyTheme(currentTheme());
   const en = S.lang === 'en';
   if ($('#splashTxt')) $('#splashTxt').textContent = en ? 'Loading' : 'جارٍ التحميل';
   const slow = setTimeout(() => {
@@ -1811,6 +1820,10 @@ async function boot() {
     show('login');
     const box = $('#bootErr');
     box.hidden = false;
+    if (STATIC && c === 'ERR_NETWORK') {
+      box.innerHTML = esc(S.lang === 'en' ? 'Could not reach the server right now.' : 'تعذّر الوصول إلى الخادم الآن.') +
+        ' <a href="#" onclick="location.reload();return false" style="font-weight:700;color:inherit">' + esc(S.lang === 'en' ? 'Try again' : 'إعادة المحاولة') + '</a>';
+    } else
     box.innerHTML = esc(c === 'ERR_NETWORK' ? (S.lang === 'en' ? 'Could not reach the server. If this is the first run, run setup from the Apps Script editor, approve the permissions, then deploy a new version.' : 'تعذّر الاتصال بالخادم. إذا كانت هذه أول مرة، شغّل الدالة setup من محرر Apps Script ووافق على الصلاحيات، ثم انشر نسخة جديدة.') : t(I18N.ar[c] ? c : 'ERR_SERVER')) +
       (S.lastErr ? '<code>' + esc(S.lastErr) + '</code>' : '');
   }
@@ -1822,6 +1835,8 @@ async function boot() {
 
 function applyConfig(cfg) {
   S.config = Object.assign(S.config, cfg || {});
+  // آخر إعدادات وصلت (الاسم والشعار والشكل) تُحفظ، فتظهر فوراً في الفتح التالي حتى قبل رد الخادم
+  if (cfg && cfg.nameAR) try { localStorage.setItem('sp_cfg', JSON.stringify({ nameAR: S.config.nameAR, nameEN: S.config.nameEN, theme: S.config.theme, logo: S.config.logo, appUrl: S.config.appUrl })); } catch (e) {}
   // رابط «تثبيت التطبيق» يظهر في المتصفح فقط، ويختفي داخل التطبيق المثبّت
   $$('[data-install]').forEach(el => { el.hidden = !S.config.appUrl || S.inApp; });
   applyTheme(currentTheme());
