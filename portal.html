@@ -1019,6 +1019,13 @@ tr.is-off .mx-user { opacity: .5; }
 .u-xl { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .u-xl b { font-size: 15.5px; } .u-xl p { margin: 4px 0 0; }
 .u-pick { margin: 0; max-width: 420px; }
+.u-cov { overflow-x: auto; margin-top: 12px; }
+.u-cov table { border-collapse: collapse; width: 100%; font-size: 13px; }
+.u-cov th, .u-cov td { padding: 7px 8px; text-align: center; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.u-cov tbody th { text-align: start; font-weight: 600; } .u-cov th small { color: var(--faint); font-weight: 400; }
+.u-cov thead th { color: var(--muted); font-weight: 600; font-size: 12px; }
+.u-cov-some { background: #FBF0DC; color: #8C6524; font-weight: 700; } .u-cov-bad { background: #F9E1DE; color: #9A3F38; font-weight: 700; }
+.u-dot-cover { background: #C0574F; }
 .u-tabs .tab .count.alert { background: #F9E1DE; color: #9A3F38; }
 .u-head > .btn { flex: none; }
 .u-acct h3 { margin-bottom: 4px; }
@@ -2684,7 +2691,7 @@ function uRender() {
 function uHome() {
   const D = U.d;
   const row = (kind, txt, btn) => '<div class="u-todo-row"><span class="u-dot u-dot-' + kind + '"></span><span>' + esc(txt) + '</span>' + btn + '</div>';
-  const todo = (D.todo || []).map(x => row(x.kind, x.kind === 'left' ? x.n + ' غادروا أو أُوقفوا وحسابهم ما زال يعمل' : x.kind === 'fresh' ? x.n + ' بلا وظيفة محددة ولا صلاحيات' : x.n + ' بلا بريد إلكتروني — لا يستطيعون الدخول',
+  const todo = (D.todo || []).map(x => row(x.kind, x.kind === 'cover' ? 'أيام راحة متكدسة: ' + x.gaps.slice(0, 3).map(g => g.dept + ' يوم ' + U_DAYS[g.day] + ' (' + g.off + ' من ' + g.total + ')').join('، ') + (x.n > 3 ? '…' : '') : x.kind === 'left' ? x.n + ' غادروا أو أُوقفوا وحسابهم ما زال يعمل' : x.kind === 'fresh' ? x.n + ' بلا وظيفة محددة ولا صلاحيات' : x.n + ' بلا بريد إلكتروني — لا يستطيعون الدخول',
     '<button class="link-btn" data-u="showIds" data-ids="' + esc(x.ids.join(',')) + '">عرضهم</button>'));
   if (!D.people.some(p => p.source === 'jisr')) todo.unshift(row('fresh', 'بيانات الموظفين لم تُنقل من كوادر بعد', '<button class="link-btn" data-u="srcKawader">نقلها الآن</button>'));
   else if (!D.people.some(p => (p.restDays || []).length)) todo.unshift(row('fresh', 'أيام الراحة لم تُنقل من التحليلات بعد', '<button class="link-btn" data-u="srcRest">نقلها الآن</button>'));
@@ -2868,7 +2875,8 @@ function uSharedV() {
   const pick = role => '<label class="u-q"><span class="u-q-t">' + ({ gm: 'المدير العام', cfo: 'المدير المالي', hr: 'مسؤول الموارد البشرية' })[role] + '</span><select class="inp" data-uc="contact" data-r="' + role + '"><option value="">—</option>' +
     people.map(p => '<option value="' + esc(p.id) + '"' + ((sh.contacts || {})[role] === p.id ? ' selected' : '') + '>' + esc(p.name) + '</option>').join('') + '</select></label>';
   return '<p class="u-muted u-lead">الثابت يُكتب مرة واحدة هنا وتقرؤه كل الأنظمة؛ لا يُعدَّل داخل أي نظام.</p>' +
-    box('workweek', '<div class="u-q"><span class="u-q-t">أيام العطلة الأسبوعية</span><span class="u-days" data-wk="1">' + U_DAYS.map((n, i) => '<button class="seg-btn' + ((ww.weekend || []).indexOf(i) >= 0 ? ' on' : '') + '" data-u="wkDay" data-i="' + i + '">' + n + '</button>').join('') + '</span></div>') +
+    box('workweek', '<div class="u-q"><span class="u-q-t">أيام إغلاق الشركة كلها (إن وُجدت)</span><span class="u-days" data-wk="1">' + U_DAYS.map((n, i) => '<button class="seg-btn' + ((ww.weekend || []).indexOf(i) >= 0 ? ' on' : '') + '" data-u="wkDay" data-i="' + i + '">' + n + '</button>').join('') + '</span></div>' +
+      '<div class="u-q"><span class="u-q-t">أقصى نسبة راحة في القسم في اليوم الواحد</span><span class="u-q-v"><input class="inp u-num" type="number" min="10" max="100" step="5" data-uc="wkCap" value="' + esc(ww.maxRestShare || 50) + '"><span class="u-unit">%</span></span></div>' + uCoverage()) +
     box('holidays', rows('holidays'), saveBtn('holidays')) +
     box('companies', rows('companies'), saveBtn('companies')) +
     box('departments', '<div class="u-chips">' + ((sh.departments || []).map(x => '<span class="chip">' + esc(x) + '</span>').join('') || '<span class="u-muted">تأتي من جسر عند الاستيراد</span>') + '</div><small class="hint">تُحدَّث تلقائياً من جسر.</small>') +
@@ -2876,6 +2884,19 @@ function uSharedV() {
     box('contacts', '<div class="u-qs">' + ['gm', 'cfo', 'hr'].map(pick).join('') + '</div>') +
     box('mailGroups', rows('mailGroups'), saveBtn('mailGroups')) +
     box('brand', '<label class="u-q"><span class="u-q-t">اسم المرسل في رسائل البريد</span><input class="inp" data-uc="brand" value="' + esc((sh.brand || {}).senderName || '') + '"></label>');
+}
+/** توزيع أيام الراحة: لكل قسم كم يرتاح في كل يوم — حتى يستمر العمل كل الأسبوع بلا إغلاق. */
+function uCoverage() {
+  const D = U.d, cap = Number(((D.shared || {}).workweek || {}).maxRestShare) || 50, by = {};
+  D.people.filter(p => !uLeftP(p) && p.dept).forEach(p => { (by[p.dept] = by[p.dept] || []).push(p); });
+  const depts = Object.keys(by).sort((a, b) => by[b].length - by[a].length);
+  if (!depts.length) return '<p class="u-muted">يظهر هنا توزيع أيام الراحة على الأسبوع بعد نقل بيانات الموظفين وأيام راحتهم.</p>';
+  const noDay = D.people.filter(p => !uLeftP(p) && p.dept && !(p.restDays || []).length).length;
+  return '<div class="u-cov"><table><thead><tr><th>القسم</th>' + U_DAYS.map(d => '<th>' + d + '</th>').join('') + '</tr></thead><tbody>' + depts.map(d => {
+    const L = by[d];
+    return '<tr><th>' + esc(d) + ' <small>' + L.length + '</small></th>' + U_DAYS.map((x, i) => { const off = L.filter(p => (p.restDays || []).indexOf(i) >= 0).length, pc = off * 100 / L.length;
+      return '<td class="' + (off && pc > cap ? 'u-cov-bad' : off ? 'u-cov-some' : '') + '">' + (off || '') + '</td>'; }).join('') + '</tr>';
+  }).join('') + '</tbody></table></div>' + (noDay ? '<p class="u-muted">' + noDay + ' موظفاً بلا يوم راحة محدد.</p>' : '');
 }
 function uRowHtml(key, f, r, i) {
   return '<div class="u-row" data-i="' + i + '">' + f.map(c => {
@@ -3163,6 +3184,7 @@ function uOnChange(el) {
     go(); return;
   }
   if (k === 'contact') { const c = Object.assign({}, D.shared.contacts || {}); c[el.dataset.r] = el.value; D.shared.contacts = c; uSave('u_saveShared', { key: 'contacts', value: c }, 'حُفظ'); return; }
+  if (k === 'wkCap') { const v = Object.assign({}, D.shared.workweek || {}, { maxRestShare: Math.min(100, Math.max(10, Number(el.value) || 50)) }); D.shared.workweek = v; uRender(); uSave('u_saveShared', { key: 'workweek', value: v }, 'حُفظ'); return; }
   if (k === 'brand') { const b = Object.assign({}, D.shared.brand || {}, { senderName: el.value.trim() }); D.shared.brand = b; uSave('u_saveShared', { key: 'brand', value: b }, 'حُفظ'); return; }
 }
 function uConfirm(msg, yes, no) {
