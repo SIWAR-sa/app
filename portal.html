@@ -1019,6 +1019,10 @@ tr.is-off .mx-user { opacity: .5; }
 .u-xl { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .u-xl b { font-size: 15.5px; } .u-xl p { margin: 4px 0 0; }
 .u-pick { margin: 0; max-width: 420px; }
+.u-tabs .tab .count.alert { background: #F9E1DE; color: #9A3F38; }
+.u-head > .btn { flex: none; }
+.u-acct h3 { margin-bottom: 4px; }
+.u-q-v .btn-sm { white-space: nowrap; }
 .u-errs { margin: 6px 0 0; padding-inline-start: 20px; color: #9A3F38; font-size: 13px; line-height: 1.9; max-height: 240px; overflow: auto; }
 #uRoot { display: flex; flex-direction: column; gap: 16px; }
 .u-wait { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 60px 16px; color: var(--muted); }
@@ -1226,6 +1230,15 @@ tr.is-off .mx-user { opacity: .5; }
       <button class="tab" data-act="tab" data-tab="settings" data-min="owner"><i data-ic="settings"></i><span data-i18n="tabSettings"></span></button>
       <button class="tab" data-act="tab" data-tab="logs" data-min="admin"><i data-ic="list"></i><span data-i18n="tabLogs"></span></button>
     </nav>
+    <nav class="tabs u-tabs" id="uTabs" hidden>
+      <button class="tab" data-unav="home"><i data-ic="alert"></i><span>يحتاج قرارك</span><span class="count alert" id="uTodoN" hidden></span></button>
+      <button class="tab" data-unav="people"><i data-ic="users"></i><span>الموظفون</span></button>
+      <button class="tab" data-unav="profiles"><i data-ic="lockOpen"></i><span>الوظائف</span></button>
+      <button class="tab" data-unav="systems"><i data-ic="grid"></i><span>الأنظمة</span></button>
+      <button class="tab" data-unav="shared"><i data-ic="shield"></i><span>الثوابت</span></button>
+      <button class="tab" data-unav="settings" data-owner="1"><i data-ic="palette"></i><span>البوابة</span></button>
+      <button class="tab" data-unav="logs"><i data-ic="list"></i><span>السجل</span></button>
+    </nav>
 
     <div class="panel on" data-panel="apps">
       <div class="panel-bar">
@@ -1423,7 +1436,7 @@ const I18N = {
     rs_noEmail: 'بلا بريد', rs_suspended: 'موقوف', rs_forbidden: 'خارج صلاحيتك', rs_mail: 'تعذّر الإرسال',
     ERR_NO_PORTAL_URL: 'احفظ رابط النشر في الإعدادات أولاً.', ERR_MAIL_QUOTA: 'تجاوز العدد المسموح للبريد اليوم.',
     ERR_INVALID_LOGIN: 'البريد أو كلمة المرور غير صحيحة.', ERR_LOCKED: 'محاولات كثيرة، انتظر قليلاً ثم حاول مجدداً أو استخدم «نسيت كلمة المرور؟».',
-    ERR_SUSPENDED: 'هذا الحساب موقوف.', ERR_SESSION: 'انتهت الجلسة، سجّل الدخول مجدداً.', ERR_FORBIDDEN: 'لا تملك صلاحية هذا الإجراء.',
+    ERR_SUSPENDED: 'هذا الحساب موقوف.', ERR_SESSION: 'انتهت الجلسة، سجّل الدخول مجدداً.', ERR_FORBIDDEN: 'لا تملك صلاحية هذا الإجراء.', ERR_SENSITIVE: 'هذه صلاحية حساسة؛ يمنحها المالك فقط.', ERR_SHARED: 'هذا ثابت مشترك؛ يُعدَّل من «الثوابت».', ERR_VALUE: 'القيمة غير مقبولة.', NO_SOURCE: 'تعذّر فتح ملف المصدر.',
     ERR_NO_URL: 'لم يُضبط رابط هذا البرنامج بعد.', ERR_USERNAME: 'اسم المستخدم من 2 إلى 40 حرفاً إنجليزياً أو رقماً.',
     ERR_NAME: 'الاسم بالعربية والإنجليزية مطلوب.', ERR_EMAIL: 'البريد الإلكتروني غير صحيح.', ERR_DUP_USERNAME: 'اسم المستخدم مستخدم من قبل.',
     ERR_PIN: 'كلمة المرور 8 خانات على الأقل، فيها حروف وأرقام.', ERR_PIN_WEAK: 'كلمة المرور سهلة التخمين، اختر غيرها.', ERR_TEMP_EXPIRED: 'انتهت صلاحية كلمة المرور المؤقتة، اطلب واحدة جديدة من المسؤول.', tempTitle: 'كلمة المرور المؤقتة', tempNote: 'تظهر الآن فقط، ويُطلب من المستخدم تغييرها عند أول دخول.', tempMailed: 'أُرسلت إلى بريده.', tempSend: 'إرسال كلمة المرور المؤقتة بالبريد', copy: 'نسخ', copied: 'تم النسخ', noEmail: 'بلا بريد', tempCreate: 'إنشاء', ERR_DUP_EMAIL: 'هذا البريد مسجّل لمستخدم آخر.', ERR_MUST_CHANGE: 'اختر كلمة مرور خاصة بك أولاً.', ERR_BUSY: 'النظام مشغول لحظات، أعد المحاولة.', linkSaveFirst: 'احفظ التعديلات أولاً ثم افحص الربط.', regenYes: 'تغيير المفتاح', ERR_PIN_MATCH: 'كلمتا المرور غير متطابقتين.', ERR_PIN_WRONG: 'كلمة المرور الحالية غير صحيحة.',
@@ -1497,7 +1510,7 @@ const I18N = {
     rs_noEmail: 'no email', rs_suspended: 'suspended', rs_forbidden: 'outside your access', rs_mail: 'send failed',
     ERR_NO_PORTAL_URL: 'Save the deployment URL in Settings first.', ERR_MAIL_QUOTA: 'Daily email limit reached.',
     ERR_INVALID_LOGIN: 'Incorrect email or password.', ERR_LOCKED: 'Too many attempts. Wait a little and try again, or use “Forgot your password?”.',
-    ERR_SUSPENDED: 'This account is suspended.', ERR_SESSION: 'Your session ended. Please sign in again.', ERR_FORBIDDEN: 'You are not allowed to do this.',
+    ERR_SUSPENDED: 'This account is suspended.', ERR_SESSION: 'Your session ended. Please sign in again.', ERR_FORBIDDEN: 'You are not allowed to do this.', ERR_SENSITIVE: 'Sensitive permission: owner only.', ERR_SHARED: 'Shared constant: edit it under Constants.', ERR_VALUE: 'Invalid value.', NO_SOURCE: 'Source file could not be opened.',
     ERR_NO_URL: 'This app has no URL yet.', ERR_USERNAME: 'Username must be 2–40 English letters or digits.',
     ERR_NAME: 'Arabic and English names are required.', ERR_EMAIL: 'Invalid email address.', ERR_DUP_USERNAME: 'Username already exists.',
     ERR_PIN: 'Password must be at least 8 characters with letters and numbers.', ERR_PIN_WEAK: 'This password is too easy to guess.', ERR_TEMP_EXPIRED: 'Your temporary password expired. Ask the administrator for a new one.', tempTitle: 'Temporary password', tempNote: 'Shown only now. The user must change it at first sign-in.', tempMailed: 'Sent to their email.', tempSend: 'Email the temporary password', copy: 'Copy', copied: 'Copied', noEmail: 'No email', tempCreate: 'Create', ERR_DUP_EMAIL: 'This email belongs to another user.', ERR_MUST_CHANGE: 'Please choose your own password first.', ERR_BUSY: 'The system is busy for a moment — please retry.', linkSaveFirst: 'Save your changes first, then test the link.', regenYes: 'Change key', ERR_PIN_MATCH: 'Passwords do not match.', ERR_PIN_WRONG: 'Current password is incorrect.',
@@ -2623,7 +2636,20 @@ async function uSave(action, payload, okMsg) {
   try { const r = await api(action, payload); if (okMsg) toast(okMsg, 'ok'); uLoad(); return r; }
   catch (c) { showErr(c); uLoad(); return null; }
 }
-function uGo(view, id) { U.back.push({ view: U.view, id: U.id }); U.view = view; U.id = id || ''; uRender(); try { $('#uRoot').scrollIntoView({ block: 'start', behavior: 'smooth' }); } catch (e) {} }
+const U_TOP = { home: 1, people: 1, profiles: 1, systems: 1, shared: 1 };
+const U_PARENT = { person: 'people', profile: 'profiles', system: 'systems' };
+function uNavMark() {
+  const cur = S.tab === 'unified' ? (U_PARENT[U.view] || U.view) : S.tab;
+  $$('#uTabs .tab').forEach(b => b.classList.toggle('on', b.dataset.unav === cur));
+}
+async function uNav(v) {
+  if (U_TOP[v]) { U.back = []; U.view = v; U.id = ''; U.ids = v === 'people' ? U.ids : null; U.draft = null; if (S.tab !== 'unified') await switchTab('unified'); else uRender(); }
+  else await switchTab(v);
+  uNavMark();
+  const on = $('#uTabs .tab.on'); if (on && window.innerWidth <= 720) try { on.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' }); } catch (e) {}
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-unav]'); if (b) { e.preventDefault(); uNav(b.dataset.unav); } });
+function uGo(view, id) { if (U_TOP[view]) { U.back = []; U.view = view; U.id = ''; uRender(); return; } U.back.push({ view: U.view, id: U.id }); U.view = view; U.id = id || ''; uRender(); try { $('#uRoot').scrollIntoView({ block: 'start', behavior: 'smooth' }); } catch (e) {} }
 function uBack() { const b = U.back.pop() || { view: 'home', id: '' }; U.view = b.view; U.id = b.id; uRender(); }
 
 const uApp = id => (U.d.apps || []).find(a => a.id === id) || { id: id, nameAR: id };
@@ -2648,33 +2674,25 @@ function uRender() {
   const root = $('#uRoot'); if (!root || !U.d) return;
   const v = U.view;
   const html = ({ home: uHome, people: uPeople, person: uPerson, profiles: uProfiles, profile: uProfile, systems: uSystems, system: uSystem, shared: uSharedV })[v] || uHome;
-  root.innerHTML = (v !== 'home' ? '<button class="u-back" data-u="back">' + ic('arrow') + '<span>رجوع</span></button>' : '') + html();
-  uAfter();
+  root.innerHTML = (['person', 'profile', 'system'].indexOf(v) >= 0 ? '<button class="u-back" data-u="back">' + ic('arrow') + '<span>رجوع</span></button>' : '') + html();
+  uAfter(); uNavMark();
+  const n = (U.d.todo || []).reduce((a, x) => a + (x.kind === 'nomail' ? 0 : x.n), 0), b = $('#uTodoN');
+  if (b) { b.hidden = !n; b.textContent = n; }
 }
 
-/* ── الرئيسية: أربعة أسئلة + «يحتاج قرارك» ── */
+/* ── يحتاج قرارك ── */
 function uHome() {
-  const D = U.d, P = D.people.filter(p => !uLeftP(p));
-  const byCo = {}; P.forEach(p => { byCo[p.company] = (byCo[p.company] || 0) + 1; });
-  const coLine = ((D.shared.companies || []).map(c => (byCo[c.code] || 0) + ' ' + c.nameAR)).join(' · ');
-  const differ = P.filter(p => p.profile && uDiffN(p)).length;
-  const declared = D.apps.filter(a => uReg(a.id)).length;
-  const card = (go, icon, q, sub) => '<button class="u-ask" data-u="go" data-v="' + go + '"><span class="u-ask-ic">' + ic(icon) + '</span><b>' + q + '</b><small>' + sub + '</small></button>';
-  const todo = (D.todo || []).map(x => {
-    const txt = x.kind === 'left' ? x.n + ' غادروا الشركة في جسر وحسابهم ما زال يعمل' : x.kind === 'fresh' ? x.n + ' بلا وظيفة محددة ولا صلاحيات' : x.n + ' بلا بريد إلكتروني — لا يستطيعون الدخول';
-    return '<div class="u-todo-row"><span class="u-dot u-dot-' + x.kind + '"></span><span>' + esc(txt) + '</span><button class="link-btn" data-u="showIds" data-ids="' + esc(x.ids.join(',')) + '">عرضهم</button></div>';
-  });
-  if (!D.people.some(p => p.source === 'jisr')) todo.unshift('<div class="u-todo-row"><span class="u-dot u-dot-fresh"></span><span>لم تُستورد بيانات الموظفين من جسر بعد</span><button class="link-btn" data-u="import">استيراد الآن</button></div>');
+  const D = U.d;
+  const row = (kind, txt, btn) => '<div class="u-todo-row"><span class="u-dot u-dot-' + kind + '"></span><span>' + esc(txt) + '</span>' + btn + '</div>';
+  const todo = (D.todo || []).map(x => row(x.kind, x.kind === 'left' ? x.n + ' غادروا أو أُوقفوا وحسابهم ما زال يعمل' : x.kind === 'fresh' ? x.n + ' بلا وظيفة محددة ولا صلاحيات' : x.n + ' بلا بريد إلكتروني — لا يستطيعون الدخول',
+    '<button class="link-btn" data-u="showIds" data-ids="' + esc(x.ids.join(',')) + '">عرضهم</button>'));
+  if (!D.people.some(p => p.source === 'jisr')) todo.unshift(row('fresh', 'بيانات الموظفين لم تُنقل من كوادر بعد', '<button class="link-btn" data-u="srcKawader">نقلها الآن</button>'));
+  else if (!D.people.some(p => (p.restDays || []).length)) todo.unshift(row('fresh', 'أيام الراحة لم تُنقل من التحليلات بعد', '<button class="link-btn" data-u="srcRest">نقلها الآن</button>'));
   const undeclared = D.apps.filter(a => !uReg(a.id)).length;
-  if (undeclared) todo.push('<div class="u-todo-row"><span class="u-dot u-dot-nomail"></span><span>' + undeclared + ' من الأنظمة لم تربط إعداداتها بالبوابة بعد</span><button class="link-btn" data-u="go" data-v="systems">عرضها</button></div>');
-  return '<div class="u-asks">' +
-    card('people', 'users', 'مَن يعمل في الشركتين؟', P.length + ' موظفاً' + (coLine ? ' · ' + esc(coLine) : '')) +
-    card('profiles', 'lockOpen', 'ماذا يستطيع كل موظف أن يفعل؟', D.profiles.length + ' وظيفة' + (differ ? ' · ' + differ + ' مختلفون عن وظائفهم' : '')) +
-    card('systems', 'grid', 'كيف يعمل كل نظام؟', declared + ' من ' + D.apps.length + ' أنظمة ربطت إعداداتها') +
-    card('shared', 'shield', 'ما الثابت في الشركتين؟', 'العطلة، العطلات الرسمية، الشركتان، الإدارات، المواقع…') +
-    '</div>' +
-    '<section class="panel-box u-xl"><div><b>تعبئة جماعية من Excel</b><p class="u-muted">نزّل النموذج بقوائمه المنسدلة، عبّئ الوظائف والصلاحيات والإعدادات، ثم ارفعه. تظهر معاينة قبل أي تغيير.</p></div><div class="savebar-actions"><button class="btn btn-ghost" data-u="xlDown">' + ic('save') + '<span>تنزيل النموذج</span></button><button class="btn btn-primary" data-u="xlUp">' + ic('upload') + '<span>رفع النموذج</span></button></div></section>' +
-    '<section class="panel-box u-todo"><h3>' + ic('alert') + '<span>يحتاج قرارك</span></h3>' + (todo.length ? todo.join('') : '<p class="u-muted">لا شيء الآن. كل شيء مرتب.</p>') + '</section>';
+  if (undeclared) todo.push(row('nomail', undeclared + ' من الأنظمة لم تربط إعداداتها بالبوابة بعد', '<button class="link-btn" data-unav="systems">عرضها</button>'));
+  todo.push(row('nomail', 'المراجعة الدورية للصلاحيات', '<button class="link-btn" data-unav="review">فتح</button>'));
+  return '<section class="panel-box u-todo">' + todo.join('') + '</section>' +
+    '<section class="panel-box u-xl"><div><b>تعبئة جماعية من Excel</b><p class="u-muted">الوظائف، والموظفون وأيام راحتهم، والصلاحيات، والإعدادات — بقوائم منسدلة. تظهر معاينة قبل أي تغيير.</p></div><div class="savebar-actions"><button class="btn btn-ghost" data-u="xlDown">' + ic('save') + '<span>تنزيل النموذج</span></button><button class="btn btn-primary" data-u="xlUp">' + ic('upload') + '<span>رفع النموذج</span></button></div></section>';
 }
 
 /* ── الموظفون ── */
@@ -2688,7 +2706,7 @@ function uPeople() {
   const cos = [{ code: '', nameAR: 'الكل' }].concat(D.shared.companies || []);
   return '<div class="u-bar"><div class="input-wrap">' + ic('search') + '<input id="uQ" type="search" placeholder="ابحث بالاسم أو الوظيفة أو الرقم" value="' + esc(U.q) + '" autocomplete="off"></div>' +
     '<div class="seg">' + cos.map(c => '<button class="seg-btn' + (U.co === c.code ? ' on' : '') + '" data-u="co" data-co="' + esc(c.code) + '">' + esc(c.nameAR) + '</button>').join('') + '</div>' +
-    '<div class="savebar-actions"><button class="btn btn-ghost" data-u="import">' + ic('upload') + '<span>استيراد من جسر</span></button><button class="btn btn-ghost" data-u="manual">' + ic('userPlus') + '<span>شخص من خارج جسر</span></button></div></div>' +
+    '<div class="savebar-actions"><button class="btn btn-ghost" data-u="srcKawader">' + ic('refresh') + '<span>تحديث من كوادر</span></button><button class="btn btn-ghost" data-u="import">' + ic('upload') + '<span>لصق من جسر</span></button><button class="btn btn-primary" data-u="manual">' + ic('userPlus') + '<span>إضافة شخص</span></button></div></div>' +
     (U.ids ? '<div class="u-filter">عرض مجموعة محددة (' + list.length + ') <button class="link-btn" data-u="clearIds">عرض الكل</button></div>' : '') +
     '<div class="list u-list">' + (list.length ? list.slice(0, 400).map((p, i) =>
       '<button class="row u-person' + (uLeftP(p) ? ' is-off' : '') + '" data-u="person" data-id="' + esc(p.id) + '" style="--i:' + Math.min(i, 20) + '">' +
@@ -2706,7 +2724,18 @@ function uPerson() {
   const n = uDiffN(p);
   const head = '<div class="u-head"><span class="u-av u-av-lg">' + esc(String(p.name || '?').charAt(0)) + '</span><div><h3>' + esc(p.name) + '</h3>' +
     '<p>' + esc([p.title, p.dept, uCo(p.company), p.no ? 'رقم ' + p.no : ''].filter(Boolean).join(' · ')) + '</p>' +
-    '<p class="u-muted">' + (p.email ? esc(p.email) + (p.userId ? (p.userStatus === 'Active' ? ' · يدخل البوابة' : ' · حسابه موقوف') : ' · لا حساب له في البوابة بعد') : 'لا بريد إلكتروني — لا يستطيع الدخول') + (uLeftP(p) ? ' · غادر الشركة' : '') + '</p></div></div>';
+    '<p class="u-muted">' + (p.email ? esc(p.email) : 'لا بريد إلكتروني') + '</p></div>' +
+    '<span class="u-tag' + (uLeftP(p) ? ' u-tag-grey' : '') + '">' + esc(p.stopped ? 'موقوف من البوابة' : uLeftP(p) ? (p.status || 'غادر') : 'على رأس العمل') + '</span>' +
+    (p.owner || me ? '' : p.stopped ? '<button class="btn btn-ghost btn-sm" data-u="pResume">' + ic('check') + '<span>إعادة تفعيل</span></button>' : '<button class="btn btn-ghost btn-sm" data-u="pStop">' + ic('lock') + '<span>إيقاف في كل الأنظمة</span></button>') + '</div>';
+  const rd = p.restDays || [];
+  const work = '<section class="panel-box u-work"><div class="u-q"><span class="u-q-t">يوم الراحة الأسبوعي</span><span class="u-days" data-prest="1">' + U_DAYS.map((n, i) => '<button class="seg-btn' + (rd.indexOf(i) >= 0 ? ' on' : '') + '" data-u="pRest" data-i="' + i + '"' + (me && !p.owner ? ' disabled' : '') + '>' + n + '</button>').join('') + '</span></div>' +
+    (p.owner ? '' : '<div class="u-q"><span class="u-q-t">وظيفته</span><span class="u-q-v"><select class="inp" data-uc="pProf"' + (me ? ' disabled' : '') + '><option value="">' + esc(U_BYTITLE) + '</option>' + D.profiles.map(f => '<option value="' + esc(f.id) + '"' + (p.profileId === f.id ? ' selected' : '') + '>' + esc(f.nameAR) + '</option>').join('') + '</select></span></div>') + '</section>';
+  const ua = p.userId && S.admin ? (S.admin.users || []).find(u => u.id === p.userId) : null;
+  const acct = '<section class="panel-box u-acct"><h3>' + ic('key') + '<span>حساب البوابة</span></h3>' + (ua
+    ? '<div class="u-q"><span class="u-q-t">' + esc(ua.username) + ' · ' + esc(t('role_' + ua.role)) + ' · ' + esc(t('st_' + ua.status)) + '</span><span class="u-q-v">' + (p.owner && S.user.role !== 'owner' ? '' : '<button class="btn btn-ghost btn-sm" data-act="editUser" data-id="' + esc(ua.id) + '">' + ic('edit') + '<span>تعديل الحساب</span></button><button class="btn btn-ghost btn-sm" data-act="resetPin" data-id="' + esc(ua.id) + '">' + ic('key') + '<span>رمز جديد</span></button>') + '</span></div>'
+    : p.email ? '<div class="u-q"><span class="u-q-t u-muted">لا حساب له في البوابة بعد</span><span class="u-q-v"><button class="btn btn-primary btn-sm" data-u="pAccount">' + ic('userPlus') + '<span>إنشاء حساب</span></button></span></div>'
+    : '<p class="u-muted">يحتاج بريداً إلكترونياً ليصبح له حساب.</p>') + '</section>';
+
   const pick = p.owner ? '' : '<label class="u-scope u-pick"><span>وظيفته:</span><select class="inp" data-uc="pProf"><option value="">' + esc(U_BYTITLE) + '</option>' + D.profiles.map(f => '<option value="' + esc(f.id) + '"' + (p.profileId === f.id ? ' selected' : '') + '>' + esc(f.nameAR) + '</option>').join('') + '</select></label>';
   const line = p.owner ? '<div class="u-like">المالك: كل الصلاحيات في كل الأنظمة دائماً، ولا يستطيع أحد تقليلها.</div>' : p.profile
     ? '<div class="u-like">' + (n ? 'وظيفته «' + esc(p.profile) + '»، ومختلف عنها في ' + (n === 1 ? 'نقطة واحدة' : n + ' نقاط') + ' <button class="btn btn-ghost btn-sm" data-u="reset" data-id="' + esc(p.id) + '">' + ic('undo') + '<span>اجعله مثل وظيفته</span></button>' : 'مثل باقي «' + esc(p.profile) + '» تماماً') + '</div>'
@@ -2726,7 +2755,7 @@ function uPerson() {
     else if (e.on && !(d && (d.caps || []).length)) body = '<p class="u-muted u-note">هذا النظام لم يربط قدراته بالبوابة بعد؛ يكفي الآن تشغيل الدخول أو إيقافه، وصلاحياته التفصيلية ما زالت داخله.</p>';
     return '<section class="panel-box u-sys' + (e.on ? '' : ' is-off') + '"><div class="u-sys-head">' + uIcon(a) + '<b>' + esc(a.nameAR) + '</b>' + sw + '</div>' + body + '</section>';
   }).join('');
-  return head + (me && !p.owner ? '<p class="u-muted u-note">لا يمكنك تعديل صلاحياتك بنفسك.</p>' : '') + line + pick + '<div class="u-sys-grid">' + cards + '</div>';
+  return head + (me && !p.owner ? '<p class="u-muted u-note">لا يمكنك تعديل صلاحياتك بنفسك.</p>' : '') + line + work + '<div class="u-sys-grid">' + cards + '</div>' + acct;
 }
 
 /* ── الوظائف ── */
@@ -2771,18 +2800,21 @@ function uProfile() {
 
 /* ── الأنظمة وإعداداتها ── */
 function uSystems() {
-  const D = U.d;
-  return '<p class="u-muted u-lead">إعدادات كل نظام تُحفظ هنا فقط، والنظام يقرؤها من البوابة. النظام الذي لم يربط إعداداته بعد يظهر «لم يربط بعد».</p><div class="list u-list">' + D.apps.map(a => {
-    const d = uReg(a.id), r = (D.registry || {})[a.id];
-    return '<button class="row" data-u="system" data-id="' + esc(a.id) + '">' + uIcon(a) + '<div class="row-main"><div class="row-title">' + esc(a.nameAR) + '</div>' +
-      '<div class="row-sub">' + (d ? (d.settings || []).length + ' إعداداً · ' + (d.caps || []).length + ' صلاحية · آخر تحديث ' + esc(String(r.fetchedAt || '').slice(0, 10)) : 'لم يربط إعداداته بالبوابة بعد') + '</div></div>' +
+  const D = U.d, all = (S.admin && S.admin.apps) || D.apps;
+  return '<div class="u-bar"><span></span><button class="btn btn-primary" data-act="newApp">' + ic('plus') + '<span>إضافة نظام</span></button></div><div class="list u-list">' + all.map(a0 => {
+    const a = D.apps.find(x => x.id === a0.id) || { id: a0.id, nameAR: a0.nameAR, icon: a0.icon, tint: a0.tint };
+    const d = uReg(a.id), r = (D.registry || {})[a.id], off = a0.status && a0.status !== 'Active';
+    return '<button class="row' + (off ? ' is-off' : '') + '" data-u="system" data-id="' + esc(a.id) + '">' + uIcon(a) + '<div class="row-main"><div class="row-title">' + esc(a.nameAR) + (off ? ' <span class="badge badge-grey">' + esc(t('st_Hidden')) + '</span>' : '') + '</div>' +
+      '<div class="row-sub">' + (d ? (d.settings || []).length + ' إعداداً · ' + (d.caps || []).length + ' صلاحية · ' + esc(String(r.fetchedAt || '').slice(0, 10)) : 'لم يربط إعداداته بالبوابة بعد') + '</div></div>' +
       '<span class="u-tag' + (d ? '' : ' u-tag-grey') + '">' + (d ? 'مربوط' : 'لم يربط بعد') + '</span></button>';
   }).join('') + '</div>';
 }
+
 function uSystem() {
   const D = U.d, a = uApp(U.id), d = uReg(a.id), saved = (D.settings || {})[a.id] || {};
   const head = '<div class="u-head">' + uIcon(a) + '<div><h3>' + esc(a.nameAR) + '</h3><p class="u-muted">' + (d ? 'كل سؤال هنا إعداد من إعدادات النظام. التعديل يصل للنظام فوراً.' : 'لم يربط هذا النظام إعداداته بعد.') + '</p></div>' +
-    '<button class="btn btn-ghost" data-u="fetchReg" data-id="' + esc(a.id) + '">' + ic('refresh') + '<span>' + (d ? 'تحديث من النظام' : 'جلب إعداداته الآن') + '</span></button></div>';
+    '<div class="savebar-actions"><button class="btn btn-ghost" data-act="editApp" data-id="' + esc(a.id) + '">' + ic('link') + '<span>الربط والشكل</span></button><button class="btn btn-ghost" data-u="fetchReg" data-id="' + esc(a.id) + '">' + ic('refresh') + '<span>' + (d ? 'تحديث من النظام' : 'جلب إعداداته الآن') + '</span></button></div></div>' +
+    '<section class="panel-box"><h3>' + ic('users') + '<span>من يدخله</span></h3><div class="u-chips">' + (D.people.filter(p => p.access[a.id] && p.access[a.id].on && !uLeftP(p)).map(p => '<button class="chip" data-u="person" data-id="' + esc(p.id) + '">' + esc(p.name) + '</button>').join('') || '<span class="u-muted">لا أحد بعد</span>') + '</div></section>';
   if (!d) return head + '<section class="panel-box"><p class="u-muted">عندما يجهز النظام وصف إعداداته وصلاحياته (تعمل عليه محادثة النظام)، اضغط «جلب إعداداته الآن» فتظهر هنا أسئلته بقيمها الحالية، وتُنقل قيمه الحالية للبوابة مرة واحدة.</p></section>';
   const groups = (d.groups || []).slice(); const known = {}; groups.forEach(g => { known[g.key] = 1; });
   (d.settings || []).forEach(s => { if (s.group && !known[s.group]) { known[s.group] = 1; groups.push({ key: s.group, title: s.group }); } });
@@ -2904,6 +2936,25 @@ function uOpenManual() {
     foot: '<button class="btn btn-primary" data-u="saveManual">' + ic('save') + '<span>حفظ</span></button>' });
 }
 
+/* ── نقل البيانات الأولى من كوادر والتحليلات: معاينة ثم اعتماد ── */
+async function uSrc(action, title) {
+  U.src = action;
+  openModal({ title: esc(title), body: '<div id="uSrcOut"><div class="u-wait"><span class="u-spin"></span><span>قراءة الملف…</span></div></div>', foot: '<button class="btn btn-primary" data-u="srcApply" id="uSrcApply" disabled>' + ic('check') + '<span>اعتماد</span></button>' });
+  try {
+    const r = await api(action, { apply: false }), out = $('#uSrcOut'); if (!out) return;
+    if (!r.ok) { out.innerHTML = '<p class="u-err">' + esc(t(r.code || 'ERR_SERVER')) + '</p>'; return; }
+    if (action === 'u_importRestDays') out.innerHTML = '<div class="u-prev"><span><b>' + r.matched + '</b> موظفاً طابقنا يوم راحته</span><span><b>' + r.missing + '</b> لم نجد مطابقاً</span></div>' + (r.sampleMissing.length ? '<p class="u-muted">لم يطابَق: ' + esc(r.sampleMissing.join('، ')) + '</p>' : '');
+    else { const c = r.counts, sm = r.sample; out.innerHTML = '<div class="u-prev"><span><b>' + c.fresh + '</b> جديد</span><span><b>' + c.changed + '</b> تغيّرت بياناتهم</span><span><b>' + c.left + '</b> غادروا</span><span><b>' + c.same + '</b> بلا تغيير</span></div>' +
+      (sm.left.length ? '<p class="u-err">سيُوقف دخول من غادر في كل الأنظمة: ' + esc(sm.left.join('، ')) + (c.left > sm.left.length ? '…' : '') + '</p>' : '') + '<p class="u-muted">لا تُنقل الرواتب ولا أرقام الإقامة.</p>'; }
+    $('#uSrcApply').disabled = false;
+  } catch (c) { showErr(c); }
+}
+async function uSrcApply() {
+  $('#uSrcApply').disabled = true;
+  try { const r = await api(U.src, { apply: true }); closeModal(true); toast(U.src === 'u_importRestDays' ? 'نُقلت أيام الراحة لـ ' + r.matched + ' موظفاً' : 'نُقلت البيانات: ' + r.counts.fresh + ' جديد · ' + r.counts.changed + ' تغيّر', 'ok'); uLoad(); }
+  catch (c) { showErr(c); }
+}
+
 /* ── نموذج Excel: تنزيل بقوائم منسدلة، ثم رفعه ── */
 const U_XL_SRC = 'https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js';
 function uXlLib() {
@@ -2940,6 +2991,7 @@ async function uXlDownload(btn) {
     addList('scopes', Object.keys(M.scopes));
     addList('people', Object.keys(M.people));
     addList('yn', ['نعم', 'لا']);
+    addList('days', U_DAYS);
     D.apps.forEach(a => addList('sc_' + a.id, ((uReg(a.id) || {}).scopes || []).map(s => s.label)));
     const N = 600;
     const dv = (ws, colKey, listName, from, rows) => { const f = typeof listName === 'string' && listName.indexOf('!') < 0 ? lists[listName] : listName; if (!f) return; const c = ws.getColumn(colKey).letter; for (let r = from || 2; r <= (rows || N); r++) ws.getCell(c + r).dataValidation = { type: 'list', allowBlank: true, formulae: [f], showErrorMessage: true, errorStyle: 'stop', errorTitle: 'قيمة غير مسموحة', error: 'اختر من القائمة فقط' }; };
@@ -2964,16 +3016,17 @@ async function uXlDownload(btn) {
     Object.keys(titles).sort().forEach(t => { const f = D.profiles.find(x => (x.titles || []).indexOf(t) >= 0); T.addRow({ t: t, p: f ? f.nameAR : '' }); });
     dv(T, 'p', "'الوظائف'!$A$2:$A$" + N, 2, Object.keys(titles).length + 1);
 
-    const Pcols = [['رمز', 'id', 12], ['الرقم', 'no', 9], ['الاسم', 'name', 26], ['المسمى في جسر', 'title', 22], ['الوظيفة', 'prof', 26]];
+    const Pcols = [['رمز', 'id', 12], ['الرقم', 'no', 9], ['الاسم', 'name', 26], ['المسمى في جسر', 'title', 22], ['الوظيفة', 'prof', 26], ['يوم الراحة', 'rest', 14]];
     D.apps.forEach(a => { Pcols.push([a.nameAR + ' — الدخول', 'en_' + a.id, 18]); if (((uReg(a.id) || {}).scopes || []).length) Pcols.push([a.nameAR + ' — يرى', 'sc_' + a.id, 22]); });
     const P = wb.addWorksheet('الموظفون'); head(P, Pcols);
     const plist = D.people.filter(p => !uLeftP(p) && !p.owner);
-    plist.forEach(p => { const row = { id: p.id, no: p.no, name: p.name, title: p.title, prof: p.profileId ? (D.profiles.find(f => f.id === p.profileId) || {}).nameAR || U_BYTITLE : U_BYTITLE };
+    plist.forEach(p => { const row = { id: p.id, no: p.no, name: p.name, title: p.title, rest: (p.restDays || []).length ? U_DAYS[p.restDays[0]] : '', prof: p.profileId ? (D.profiles.find(f => f.id === p.profileId) || {}).nameAR || U_BYTITLE : U_BYTITLE };
       D.apps.forEach(a => { const e = p.access[a.id] || {}; row['en_' + a.id] = U_EN[e.en || '']; const s = ((uReg(a.id) || {}).scopes || []).find(x => x.key === e.scopeOwn); row['sc_' + a.id] = s ? s.label : ''; });
       P.addRow(row); });
     P.getColumn('id').hidden = true;
     const pr = plist.length + 1;
     dv(P, 'prof', lists.prof ? lists.prof.replace(/\$\d+$/, '$' + (D.profiles.length + 1)) : null, 2, pr);
+    dv(P, 'rest', lists.days, 2, pr);
     D.apps.forEach(a => { dv(P, 'en_' + a.id, 'en', 2, pr); if (lists['sc_' + a.id]) dv(P, 'sc_' + a.id, lists['sc_' + a.id], 2, pr); });
 
     const Sx = wb.addWorksheet('صلاحيات خاصة'); head(Sx, [['الموظف', 'p', 36], ['النظام — الصلاحية', 'c', 46], ['منح أو منع', 'g', 14]]);
@@ -3034,9 +3087,12 @@ async function uXlRead(file) {
         if (sl && !sc) return bad('الموظفون', r, 'نطاق ليس من القائمة');
         const e = person.access[a.id] || {}, newEn = en === undefined ? (e.en || '') : en, newSc = sc ? sc.key : '';
         if (newEn !== (e.en || '') || newSc !== (e.scopeOwn || '')) { access[a.id] = { en: newEn, scope: newSc }; changed = true; } });
+      const rl = String(g('يوم الراحة')), ri = rl ? U_DAYS.indexOf(rl) : -1;
+      if (rl && ri < 0) return bad('الموظفون', r, 'يوم راحة ليس من القائمة');
+      const restDays = ri >= 0 && (person.restDays || [])[0] !== ri ? [ri] : null;
       const curProf = person.profileId ? (D.profiles.find(f => f.id === person.profileId) || {}).nameAR : U_BYTITLE;
       const profile = pr && pr !== curProf ? (pr === U_BYTITLE ? '' : pr) : null;
-      if (changed || profile !== null) payload.people.push({ r: r, personId: id, profile: profile, access: access }); });
+      if (changed || profile !== null || restDays) payload.people.push({ r: r, personId: id, profile: profile, access: access, restDays: restDays }); });
     rows('صلاحيات خاصة', (g, r) => { const p = g('الموظف'), c = g('النظام — الصلاحية'), gr = g('منح أو منع'); if (!p && !c) return;
       if (!M.people[p]) return bad('صلاحيات خاصة', r, 'موظف ليس من القائمة'); if (!M.caps[c]) return bad('صلاحيات خاصة', r, 'صلاحية ليست من القائمة');
       if (gr !== 'منح' && gr !== 'منع') return bad('صلاحيات خاصة', r, 'اختر منح أو منع');
@@ -3166,6 +3222,25 @@ function uOnClick(el, e) {
   if (k === 'delRow') { el.closest('.u-row').remove(); return; }
   if (k === 'saveShared') { const key = el.dataset.k, v = uCollectRows(key); D.shared[key] = v; uRender(); return uSave('u_saveShared', { key: key, value: v }, 'حُفظ ووصل لكل الأنظمة'); }
   if (k === 'import') return uOpenImport();
+  if (k === 'srcKawader') return uSrc('u_importKawader', 'نقل بيانات الموظفين من كوادر');
+  if (k === 'srcRest') return uSrc('u_importRestDays', 'نقل أيام الراحة من التحليلات');
+  if (k === 'srcApply') return uSrcApply();
+  if (k === 'pRest') {
+    const p = D.people.find(x => x.id === U.id); el.classList.toggle('on');
+    p.restDays = $$('[data-prest] .seg-btn').map((b, i) => b.classList.contains('on') ? i : -1).filter(i => i >= 0);
+    return uSave('u_setPerson', { personId: p.id, restDays: p.restDays }, 'حُفظ');
+  }
+  if (k === 'pStop' || k === 'pResume') {
+    const p = D.people.find(x => x.id === U.id), stop = k === 'pStop';
+    const go = () => { p.stopped = stop; uRender(); uSave('u_setPerson', { personId: p.id, stop: stop }, stop ? 'أُوقف في كل الأنظمة' : 'أُعيد تفعيله'); };
+    return stop ? uConfirm('سيُوقف دخول ' + p.name + ' إلى البوابة وكل الأنظمة فوراً.', go) : go();
+  }
+  if (k === 'pAccount') {
+    const p = D.people.find(x => x.id === U.id); openUserForm('');
+    setTimeout(() => { const f = (id, v) => { const x = $('#' + id); if (x && v) x.value = v; }; f('uEmail', p.email); f('uNameAR', p.name); f('uNameEN', p.nameEN); }, 30);
+    return;
+  }
+
   if (k === 'xlDown') return uXlDownload(el);
   if (k === 'xlUp') return uXlOpenUpload();
   if (k === 'xlApply') return uXlApply();
@@ -3208,15 +3283,19 @@ function renderAdminSkeleton() { ['#appsList', '#usersList'].forEach(s => { $(s)
 
 function renderAdmin() {
   const A = S.admin; if (!A) return;
-  $$('.tab').forEach(b => { b.hidden = !tabAllowed(b.dataset.tab); });
-  if (!tabAllowed(S.tab)) S.tab = ($$('.tab').find(b => !b.hidden) || {}).dataset.tab || 'users';
+  const uni = myRank() >= RANK.admin;
+  $('#tabs').hidden = uni; $('#uTabs').hidden = !uni;
+  $$('#tabs .tab').forEach(b => { b.hidden = !tabAllowed(b.dataset.tab); });
+  $$('#uTabs [data-owner]').forEach(b => { b.hidden = !(S.user && S.user.role === 'owner'); });
+  if (!tabAllowed(S.tab)) S.tab = ($$('#tabs .tab').find(b => !b.hidden) || {}).dataset.tab || 'users';
+  uNavMark();
   $('#cApps').textContent = A.apps.length;
   const mine = A.users.filter(u => canManage(u) || u.id === A.me);
   const req = mine.filter(u => u.resetRequested && u.id !== A.me).length;
   const cu = $('#cUsers');
   cu.textContent = req ? req : mine.length;
   cu.classList.toggle('alert', !!req);
-  $$('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
+  $$('#tabs .tab').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
   $$('.panel').forEach(p => p.classList.toggle('on', p.dataset.panel === S.tab));
   ({ unified: renderUnified, apps: renderAdminApps, users: renderAdminUsers, access: renderAccess, review: renderReview, settings: renderSettings, logs: renderLogs })[S.tab]();
 }
