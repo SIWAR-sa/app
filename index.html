@@ -23,7 +23,7 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-famil
 [hidden]{display:none!important}
 iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
 
-/* البوابة تملأ الشاشة */
+/* سوار تملأ الشاشة */
 #portal{position:fixed;inset:0;padding-top:var(--top);height:100%;width:100%}
 #portal iframe{height:100%}
 
@@ -40,7 +40,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
 /* طبقة البرنامج داخل التطبيق */
 #prog{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;background:var(--bg);transform:translateX(-100%);transition:transform .32s cubic-bezier(.2,.8,.2,1)}
 #prog.on{transform:none}
-/* البرنامج يملأ الشاشة كتطبيق: لا شريط علوي، والعودة للبوابة من مقبض صغير على حافة الشاشة */
+/* البرنامج يملأ الشاشة كتطبيق: لا شريط علوي، والعودة لسوار من مقبض صغير على حافة الشاشة */
 .pbar{display:none!important;flex:none;display:flex;align-items:center;gap:8px;padding:calc(var(--top) + 6px) 10px 6px;background:rgba(253,250,245,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .pbtn{display:inline-flex;align-items:center;gap:6px;height:40px;min-width:44px;padding:0 12px;border:0;border-radius:999px;background:transparent;color:var(--text);font:inherit;font-size:15px;font-weight:600;cursor:pointer}
 .pbtn:active{background:rgba(194,146,63,.12)}
@@ -57,7 +57,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
 [dir="ltr"] #home svg{transform:scaleX(-1)}
 /* ── شاشة فتح النظام ──
    الدائرة الذهبية تتقدّم مع مراحل الفتح الفعلية (التذكرة ← تحميل الصفحة ← جاهزية البيانات)،
-   والشعار ينتقل من أيقونة النظام في البوابة إلى منتصف الشاشة، والخلفية تنفتح دائرياً من موضع الضغطة */
+   والشعار ينتقل من أيقونة النظام في سوار إلى منتصف الشاشة، والخلفية تنفتح دائرياً من موضع الضغطة */
 #prog{--pc:#101A2E}
 .pf{position:absolute;inset:0;visibility:hidden}
 .pf.cur{visibility:visible}
@@ -138,7 +138,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
       <div class="pl-err"><span id="plErrTxt"></span><button id="plRetry"></button></div></div></div></div>
 </div>
 
-<button id="home" hidden aria-label="العودة إلى البوابة"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+<button id="home" hidden aria-label="العودة إلى سوار"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
 
 <div id="install" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="iT">
@@ -157,9 +157,9 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   var ua = navigator.userAgent || '';
   var iOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   var deferred = null, progUrl = '';
-  /* النصوص بلغة البوابة: تصل اللغة من البوابة وتُحفظ على الجهاز */
+  /* النصوص بلغة سوار: تصل اللغة من سوار وتُحفظ على الجهاز */
   var TXT = {
-    ar: { back: 'رجوع', ext: 'فتح في المتصفح', title: 'تثبيت تطبيق سوار', later: 'لاحقاً', prog: 'برنامج', noUrl: 'لم يُضبط رابط البوابة في config.js',
+    ar: { back: 'رجوع', ext: 'فتح في المتصفح', title: 'تثبيت تطبيق سوار', later: 'لاحقاً', prog: 'برنامج', noUrl: 'لم يُضبط رابط سوار في config.js',
       desc: 'أيقونة على الشاشة الرئيسية، وتفتح الأنظمة في نافذة مستقلة.', install: 'تثبيت التطبيق',
       ios1: 'افتح هذه الصفحة في متصفح Safari', ios2: 'اضغط زر المشاركة ', ios3: 'اختر «إضافة إلى الشاشة الرئيسية» ',
       an1: 'افتح هذه الصفحة في Chrome أو Edge', an2a: 'من قائمة المتصفح ', an2b: ' اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية»' },
@@ -185,7 +185,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   applyLang(LANG);
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
 
-  /* ── البوابة ── */
+  /* ── سوار ── */
   if (!/^https:\/\/script\.google\.com\/.+\/exec$/.test(PORTAL)) {
     $('portal').innerHTML = '<p class="err">' + T('noUrl') + '</p>';
     $('splash').className = 'out';
@@ -193,9 +193,9 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     var f = document.createElement('iframe');
     f.title = 'سوار';
     f.allow = 'clipboard-read; clipboard-write; fullscreen';
-    // البوابة صفحة ثابتة من نفس موقع التطبيق (portal.html): تُفتح فوراً من ذاكرة الجهاز، وتكلّم الخادم مباشرة،
+    // سوار صفحة ثابتة من نفس موقع التطبيق (portal.html): تُفتح فوراً من ذاكرة الجهاز، وتكلّم الخادم مباشرة،
     // فلا صفحة جوجل وسيطة ولا تعارض حسابات جوجل
-    // رابط زر الإيميل (?open=…&go=…) يُمرَّر للبوابة لتفتح البرنامج مباشرة، ثم يُحذف من شريط العنوان
+    // رابط زر الإيميل (?open=…&go=…) يُمرَّر لسوار لتفتح البرنامج مباشرة، ثم يُحذف من شريط العنوان
     var q = new URLSearchParams(location.search), deep = '';
     if (/^[A-Za-z0-9_-]{1,40}$/.test(q.get('open') || '')) {
       deep = '&open=' + encodeURIComponent(q.get('open'));
@@ -204,7 +204,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
       try { history.replaceState(null, '', location.pathname); } catch (e) {}
     }
     f.src = 'portal.html?app=1' + deep;
-    // شاشة تحميل واحدة: تبقى حتى تقول البوابة إنها جاهزة (والحد الأقصى 12 ثانية)
+    // شاشة تحميل واحدة: تبقى حتى تقول سوار إنها جاهزة (والحد الأقصى 12 ثانية)
     f.onload = function () { setTimeout(hideSplash, 8000); };
     $('portal').appendChild(f);
     setTimeout(hideSplash, 12000);
@@ -213,7 +213,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   function hideSplash() { $('splash').className = 'out'; }
 
   /* ── فتح البرنامج داخل التطبيق ──
-     كل نظام في إطار خاص به يبقى حياً بعد العودة للبوابة (حتى MAXF أنظمة)، فالرجوع إليه فوري.
+     كل نظام في إطار خاص به يبقى حياً بعد العودة لسوار (حتى MAXF أنظمة)، فالرجوع إليه فوري.
      شاشة الفتح تظهر مع الضغطة وتتقدّم مع مراحل الفتح الفعلية، وتختفي حين يقول النظام إنه جاهز. */
   var MAXF = iOS || /Android/.test(ua) ? 3 : 5, FRAME_AGE = 6 * 3600000;   // كل الأنظمة الخمسة تبقى مفتوحة على الكمبيوتر، وثلاثة على الجوال: الرجوع لنظام فُتح فوري بلا تحميل
   var frames = {}, cur = '', seq = 0, rt = {};
@@ -272,7 +272,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     L.style.setProperty('--ox', ox); L.style.setProperty('--oy', oy);
     L.className = 'pload enter';
     if (rect && rect.w) {
-      // الشعار يبدأ من مكان أيقونة النظام في البوابة ثم ينتقل للمنتصف
+      // الشعار يبدأ من مكان أيقونة النظام في سوار ثم ينتقل للمنتصف
       var r = em.getBoundingClientRect(), s = Math.max(.25, rect.w / r.width);
       em.style.transform = 'translate(' + (cx - (r.left + r.width / 2)) + 'px,' + (cy - (r.top + r.height / 2)) + 'px) scale(' + s + ')';
     }
@@ -362,7 +362,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     if (cur === id) loaderDone();
   }
 
-  /* أوامر البوابة */
+  /* أوامر سوار */
   function onPrep(id, name, icon, rect) {
     if (frames[id]) dropFrame(id);
     markCur(id);
@@ -411,7 +411,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   }
 
   $('back').onclick = function () { hideLayer(false); };
-  // مقبض العودة: ضغطة تعيد للبوابة (والنظام يبقى حياً)، وسحبه لأعلى أو لأسفل يغيّر مكانه
+  // مقبض العودة: ضغطة تعيد لسوار (والنظام يبقى حياً)، وسحبه لأعلى أو لأسفل يغيّر مكانه
   (function () {
     var h = $('home'), sy = 0, st = 0, moved = false;
     try { var y = Number(localStorage.getItem('siwar_home_y')); if (y > 0) h.style.top = y + 'px'; } catch (e) {}
@@ -430,7 +430,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   $('ext').onclick = function () { if (progUrl) window.open(progUrl, '_blank'); };
   window.addEventListener('popstate', function () { hideLayer(true); });   // زر الرجوع في الجوال
 
-  // الرسائل تُقبل من البوابة (نفس الموقع) ومن صفحات Apps Script فقط
+  // الرسائل تُقبل من سوار (نفس الموقع) ومن صفحات Apps Script فقط
   window.addEventListener('message', function (e) {
     var mine = e.origin === location.origin;
     if (!mine && !/\.googleusercontent\.com$|^https:\/\/script\.google\.com$/.test(e.origin)) return;
@@ -445,7 +445,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
       if (d.siwar === 'close') { if (id && frames[id] && !frames[id].ready) dropFrame(id); hideLayer(false); return; }
       if (d.siwar === 'logout') { hideLayer(false); Object.keys(frames).forEach(dropFrame); return; }
     }
-    // حفظ دخول البوابة ولغتها في صفحة التطبيق (للإصدار السابق من البوابة)
+    // حفظ دخول سوار ولغتها في صفحة التطبيق (للإصدار السابق من سوار)
     if (d.siwar === 'storeGet') {
       var data = {};
       ['sp_token', 'sp_lang', 'sp_theme', 'sp_direct_off'].forEach(function (k) { try { var v = localStorage.getItem('pt_' + k); if (v != null) data[k] = v; } catch (x) {} });
@@ -467,7 +467,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     else if (d.siwar === 'close' || d.siwar === 'logout') { if (cur === fid) hideLayer(false); dropFrame(fid); }
     else if (d.siwar === 'reload' && cur === fid) relaunch(fid, false);
   });
-  // F5 أو Ctrl+R على الكمبيوتر: تحديث ما على الشاشة (البوابة أو النظام المفتوح) بدل إعادة تحميل التطبيق كله
+  // F5 أو Ctrl+R على الكمبيوتر: تحديث ما على الشاشة (سوار أو النظام المفتوح) بدل إعادة تحميل التطبيق كله
   window.addEventListener('keydown', function (e) {
     if (!(e.key === 'F5' || ((e.ctrlKey || e.metaKey) && !e.shiftKey && /^[rRق]$/.test(e.key)))) return;
     if (!portalWin()) return;
