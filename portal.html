@@ -1203,7 +1203,7 @@ tr.is-off .mx-user { opacity: .5; }
 <section id="screen-admin" class="screen">
   <main class="wrap">
     <div class="admin-head"><h2 data-i18n="adminPanel"></h2></div>
-    <nav class="tabs" id="tabs">
+    <nav class="tabs" id="tabs" hidden>
       <button class="tab" data-act="tab" data-tab="unified" data-min="admin"><i data-ic="users"></i><span data-i18n="tabUnified"></span></button>
       <button class="tab on" data-act="tab" data-tab="apps" data-min="admin"><i data-ic="grid"></i><span data-i18n="tabApps"></span><span class="count" id="cApps"></span></button>
       <button class="tab" data-act="tab" data-tab="users" data-min="supervisor"><i data-ic="users"></i><span data-i18n="tabUsers"></span><span class="count" id="cUsers"></span></button>
@@ -2709,13 +2709,13 @@ function uPerson() {
     '<p>' + esc([p.title, p.dept, uCo(p.company), p.no ? 'رقم ' + p.no : ''].filter(Boolean).join(' · ')) + '</p>' +
     '<p class="u-muted">' + (p.email ? esc(p.email) : 'لا بريد إلكتروني') + '</p></div>' +
     '<span class="u-tag' + (uLeftP(p) ? ' u-tag-grey' : '') + '">' + esc(p.stopped ? 'موقوف من البوابة' : uLeftP(p) ? (p.status || 'غادر') : 'على رأس العمل') + '</span>' +
-    (p.owner || me ? '' : p.stopped ? '<button class="btn btn-ghost btn-sm" data-u="pResume">' + ic('check') + '<span>إعادة تفعيل</span></button>' : '<button class="btn btn-ghost btn-sm" data-u="pStop">' + ic('lock') + '<span>إيقاف في كل الأنظمة</span></button>') + '</div>';
+    (p.email && !p.owner && !me && !uLeftP(p) ? '<button class="btn btn-primary btn-sm" data-u="pInvite" data-pid="' + esc(p.id) + '">' + ic('send') + '<span>إرسال دعوة</span></button>' : '') + (p.owner || me ? '' : p.stopped ? '<button class="btn btn-ghost btn-sm" data-u="pResume">' + ic('check') + '<span>إعادة تفعيل</span></button>' : '<button class="btn btn-ghost btn-sm" data-u="pStop">' + ic('lock') + '<span>إيقاف في كل الأنظمة</span></button>') + '</div>';
   const rd = p.restDays || [];
   const work = '<section class="panel-box u-work"><div class="u-q"><span class="u-q-t">يوم الراحة الأسبوعي</span><span class="u-days" data-prest="1">' + U_DAYS.map((n, i) => '<button class="seg-btn' + (rd.indexOf(i) >= 0 ? ' on' : '') + '" data-u="pRest" data-i="' + i + '"' + (me && !p.owner ? ' disabled' : '') + '>' + n + '</button>').join('') + '</span></div>' +
     (p.owner ? '' : '<div class="u-q"><span class="u-q-t">المسمى الوظيفي</span><span class="u-q-v"><select class="inp" data-uc="pTitle"' + (me ? ' disabled' : '') + '>' + uTitleOpts(p.title) + '</select></span></div>') + (p.owner ? '' : '<div class="u-q"><span class="u-q-t">وظيفته</span><span class="u-q-v"><select class="inp" data-uc="pProf"' + (me ? ' disabled' : '') + '><option value="">' + esc(U_BYTITLE) + '</option>' + D.profiles.map(f => '<option value="' + esc(f.id) + '"' + (p.profileId === f.id ? ' selected' : '') + '>' + esc(f.nameAR) + '</option>').join('') + '</select></span></div>') + '</section>';
   const ua = p.userId && S.admin ? (S.admin.users || []).find(u => u.id === p.userId) : null;
   const acct = '<section class="panel-box u-acct"><h3>' + ic('key') + '<span>حساب البوابة</span></h3>' + (ua
-    ? '<div class="u-q"><span class="u-q-t">' + esc(ua.username) + ' · ' + esc(t('role_' + ua.role)) + ' · ' + esc(t('st_' + ua.status)) + '</span><span class="u-q-v">' + (p.owner && S.user.role !== 'owner' ? '' : '<button class="btn btn-ghost btn-sm" data-act="editUser" data-id="' + esc(ua.id) + '">' + ic('edit') + '<span>تعديل الحساب</span></button><button class="btn btn-ghost btn-sm" data-act="resetPin" data-id="' + esc(ua.id) + '">' + ic('key') + '<span>كلمة مرور مؤقتة</span></button>' + (ua.email && !me ? '<button class="btn btn-primary btn-sm" data-u="pInvite" data-id="' + esc(ua.id) + '">' + ic('send') + '<span>إرسال دعوة</span></button>' : '')) + '</span></div>'
+    ? '<div class="u-q"><span class="u-q-t">' + esc(ua.username) + ' · ' + esc(t('role_' + ua.role)) + ' · ' + esc(t('st_' + ua.status)) + '</span><span class="u-q-v">' + (p.owner && S.user.role !== 'owner' ? '' : '<button class="btn btn-ghost btn-sm" data-act="editUser" data-id="' + esc(ua.id) + '">' + ic('edit') + '<span>تعديل الحساب</span></button><button class="btn btn-ghost btn-sm" data-act="resetPin" data-id="' + esc(ua.id) + '">' + ic('key') + '<span>كلمة مرور مؤقتة</span></button>' ) + '</span></div>'
     : p.email ? '<div class="u-q"><span class="u-q-t u-muted">لا حساب له في البوابة بعد</span><span class="u-q-v"><button class="btn btn-primary btn-sm" data-u="pAccount">' + ic('userPlus') + '<span>إنشاء حساب</span></button></span></div>'
     : '<p class="u-muted">يحتاج بريداً إلكترونياً ليصبح له حساب.</p>') + '</section>';
 
@@ -3286,7 +3286,7 @@ function uOnClick(el, e) {
   }
   if (k === 'pInvite') {
     el.disabled = true;
-    api('admin_invite', { ids: [el.dataset.id], resetPin: true, note: '' }).then(d => { toast(d.sent && d.sent.length ? 'أُرسلت الدعوة وكلمة مرور مؤقتة جديدة على بريده' : 'لم تُرسل: تأكد من البريد', d.sent && d.sent.length ? 'ok' : 'err'); }).catch(c => showErr(c)).finally(() => { el.disabled = false; });
+    api('u_invite', { personId: el.dataset.pid }).then(d => { toast(d.mailed ? (d.created ? 'أُنشئ حسابه وأُرسلت الدعوة مع كلمة مرور مؤقتة' : 'أُرسلت الدعوة مع كلمة مرور مؤقتة جديدة') : 'تعذّر الإرسال: تأكد من البريد', d.mailed ? 'ok' : 'err'); }).catch(c => showErr(c)).finally(() => { el.disabled = false; });
     return;
   }
   if (k === 'pAccount') {
