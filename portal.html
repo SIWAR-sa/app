@@ -2739,6 +2739,9 @@ function uPerson() {
   const hasAcct = !!p.userId;
   const info = p.owner ? '' : '<section class="panel-box u-work u-info"><div class="u-q"><span class="u-q-t">الاسم</span><span class="u-q-v"><input class="inp" data-uc="pInfo" data-f="name" maxlength="80" value="' + esc(p.name || '') + '"' + (me ? ' disabled' : '') + '></span></div>' +
     '<div class="u-q"><span class="u-q-t">الاسم بالإنجليزية</span><span class="u-q-v"><input class="inp" dir="ltr" data-uc="pInfo" data-f="nameEN" maxlength="80" value="' + esc(p.nameEN || '') + '"' + (me ? ' disabled' : '') + '></span></div>' +
+    '<div class="u-q"><span class="u-q-t">الشركة</span><span class="u-q-v"><select class="inp" data-uc="pInfo" data-f="company"' + (me ? ' disabled' : '') + '><option value="">—</option>' + ((D.shared || {}).companies || []).map(c => '<option value="' + esc(c.code) + '"' + (p.company === c.code ? ' selected' : '') + '>' + esc(c.nameAR) + '</option>').join('') + '</select></span></div>' +
+    '<div class="u-q"><span class="u-q-t">الإدارة</span><span class="u-q-v"><input class="inp" list="uDeptL" data-uc="pInfo" data-f="dept" maxlength="80" value="' + esc(p.dept || '') + '"' + (me ? ' disabled' : '') + '><datalist id="uDeptL">' + Array.from(new Set(D.people.map(x => x.dept).filter(Boolean))).sort().map(x => '<option value="' + esc(x) + '">').join('') + '</datalist></span></div>' +
+    '<div class="u-q"><span class="u-q-t">القسم</span><span class="u-q-v"><input class="inp" list="uSecL" data-uc="pInfo" data-f="section" maxlength="80" value="' + esc(p.section || '') + '"' + (me ? ' disabled' : '') + '><datalist id="uSecL">' + Array.from(new Set(D.people.map(x => x.section).filter(Boolean))).sort().map(x => '<option value="' + esc(x) + '">').join('') + '</datalist></span></div>' +
     '<div class="u-q"><span class="u-q-t">البريد الإلكتروني</span><span class="u-q-v"><input class="inp" dir="ltr" type="email" data-uc="pInfo" data-f="email" maxlength="120" autocapitalize="none" spellcheck="false" value="' + esc(p.email || '') + '"' + (me || hasAcct ? ' disabled' : '') + '></span></div>' +
     (hasAcct ? '<p class="u-muted u-note">له حساب في سوار؛ يتغير بريده من «تعديل الحساب».</p>' : '') + '</section>';
   const work = '<section class="panel-box u-work"><div class="u-q"><span class="u-q-t">يوم الراحة الأسبوعي</span><span class="u-days" data-prest="1">' + U_DAYS.map((n, i) => '<button class="seg-btn' + (rd.indexOf(i) >= 0 ? ' on' : '') + '" data-u="pRest" data-i="' + i + '"' + (me && !p.owner ? ' disabled' : '') + '>' + n + '</button>').join('') + '</span></div>' +
@@ -2885,7 +2888,8 @@ function uSharedV(onlyKeys, sysId) {
     workweek: () => box('workweek', wwBox),
     holidays: () => box('holidays', rows('holidays'), saveBtn('holidays')),
     companies: () => box('companies', rows('companies'), saveBtn('companies')),
-    departments: () => box('departments', '<div class="u-chips">' + ((sh.departments || []).map(x => '<span class="chip">' + esc(x) + '</span>').join('') || '<span class="u-muted">تأتي من جسر عند الاستيراد</span>') + '</div>'),
+    departments: () => { const by = {}; D.people.filter(p => !uLeftP(p) && p.dept).forEach(p => { (by[p.dept] = by[p.dept] || []).push(p.id); });
+      return box('departments', '<div class="u-chips">' + (Object.keys(by).sort((x, y) => by[y].length - by[x].length).map(d => '<button class="chip" data-u="showIds" data-ids="' + esc(by[d].join(',')) + '">' + esc(d) + ' <small>' + by[d].length + '</small></button>').join('') || '<span class="u-muted">تأتي من جسر عند الاستيراد</span>') + '</div><p class="u-muted u-note">اضغط إدارة لترى أعضاءها. لنقل موظف أو إخراجه غيّر إدارته من صفحته.</p>'); },
     locations: () => box('locations', rows('locations'), saveBtn('locations')),
     contacts: () => box('contacts', '<div class="u-qs">' + ['gm', 'cfo', 'hr'].map(pick).join('') + '</div>'),
     roles: () => box('roles', uRolesHtml(people)),
@@ -3227,8 +3231,8 @@ function uOnChange(el) {
     const nm = g('name'), em = g('email').toLowerCase();
     if (!nm) { toast('اكتب الاسم', 'err'); el.value = p.name || ''; return; }
     if (em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { toast('البريد غير صحيح', 'err'); return; }
-    p.name = nm; p.nameEN = g('nameEN'); p.email = em;
-    return uMark('pi:' + p.id, { t: 'personInfo', personId: p.id, name: nm, nameEN: p.nameEN, email: em });
+    p.name = nm; p.nameEN = g('nameEN'); p.email = em; p.dept = g('dept'); p.section = g('section'); p.company = g('company');
+    return uMark('pi:' + p.id, { t: 'personInfo', personId: p.id, name: nm, nameEN: p.nameEN, email: em, dept: p.dept, section: p.section, company: p.company });
   }
   if (k === 'pProf') { const p = D.people.find(x => x.id === U.id); p.profileId = el.value; uMark('pf:' + p.id, { t: 'personProfile', personId: p.id, profileId: el.value }); return; }
   if (k === 'fOn' || k === 'fCap' || k === 'fScope') {
