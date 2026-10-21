@@ -217,6 +217,16 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
      شاشة الفتح تظهر مع الضغطة وتتقدّم مع مراحل الفتح الفعلية، وتختفي حين يقول النظام إنه جاهز. */
   var MAXF = iOS || /Android/.test(ua) ? 3 : 5, FRAME_AGE = 6 * 3600000;   // كل الأنظمة الخمسة تبقى مفتوحة على الكمبيوتر، وثلاثة على الجوال: الرجوع لنظام فُتح فوري بلا تحميل
   var frames = {}, cur = '', seq = 0, rt = {};
+  // صيغة رابط النظام: العام /macros/s/ أو رابط النطاق /a/macros/النطاق/s/. تعدد حسابات جوجل في المتصفح يجعل جوجل يحوّل العام إلى /u/N/ فيفشل،
+  // وحساب Gmail الشخصي لا يفتح رابط النطاق. فنبدأ بآخر صيغة نجحت على هذا الجهاز، وعند فشل الفتح نجرّب الأخرى ونحفظ ما نجح
+  var UFK = 'siwar_uf', uf = 'p', DOM = String(window.SIWAR_DOMAIN || 'siwar.com.sa');
+  try { uf = localStorage.getItem(UFK) === 'd' ? 'd' : 'p'; } catch (e) {}
+  function ufForm(u, f) {
+    var m = /^https:\/\/script\.google\.com\/(?:a\/macros\/[^\/]+|macros)\/s\/([\w-]+)\/exec([\s\S]*)$/.exec(String(u || ''));
+    if (!m) return u;
+    return f === 'd' ? 'https://script.google.com/a/macros/' + DOM + '/s/' + m[1] + '/exec' + m[2] : 'https://script.google.com/macros/s/' + m[1] + '/exec' + m[2];
+  }
+  function ufFlip() { uf = uf === 'd' ? 'p' : 'd'; }
   var RING = 502.65;
   var ERRT = { ar: { msg: 'تعذّر فتح النظام الآن.', retry: 'إعادة المحاولة' }, en: { msg: 'The system could not be opened right now.', retry: 'Try again' } };
   function portalWin() { var pf = $('portal').querySelector('iframe'); return pf && pf.contentWindow; }
@@ -319,7 +329,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     p.title = name || T('prog');
     p.allow = 'clipboard-read; clipboard-write; fullscreen; camera; microphone; geolocation';
     p.className = 'pf' + (cur === id ? ' cur' : '');
-    var o = { f: p, url: url, name: name, icon: icon, t: Date.now(), seen: warm ? 0 : Date.now(), tries: old ? old.tries : 0, n: ++seq };
+    var o = { f: p, url: url, name: name, icon: icon, t: Date.now(), seen: warm ? 0 : Date.now(), tries: old ? old.tries : 0, n: ++seq, uf: uf };
     frames[id] = o;
     p.onload = function () {
       if (frames[id] !== o || o.loaded) return;
@@ -328,7 +338,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
       // بعد اكتمال الصفحة: إن لم تصل أي إشارة خلال لحظات فهي صفحة خطأ من جوجل، فيُعاد الفتح تلقائياً مرة
       o.wd2 = setTimeout(function () {
         if (frames[id] !== o || healthy(o)) return;
-        if ((rt[id] || 0) < 2) { rt[id] = (rt[id] || 0) + 1; if (cur === id) relaunch(id, false); else dropFrame(id); }
+        if ((rt[id] || 0) < 2) { rt[id] = (rt[id] || 0) + 1; ufFlip(); if (cur === id) relaunch(id, false); else dropFrame(id); }
         else markReady(id);   // صفحة بلا إشارة (نادر): تُعرض كما هي
       }, 1200);
     };
@@ -336,19 +346,19 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     o.wd = setTimeout(function () {
       if (frames[id] !== o || o.ready) return;
       if (!o.loaded) {
-        if ((rt[id] || 0) < 2) { rt[id] = (rt[id] || 0) + 1; if (cur === id) relaunch(id, true); else dropFrame(id); }
+        if ((rt[id] || 0) < 2) { rt[id] = (rt[id] || 0) + 1; ufFlip(); if (cur === id) relaunch(id, true); else dropFrame(id); }
         else { rt[id] = 0; if (cur === id) loaderErr(); else dropFrame(id); }
       }
       else markReady(id);
     }, 14000);
-    p.src = url;
+    p.src = ufForm(url, uf);
     $('pbody').appendChild(p);
     trim(id); sendAlive();
     return o;
   }
   function markReady(id) {
     var o = frames[id]; if (!o) return;
-    o.ready = true; rt[id] = 0; clearTimeout(o.wd);
+    o.ready = true; rt[id] = 0; clearTimeout(o.wd); if (o.uf === uf) { try { localStorage.setItem(UFK, uf); } catch (e) {} }
     if (cur === id) loaderDone();
   }
 
