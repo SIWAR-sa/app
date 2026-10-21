@@ -2684,7 +2684,7 @@ function uPeople() {
   const cos = [{ code: '', nameAR: 'الكل' }].concat(D.shared.companies || []);
   return '<div class="u-bar"><div class="input-wrap">' + ic('search') + '<input id="uQ" type="search" placeholder="ابحث بالاسم أو الوظيفة أو الرقم" value="' + esc(U.q) + '" autocomplete="off"></div>' +
     '<div class="seg">' + cos.map(c => '<button class="seg-btn' + (U.co === c.code ? ' on' : '') + '" data-u="co" data-co="' + esc(c.code) + '">' + esc(c.nameAR) + '</button>').join('') + '</div>' +
-    '<div class="savebar-actions"><button class="btn btn-ghost" data-u="srcKawader">' + ic('refresh') + '<span>تحديث من كوادر</span></button><button class="btn btn-ghost" data-u="import">' + ic('upload') + '<span>لصق من جسر</span></button><button class="btn btn-primary" data-u="manual">' + ic('userPlus') + '<span>إضافة شخص</span></button></div></div>' +
+    '<div class="savebar-actions"><button class="btn btn-ghost" data-u="bulkInvite">' + ic('send') + '<span>دعوة جماعية</span></button><button class="btn btn-ghost" data-u="srcKawader">' + ic('refresh') + '<span>تحديث من كوادر</span></button><button class="btn btn-ghost" data-u="import">' + ic('upload') + '<span>لصق من جسر</span></button><button class="btn btn-primary" data-u="manual">' + ic('userPlus') + '<span>إضافة شخص</span></button></div></div>' +
     (U.ids ? '<div class="u-filter">عرض مجموعة محددة (' + list.length + ') <button class="link-btn" data-u="clearIds">عرض الكل</button></div>' : '') +
     '<div class="list u-list">' + (list.length ? list.slice(0, 400).map((p, i) =>
       '<button class="row u-person' + (uLeftP(p) ? ' is-off' : '') + '" data-u="person" data-id="' + esc(p.id) + '" style="--i:' + Math.min(i, 20) + '">' +
@@ -3283,6 +3283,22 @@ function uOnClick(el, e) {
   if (k === 'pTitleSave') {
     const v = ($('#uNewTitle').value || '').trim(); if (!v) { toast('اكتب المسمى', 'err'); return; }
     const p = D.people.find(x => x.id === U.id); closeModal(true); p.title = v; uMark('pt:' + p.id, { t: 'personTitle', personId: p.id, title: v }); uRender(); return;
+  }
+  if (k === 'bulkInvite') {
+    const mineEm = String((S.user && S.user.email) || '').toLowerCase();
+    const ok = x => x.email && !x.owner && !uLeftP(x) && !x.stopped && String(x.email).toLowerCase() !== mineEm;
+    const shown = (U.ids ? D.people.filter(x => U.ids.indexOf(x.id) >= 0) : D.people).filter(x => (!U.co || x.company === U.co) && ok(x));
+    const noAcc = shown.filter(x => !x.userId);
+    U.inv = { all: shown.map(x => x.id), none: noAcc.map(x => x.id) };
+    openModal({ title: 'دعوة جماعية', body: '<p class="u-muted">تصل كل دعوة على بريد صاحبها مع كلمة مرور مؤقتة جديدة، ويُنشأ حساب لمن ليس له حساب. تتبع القائمة اختيار الشركة والتصفية المعروضة الآن.</p><div class="form-stack"><label class="check"><input type="radio" name="uInvW" value="none" checked><span>من ليس له حساب بعد (' + noAcc.length + ')</span></label><label class="check"><input type="radio" name="uInvW" value="all"><span>كل المعروضين (' + shown.length + ')</span></label></div><div id="uInvOut" class="u-muted"></div>', foot: '<button class="btn btn-primary" data-u="bulkInviteGo" id="uInvGo">' + ic('send') + '<span>إرسال</span></button>' });
+    return;
+  }
+  if (k === 'bulkInviteGo') {
+    const w = ($('input[name="uInvW"]:checked') || {}).value || 'none', ids = (U.inv && U.inv[w]) || [], out = $('#uInvOut'); if (!ids.length) { out.textContent = 'لا يوجد من يُرسل له'; return; }
+    el.disabled = true; let sent = 0, failed = 0, done = 0;
+    (async () => { try { for (let i = 0; i < ids.length; i += 20) { const d = await api('u_inviteMany', { ids: ids.slice(i, i + 20) }); sent += d.sent; failed += d.failed.length; done += Math.min(20, ids.length - i); out.textContent = 'أُرسل ' + sent + ' من ' + ids.length + (failed ? ' · تعذّر ' + failed : ''); }
+      toast('أُرسلت ' + sent + ' دعوة' + (failed ? ' وتعذّر ' + failed : ''), failed ? 'err' : 'ok'); uLoad(); } catch (c) { showErr(c); } finally { el.disabled = false; } })();
+    return;
   }
   if (k === 'pInvite') {
     el.disabled = true;
