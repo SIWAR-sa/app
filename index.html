@@ -492,16 +492,18 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     }
   }
   function showInstall() { if (standalone) return; renderInstall(); $('install').hidden = false; }
-  $('iLater').onclick = function () { $('install').hidden = true; };
+  var forced = /[?&]install=1/.test(location.search), snoozed = false;
+  try { snoozed = Date.now() - Number(localStorage.getItem('inst_later') || 0) < 7 * 864e5; } catch (e) {}
+  $('iLater').onclick = function () { $('install').hidden = true; try { localStorage.setItem('inst_later', String(Date.now())); } catch (e) {} };
 
   window.addEventListener('beforeinstallprompt', function (e) {
     e.preventDefault(); deferred = e;
-    if (!$('install').hidden) renderInstall();
+    if (!$('install').hidden) renderInstall(); else if (!forced && !snoozed && !standalone) showInstall();
   });
   window.addEventListener('appinstalled', function () { $('install').hidden = true; });
 
   // تظهر نافذة التثبيت عند فتح الصفحة من المتصفح (لا داخل التطبيق المثبّت)
-  if (!standalone) setTimeout(showInstall, /[?&]install=1/.test(location.search) ? 300 : 1800);
+  if (!standalone) setTimeout(function () { if (forced || (!snoozed && (deferred || iOS))) showInstall(); }, forced ? 300 : 1800);
 })();
 </script>
 </body>
