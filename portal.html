@@ -1720,11 +1720,12 @@ let PAIR = (() => {
 
 let DIRECT_OK = /^https:\/\/script\.google\.com\/.+\/exec$/.test(EXEC_URL) && (STATIC || !(Number(store.get('sp_direct_off')) > Date.now()));
 
+const IDEMP = new Proxy({}, { get: (o, k) => typeof k === 'string' && /^u_/.test(k) && k !== 'u_load' });
 const READ_ONLY = { init: 1, pending: 1, admin_load: 1, u_load: 1, admin_review: 1, admin_invitePreview: 1 };
 function postApi(action, payload) {
-  const ro = !!READ_ONLY[action];
-  const ac = ro && window.AbortController ? new AbortController() : null;
-  const to = ac ? setTimeout(() => ac.abort(), 20000) : 0;
+  const ro = !!READ_ONLY[action], idem = !!IDEMP[action];
+  const ac = (ro || idem) && window.AbortController ? new AbortController() : null;
+  const to = ac ? setTimeout(() => ac.abort(), idem ? 30000 : 25000) : 0;
   return fetch(EXEC_URL, {
     method: 'POST', redirect: 'follow', credentials: 'omit', signal: ac ? ac.signal : undefined,
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -1737,6 +1738,7 @@ function postApi(action, payload) {
 }
 
 function api(action, payload) {
+  if (IDEMP[action]) payload = Object.assign({}, payload || {}, { _rid: (window.crypto && crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(36).slice(2)).replace(/[^\w-]/g, '').slice(0, 40) });
   busy(1);
   return new Promise((resolve, reject) => {
     const done = res => {
@@ -1754,14 +1756,14 @@ function api(action, payload) {
     const viaRun = () => google.script.run.withSuccessHandler(done).withFailureHandler(err => { busy(-1); S.lastErr = String(err && err.message || err || ''); reject('ERR_NETWORK'); }).api(action, payload || {}, S.token || '');
     if (!DIRECT_OK) { viaRun(); return; }
 
-    const tries = READ_ONLY[action] ? [1200, 2600] : [];
+    const tries = READ_ONLY[action] || IDEMP[action] ? [800, 1800, 3000] : [];
     const attempt = () => postApi(action, payload).catch(err => {
-      if (!tries.length || (err && err.name === 'AbortError')) throw err;
+      if (!tries.length) throw err;
       return new Promise(r => setTimeout(r, tries.shift())).then(attempt);
     });
     attempt().then(done).catch(err => {
 
-      if (STATIC || (err && err.name === 'AbortError')) { busy(-1); S.lastErr = String(err && err.message || err || ''); reject('ERR_NETWORK'); return; }
+      if (STATIC || (err && err.name === 'AbortError' && !IDEMP[action] && !READ_ONLY[action])) { busy(-1); S.lastErr = String(err && err.message || err || ''); reject('ERR_NETWORK'); return; }
 
       console.warn('direct api failed, falling back', err);
       DIRECT_OK = false;
@@ -2584,7 +2586,10 @@ function renderUnified() {
 }
 async function uLoad() {
   if (U.dirty && U.dirty.size) return;
-  try { const d = await api('u_load', {}); if (U.dirty && U.dirty.size) return; const y = window.scrollY; U.d = d; U.at = Date.now(); if (S.tab === 'unified') { uRender(); window.scrollTo(0, y); } }
+  let d, fail;
+  for (let k = 0; k < 3 && !d; k++) { try { d = await api('u_load', {}); } catch (c) { fail = c; if (c === '__handled') return; await new Promise(r => setTimeout(r, 1200 * (k + 1))); } }
+  if (!d) { if (U.d) { toast('تعذّر تحديث البيانات، المعروض آخر نسخة', 'err'); return; } showErr(fail); $('#uRoot').innerHTML = '<div class="empty">' + ic('alert') + '<span>تعذّر التحميل</span><button class="btn btn-ghost" data-u="reload">' + ic('refresh') + '<span>إعادة المحاولة</span></button></div>'; return; }
+  try { if (U.dirty && U.dirty.size) return; const y = window.scrollY; U.d = d; U.at = Date.now(); if (S.tab === 'unified') { uRender(); window.scrollTo(0, y); } }
   catch (c) { showErr(c); if (!U.d) $('#uRoot').innerHTML = '<div class="empty">' + ic('alert') + '<span>تعذّر التحميل</span><button class="btn btn-ghost" data-u="reload">' + ic('refresh') + '<span>إعادة المحاولة</span></button></div>'; }
 }
 
@@ -2604,8 +2609,8 @@ function uDiscard() { if (U.base) U.d = U.base; U.base = null; U.dirty.clear(); 
 const U_OPNAME = { person: 'صلاحيات موظف', personInfo: 'بيانات موظف', personProfile: 'وظيفة موظف', personRest: 'يوم الراحة', personTitle: 'مسمى موظف', setting: 'إعداد', shared: 'إعداد مشترك' };
 function uSaveFail(code, op, ops) {
   const o = op >= 0 && ops ? ops[op] : null, p = o && o.personId ? U.d.people.find(x => x.id === o.personId) : null;
-  const why = code === 'ERR_NETWORK' ? 'تعذّر الاتصال بالخادم. لم يُحفظ شيء، وتعديلاتك ما زالت هنا فاضغط «حفظ» مرة أخرى.' : t(I18N.ar[code] ? code : 'ERR_SERVER') + (I18N.ar[code] ? '' : ' (' + esc(String(code || '')) + ')');
-  openModal({ title: ic('info') + '<span>لم يُحفظ التعديل</span>', body: '<p>' + why + '</p>' + (o ? '<p class="u-muted">' + esc(U_OPNAME[o.t] || '') + (p ? ': ' + esc(p.name) : '') + '</p>' : '') + '<p class="u-muted">تعديلاتك ما زالت محفوظة في الصفحة ولم تضِع.</p>',
+  const why = code === 'ERR_NETWORK' ? (ops ? 'تعذّر الاتصال بالخادم. لم يُحفظ شيء، وتعديلاتك ما زالت هنا فاضغط «حفظ» مرة أخرى.' : 'تعذّر الاتصال بالخادم بعد عدة محاولات. قد يكون الإجراء تم؛ حدّث الصفحة وتحقق قبل إعادته.') : t(I18N.ar[code] ? code : 'ERR_SERVER') + (I18N.ar[code] ? '' : ' (' + esc(String(code || '')) + ')');
+  openModal({ title: ic('info') + '<span>لم يُحفظ التعديل</span>', body: '<p>' + why + '</p>' + (o ? '<p class="u-muted">' + esc(U_OPNAME[o.t] || '') + (p ? ': ' + esc(p.name) : '') + '</p>' : '') + (ops ? '<p class="u-muted">تعديلاتك ما زالت محفوظة في الصفحة ولم تضِع.</p>' : ''),
     foot: '<button class="btn btn-primary" data-act="closeModal">' + ic('check') + '<span>حسناً</span></button>' });
 }
 async function uCommit() {
@@ -3344,8 +3349,21 @@ function uOnClick(el, e) {
     return;
   }
   if (k === 'pInvite') {
-    el.disabled = true;
-    api('u_invite', { personId: el.dataset.pid }).then(d => { toast(d.mailed ? (d.created ? 'أُنشئ حسابه وأُرسلت الدعوة مع كلمة مرور مؤقتة' : 'أُرسلت الدعوة مع كلمة مرور مؤقتة جديدة') : 'تعذّر الإرسال: تأكد من البريد', d.mailed ? 'ok' : 'err'); }).catch(c => showErr(c)).finally(() => { el.disabled = false; });
+    const p = D.people.find(x => x.id === el.dataset.pid); if (!p) return;
+    const hasAcct = !!p.userId;
+    openModal({ title: ic('send') + '<span>إرسال دعوة</span>', body: '<p>ستصل الدعوة إلى <b dir="ltr">' + esc(p.email) + '</b>.</p>' + (hasAcct ? '<label class="check"><input type="checkbox" id="uInvPass" checked><span>إرفاق كلمة مرور مؤقتة جديدة (تُلغي كلمة مروره الحالية)</span></label>' : '<p class="u-muted">سيُنشأ له حساب وتصله كلمة مرور مؤقتة.</p>'),
+      foot: '<button class="btn btn-primary" data-u="pInviteGo" data-pid="' + esc(p.id) + '">' + ic('send') + '<span>إرسال</span></button>' });
+    return;
+  }
+  if (k === 'pInviteGo') {
+    const p = D.people.find(x => x.id === el.dataset.pid), wp = $('#uInvPass') ? $('#uInvPass').checked : true;
+    el.disabled = true; el.classList.add('is-busy');
+    api('u_invite', { personId: el.dataset.pid, withPass: wp }).then(d => {
+      closeModal(true); uFlushSoon(); uLoad();
+      openModal({ title: ic(d.mailed ? 'check' : 'info') + '<span>' + (d.mailed ? 'أُرسلت الدعوة' : 'لم تُرسل الدعوة') + '</span>',
+        body: d.mailed ? '<p>أُرسلت إلى <b dir="ltr">' + esc(d.email || p.email) + '</b>.</p><p class="u-muted">' + (d.created ? 'أُنشئ حسابه ومعه كلمة مرور مؤقتة.' : d.withPass ? 'مع كلمة مرور مؤقتة جديدة.' : 'بدون تغيير كلمة مروره.') + '</p>' : '<p>تعذّر إرسال الرسالة. تأكد من صحة البريد، أو أن حد الإرسال اليومي لم ينفد.</p>' + (d.created ? '<p class="u-muted">أُنشئ الحساب، ويمكن إعادة الإرسال.</p>' : ''),
+        foot: '<button class="btn btn-primary" data-act="closeModal">' + ic('check') + '<span>حسناً</span></button>' });
+    }).catch(c => { closeModal(true); uSaveFail(c, -1, null); });
     return;
   }
   if (k === 'pAccount') {
