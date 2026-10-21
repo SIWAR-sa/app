@@ -1413,7 +1413,7 @@ const I18N = {
     ERR_INVALID_LOGIN: 'البريد أو كلمة المرور غير صحيحة.', ERR_LOCKED: 'محاولات كثيرة، انتظر قليلاً ثم حاول مجدداً أو استخدم «نسيت كلمة المرور؟».',
     ERR_SUSPENDED: 'هذا الحساب موقوف.', ERR_SESSION: 'انتهت الجلسة، سجّل الدخول مجدداً.', ERR_FORBIDDEN: 'لا تملك صلاحية هذا الإجراء.', ERR_SENSITIVE: 'هذه صلاحية حساسة؛ يمنحها المالك فقط.', ERR_SHARED: 'هذا ثابت مشترك؛ يُعدَّل من «الثوابت».', ERR_VALUE: 'القيمة غير مقبولة.', NO_SOURCE: 'تعذّر فتح ملف المصدر.',
     ERR_NO_URL: 'لم يُضبط رابط هذا البرنامج بعد.', ERR_USERNAME: 'اسم المستخدم من 2 إلى 40 حرفاً إنجليزياً أو رقماً.',
-    ERR_NAME: 'الاسم بالعربية والإنجليزية مطلوب.', ERR_EMAIL: 'البريد الإلكتروني غير صحيح.', ERR_EXISTS: 'هذا البريد مسجل لموظف آخر.', ERR_HAS_ACCOUNT: 'لهذا الموظف حساب؛ عدّل بريده من الحساب.', ERR_DUP_USERNAME: 'اسم المستخدم مستخدم من قبل.',
+    ERR_NAME: 'الاسم بالعربية والإنجليزية مطلوب.', ERR_EMAIL: 'البريد الإلكتروني غير صحيح.', ERR_EXISTS: 'هذا البريد مسجل لموظف آخر من جسر، فلا يمكن استخدامه لموظف ثانٍ.', ERR_REQUIRED: 'حقل مطلوب فارغ.', ERR_HAS_ACCOUNT: 'لهذا الموظف حساب؛ عدّل بريده من الحساب.', ERR_DUP_USERNAME: 'اسم المستخدم مستخدم من قبل.',
     ERR_PIN: 'كلمة المرور 8 خانات على الأقل، فيها حروف وأرقام.', ERR_PIN_WEAK: 'كلمة المرور سهلة التخمين، اختر غيرها.', ERR_TEMP_EXPIRED: 'انتهت صلاحية كلمة المرور المؤقتة، اطلب واحدة جديدة من المسؤول.', tempTitle: 'كلمة المرور المؤقتة', tempNote: 'تظهر الآن فقط، ويُطلب من المستخدم تغييرها عند أول دخول.', tempMailed: 'أُرسلت إلى بريده.', tempSend: 'إرسال كلمة المرور المؤقتة بالبريد', copy: 'نسخ', copied: 'تم النسخ', noEmail: 'بلا بريد', tempCreate: 'إنشاء', ERR_DUP_EMAIL: 'هذا البريد مسجّل لمستخدم آخر.', ERR_MUST_CHANGE: 'اختر كلمة مرور خاصة بك أولاً.', ERR_BUSY: 'النظام مشغول لحظات، أعد المحاولة.', linkSaveFirst: 'احفظ التعديلات أولاً ثم افحص الربط.', regenYes: 'تغيير المفتاح', ERR_PIN_MATCH: 'كلمتا المرور غير متطابقتين.', ERR_PIN_WRONG: 'كلمة المرور الحالية غير صحيحة.',
     ERR_PIN_SAME: 'كلمة المرور الجديدة مطابقة للحالية.', ERR_CODE: 'رمز التحقق غير صحيح أو منتهي الصلاحية.', ERR_SELF: 'لا يمكن تنفيذ هذا الإجراء على حسابك (كلمتك تغيّرها من «تغيير كلمة المرور»).',
     ERR_LAST_ADMIN: 'يجب أن يبقى مدير نظام مفعّل واحد على الأقل.', ERR_URL: 'الرابط يجب أن يبدأ بـ https://', ERR_ICON: 'رابط الصورة غير صالح.',
@@ -2601,6 +2601,13 @@ function uBar() {
   $('#uSaveN').textContent = n === 1 ? 'تعديل واحد لم يُحفظ' : n === 2 ? 'تعديلان لم يُحفظا' : n + ' تعديلات لم تُحفظ';
 }
 function uDiscard() { if (U.base) U.d = U.base; U.base = null; U.dirty.clear(); U.draft = null; uBar(); uRender(); }
+const U_OPNAME = { person: 'صلاحيات موظف', personInfo: 'بيانات موظف', personProfile: 'وظيفة موظف', personRest: 'يوم الراحة', personTitle: 'مسمى موظف', setting: 'إعداد', shared: 'إعداد مشترك' };
+function uSaveFail(code, op, ops) {
+  const o = op >= 0 && ops ? ops[op] : null, p = o && o.personId ? U.d.people.find(x => x.id === o.personId) : null;
+  const why = code === 'ERR_NETWORK' ? 'تعذّر الاتصال بالخادم. لم يُحفظ شيء، وتعديلاتك ما زالت هنا فاضغط «حفظ» مرة أخرى.' : t(I18N.ar[code] ? code : 'ERR_SERVER') + (I18N.ar[code] ? '' : ' (' + esc(String(code || '')) + ')');
+  openModal({ title: ic('info') + '<span>لم يُحفظ التعديل</span>', body: '<p>' + why + '</p>' + (o ? '<p class="u-muted">' + esc(U_OPNAME[o.t] || '') + (p ? ': ' + esc(p.name) : '') + '</p>' : '') + '<p class="u-muted">تعديلاتك ما زالت محفوظة في الصفحة ولم تضِع.</p>',
+    foot: '<button class="btn btn-primary" data-act="closeModal">' + ic('check') + '<span>حسناً</span></button>' });
+}
 async function uCommit() {
   if (!U.dirty.size) return;
   const ops = Array.from(U.dirty.values());
@@ -2609,10 +2616,10 @@ async function uCommit() {
     const b = $('#uCommit'); b.disabled = true; b.classList.add('is-busy');
     try {
       const r = await api('u_batch', { ops: ops });
-      if (!r.ok) { toast(t(r.code || 'ERR_SERVER'), 'err'); return; }
+      if (!r.ok) { uSaveFail(r.code, r.op, ops); return; }
       U.dirty.clear(); U.base = null; uBar(); toast(ops.length === 1 ? 'حُفظ التعديل' : 'حُفظت ' + ops.length + ' تعديلات', 'ok'); uFlushSoon();
       setTimeout(uLoad, 1500);
-    } catch (c) { showErr(c); }
+    } catch (c) { uSaveFail(c, -1, ops); }
     finally { b.disabled = false; b.classList.remove('is-busy'); }
   };
   if (sens.length) return uConfirm('بين التعديلات ' + (sens.length === 1 ? 'إعداد حساس' : sens.length + ' إعدادات حساسة') + ' سيتغير بها عمل النظام فوراً لكل مستخدميه. نحفظ؟', go);
