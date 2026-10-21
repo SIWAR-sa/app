@@ -1061,6 +1061,7 @@ tr.is-off .mx-user { opacity: .5; }
 .u-cap input { width: 18px; height: 18px; accent-color: var(--pink-deep); flex: none; }
 .u-cap span { flex: 1; font-size: 14px; }
 .u-cap em, .u-sens { font-style: normal; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: var(--pill); background: #FBF0DC; color: #8C6524; }
+.u-cdesc { display: block; color: #6F6761; font-size: 12px; font-weight: 400; margin-top: 2px; }
 .u-sens { background: #F9E1DE; color: #9A3F38; }
 .u-cap.is-own { background: #FFF8EC; }
 .u-scope { display: flex; align-items: center; gap: 10px; margin-top: 12px; font-size: 14px; }
@@ -2694,6 +2695,11 @@ function uPeople() {
       '</button>').join('') : '<div class="empty">' + ic('search') + '<span>لا نتائج</span></div>') + '</div>';
 }
 
+function uTitleOpts(cur) {
+  const set = {}; (U.d.people || []).forEach(x => { if (x.title) set[x.title] = 1; });
+  if (cur) set[cur] = 1;
+  return '<option value="">—</option>' + Object.keys(set).sort().map(x => '<option value="' + esc(x) + '"' + (x === cur ? ' selected' : '') + '>' + esc(x) + '</option>').join('') + '<option value="__new">+ مسمى جديد…</option>';
+}
 function uPerson() {
   const D = U.d, p = D.people.find(x => x.id === U.id);
   if (!p) return '<div class="empty"><span>غير موجود</span></div>';
@@ -2706,10 +2712,10 @@ function uPerson() {
     (p.owner || me ? '' : p.stopped ? '<button class="btn btn-ghost btn-sm" data-u="pResume">' + ic('check') + '<span>إعادة تفعيل</span></button>' : '<button class="btn btn-ghost btn-sm" data-u="pStop">' + ic('lock') + '<span>إيقاف في كل الأنظمة</span></button>') + '</div>';
   const rd = p.restDays || [];
   const work = '<section class="panel-box u-work"><div class="u-q"><span class="u-q-t">يوم الراحة الأسبوعي</span><span class="u-days" data-prest="1">' + U_DAYS.map((n, i) => '<button class="seg-btn' + (rd.indexOf(i) >= 0 ? ' on' : '') + '" data-u="pRest" data-i="' + i + '"' + (me && !p.owner ? ' disabled' : '') + '>' + n + '</button>').join('') + '</span></div>' +
-    (p.owner ? '' : '<div class="u-q"><span class="u-q-t">وظيفته</span><span class="u-q-v"><select class="inp" data-uc="pProf"' + (me ? ' disabled' : '') + '><option value="">' + esc(U_BYTITLE) + '</option>' + D.profiles.map(f => '<option value="' + esc(f.id) + '"' + (p.profileId === f.id ? ' selected' : '') + '>' + esc(f.nameAR) + '</option>').join('') + '</select></span></div>') + '</section>';
+    (p.owner ? '' : '<div class="u-q"><span class="u-q-t">المسمى الوظيفي</span><span class="u-q-v"><select class="inp" data-uc="pTitle"' + (me ? ' disabled' : '') + '>' + uTitleOpts(p.title) + '</select></span></div>') + (p.owner ? '' : '<div class="u-q"><span class="u-q-t">وظيفته</span><span class="u-q-v"><select class="inp" data-uc="pProf"' + (me ? ' disabled' : '') + '><option value="">' + esc(U_BYTITLE) + '</option>' + D.profiles.map(f => '<option value="' + esc(f.id) + '"' + (p.profileId === f.id ? ' selected' : '') + '>' + esc(f.nameAR) + '</option>').join('') + '</select></span></div>') + '</section>';
   const ua = p.userId && S.admin ? (S.admin.users || []).find(u => u.id === p.userId) : null;
   const acct = '<section class="panel-box u-acct"><h3>' + ic('key') + '<span>حساب البوابة</span></h3>' + (ua
-    ? '<div class="u-q"><span class="u-q-t">' + esc(ua.username) + ' · ' + esc(t('role_' + ua.role)) + ' · ' + esc(t('st_' + ua.status)) + '</span><span class="u-q-v">' + (p.owner && S.user.role !== 'owner' ? '' : '<button class="btn btn-ghost btn-sm" data-act="editUser" data-id="' + esc(ua.id) + '">' + ic('edit') + '<span>تعديل الحساب</span></button><button class="btn btn-ghost btn-sm" data-act="resetPin" data-id="' + esc(ua.id) + '">' + ic('key') + '<span>رمز جديد</span></button>') + '</span></div>'
+    ? '<div class="u-q"><span class="u-q-t">' + esc(ua.username) + ' · ' + esc(t('role_' + ua.role)) + ' · ' + esc(t('st_' + ua.status)) + '</span><span class="u-q-v">' + (p.owner && S.user.role !== 'owner' ? '' : '<button class="btn btn-ghost btn-sm" data-act="editUser" data-id="' + esc(ua.id) + '">' + ic('edit') + '<span>تعديل الحساب</span></button><button class="btn btn-ghost btn-sm" data-act="resetPin" data-id="' + esc(ua.id) + '">' + ic('key') + '<span>كلمة مرور مؤقتة</span></button>' + (ua.email && !me ? '<button class="btn btn-primary btn-sm" data-u="pInvite" data-id="' + esc(ua.id) + '">' + ic('send') + '<span>إرسال دعوة</span></button>' : '')) + '</span></div>'
     : p.email ? '<div class="u-q"><span class="u-q-t u-muted">لا حساب له في البوابة بعد</span><span class="u-q-v"><button class="btn btn-primary btn-sm" data-u="pAccount">' + ic('userPlus') + '<span>إنشاء حساب</span></button></span></div>'
     : '<p class="u-muted">يحتاج بريداً إلكترونياً ليصبح له حساب.</p>') + '</section>';
 
@@ -2725,7 +2731,7 @@ function uPerson() {
       const groups = {}; d.caps.forEach(c => { (groups[c.group || ''] = groups[c.group || ''] || []).push(c); });
       body = Object.keys(groups).map(g => '<div class="u-capg">' + (g ? '<b>' + esc(g) + '</b>' : '') + groups[g].map(c => {
         const has = e.caps.indexOf(c.key) >= 0, own = c.key in (e.diff || {});
-        return '<label class="u-cap' + (own ? ' is-own' : '') + '"><input type="checkbox" data-uc="pCap" data-app="' + esc(a.id) + '" data-cap="' + esc(c.key) + '"' + (has ? ' checked' : '') + (me ? ' disabled' : '') + '><span>' + esc(c.label) + '</span>' + (c.sensitive ? '<em class="u-sens">حساس</em>' : '') + (own ? '<em>خاص به</em>' : '') + '</label>';
+        return '<label class="u-cap' + (own ? ' is-own' : '') + '"><input type="checkbox" data-uc="pCap" data-app="' + esc(a.id) + '" data-cap="' + esc(c.key) + '"' + (has ? ' checked' : '') + (me ? ' disabled' : '') + '><span>' + esc(c.label) + (c.desc ? '<small class=u-cdesc>' + esc(c.desc) + '</small>' : '') + '</span>' + (c.sensitive ? '<em class="u-sens">حساس</em>' : '') + (own ? '<em>خاص به</em>' : '') + '</label>';
       }).join('') + '</div>').join('');
       if ((d.scopes || []).length) body += '<label class="u-scope"><span>يرى:</span><select class="inp" data-uc="pScope" data-app="' + esc(a.id) + '"' + (me ? ' disabled' : '') + '><option value="">حسب وظيفته</option>' + d.scopes.map(s => '<option value="' + esc(s.key) + '"' + (e.scope === s.key ? ' selected' : '') + '>' + esc(s.label) + '</option>').join('') + '</select></label>';
     } else if (p.owner) body = '<p class="u-muted u-note">كل الصلاحيات.</p>';
@@ -2760,7 +2766,7 @@ function uProfile() {
     if (on && d && (d.caps || []).length) {
       const groups = {}; d.caps.forEach(c => { (groups[c.group || ''] = groups[c.group || ''] || []).push(c); });
       body = Object.keys(groups).map(gr => '<div class="u-capg">' + (gr ? '<b>' + esc(gr) + '</b>' : '') + groups[gr].map(c =>
-        '<label class="u-cap"><input type="checkbox" data-uc="fCap" data-app="' + esc(a.id) + '" data-cap="' + esc(c.key) + '"' + ((g.caps || []).indexOf(c.key) >= 0 ? ' checked' : '') + '><span>' + esc(c.label) + '</span>' + (c.sensitive ? '<em class="u-sens">حساس</em>' : '') + '</label>').join('') + '</div>').join('');
+        '<label class="u-cap"><input type="checkbox" data-uc="fCap" data-app="' + esc(a.id) + '" data-cap="' + esc(c.key) + '"' + ((g.caps || []).indexOf(c.key) >= 0 ? ' checked' : '') + '><span>' + esc(c.label) + (c.desc ? '<small class=u-cdesc>' + esc(c.desc) + '</small>' : '') + '</span>' + (c.sensitive ? '<em class="u-sens">حساس</em>' : '') + '</label>').join('') + '</div>').join('');
       if ((d.scopes || []).length) body += '<label class="u-scope"><span>يرى:</span><select class="inp" data-uc="fScope" data-app="' + esc(a.id) + '"><option value="">—</option>' + d.scopes.map(s => '<option value="' + esc(s.key) + '"' + (g.scope === s.key ? ' selected' : '') + '>' + esc(s.label) + '</option>').join('') + '</select></label>';
     } else if (on) body = '<p class="u-muted u-note">يدخل هذا النظام. صلاحياته التفصيلية ستظهر هنا عندما يربط النظام قدراته بالبوابة.</p>';
     return '<section class="panel-box u-sys' + (on ? '' : ' is-off') + '"><div class="u-sys-head">' + uIcon(a) + '<b>' + esc(a.nameAR) + '</b><label class="switch"><input type="checkbox" data-uc="fOn" data-app="' + esc(a.id) + '"' + (on ? ' checked' : '') + '><span></span></label></div>' + body + '</section>';
@@ -3004,7 +3010,7 @@ async function uXlDownload(btn) {
     ['نموذج الصلاحيات والإعدادات — سوار', '', '• عبّئ الأوراق التي تحتاجها فقط واترك الباقي كما هو. كل الخانات الملوّنة قوائم منسدلة: اختر منها فقط.',
      '• «الوظائف»: كل صف = وظيفة + صلاحية في نظام. الوظيفة المذكورة تُعاد صلاحياتها في الأنظمة المذكورة لها كما في الملف.',
      '• «مسميات جسر»: أي مسمى من جسر يأخذ أي وظيفة.', '• «الموظفون»: وظيفة محددة لموظف (أو حسب مسماه)، ودخوله لكل نظام، وما يراه.',
-     '• «صلاحيات خاصة»: منح أو منع صلاحية لموظف بعينه زيادة على وظيفته.', '• «الإعدادات»: غيّر عمود القيمة فقط.',
+     '• «مستخدمون جدد»: أضف موظفاً جديداً بالاسم والبريد، واختر مسماه ووظيفته ودخوله لكل نظام من القوائم. بعد «اعتماد» أرسل لكل واحد دعوته من صفحته.', '• «صلاحيات خاصة»: منح أو منع صلاحية لموظف بعينه زيادة على وظيفته.', '• «الإعدادات»: غيّر عمود القيمة فقط.',
      '• المالك له كل الصلاحيات دائماً ولا يظهر في الملف.', '• بعد الرفع تظهر معاينة وأي أخطاء؛ لا يتغير شيء قبل «اعتماد».']
       .forEach((t, i) => { const c = R.getCell('A' + (i + 1)); c.value = t; if (!i) c.font = { bold: true, size: 15 }; c.alignment = { wrapText: true }; });
 
@@ -3032,6 +3038,13 @@ async function uXlDownload(btn) {
     dv(P, 'rest', lists.days, 2, pr);
     D.apps.forEach(a => { dv(P, 'en_' + a.id, 'en', 2, pr); if (lists['sc_' + a.id]) dv(P, 'sc_' + a.id, lists['sc_' + a.id], 2, pr); });
 
+    const cos = (D.shared.companies || []).map(o => o.nameAR);
+    addList('ttl', Object.keys(titles).sort()); addList('co', cos);
+    const Nw = wb.addWorksheet('مستخدمون جدد'); const Ncols = [['الاسم', 'name', 26], ['البريد الإلكتروني', 'email', 30], ['المسمى الوظيفي', 'title', 24], ['الشركة', 'co', 18], ['الوظيفة', 'prof', 26], ['يوم الراحة', 'rest', 14]];
+    D.apps.forEach(a => { Ncols.push([a.nameAR + ' — الدخول', 'en_' + a.id, 18]); if (((uReg(a.id) || {}).scopes || []).length) Ncols.push([a.nameAR + ' — يرى', 'sc_' + a.id, 22]); });
+    head(Nw, Ncols);
+    dv(Nw, 'title', 'ttl', 2, 200); dv(Nw, 'co', 'co', 2, 200); dv(Nw, 'prof', lists.prof ? lists.prof.replace(/\$\d+$/, '$' + (D.profiles.length + 1)) : null, 2, 200); dv(Nw, 'rest', lists.days, 2, 200);
+    D.apps.forEach(a => { dv(Nw, 'en_' + a.id, 'en', 2, 200); if (lists['sc_' + a.id]) dv(Nw, 'sc_' + a.id, lists['sc_' + a.id], 2, 200); });
     const Sx = wb.addWorksheet('صلاحيات خاصة'); head(Sx, [['الموظف', 'p', 36], ['النظام — الصلاحية', 'c', 46], ['منح أو منع', 'g', 14]]);
     D.people.filter(p => !uLeftP(p) && !p.owner).forEach(p => Object.keys(p.access).forEach(aid => Object.keys(p.access[aid].diff || {}).forEach(k => {
       const pl = Object.keys(M.people).find(l => M.people[l] === p.id), cl = Object.keys(M.caps).find(l => M.caps[l].appId === aid && M.caps[l].key === k);
@@ -3096,6 +3109,19 @@ async function uXlRead(file) {
       const curProf = person.profileId ? (D.profiles.find(f => f.id === person.profileId) || {}).nameAR : U_BYTITLE;
       const profile = pr && pr !== curProf ? (pr === U_BYTITLE ? '' : pr) : null;
       if (changed || profile !== null || restDays) payload.people.push({ r: r, personId: id, profile: profile, access: access, restDays: restDays }); });
+    payload.newPeople = [];
+    rows('مستخدمون جدد', (g, r, hdr) => { const nm = String(g('الاسم')).trim(), em = String(g('البريد الإلكتروني')).trim().toLowerCase(); if (!nm && !em) return;
+      if (!nm) return bad('مستخدمون جدد', r, 'بلا اسم'); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) return bad('مستخدمون جدد', r, 'بريد غير صحيح');
+      if (D.people.some(p => String(p.email || '').toLowerCase() === em) || payload.newPeople.some(x => x.email === em)) return bad('مستخدمون جدد', r, 'البريد موجود من قبل');
+      const co = String(g('الشركة')), cc = (D.shared.companies || []).find(o => o.nameAR === co);
+      if (co && !cc) return bad('مستخدمون جدد', r, 'شركة ليست من القائمة');
+      const pr = String(g('الوظيفة')); if (pr && pr !== U_BYTITLE && !D.profiles.some(f => f.nameAR === pr)) return bad('مستخدمون جدد', r, 'وظيفة ليست من القائمة');
+      const rl = String(g('يوم الراحة')), ri = rl ? U_DAYS.indexOf(rl) : -1; if (rl && ri < 0) return bad('مستخدمون جدد', r, 'يوم راحة ليس من القائمة');
+      const access = {};
+      for (const a of D.apps) { const ev = String(g(a.nameAR + ' — الدخول')), en = Object.keys(U_EN).find(k => U_EN[k] === ev); if (ev && en === undefined) return bad('مستخدمون جدد', r, 'قيمة دخول ليست من القائمة');
+        const sl = String(g(a.nameAR + ' — يرى')), sc = sl ? ((uReg(a.id) || {}).scopes || []).find(x => x.label === sl) : null; if (sl && !sc) return bad('مستخدمون جدد', r, 'نطاق ليس من القائمة');
+        if ((en || '') !== '' || sc) access[a.id] = { en: en || '', scope: sc ? sc.key : '' }; }
+      payload.newPeople.push({ r: r, name: nm, email: em, title: String(g('المسمى الوظيفي')).trim(), company: cc ? cc.code : '', profile: pr && pr !== U_BYTITLE ? pr : null, restDays: ri >= 0 ? [ri] : null, access: access }); });
     rows('صلاحيات خاصة', (g, r) => { const p = g('الموظف'), c = g('النظام — الصلاحية'), gr = g('منح أو منع'); if (!p && !c) return;
       if (!M.people[p]) return bad('صلاحيات خاصة', r, 'موظف ليس من القائمة'); if (!M.caps[c]) return bad('صلاحيات خاصة', r, 'صلاحية ليست من القائمة');
       if (gr !== 'منح' && gr !== 'منع') return bad('صلاحيات خاصة', r, 'اختر منح أو منع');
@@ -3113,13 +3139,18 @@ async function uXlRead(file) {
     const errs = local.concat(res.errors || []), c = res.counts;
     out.innerHTML = '<div class="u-prev"><span><b>' + c.profiles + '</b> وظيفة</span><span><b>' + c.titles + '</b> مسمى</span><span><b>' + c.people + '</b> موظفاً تغيّر</span><span><b>' + c.special + '</b> صلاحية خاصة</span><span><b>' + c.settings + '</b> إعداداً تغيّر</span></div>' +
       (errs.length ? '<p class="u-err">صحّح هذه في الملف ثم ارفعه من جديد:</p><ul class="u-errs">' + errs.slice(0, 40).map(e => '<li>' + esc(e.sheet) + ' · صف ' + esc(e.row) + ': ' + esc(e.msg) + '</li>').join('') + '</ul>' : '<p class="u-muted">لا أخطاء. اضغط «اعتماد» للتطبيق.</p>');
-    $('#uXlApply').disabled = !!errs.length || !(c.profiles + c.titles + c.people + c.special + c.settings);
+    $('#uXlApply').disabled = !!errs.length || !(c.profiles + c.titles + c.people + c.special + c.settings + payload.newPeople.length);
+    if (payload.newPeople.length) out.insertAdjacentHTML('afterbegin', '<p class="u-muted"><b>' + payload.newPeople.length + '</b> مستخدم جديد سيُضاف</p>');
   } catch (c) { out.innerHTML = '<p class="u-err">تعذّرت قراءة الملف. تأكد أنه النموذج المنزّل من البوابة وبصيغة xlsx.</p>'; console.error(c); }
 }
 async function uXlApply() {
   if (!U.bulk) return;
   $('#uXlApply').disabled = true;
-  try { const r = await api('u_bulk', Object.assign({ apply: true }, U.bulk)); closeModal(true); toast(r.applied ? 'طُبّق الملف ووصل للأنظمة' : 'لم يُطبّق: راجع الأخطاء', r.applied ? 'ok' : 'err'); U.bulk = null; uFlushSoon(); uLoad(); }
+  try {
+    const np = U.bulk.newPeople || [];
+    for (const n of np) await api('u_saveManual', { person: { name: n.name, email: n.email, title: n.title, company: n.company } });
+    if (np.length) { await uLoad(); const extra = []; np.forEach(n => { const p = U.d.people.find(x => String(x.email || '').toLowerCase() === n.email); if (p && (n.profile || n.restDays || Object.keys(n.access).length)) extra.push({ r: n.r, personId: p.id, profile: n.profile, access: n.access, restDays: n.restDays }); }); U.bulk.people = (U.bulk.people || []).concat(extra); }
+    const r = await api('u_bulk', Object.assign({ apply: true }, U.bulk, { newPeople: undefined })); closeModal(true); toast(r.applied ? 'طُبّق الملف ووصل للأنظمة' : 'لم يُطبّق: راجع الأخطاء', r.applied ? 'ok' : 'err'); U.bulk = null; uFlushSoon(); uLoad(); }
   catch (c) { showErr(c); $('#uXlApply').disabled = false; }
 }
 
@@ -3142,6 +3173,11 @@ function uOnChange(el) {
     }
     if (k === 'pScope') { e.scopeOwn = el.value; e.scope = el.value; }
     uPersonSave(p, a); const y = window.scrollY; uRender(); window.scrollTo(0, y); return;
+  }
+  if (k === 'pTitle') {
+    const p = D.people.find(x => x.id === U.id);
+    if (el.value === '__new') { el.value = p.title || ''; openModal({ title: 'مسمى وظيفي جديد', body: '<label class="field"><span>المسمى</span><input class="inp" id="uNewTitle" maxlength="80"></label>', foot: '<button class="btn btn-primary" data-u="pTitleSave">' + ic('check') + '<span>إضافة</span></button>' }); return; }
+    p.title = el.value; uMark('pt:' + p.id, { t: 'personTitle', personId: p.id, title: el.value }); uRender(); return;
   }
   if (k === 'pProf') { const p = D.people.find(x => x.id === U.id); p.profileId = el.value; uMark('pf:' + p.id, { t: 'personProfile', personId: p.id, profileId: el.value }); return; }
   if (k === 'fOn' || k === 'fCap' || k === 'fScope') {
@@ -3243,6 +3279,15 @@ function uOnClick(el, e) {
     const p = D.people.find(x => x.id === U.id), stop = k === 'pStop';
     const go = () => { p.stopped = stop; uRender(); uSave('u_setPerson', { personId: p.id, stop: stop }, stop ? 'أُوقف في كل الأنظمة' : 'أُعيد تفعيله'); };
     return stop ? uConfirm('سيُوقف دخول ' + p.name + ' إلى البوابة وكل الأنظمة فوراً.', go) : go();
+  }
+  if (k === 'pTitleSave') {
+    const v = ($('#uNewTitle').value || '').trim(); if (!v) { toast('اكتب المسمى', 'err'); return; }
+    const p = D.people.find(x => x.id === U.id); closeModal(true); p.title = v; uMark('pt:' + p.id, { t: 'personTitle', personId: p.id, title: v }); uRender(); return;
+  }
+  if (k === 'pInvite') {
+    el.disabled = true;
+    api('admin_invite', { ids: [el.dataset.id], resetPin: true, note: '' }).then(d => { toast(d.sent && d.sent.length ? 'أُرسلت الدعوة وكلمة مرور مؤقتة جديدة على بريده' : 'لم تُرسل: تأكد من البريد', d.sent && d.sent.length ? 'ok' : 'err'); }).catch(c => showErr(c)).finally(() => { el.disabled = false; });
+    return;
   }
   if (k === 'pAccount') {
     const p = D.people.find(x => x.id === U.id); openUserForm('');
