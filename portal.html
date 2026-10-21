@@ -2,7 +2,8 @@
 <html lang="ar" dir="rtl" data-theme="luxe">
 <head>
 <base target="_top">
-<meta charset="utf-8"><script src="config.js"></script>
+<meta charset="utf-8">
+<script src="config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>سوار</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1217,7 +1218,6 @@ tr.is-off .mx-user { opacity: .5; }
       <button class="tab" data-unav="people"><i data-ic="users"></i><span>الموظفون</span></button>
       <button class="tab" data-unav="profiles"><i data-ic="lockOpen"></i><span>الوظائف</span></button>
       <button class="tab" data-unav="systems"><i data-ic="grid"></i><span>الأنظمة</span></button>
-      <button class="tab" data-unav="shared"><i data-ic="shield"></i><span>الثوابت</span></button>
       <button class="tab" data-unav="settings" data-owner="1"><i data-ic="palette"></i><span>الإعدادات</span></button>
       <button class="tab" data-unav="logs"><i data-ic="list"></i><span>السجل</span></button>
     </nav>
@@ -2627,8 +2627,8 @@ async function uSave(action, payload, okMsg) {
   try { const r = await api(action, payload); if (okMsg) toast(okMsg, 'ok'); uFlushSoon(); uLoad(); return r; }
   catch (c) { showErr(c); uLoad(); return null; }
 }
-const U_TOP = { home: 1, people: 1, profiles: 1, systems: 1, shared: 1 };
-const U_PARENT = { person: 'people', profile: 'profiles', system: 'systems' };
+const U_TOP = { home: 1, people: 1, profiles: 1, systems: 1 };
+const U_PARENT = { person: 'people', profile: 'profiles', system: 'systems', shared: 'systems' };
 function uNavMark() {
   const cur = S.tab === 'unified' ? (U_PARENT[U.view] || U.view) : S.tab;
   $$('#uTabs .tab').forEach(b => b.classList.toggle('on', b.dataset.unav === cur));
@@ -2667,7 +2667,7 @@ function uRender() {
   const root = $('#uRoot'); if (!root || !U.d) return;
   const v = U.view;
   const html = ({ home: uHome, people: uPeople, person: uPerson, profiles: uProfiles, profile: uProfile, systems: uSystems, system: uSystem, shared: uSharedV })[v] || uHome;
-  root.innerHTML = (['person', 'profile', 'system'].indexOf(v) >= 0 ? '<button class="u-back" data-u="back">' + ic('arrow') + '<span>رجوع</span></button>' : '') + html();
+  root.innerHTML = (['person', 'profile', 'system', 'shared'].indexOf(v) >= 0 ? '<button class="u-back" data-u="back">' + ic('arrow') + '<span>رجوع</span></button>' : '') + html();
   uAfter(); uNavMark(); uBar();
   const n = (U.d.todo || []).reduce((a, x) => a + (x.kind === 'nomail' ? 0 : x.n), 0), b = $('#uTodoN');
   if (b) { b.hidden = !n; b.textContent = n; }
@@ -2795,18 +2795,18 @@ function uProfile() {
 
 function uSystems() {
   const D = U.d, all = (S.admin && S.admin.apps) || D.apps;
-  return '<div class="u-bar"><span></span><button class="btn btn-primary" data-act="newApp">' + ic('plus') + '<span>إضافة نظام</span></button></div><div class="list u-list">' + all.map(a0 => {
+  return '<div class="u-bar"><span></span><button class="btn btn-primary" data-act="newApp">' + ic('plus') + '<span>إضافة نظام</span></button></div><div class="list u-list"><button class="row" data-u="go" data-v="shared"><span class="app-icon tint-gold">' + ic('settings') + '</span><div class="row-main"><div class="row-title">سوار</div><div class="row-sub">الشركات والمواقع والأدوار وما لا يخص نظاماً بعينه</div></div></button>' + all.map(a0 => {
     const a = D.apps.find(x => x.id === a0.id) || { id: a0.id, nameAR: a0.nameAR, icon: a0.icon, tint: a0.tint };
     const d = uReg(a.id), r = (D.registry || {})[a.id], off = a0.status && a0.status !== 'Active';
     return '<button class="row' + (off ? ' is-off' : '') + '" data-u="system" data-id="' + esc(a.id) + '">' + uIcon(a) + '<div class="row-main"><div class="row-title">' + esc(a.nameAR) + (off ? ' <span class="badge badge-grey">' + esc(t('st_Hidden')) + '</span>' : '') + '</div>' +
-      '<div class="row-sub">' + (d ? (d.settings || []).length + ' إعداداً · ' + (d.caps || []).length + ' صلاحية · ' + esc(String(r.fetchedAt || '').slice(0, 10)) : 'لم يربط إعداداته بسوار بعد') + '</div></div>' +
-      '<span class="u-tag' + (d ? '' : ' u-tag-grey') + '">' + (d ? 'مربوط' : 'لم يربط بعد') + '</span></button>';
+      '<div class="row-sub">' + (d ? (d.settings || []).length + ' إعداداً · ' + (d.caps || []).length + ' صلاحية · ' + esc(String(r.fetchedAt || '').slice(0, 10)) : 'اضغط لجلب إعداداته') + '</div></div>' +
+      '<span class="u-tag' + (d ? '' : ' u-tag-grey') + '">' + (d ? 'مربوط' : 'بانتظار الجلب') + '</span></button>';
   }).join('') + '</div>';
 }
 
 function uSystem() {
   const D = U.d, a = uApp(U.id), d = uReg(a.id), saved = (D.settings || {})[a.id] || {};
-  const head = '<div class="u-head">' + uIcon(a) + '<div><h3>' + esc(a.nameAR) + '</h3><p class="u-muted">' + (d ? 'كل سؤال هنا إعداد من إعدادات النظام. التعديل يصل للنظام فوراً.' : 'لم يربط هذا النظام إعداداته بعد.') + '</p></div>' +
+  const head = '<div class="u-head">' + uIcon(a) + '<div><h3>' + esc(a.nameAR) + '</h3>' + (d ? '' : '<p class="u-muted">لم يربط هذا النظام إعداداته بعد.</p>') + '</div>' +
     '<div class="savebar-actions"><button class="btn btn-ghost" data-act="editApp" data-id="' + esc(a.id) + '">' + ic('link') + '<span>الربط والشكل</span></button><button class="btn btn-ghost" data-u="fetchReg" data-id="' + esc(a.id) + '">' + ic('refresh') + '<span>' + (d ? 'تحديث من النظام' : 'جلب إعداداته الآن') + '</span></button></div></div>' +
     '<section class="panel-box"><h3>' + ic('users') + '<span>من يدخله</span></h3><div class="u-chips">' + (D.people.filter(p => p.access[a.id] && p.access[a.id].on && !uLeftP(p)).map(p => '<button class="chip" data-u="person" data-id="' + esc(p.id) + '">' + esc(p.name) + '</button>').join('') || '<span class="u-muted">لا أحد بعد</span>') + '</div></section>';
   if (!d) return head + '<section class="panel-box"><p class="u-muted">عندما يجهز النظام وصف إعداداته وصلاحياته (تعمل عليه محادثة النظام)، اضغط «جلب إعداداته الآن» فتظهر هنا أسئلته بقيمها الحالية، وتُنقل قيمه الحالية لسوار مرة واحدة.</p></section>';
@@ -2814,15 +2814,14 @@ function uSystem() {
   (d.settings || []).forEach(s => { if (s.group && !known[s.group]) { known[s.group] = 1; groups.push({ key: s.group, title: s.group }); } });
   if ((d.settings || []).some(s => !s.group)) groups.push({ key: '', title: 'عام' });
   return head + groups.map(g => {
-    const items = (d.settings || []).filter(s => (s.group || '') === g.key);
+    const items = (d.settings || []).filter(s => (s.group || '') === g.key && !s.shared);
     if (!items.length) return '';
     return '<section class="panel-box"><h3>' + ic('settings') + '<span>' + esc(g.title) + '</span></h3><div class="u-qs">' + items.map(s => {
-      if (s.shared) return '<div class="u-q"><span class="u-q-t">' + esc(s.q || s.key) + '</span><span class="u-q-v"><span class="u-tag">موحّد لكل الأنظمة</span> <button class="link-btn" data-u="go" data-v="shared">' + esc((D.sharedLabels || {})[s.shared] || s.shared) + '</button></span></div>';
       const has = s.key in saved, v = has ? saved[s.key].v : s.default;
       return '<div class="u-q"><span class="u-q-t">' + esc(s.q || s.key) + (s.sensitive ? ' <em class="u-sens">حساس</em>' : '') + '</span><span class="u-q-v">' + uInput(a.id, s, v) + (s.unit ? '<span class="u-unit">' + esc(s.unit) + '</span>' : '') + '</span>' +
-        (has && saved[s.key].by ? '<small class="u-by">' + (saved[s.key].by === 'import' ? 'منقول من النظام' : 'عدّله ' + esc(saved[s.key].by)) + ' · ' + esc(String(saved[s.key].at || '').slice(0, 10)) + '</small>' : '<small class="u-by">القيمة الأساسية</small>') + '</div>';
+        '</div>';
     }).join('') + '</div></section>';
-  }).join('');
+  }).join('') + uSharedV(Array.from(new Set((d.settings || []).filter(s => s.shared).map(s => s.shared))), a.id);
 }
 function uInput(appId, s, v) {
   const at = ' data-uc="set" data-app="' + esc(appId) + '" data-key="' + esc(s.key) + '"';
@@ -2843,15 +2842,15 @@ const U_SHARED_FORM = {
   locations: [{ k: 'nameAR', l: 'الموقع' }, { k: 'company', l: 'الشركة', t: 'co' }],
   mailGroups: [{ k: 'nameAR', l: 'المجموعة' }, { k: 'emails', l: 'البريد', t: 'list' }]
 };
-function uSharedV() {
+function uSharedV(onlyKeys, sysId) {
   const D = U.d, sh = D.shared;
   const usedBy = key => D.apps.filter(a => ((uReg(a.id) || {}).settings || []).some(s => s.shared === key)).map(a => a.nameAR);
   const box = (key, inner, foot) => {
-    const u = usedBy(key);
-    return '<section class="panel-box u-const" id="uK-' + key + '"><h3>' + ic('shield') + '<span>' + esc(D.sharedLabels[key] || key) + '</span></h3>' + inner +
-      '<p class="u-used">' + (u.length ? 'تستخدمه: ' + esc(u.join('، ')) : 'لم يربطه أي نظام بعد') + '</p>' + (foot || '') + '</section>';
+    const u = usedBy(key), mine = sysId ? (uApp(sysId).nameAR || '') : '', others = u.filter(n => n !== mine);
+    return '<section class="panel-box u-const" id="uK-' + key + '"><h3>' + ic('settings') + '<span>' + esc(D.sharedLabels[key] || key) + '</span></h3>' + inner +
+      (others.length ? '<p class="u-used">مشترك مع: ' + esc(others.join('، ')) + ' — أي تعديل هنا يسري عليها</p>' : '') + (foot || '') + '</section>';
   };
-  const saveBtn = key => '<div class="u-foot"><button class="btn btn-ghost btn-sm" data-u="saveShared" data-k="' + key + '">' + ic('check') + '<span>تثبيت التعديل</span></button></div>';
+  const saveBtn = key => '';
   const rows = key => {
     const f = U_SHARED_FORM[key], list = Array.isArray(sh[key]) ? sh[key] : [];
     return '<div class="u-rows" data-rows="' + key + '">' + list.map((r, i) => uRowHtml(key, f, r, i)).join('') + '</div><button class="link-btn" data-u="addRow" data-k="' + key + '">+ إضافة</button>';
@@ -2860,17 +2859,23 @@ function uSharedV() {
   const people = D.people.filter(p => !uLeftP(p)).sort((a, b) => String(a.name).localeCompare(String(b.name), 'ar'));
   const pick = role => '<label class="u-q"><span class="u-q-t">' + ({ gm: 'المدير العام', cfo: 'المدير المالي', hr: 'مسؤول الموارد البشرية' })[role] + '</span><select class="inp" data-uc="contact" data-r="' + role + '"><option value="">—</option>' +
     people.map(p => '<option value="' + esc(p.id) + '"' + ((sh.contacts || {})[role] === p.id ? ' selected' : '') + '>' + esc(p.name) + '</option>').join('') + '</select></label>';
-  return '<p class="u-muted u-lead">الثابت يُكتب مرة واحدة هنا وتقرؤه كل الأنظمة؛ لا يُعدَّل داخل أي نظام.</p>' +
-    box('workweek', '<div class="u-q"><span class="u-q-t">أيام إغلاق الشركة كلها (إن وُجدت)</span><span class="u-days" data-wk="1">' + U_DAYS.map((n, i) => '<button class="seg-btn' + ((ww.weekend || []).indexOf(i) >= 0 ? ' on' : '') + '" data-u="wkDay" data-i="' + i + '">' + n + '</button>').join('') + '</span></div>' +
-      '<div class="u-q"><span class="u-q-t">أقصى نسبة راحة في القسم في اليوم الواحد</span><span class="u-q-v"><input class="inp u-num" type="number" min="10" max="100" step="5" data-uc="wkCap" value="' + esc(ww.maxRestShare || 50) + '"><span class="u-unit">%</span></span></div>' + uCoverage()) +
-    box('holidays', rows('holidays'), saveBtn('holidays')) +
-    box('companies', rows('companies'), saveBtn('companies')) +
-    box('departments', '<div class="u-chips">' + ((sh.departments || []).map(x => '<span class="chip">' + esc(x) + '</span>').join('') || '<span class="u-muted">تأتي من جسر عند الاستيراد</span>') + '</div><small class="hint">تُحدَّث تلقائياً من جسر.</small>') +
-    box('locations', rows('locations'), saveBtn('locations')) +
-    box('contacts', '<div class="u-qs">' + ['gm', 'cfo', 'hr'].map(pick).join('') + '</div>') +
-    box('roles', uRolesHtml(people)) +
-    box('mailGroups', rows('mailGroups'), saveBtn('mailGroups')) +
-    box('brand', '<label class="u-q"><span class="u-q-t">اسم المرسل في رسائل البريد</span><input class="inp" data-uc="brand" value="' + esc((sh.brand || {}).senderName || '') + '"></label>');
+  const wwBox = '<div class="u-q"><span class="u-q-t">أيام إغلاق الشركة كلها (إن وُجدت)</span><span class="u-days" data-wk="1">' + U_DAYS.map((n, i) => '<button class="seg-btn' + ((ww.weekend || []).indexOf(i) >= 0 ? ' on' : '') + '" data-u="wkDay" data-i="' + i + '">' + n + '</button>').join('') + '</span></div>' +
+      '<div class="u-q"><span class="u-q-t">أقصى نسبة راحة في القسم في اليوم الواحد</span><span class="u-q-v"><input class="inp u-num" type="number" min="10" max="100" step="5" data-uc="wkCap" value="' + esc(ww.maxRestShare || 50) + '"><span class="u-unit">%</span></span></div>' + uCoverage();
+  const B = {
+    workweek: () => box('workweek', wwBox),
+    holidays: () => box('holidays', rows('holidays'), saveBtn('holidays')),
+    companies: () => box('companies', rows('companies'), saveBtn('companies')),
+    departments: () => box('departments', '<div class="u-chips">' + ((sh.departments || []).map(x => '<span class="chip">' + esc(x) + '</span>').join('') || '<span class="u-muted">تأتي من جسر عند الاستيراد</span>') + '</div>'),
+    locations: () => box('locations', rows('locations'), saveBtn('locations')),
+    contacts: () => box('contacts', '<div class="u-qs">' + ['gm', 'cfo', 'hr'].map(pick).join('') + '</div>'),
+    roles: () => box('roles', uRolesHtml(people)),
+    mailGroups: () => box('mailGroups', rows('mailGroups'), saveBtn('mailGroups')),
+    brand: () => box('brand', '<label class="u-q"><span class="u-q-t">اسم المرسل الظاهر في الرسائل</span><input class="inp" data-uc="brand" value="' + esc((sh.brand || {}).senderName || '') + '"></label>')
+  };
+  const keys = onlyKeys || U_SHARED_ORDER.filter(k => !usedBy(k).length);
+  const body = keys.filter(k => B[k]).map(k => B[k]()).join('');
+  if (onlyKeys) return body;
+  return '<div class="u-head"><div><h3>إعدادات سوار</h3></div></div>' + (body || '<p class="u-muted">لا إعدادات عامة خارج الأنظمة.</p>');
 }
 
 function uRolesHtml(people) {
@@ -2909,6 +2914,11 @@ function uRowHtml(key, f, r, i) {
     return '<input class="inp" data-f="' + c.k + '"' + (c.t === 'date' ? ' type="date"' : '') + (c.ro && v ? ' readonly' : '') + ' placeholder="' + esc(c.l) + '" value="' + esc(Array.isArray(v) ? v.join('، ') : (v || '')) + '">';
   }).join('') + '<button class="u-x" data-u="delRow" aria-label="حذف">' + ic('trash') + '</button></div>';
 }
+function uCommitRows(key) {
+  const v = uCollectRows(key); if (!U.base) U.base = JSON.parse(JSON.stringify(U.d));
+  U.d.shared[key] = v; uMark('sh:' + key, { t: 'shared', key: key, value: v });
+}
+document.addEventListener('change', e => { const el = e.target.closest('[data-rows] [data-f]'); if (!el || !el.closest('#uRoot')) return; uCommitRows(el.closest('[data-rows]').dataset.rows); });
 function uCollectRows(key) {
   const f = U_SHARED_FORM[key], old = Array.isArray(U.d.shared[key]) ? U.d.shared[key] : [];
   return $$('[data-rows="' + key + '"] .u-row').map((el, i) => {
@@ -3276,7 +3286,7 @@ function uOnClick(el, e) {
   if (k === 'addRole') { const list = JSON.parse(JSON.stringify(U.d.shared.roles || [])); list.push({ key: 'r' + Date.now().toString(36), title: '', person: '', deputy: '', from: '', to: '' }); uRolesSet(list); const y = window.scrollY; uRender(); window.scrollTo(0, y); return; }
   if (k === 'delRole') { const list = JSON.parse(JSON.stringify(U.d.shared.roles || [])); list.splice(Number(el.dataset.i), 1); uRolesSet(list); const y = window.scrollY; uRender(); window.scrollTo(0, y); return; }
   if (k === 'addRow') { const key = el.dataset.k; $('[data-rows="' + key + '"]').insertAdjacentHTML('beforeend', uRowHtml(key, U_SHARED_FORM[key], {}, -1)); return; }
-  if (k === 'delRow') { el.closest('.u-row').remove(); return; }
+  if (k === 'delRow') { const box = el.closest('[data-rows]'); el.closest('.u-row').remove(); if (box) uCommitRows(box.dataset.rows); return; }
   if (k === 'saveShared') { const key = el.dataset.k, v = uCollectRows(key); if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); D.shared[key] = v; uMark('sh:' + key, { t: 'shared', key: key, value: v }); const y = window.scrollY; uRender(); window.scrollTo(0, y); return; }
   if (k === 'import') return uOpenImport();
   if (k === 'srcKawader') return uSrc('u_importKawader', 'نقل بيانات الموظفين من كوادر');
