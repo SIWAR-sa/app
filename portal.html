@@ -1989,7 +1989,7 @@ function toggleLang() {
 const deb = (f, ms) => { let tm; return () => { clearTimeout(tm); tm = setTimeout(f, ms || 120); }; };
 function show(screen) {
   if (screen === 'home' && S.homeDirty) { S.homeDirty = false; renderHome(); }
-  S.screen = screen;
+  S.screen = screen; navSave();
   $$('.screen').forEach(s => s.classList.toggle('active', s.id === 'screen-' + screen));
   try { if (U.dirty) uBar(); } catch (e) {}
   $('#topbar').hidden = screen === 'login';
@@ -2060,6 +2060,14 @@ async function onReset(e) {
   finally { setLoading(btn, false); }
 }
 
+let NAV0 = null; try { NAV0 = JSON.parse(localStorage.getItem('sp_nav') || 'null'); } catch (e) {}
+function navSave() { try { if (!S.user) return; localStorage.setItem('sp_nav', JSON.stringify({ s: S.screen, t: S.tab, v: U.view, i: U.id, u: S.user.email || S.user.id || '' })); } catch (e) {} }
+async function navRestore() {
+  const n = NAV0; NAV0 = null;
+  if (!n || n.s !== 'admin' || myRank() < RANK.supervisor || n.u !== (S.user.email || S.user.id || '')) return;
+  S.tab = n.t || S.tab; if (n.v) { U.view = n.v; U.id = n.i || ''; }
+  await openAdmin();
+}
 function enterSession(d, fresh) {
   S.user = d.user;
   S.apps = d.apps || [];
@@ -2068,6 +2076,7 @@ function enterSession(d, fresh) {
   show('home');
   if (!S.user.mustChange) loadPending(false);
   afterHome();
+  navRestore();
   if (fresh) toast(t('ok_welcome', { name: L(S.user, 'name') || S.user.username }), 'ok');
   if (S.user.mustChange) openChangePin(true);
   else if (PAIR) openPair();
@@ -2651,6 +2660,7 @@ function uSummary(p) {
 }
 
 function uRender() {
+  navSave();
   const root = $('#uRoot'); if (!root || !U.d) return;
   const v = U.view;
   const html = ({ home: uHome, people: uPeople, person: uPerson, profiles: uProfiles, profile: uProfile, systems: uSystems, system: uSystem, shared: uSharedV })[v] || uHome;
@@ -3375,7 +3385,7 @@ async function switchTab(tab) {
   if (S.tab === 'settings' && S.pendingTheme) { S.pendingTheme = null; applyTheme(currentTheme()); }
   if (S.tab === 'access') $('#matrix').innerHTML = '';
   if (S.tab === 'logs') $('#logsList').innerHTML = '';
-  S.tab = tab;
+  S.tab = tab; navSave();
   renderAdmin();
   const on = $('.tab.on');
   if (on && window.innerWidth <= 720) try { on.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' }); } catch (e) {}
