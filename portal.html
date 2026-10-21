@@ -2519,10 +2519,13 @@ async function launchInApp(btn, app) {
 function warmLastApp() {
   if (!S.inApp || !S.token) return;
   let id = ''; try { id = localStorage.getItem('sp_last_app') || ''; } catch (e) {}
-  const app = S.apps.find(a => a.id === id && !a.locked);
-  if (!app || S.alive[id]) return;
-  const url = takeTicket(id);
-  if (url) try { window.top.postMessage({ siwar: 'warm', id: id, url: url, name: L(app, 'name'), icon: appIconMsg(app) }, '*'); } catch (e) {}
+  const list = S.apps.filter(a => !a.locked && !a.jisrOnly && !S.alive[a.id]);
+  list.sort((a, b) => (b.id === id ? 1 : 0) - (a.id === id ? 1 : 0));
+  list.forEach((app, i) => setTimeout(() => {
+    if (S.alive[app.id]) return;
+    const url = takeTicket(app.id);
+    if (url) try { window.top.postMessage({ siwar: 'warm', id: app.id, url: url, name: L(app, 'name'), icon: appIconMsg(app) }, '*'); } catch (e) {}
+  }, i * 2200));
 }
 function afterHome() {
   if (!S.inApp || !S.token || (S.user && S.user.mustChange)) return;

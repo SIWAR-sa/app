@@ -216,7 +216,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
      كل نظام في إطار خاص به يبقى حياً بعد العودة للبوابة (حتى MAXF أنظمة)، فالرجوع إليه فوري.
      شاشة الفتح تظهر مع الضغطة وتتقدّم مع مراحل الفتح الفعلية، وتختفي حين يقول النظام إنه جاهز. */
   var MAXF = iOS || /Android/.test(ua) ? 3 : 5, FRAME_AGE = 6 * 3600000;   // كل الأنظمة الخمسة تبقى مفتوحة على الكمبيوتر، وثلاثة على الجوال: الرجوع لنظام فُتح فوري بلا تحميل
-  var frames = {}, cur = '', seq = 0;
+  var frames = {}, cur = '', seq = 0, rt = {};
   var RING = 502.65;
   var ERRT = { ar: { msg: 'تعذّر فتح النظام الآن.', retry: 'إعادة المحاولة' }, en: { msg: 'The system could not be opened right now.', retry: 'Try again' } };
   function portalWin() { var pf = $('portal').querySelector('iframe'); return pf && pf.contentWindow; }
@@ -284,7 +284,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     $('plErrTxt').textContent = t.msg; $('plRetry').textContent = t.retry;
     L.className = 'pload shown err';
   }
-  $('plRetry').onclick = function () { if (cur) relaunch(cur, true); };
+  $('plRetry').onclick = function () { if (cur) { rt[cur] = 0; relaunch(cur, true); } };
 
   function showLayer() {
     $('prog').className = 'on'; $('prog').setAttribute('aria-hidden', 'false'); $('home').hidden = false;
@@ -328,16 +328,19 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
       // بعد اكتمال الصفحة: إن لم تصل أي إشارة خلال لحظات فهي صفحة خطأ من جوجل، فيُعاد الفتح تلقائياً مرة
       o.wd2 = setTimeout(function () {
         if (frames[id] !== o || healthy(o)) return;
-        if (o.tries < 1) { o.tries++; if (cur === id) relaunch(id, false); else dropFrame(id); }
+        if ((rt[id] || 0) < 2) { rt[id] = (rt[id] || 0) + 1; if (cur === id) relaunch(id, false); else dropFrame(id); }
         else markReady(id);   // صفحة بلا إشارة (نادر): تُعرض كما هي
       }, 1200);
     };
     // حد أقصى للانتظار
     o.wd = setTimeout(function () {
       if (frames[id] !== o || o.ready) return;
-      if (!o.loaded) { if (cur === id) loaderErr(); else dropFrame(id); }
+      if (!o.loaded) {
+        if ((rt[id] || 0) < 2) { rt[id] = (rt[id] || 0) + 1; if (cur === id) relaunch(id, true); else dropFrame(id); }
+        else { rt[id] = 0; if (cur === id) loaderErr(); else dropFrame(id); }
+      }
       else markReady(id);
-    }, 25000);
+    }, 14000);
     p.src = url;
     $('pbody').appendChild(p);
     trim(id); sendAlive();
@@ -345,7 +348,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   }
   function markReady(id) {
     var o = frames[id]; if (!o) return;
-    o.ready = true; clearTimeout(o.wd);
+    o.ready = true; rt[id] = 0; clearTimeout(o.wd);
     if (cur === id) loaderDone();
   }
 
