@@ -1110,6 +1110,16 @@ tr.is-off .mx-user { opacity: .5; }
   .u-row-end .u-apps { display: none; }
   .u-sys-grid { grid-template-columns: 1fr; }
 }
+
+.u-pk { max-height: 52vh; overflow: auto; margin-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+.u-pk-row { display: flex; align-items: center; gap: 12px; padding: 8px 10px; border-radius: var(--radius-sm); background: transparent; border: 1px solid transparent; text-align: start; cursor: pointer; font: inherit; color: inherit; }
+.u-pk-row:hover { background: var(--surface-2); }
+.u-pk-row small { display: block; color: var(--muted, #8a8480); font-size: 12px; }
+.u-pk-ck { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--line, #cfc8c2); flex: none; position: relative; }
+.u-pk-row.on { background: #FFF8EC; border-color: #E8D3A6; }
+.u-pk-row.on .u-pk-ck { background: var(--pink-deep, #b4436c); border-color: var(--pink-deep, #b4436c); }
+.u-pk-row.on .u-pk-ck::after { content: ''; position: absolute; inset: 3px 5px 6px 5px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.u-rolesel { margin: 0 0 10px; padding-bottom: 10px; border-bottom: 1px dashed var(--line, #e6e0da); }
 </style>
 <style id="sdfix">input[type=date],input[type=time],input[type=month],input[type=datetime-local]{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important;word-spacing:normal!important;text-align:start!important}input[type=date]::-webkit-datetime-edit,input[type=time]::-webkit-datetime-edit,input[type=month]::-webkit-datetime-edit,input[type=datetime-local]::-webkit-datetime-edit{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important}</style></head>
 <body>
@@ -1217,6 +1227,7 @@ tr.is-off .mx-user { opacity: .5; }
       <button class="tab" data-unav="home"><i data-ic="alert"></i><span>يحتاج قرارك</span><span class="count alert" id="uTodoN" hidden></span></button>
       <button class="tab" data-unav="people"><i data-ic="users"></i><span>الموظفون</span></button>
       <button class="tab" data-unav="profiles"><i data-ic="lockOpen"></i><span>الوظائف</span></button>
+      <button class="tab" data-unav="roles"><i data-ic="shield"></i><span>الأدوار</span></button>
       <button class="tab" data-unav="systems"><i data-ic="grid"></i><span>الأنظمة</span></button>
       <button class="tab" data-unav="settings" data-owner="1"><i data-ic="palette"></i><span>الإعدادات</span></button>
       <button class="tab" data-unav="logs"><i data-ic="list"></i><span>السجل</span></button>
@@ -1411,7 +1422,7 @@ const I18N = {
     rs_noEmail: 'بلا بريد', rs_suspended: 'موقوف', rs_forbidden: 'خارج صلاحيتك', rs_mail: 'تعذّر الإرسال',
     ERR_NO_PORTAL_URL: 'احفظ رابط النشر في الإعدادات أولاً.', ERR_MAIL_QUOTA: 'تجاوز العدد المسموح للبريد اليوم.',
     ERR_INVALID_LOGIN: 'البريد أو كلمة المرور غير صحيحة.', ERR_LOCKED: 'محاولات كثيرة، انتظر قليلاً ثم حاول مجدداً أو استخدم «نسيت كلمة المرور؟».',
-    ERR_SUSPENDED: 'هذا الحساب موقوف.', ERR_SESSION: 'انتهت الجلسة، سجّل الدخول مجدداً.', ERR_FORBIDDEN: 'لا تملك صلاحية هذا الإجراء.', ERR_SENSITIVE: 'هذه صلاحية حساسة؛ يمنحها المالك فقط.', ERR_SHARED: 'هذا ثابت مشترك؛ يُعدَّل من «الثوابت».', ERR_VALUE: 'القيمة غير مقبولة.', NO_SOURCE: 'تعذّر فتح ملف المصدر.',
+    ERR_SUSPENDED: 'هذا الحساب موقوف.', ERR_SESSION: 'انتهت الجلسة، سجّل الدخول مجدداً.', ERR_FORBIDDEN: 'لا تملك صلاحية هذا الإجراء.', ERR_SENSITIVE: 'هذه صلاحية حساسة؛ يمنحها المالك فقط.', ERR_SHARED: 'هذا ثابت مشترك؛ يُعدَّل من «الثوابت».', ERR_IN_USE: 'الدور مستخدم؛ أرشفه بدل حذفه.', ERR_ARCHIVED: 'الدور مؤرشف فلا يُسند لأحد جديد.', ERR_VALUE: 'القيمة غير مقبولة.', NO_SOURCE: 'تعذّر فتح ملف المصدر.',
     ERR_NO_URL: 'لم يُضبط رابط هذا البرنامج بعد.', ERR_USERNAME: 'اسم المستخدم من 2 إلى 40 حرفاً إنجليزياً أو رقماً.',
     ERR_NAME: 'الاسم بالعربية والإنجليزية مطلوب.', ERR_EMAIL: 'البريد الإلكتروني غير صحيح.', ERR_EXISTS: 'هذا البريد مسجل لموظف آخر من جسر، فلا يمكن استخدامه لموظف ثانٍ.', ERR_REQUIRED: 'حقل مطلوب فارغ.', ERR_HAS_ACCOUNT: 'لهذا الموظف حساب؛ عدّل بريده من الحساب.', ERR_DUP_USERNAME: 'اسم المستخدم مستخدم من قبل.',
     ERR_PIN: 'كلمة المرور 8 خانات على الأقل، فيها حروف وأرقام.', ERR_PIN_WEAK: 'كلمة المرور سهلة التخمين، اختر غيرها.', ERR_TEMP_EXPIRED: 'انتهت صلاحية كلمة المرور المؤقتة، اطلب واحدة جديدة من المسؤول.', tempTitle: 'كلمة المرور المؤقتة', tempNote: 'تظهر الآن فقط، ويُطلب من المستخدم تغييرها عند أول دخول.', tempMailed: 'أُرسلت إلى بريده.', tempSend: 'إرسال كلمة المرور المؤقتة بالبريد', copy: 'نسخ', copied: 'تم النسخ', noEmail: 'بلا بريد', tempCreate: 'إنشاء', ERR_DUP_EMAIL: 'هذا البريد مسجّل لمستخدم آخر.', ERR_MUST_CHANGE: 'اختر كلمة مرور خاصة بك أولاً.', ERR_BUSY: 'النظام مشغول لحظات، أعد المحاولة.', linkSaveFirst: 'احفظ التعديلات أولاً ثم افحص الربط.', regenYes: 'تغيير المفتاح', ERR_PIN_MATCH: 'كلمتا المرور غير متطابقتين.', ERR_PIN_WRONG: 'كلمة المرور الحالية غير صحيحة.',
@@ -1485,7 +1496,7 @@ const I18N = {
     rs_noEmail: 'no email', rs_suspended: 'suspended', rs_forbidden: 'outside your access', rs_mail: 'send failed',
     ERR_NO_PORTAL_URL: 'Save the deployment URL in Settings first.', ERR_MAIL_QUOTA: 'Daily email limit reached.',
     ERR_INVALID_LOGIN: 'Incorrect email or password.', ERR_LOCKED: 'Too many attempts. Wait a little and try again, or use “Forgot your password?”.',
-    ERR_SUSPENDED: 'This account is suspended.', ERR_SESSION: 'Your session ended. Please sign in again.', ERR_FORBIDDEN: 'You are not allowed to do this.', ERR_SENSITIVE: 'Sensitive permission: owner only.', ERR_SHARED: 'Shared constant: edit it under Constants.', ERR_VALUE: 'Invalid value.', NO_SOURCE: 'Source file could not be opened.',
+    ERR_SUSPENDED: 'This account is suspended.', ERR_SESSION: 'Your session ended. Please sign in again.', ERR_FORBIDDEN: 'You are not allowed to do this.', ERR_SENSITIVE: 'Sensitive permission: owner only.', ERR_SHARED: 'Shared constant: edit it under Constants.', ERR_IN_USE: 'Role is in use; archive it instead.', ERR_ARCHIVED: 'Role is archived.', ERR_VALUE: 'Invalid value.', NO_SOURCE: 'Source file could not be opened.',
     ERR_NO_URL: 'This app has no URL yet.', ERR_USERNAME: 'Username must be 2–40 English letters or digits.',
     ERR_NAME: 'Arabic and English names are required.', ERR_EMAIL: 'Invalid email address.', ERR_DUP_USERNAME: 'Username already exists.',
     ERR_PIN: 'Password must be at least 8 characters with letters and numbers.', ERR_PIN_WEAK: 'This password is too easy to guess.', ERR_TEMP_EXPIRED: 'Your temporary password expired. Ask the administrator for a new one.', tempTitle: 'Temporary password', tempNote: 'Shown only now. The user must change it at first sign-in.', tempMailed: 'Sent to their email.', tempSend: 'Email the temporary password', copy: 'Copy', copied: 'Copied', noEmail: 'No email', tempCreate: 'Create', ERR_DUP_EMAIL: 'This email belongs to another user.', ERR_MUST_CHANGE: 'Please choose your own password first.', ERR_BUSY: 'The system is busy for a moment — please retry.', linkSaveFirst: 'Save your changes first, then test the link.', regenYes: 'Change key', ERR_PIN_MATCH: 'Passwords do not match.', ERR_PIN_WRONG: 'Current password is incorrect.',
@@ -2606,7 +2617,7 @@ function uBar() {
   $('#uSaveN').textContent = n === 1 ? 'تعديل واحد لم يُحفظ' : n === 2 ? 'تعديلان لم يُحفظا' : n + ' تعديلات لم تُحفظ';
 }
 function uDiscard() { if (U.base) U.d = U.base; U.base = null; U.dirty.clear(); U.draft = null; uBar(); uRender(); }
-const U_OPNAME = { person: 'صلاحيات موظف', personInfo: 'بيانات موظف', personProfile: 'وظيفة موظف', personRest: 'يوم الراحة', personTitle: 'مسمى موظف', setting: 'إعداد', shared: 'إعداد مشترك' };
+const U_OPNAME = { personRole: 'دور موظف', personCopy: 'نسخ صلاحيات', roleSave: 'حفظ دور', roleArchive: 'أرشفة دور', roleDelete: 'حذف دور', person: 'صلاحيات موظف', personInfo: 'بيانات موظف', personProfile: 'وظيفة موظف', personRest: 'يوم الراحة', personTitle: 'مسمى موظف', setting: 'إعداد', shared: 'إعداد مشترك' };
 function uSaveFail(code, op, ops) {
   const o = op >= 0 && ops ? ops[op] : null, p = o && o.personId ? U.d.people.find(x => x.id === o.personId) : null;
   const why = code === 'ERR_NETWORK' ? (ops ? 'تعذّر الاتصال بالخادم. لم يُحفظ شيء، وتعديلاتك ما زالت هنا فاضغط «حفظ» مرة أخرى.' : 'تعذّر الاتصال بالخادم بعد عدة محاولات. قد يكون الإجراء تم؛ حدّث الصفحة وتحقق قبل إعادته.') : t(I18N.ar[code] ? code : 'ERR_SERVER') + (I18N.ar[code] ? '' : ' (' + esc(String(code || '')) + ')');
@@ -2639,8 +2650,8 @@ async function uSave(action, payload, okMsg) {
   try { const r = await api(action, payload); if (okMsg) toast(okMsg, 'ok'); uFlushSoon(); uLoad(); return r; }
   catch (c) { showErr(c); uLoad(); return null; }
 }
-const U_TOP = { home: 1, people: 1, profiles: 1, systems: 1 };
-const U_PARENT = { person: 'people', profile: 'profiles', system: 'systems', shared: 'systems' };
+const U_TOP = { home: 1, people: 1, profiles: 1, roles: 1, systems: 1 };
+const U_PARENT = { person: 'people', profile: 'profiles', role: 'roles', system: 'systems', shared: 'systems' };
 function uNavMark() {
   const cur = S.tab === 'unified' ? (U_PARENT[U.view] || U.view) : S.tab;
   $$('#uTabs .tab').forEach(b => b.classList.toggle('on', b.dataset.unav === cur));
@@ -2678,8 +2689,8 @@ function uRender() {
   navSave();
   const root = $('#uRoot'); if (!root || !U.d) return;
   const v = U.view;
-  const html = ({ home: uHome, people: uPeople, person: uPerson, profiles: uProfiles, profile: uProfile, systems: uSystems, system: uSystem, shared: uSharedV })[v] || uHome;
-  root.innerHTML = (['person', 'profile', 'system', 'shared'].indexOf(v) >= 0 ? '<button class="u-back" data-u="back">' + ic('arrow') + '<span>رجوع</span></button>' : '') + html();
+  const html = ({ home: uHome, people: uPeople, person: uPerson, profiles: uProfiles, profile: uProfile, roles: uRoles, role: uRole, systems: uSystems, system: uSystem, shared: uSharedV })[v] || uHome;
+  root.innerHTML = (['person', 'profile', 'role', 'system', 'shared'].indexOf(v) >= 0 ? '<button class="u-back" data-u="back">' + ic('arrow') + '<span>رجوع</span></button>' : '') + html();
   uAfter(); uNavMark(); uBar();
   const n = (U.d.todo || []).reduce((a, x) => a + (x.kind === 'nomail' ? 0 : x.n), 0), b = $('#uTodoN');
   if (b) { b.hidden = !n; b.textContent = n; }
@@ -2745,7 +2756,7 @@ function uPerson() {
     '<div class="u-q"><span class="u-q-t">البريد الإلكتروني</span><span class="u-q-v"><input class="inp" dir="ltr" type="email" data-uc="pInfo" data-f="email" maxlength="120" autocapitalize="none" spellcheck="false" value="' + esc(p.email || '') + '"' + (me || hasAcct ? ' disabled' : '') + '></span></div>' +
     (hasAcct ? '<p class="u-muted u-note">له حساب في سوار؛ يتغير بريده من «تعديل الحساب».</p>' : '') + '</section>';
   const work = '<section class="panel-box u-work"><div class="u-q"><span class="u-q-t">يوم الراحة الأسبوعي</span><span class="u-days" data-prest="1">' + U_DAYS.map((n, i) => '<button class="seg-btn' + (rd.indexOf(i) >= 0 ? ' on' : '') + '" data-u="pRest" data-i="' + i + '"' + (me && !p.owner ? ' disabled' : '') + '>' + n + '</button>').join('') + '</span></div>' +
-    (p.owner ? '' : '<div class="u-q"><span class="u-q-t">المسمى الوظيفي</span><span class="u-q-v"><select class="inp" data-uc="pTitle"' + (me ? ' disabled' : '') + '>' + uTitleOpts(p.title) + '</select></span></div>') + (p.owner ? '' : '<div class="u-q"><span class="u-q-t">وظيفته</span><span class="u-q-v"><select class="inp" data-uc="pProf"' + (me ? ' disabled' : '') + '><option value="">' + esc(U_BYTITLE) + '</option>' + D.profiles.map(f => '<option value="' + esc(f.id) + '"' + (p.profileId === f.id ? ' selected' : '') + '>' + esc(f.nameAR) + '</option>').join('') + '</select></span></div>') + '</section>';
+    (p.owner ? '' : '<div class="u-q"><span class="u-q-t">المسمى الوظيفي</span><span class="u-q-v"><select class="inp" data-uc="pTitle"' + (me ? ' disabled' : '') + '>' + uTitleOpts(p.title) + '</select></span></div>') + (p.owner ? '' : '<div class="u-q"><span class="u-q-t">وظيفته</span><span class="u-q-v"><select class="inp" data-uc="pProf"' + (me ? ' disabled' : '') + '><option value="">' + esc(U_BYTITLE) + '</option>' + D.profiles.map(f => '<option value="' + esc(f.id) + '"' + (p.profileId === f.id ? ' selected' : '') + '>' + esc(f.nameAR) + '</option>').join('') + '</select></span></div>') + (p.owner ? '' : uBundleSel(p, me)) + '</section>';
   const ua = p.userId && S.admin ? (S.admin.users || []).find(u => u.id === p.userId) : null;
   const fd = v => { const d = v ? new Date(v) : null; return d && !isNaN(d) ? d.toLocaleDateString('en-GB') + ' ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : ''; };
   const invLine = !p.userId ? '' : '<div class="u-q"><span class="u-q-t">الدعوة</span><span class="u-q-v">' + (p.invitedAt ? 'أُرسلت ' + esc(fd(p.invitedAt)) : 'لم تُرسل بعد') + '</span></div>' +
@@ -2772,9 +2783,10 @@ function uPerson() {
       if ((d.scopes || []).length) body += '<label class="u-scope"><span>يرى:</span><select class="inp" data-uc="pScope" data-app="' + esc(a.id) + '"' + (me ? ' disabled' : '') + '><option value="">حسب وظيفته</option>' + d.scopes.map(s => '<option title="' + esc(s.desc || '') + '" value="' + esc(s.key) + '"' + (e.scope === s.key ? ' selected' : '') + '>' + esc(s.label) + '</option>').join('') + '</select></label>' + (((d.scopes.find(z => z.key === e.scope) || {}).desc) ? '<small class="u-cdesc">' + esc(d.scopes.find(z => z.key === e.scope).desc) + '</small>' : '');
     } else if (p.owner) body = '<p class="u-muted u-note">كل الصلاحيات.</p>';
     else if (e.on && !(d && (d.caps || []).length)) body = '<p class="u-muted u-note">هذا النظام لم يربط قدراته بسوار بعد؛ يكفي الآن تشغيل الدخول أو إيقافه، وصلاحياته التفصيلية ما زالت داخله.</p>';
-    return '<section class="panel-box u-sys' + (e.on ? '' : ' is-off') + '"><div class="u-sys-head">' + uIcon(a) + '<b>' + esc(a.nameAR) + '</b>' + sw + '</div>' + body + '</section>';
+    return '<section class="panel-box u-sys' + (e.on ? '' : ' is-off') + '"><div class="u-sys-head">' + uIcon(a) + '<b>' + esc(a.nameAR) + '</b>' + sw + '</div>' + (p.owner ? '' : uRoleSel(p, a, me)) + body + '</section>';
   }).join('');
-  return head + (me && !p.owner ? '<p class="u-muted u-note">لا يمكنك تعديل صلاحياتك بنفسك.</p>' : '') + line + info + work + '<div class="u-sys-grid">' + cards + '</div>' + acct;
+  const copyBox = p.owner || me ? '' : '<section class="panel-box"><div class="u-q"><span class="u-q-t">نسخ صلاحياته إلى موظفين آخرين</span><span class="u-q-v"><button class="btn btn-ghost btn-sm" data-u="pCopy">' + ic('copy') + '<span>نسخ إلى…</span></button></span></div></section>';
+  return head + (me && !p.owner ? '<p class="u-muted u-note">لا يمكنك تعديل صلاحياتك بنفسك.</p>' : '') + line + info + work + '<div class="u-sys-grid">' + cards + '</div>' + copyBox + acct;
 }
 
 function uProfiles() {
@@ -3207,6 +3219,7 @@ function uAfter() {
 }
 function uPersonSave(p, appId) { uMark('p:' + p.id + ':' + appId, uPOp(p, appId)); }
 function uOnChange(el) {
+  if (uRoleChange(el)) return;
   const k = el.dataset.uc, D = U.d;
   if (k === 'pOn' || k === 'pCap' || k === 'pScope') {
     if (!U.base) U.base = JSON.parse(JSON.stringify(U.d));
@@ -3258,11 +3271,229 @@ function uOnChange(el) {
   if (k === 'wkCap') { if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); const v = Object.assign({}, D.shared.workweek || {}, { maxRestShare: Math.min(100, Math.max(10, Number(el.value) || 50)) }); D.shared.workweek = v; uMark('sh:workweek', { t: 'shared', key: 'workweek', value: v }); const y = window.scrollY; uRender(); window.scrollTo(0, y); return; }
   if (k === 'brand') { if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); const b = Object.assign({}, D.shared.brand || {}, { senderName: el.value.trim() }); D.shared.brand = b; uMark('sh:brand', { t: 'shared', key: 'brand', value: b }); return; }
 }
+// ===== الأدوار (واجهة) =====
+const uRolesAll = () => U.d.roles || [];
+const uRoleById = id => uRolesAll().find(r => r.id === id) || null;
+function uRoleCount(r) {
+  return U.d.people.filter(p => !uLeftP(p) && !p.owner && (r.kind === 'general' ? (p.roles || {})['*'] === r.id : (p.access[r.app] && p.access[r.app].roleId === r.id))).length;
+}
+function uRoleResolve(p, a) {
+  const rs = p.roles || {};
+  if (rs[a] === 'none') return null;
+  let r = rs[a] ? uRoleById(rs[a]) : null;
+  if (r && !(r.kind === 'app' && r.app === a)) r = null;
+  if (!r) {
+    const b = uRoleById(rs['*'] || p.pb || '');
+    if (b && b.kind === 'general' && b.apps[a]) { const x = uRoleById(b.apps[a]); if (x && x.kind === 'app' && x.app === a) { r = x; r = Object.assign({}, x, { _via: 'bundle' }); } }
+  } else r = Object.assign({}, r, { _via: 'person' });
+  return r;
+}
+function uRecalc(p, a) {
+  const e = p.access[a]; if (!e || p.owner) return;
+  const r = uRoleResolve(p, a);
+  const prof = (U.d.profiles || []).find(f => f.nameAR === p.profile) || null, g = prof && prof.grants && prof.grants[a];
+  const base = r ? r.caps.slice() : ((g && g.caps) || []).slice();
+  const set = {}; base.forEach(c => { set[c] = true; });
+  Object.keys(e.diff || {}).forEach(c => { if (e.diff[c]) set[c] = true; else delete set[c]; });
+  let on = r ? true : (!!(g && g.on !== false) || Object.keys(set).length > 0);
+  if (e.en === 'no') on = false; if (e.en === 'yes') on = true;
+  e.fromProfile = base; e.profileOn = !!g || !!r; e.roleId = r ? r.id : ''; e.roleVia = r ? r._via : ''; e.on = on; e.caps = on ? Object.keys(set) : [];
+  if (!e.scopeOwn) e.scope = (r && r.scope) || (g && g.scope) || '';
+}
+function uRoleSel(p, a, me) {
+  const list = uRolesAll().filter(r => r.kind === 'app' && r.app === a.id && (!r.archived || (p.roles || {})[a.id] === r.id));
+  if (!list.length) return '';
+  const cur = (p.roles || {})[a.id] || '', e = p.access[a.id] || {};
+  const via = e.roleVia === 'bundle' && e.roleId ? ' («' + ((uRoleById(e.roleId) || {}).nameAR || '') + '» من دوره العام)' : '';
+  return '<label class="u-scope u-pick u-rolesel"><span>دوره في النظام:</span><select class="inp" data-uc="pRole" data-app="' + esc(a.id) + '"' + (me ? ' disabled' : '') + '>' +
+    '<option value="">حسب دوره العام / وظيفته' + esc(via) + '</option><option value="none"' + (cur === 'none' ? ' selected' : '') + '>بلا دور (صلاحيات فردية فقط)</option>' +
+    list.map(r => '<option value="' + esc(r.id) + '"' + (cur === r.id ? ' selected' : '') + '>' + esc(r.nameAR) + (r.archived ? ' (مؤرشف)' : '') + '</option>').join('') + '</select></label>';
+}
+function uBundleSel(p, me) {
+  const list = uRolesAll().filter(r => r.kind === 'general' && (!r.archived || (p.roles || {})['*'] === r.id));
+  if (!list.length) return '';
+  const cur = (p.roles || {})['*'] || '';
+  return '<div class="u-q"><span class="u-q-t">دوره العام</span><span class="u-q-v"><select class="inp" data-uc="pBundle"' + (me ? ' disabled' : '') + '><option value="">بلا دور عام</option>' +
+    list.map(r => '<option value="' + esc(r.id) + '"' + (cur === r.id ? ' selected' : '') + '>' + esc(r.nameAR) + (r.archived ? ' (مؤرشف)' : '') + '</option>').join('') + '</select></span></div>';
+}
+const uSummary0 = uSummary;
+uSummary = function (p) {
+  if (p.owner) return uSummary0(p);
+  const b = uRoleById((p.roles || {})['*']);
+  if (!b) return uSummary0(p);
+  const n = uDiffN(p);
+  return '<span class="u-tag u-tag-gold">' + esc(b.nameAR) + '</span>' + (n ? ' <span class="u-tag u-tag-grey">+ ' + (n === 1 ? 'استثناء' : n + ' استثناءات') + '</span>' : '');
+};
+
+function uRoles() {
+  const D = U.d, roles = uRolesAll(), boss = S.user && S.user.role === 'owner';
+  const row = r => '<button class="row' + (r.archived ? ' is-off' : '') + '" data-u="role" data-id="' + esc(r.id) + '"><span class="u-av">' + ic(r.kind === 'general' ? 'users' : 'lockOpen') + '</span>' +
+    '<div class="row-main"><div class="row-title">' + esc(r.nameAR) + (r.archived ? ' <span class="badge badge-grey">مؤرشف</span>' : '') + '</div><div class="row-sub">' + esc(r.desc || '') + '</div></div>' +
+    '<div class="u-row-end"><span class="u-tag">' + uRoleCount(r) + ' موظفاً</span>' +
+    (r.kind === 'general' ? '<span class="u-apps">' + Object.keys(r.apps).map(a => uIcon(uApp(a))).join('') + '</span>' : '<span class="u-tag u-tag-grey">' + r.caps.length + ' صلاحية</span>') + '</div></button>';
+  const gen = roles.filter(r => r.kind === 'general');
+  let h = '<div class="u-bar"><p class="u-muted">الدور العام يضبط دور الموظف في كل الأنظمة دفعة واحدة، ودور كل نظام يحدد ما يراه ويعمله فيه. ما يميّز موظفاً عن دوره يظهر في صفحته كاستثناء.</p></div>';
+  if (!roles.length) h += '<section class="panel-box"><h3>' + ic('info') + '<span>لا أدوار بعد</span></h3><p class="u-muted">يمكن تجهيز أدوار جاهزة مبنية على صلاحيات الأنظمة الفعلية (موظف، قائد فريق، مدير قسم، موارد بشرية، مالي، جودة، مطبخ…) ثم تعديلها كما تشاء.</p>' +
+    (boss ? '<button class="btn btn-primary" data-u="seedRoles">' + ic('plus') + '<span>تجهيز الأدوار الجاهزة</span></button>' : '<p class="u-muted">يجهّزها المالك.</p>') + '</section>';
+  h += '<section class="panel-box"><div class="u-bar"><h3>' + ic('users') + '<span>الأدوار العامة</span></h3><button class="btn btn-primary btn-sm" data-u="newRole" data-kind="general">' + ic('plus') + '<span>دور عام جديد</span></button></div><div class="list u-list">' + (gen.length ? gen.map(row).join('') : '<p class="u-muted">لا أدوار عامة.</p>') + '</div></section>';
+  D.apps.forEach(a => {
+    const list = roles.filter(r => r.kind === 'app' && r.app === a.id);
+    h += '<section class="panel-box"><div class="u-bar"><h3>' + uIcon(a) + '<span>' + esc(a.nameAR) + '</span></h3>' + (uDeclared(a.id) ? '<button class="btn btn-ghost btn-sm" data-u="newRole" data-kind="app" data-app="' + esc(a.id) + '">' + ic('plus') + '<span>دور جديد</span></button>' : '') + '</div>' +
+      '<div class="list u-list">' + (list.length ? list.map(row).join('') : '<p class="u-muted">' + (uDeclared(a.id) ? 'لا أدوار لهذا النظام.' : 'لم يربط النظام قدراته بسوار بعد.') + '</p>') + '</div></section>';
+  });
+  return h;
+}
+
+function uRoleSync() {
+  const r = U.draft; if (!r) return;
+  const g = id => { const x = $('#' + id); return x ? x.value : null; };
+  if (g('uRName') !== null) r.nameAR = g('uRName'); if (g('uREn') !== null) r.nameEN = g('uREn'); if (g('uRDesc') !== null) r.desc = g('uRDesc');
+}
+function uRole() {
+  const D = U.d;
+  const r = U.draft || (U.draft = JSON.parse(JSON.stringify(uRoleById(U.id) || { id: '', kind: 'app', app: '', nameAR: '', nameEN: '', desc: '', caps: [], scope: '', apps: {} })));
+  const isNew = !r.id, members = isNew ? 0 : uRoleCount(r), boss = S.user && S.user.role === 'owner';
+  let body = '';
+  if (r.kind === 'app') {
+    const a = uApp(r.app), d = uReg(r.app);
+    if (d && (d.caps || []).length) {
+      const groups = {}; d.caps.forEach(c => { (groups[c.group || ''] = groups[c.group || ''] || []).push(c); });
+      body = '<section class="panel-box"><h3>' + uIcon(a) + '<span>ما يستطيعه صاحب الدور في ' + esc(a.nameAR) + '</span></h3>' + Object.keys(groups).map(g => {
+        const all = groups[g].every(c => r.caps.indexOf(c.key) >= 0);
+        return '<div class="u-capg">' + (g ? '<b>' + esc(g) + '</b> <button class="link-btn" data-u="rGroup" data-g="' + esc(g) + '">' + (all ? 'إلغاء المجموعة' : 'تحديد المجموعة') + '</button>' : '') + groups[g].map(c =>
+          '<label class="u-cap"><input type="checkbox" data-uc="rCap" data-cap="' + esc(c.key) + '"' + (r.caps.indexOf(c.key) >= 0 ? ' checked' : '') + '><span>' + esc(c.label) + (c.desc ? '<small class=u-cdesc>' + esc(c.desc) + '</small>' : '') + '</span>' + (c.sensitive ? '<em class="u-sens">حساس</em>' : '') + '</label>').join('') + '</div>';
+      }).join('') +
+        ((d.scopes || []).length ? '<label class="u-scope"><span>يرى:</span><select class="inp" data-uc="rScope"><option value="">—</option>' + d.scopes.map(s => '<option title="' + esc(s.desc || '') + '" value="' + esc(s.key) + '"' + (r.scope === s.key ? ' selected' : '') + '>' + esc(s.label) + '</option>').join('') + '</select></label>' : '') + '</section>';
+    } else body = '<p class="u-muted u-note">هذا النظام لم يربط قدراته بسوار بعد.</p>';
+  } else {
+    body = '<section class="panel-box"><h3>' + ic('grid') + '<span>دور كل نظام ضمن هذا الدور العام</span></h3>' + D.apps.map(a => {
+      const list = uRolesAll().filter(x => x.kind === 'app' && x.app === a.id && (!x.archived || r.apps[a.id] === x.id));
+      return '<label class="u-scope u-pick"><span>' + esc(a.nameAR) + ':</span><select class="inp" data-uc="rApp" data-app="' + esc(a.id) + '"' + (list.length ? '' : ' disabled') + '><option value="">لا يغيّر شيئاً</option>' +
+        list.map(x => '<option value="' + esc(x.id) + '"' + (r.apps[a.id] === x.id ? ' selected' : '') + '>' + esc(x.nameAR) + '</option>').join('') + '</select></label>';
+    }).join('') + '</section>';
+  }
+  const who = isNew ? [] : D.people.filter(p => !uLeftP(p) && !p.owner && (r.kind === 'general' ? (p.roles || {})['*'] === r.id : (p.access[r.app] && p.access[r.app].roleId === r.id)));
+  return '<section class="panel-box"><div class="u-form">' +
+    '<label class="field"><span>اسم الدور</span><input class="inp" id="uRName" maxlength="60" value="' + esc(r.nameAR) + '" placeholder="مثل: مسؤول متابعة"></label>' +
+    '<label class="field"><span>الاسم بالإنجليزية</span><input class="inp" dir="ltr" id="uREn" maxlength="60" value="' + esc(r.nameEN || '') + '"></label>' +
+    '<label class="field"><span>وصف قصير</span><input class="inp" id="uRDesc" maxlength="300" value="' + esc(r.desc || '') + '"></label></div></section>' + body +
+    (who.length ? '<section class="panel-box"><h3>' + ic('users') + '<span>أصحاب هذا الدور (' + who.length + ')</span></h3><div class="u-chips">' + who.slice(0, 40).map(p => '<button class="chip" data-u="person" data-id="' + esc(p.id) + '">' + esc(p.name) + '</button>').join('') + (who.length > 40 ? '<span class="u-muted">…</span>' : '') + '</div></section>' : '') +
+    '<div class="savebar u-savebar"><b>' + (isNew ? 'دور جديد' : members ? 'الحفظ يطبّق على ' + members + ' موظفاً فوراً' : 'لا أحد يحمل هذا الدور بعد') + '</b><div class="savebar-actions">' +
+    (isNew ? '' : '<button class="btn btn-ghost" data-u="rAssign">' + ic('users') + '<span>تعيينه لأشخاص</span></button><button class="btn btn-ghost" data-u="rDup">' + ic('copy') + '<span>نسخه كدور جديد</span></button>' +
+      '<button class="btn btn-ghost" data-u="rArch">' + ic(r.archived ? 'undo' : 'x') + '<span>' + (r.archived ? 'إلغاء الأرشفة' : 'أرشفة') + '</span></button>' +
+      (members ? '' : '<button class="btn btn-ghost" data-u="rDel">' + ic('x') + '<span>حذف</span></button>')) +
+    '<button class="btn btn-ghost" data-u="back">' + ic('undo') + '<span>إلغاء</span></button><button class="btn btn-primary" data-u="rSave">' + ic('save') + '<span>حفظ الدور</span></button></div></div>' +
+    (members ? '<p class="u-muted u-note">دور له أصحاب لا يُحذف، يُؤرشف فقط فلا يُسند لأحد جديد ويبقى لأصحابه.</p>' : '');
+}
+
+async function uRoleApi(ops, msg, done) {
+  if (U.dirty.size) { toast('احفظ تعديلاتك الحالية أولاً ثم أعد المحاولة', 'err'); return false; }
+  try {
+    const r = await api('u_batch', { ops: ops });
+    if (!r.ok) { uSaveFail(r.code, r.op, null); return false; }
+    toast(msg, 'ok'); uFlushSoon(); U.draft = null; if (done) done(); await uLoad(); return true;
+  } catch (c) { if (c !== '__handled') uSaveFail(c, -1, null); return false; }
+}
+function uPicker(o) {
+  const people = U.d.people.filter(p => !p.owner && !uLeftP(p) && p.id !== o.exclude);
+  U.pk = { sel: {}, o: o, people: people };
+  openModal({ title: o.title, wide: true,
+    body: (o.note ? '<p class="u-muted">' + esc(o.note) + '</p>' : '') + '<div class="input-wrap"><i data-ic="search"></i><input id="pkQ" type="search" placeholder="بحث بالاسم أو الإدارة أو المسمى" autocomplete="off"></div><div class="u-pk" id="pkList"></div>',
+    foot: '<button class="btn btn-ghost" data-act="closeModal">إلغاء</button><button class="btn btn-primary" data-u="pkGo" id="pkGo" disabled>' + ic('check') + '<span>' + esc(o.ok) + '</span></button>' });
+  uPkDraw();
+  const q = $('#pkQ'); if (q) q.oninput = () => uPkDraw();
+}
+function uPkDraw() {
+  const pk = U.pk; if (!pk) return;
+  const q = (($('#pkQ') || {}).value || '').trim();
+  const l = pk.people.filter(p => !q || (p.name + ' ' + (p.dept || '') + ' ' + (p.title || '')).indexOf(q) >= 0);
+  const box = $('#pkList'); if (!box) return;
+  box.innerHTML = l.slice(0, 300).map(p => '<button type="button" class="u-pk-row' + (pk.sel[p.id] ? ' on' : '') + '" data-u="pkTog" data-id="' + esc(p.id) + '"><span class="u-pk-ck"></span><span><b>' + esc(p.name) + '</b><small>' + esc([p.title, p.dept].filter(Boolean).join(' · ')) + '</small></span></button>').join('') || '<div class="empty"><span>لا نتائج</span></div>';
+  uPkCount();
+}
+function uPkCount() {
+  const n = Object.keys(U.pk.sel).length, b = $('#pkGo');
+  if (b) { b.disabled = !n; const s = b.querySelector('span'); if (s) s.textContent = U.pk.o.ok + (n ? ' (' + n + ')' : ''); }
+}
+
+function uRoleChange(el) {
+  const k = el.dataset.uc, D = U.d;
+  if (k === 'pRole' || k === 'pBundle') {
+    if (!U.base) U.base = JSON.parse(JSON.stringify(U.d));
+    const p = D.people.find(x => x.id === U.id), a = k === 'pBundle' ? '*' : el.dataset.app;
+    p.roles = p.roles || {}; if (el.value) p.roles[a] = el.value; else delete p.roles[a];
+    (a === '*' ? D.apps.map(x => x.id) : [a]).forEach(x => uRecalc(p, x));
+    uMark('pr:' + p.id + ':' + a, { t: 'personRole', personId: p.id, appId: a, roleId: el.value });
+    const y = window.scrollY; uRender(); window.scrollTo(0, y); return true;
+  }
+  if (k === 'rCap' || k === 'rScope' || k === 'rApp') {
+    uRoleSync(); const r = U.draft;
+    if (k === 'rCap') { r.caps = r.caps.filter(x => x !== el.dataset.cap); if (el.checked) r.caps.push(el.dataset.cap); }
+    if (k === 'rScope') r.scope = el.value;
+    if (k === 'rApp') { if (el.value) r.apps[el.dataset.app] = el.value; else delete r.apps[el.dataset.app]; }
+    const y = window.scrollY; uRender(); window.scrollTo(0, y); return true;
+  }
+  return false;
+}
+function uRoleClick(el, e) {
+  const k = el.dataset.u, D = U.d;
+  if (k === 'role') { U.draft = null; uGo('role', el.dataset.id); return true; }
+  if (k === 'newRole') { U.draft = { id: '', kind: el.dataset.kind === 'general' ? 'general' : 'app', app: el.dataset.app || '', nameAR: '', nameEN: '', desc: '', caps: [], scope: '', apps: {} }; uGo('role', ''); return true; }
+  if (k === 'rGroup') {
+    uRoleSync(); const r = U.draft, d = uReg(r.app), g = el.dataset.g;
+    const keys = (d.caps || []).filter(c => (c.group || '') === g).map(c => c.key), all = keys.every(x => r.caps.indexOf(x) >= 0);
+    r.caps = r.caps.filter(x => keys.indexOf(x) < 0); if (!all) r.caps = r.caps.concat(keys);
+    const y = window.scrollY; uRender(); window.scrollTo(0, y); return true;
+  }
+  if (k === 'rSave') {
+    uRoleSync(); const r = JSON.parse(JSON.stringify(U.draft));
+    if (!r.nameAR.trim()) { toast('اكتب اسم الدور', 'err'); return true; }
+    if (!r.id) r.id = (r.kind === 'general' ? 'g_' : 'r_') + Date.now().toString(36).slice(-6) + Math.random().toString(36).slice(2, 4);
+    uRoleApi([{ t: 'roleSave', role: r }], 'حُفظ الدور وطُبّق', () => uBack());
+    return true;
+  }
+  if (k === 'rDup') {
+    uRoleSync(); const r = JSON.parse(JSON.stringify(U.draft)); r.id = ''; r.nameAR = r.nameAR + ' (نسخة)'; U.draft = r; toast('عدّل النسخة ثم احفظها', 'ok'); uRender(); return true;
+  }
+  if (k === 'rArch') {
+    const r = U.draft;
+    uConfirm(r.archived ? 'يعود الدور متاحاً للإسناد.' : 'لن يُسند هذا الدور لأحد جديد، ويبقى لأصحابه الحاليين.', () => uRoleApi([{ t: 'roleArchive', id: r.id, archived: !r.archived }], r.archived ? 'أُلغيت الأرشفة' : 'أُرشف الدور', () => uBack()));
+    return true;
+  }
+  if (k === 'rDel') {
+    const r = U.draft;
+    uConfirm('يُحذف الدور «' + r.nameAR + '» نهائياً.', () => uRoleApi([{ t: 'roleDelete', id: r.id }], 'حُذف الدور', () => uBack()));
+    return true;
+  }
+  if (k === 'rAssign') {
+    uRoleSync(); const r = JSON.parse(JSON.stringify(U.draft));
+    if (r.archived) { toast('الدور مؤرشف؛ ألغِ أرشفته أولاً', 'err'); return true; }
+    uPicker({ title: 'تعيين «' + r.nameAR + '»', ok: 'تعيين', note: r.kind === 'general' ? 'يحل هذا الدور العام محل الدور العام الحالي للمحدّدين.' : 'يحل هذا الدور محل دورهم الحالي في هذا النظام.',
+      go: ids => uRoleApi([{ t: 'personRole', personIds: ids, appId: r.kind === 'general' ? '*' : r.app, roleId: r.id }], 'عُيّن الدور لـ ' + ids.length + (ids.length === 1 ? ' موظف' : ' موظفاً'), () => closeModal(true)) });
+    return true;
+  }
+  if (k === 'pCopy') {
+    const p = D.people.find(x => x.id === U.id);
+    uPicker({ title: 'نسخ صلاحيات ' + p.name, ok: 'نسخ', exclude: p.id, note: 'تُنسخ وظيفته وأدواره واستثناءاته في كل الأنظمة، وتحل محل صلاحيات المحدّدين الحالية كلها.',
+      go: ids => uRoleApi([{ t: 'personCopy', from: p.id, to: ids }], 'نُسخت الصلاحيات إلى ' + ids.length + (ids.length === 1 ? ' موظف' : ' موظفاً'), () => closeModal(true)) });
+    return true;
+  }
+  if (k === 'pkTog') { const id = el.dataset.id; if (U.pk.sel[id]) delete U.pk.sel[id]; else U.pk.sel[id] = 1; el.classList.toggle('on'); uPkCount(); return true; }
+  if (k === 'pkGo') { const ids = Object.keys(U.pk.sel); if (ids.length) U.pk.o.go(ids); return true; }
+  if (k === 'seedRoles') {
+    el.disabled = true;
+    api('u_seedRoles', {}).then(r => { el.disabled = false; toast(r.made ? 'جُهّز ' + r.made + ' دوراً' : 'الأدوار موجودة', 'ok'); uLoad(); }).catch(c => { el.disabled = false; showErr(c); });
+    return true;
+  }
+  return false;
+}
+
 function uConfirm(msg, yes, no) {
   openModal({ title: 'تأكيد', body: '<p>' + esc(msg) + '</p>', foot: '<button class="btn btn-ghost" data-u="cNo">إلغاء</button><button class="btn btn-primary" data-u="cYes">نعم، احفظ</button>' });
   U.cf = { yes: yes, no: no };
 }
 function uOnClick(el, e) {
+  if (uRoleClick(el, e)) return;
   const k = el.dataset.u, D = U.d;
   if (k === 'reload') return uLoad();
   if (k === 'commit') return uCommit();
