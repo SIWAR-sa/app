@@ -236,7 +236,21 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   }
   function ufFlip() { uf = uf === 'd' ? 'p' : 'd'; }
   var RING = 502.65;
-  var ERRT = { ar: { msg: 'تعذّر فتح النظام الآن.', retry: 'إعادة المحاولة' }, en: { msg: 'The system could not be opened right now.', retry: 'Try again' } };
+  var ERRT = { ar: { msg: 'تعذّر فتح النظام الآن.', off: 'لا يوجد اتصال بالإنترنت. تحقق من الاتصال ثم أعد المحاولة.', retry: 'إعادة المحاولة' }, en: { msg: 'The system could not be opened right now.', off: 'No internet connection. Check the connection, then try again.', retry: 'Try again' } };
+  function offline() { return navigator.onLine === false; }
+  /* ── قياس السرعة: كل فتح لنظام يُسجَّل بالطريقة نفسها لكل الأنظمة (من الضغطة حتى الجاهزية)، ويُرسل لسوار على دفعات ── */
+  var PJ = {}, PQ = [], DEV = iOS ? 'ios' : /Android/.test(ua) ? 'android' : 'desktop';
+  function pStart(id, kind, src) { PJ[id] = { a: id, k: kind, s: src || '', t0: performance.now(), at: Date.now(), m: {}, n: offline() ? 0 : 1 }; }
+  function pMark(id, name, ms) { var j = PJ[id]; if (!j || j.m[name] != null) return; j.m[name] = ms != null ? Math.round(ms) : Math.round(performance.now() - j.t0); }
+  function pEnd(id, how) {
+    var j = PJ[id]; if (!j) return; delete PJ[id];
+    j.m.end = Math.round(performance.now() - j.t0);
+    PQ.push({ at: j.at, a: j.a, k: j.k, s: j.s, d: DEV, n: j.n, h: how, g: j.g || '', m: j.m });
+    if (PQ.length >= 8) pFlush();
+  }
+  function pFlush() { if (!PQ.length) return; toPortal({ siwar: 'perf', rows: PQ.splice(0, 40) }); }
+  setInterval(pFlush, 60000);
+  document.addEventListener('visibilitychange', function () { if (document.hidden) pFlush(); });
   function portalWin() { var pf = $('portal').querySelector('iframe'); return pf && pf.contentWindow; }
   function toPortal(m) { var w = portalWin(); if (w) try { w.postMessage(m, location.origin); } catch (e) {} }
   function sendAlive() { toPortal({ siwar: 'alive', ids: Object.keys(frames) }); }
@@ -299,7 +313,8 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   function loaderErr() {
     var L = $('pload'), t = ERRT[LANG] || ERRT.ar;
     clearTimeout(creepT);
-    $('plErrTxt').textContent = t.msg; $('plRetry').textContent = t.retry;
+    if (cur) pEnd(cur, offline() ? 'offline' : 'fail');
+    $('plErrTxt').textContent = offline() ? t.off : t.msg; $('plRetry').textContent = t.retry;
     L.className = 'pload shown err';
   }
   $('plRetry').onclick = function () { if (cur) { rt[cur] = 0; relaunch(cur, true); } };
@@ -321,6 +336,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   }
   function dropFrame(id) {
     var o = frames[id]; if (!o) return;
+    if (!o.ready) pEnd(id, 'drop');
     delete frames[id];
     clearTimeout(o.wd); clearTimeout(o.wd2);
     try { o.f.src = 'about:blank'; } catch (e) {}
@@ -344,35 +360,38 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     p.allow = 'clipboard-read; clipboard-write; fullscreen; camera; microphone; geolocation';
     p.className = 'pf' + (cur === id ? ' cur' : '');
     var o = { f: p, url: url, name: name, icon: icon, t: Date.now(), seen: warm ? 0 : Date.now(), tries: old ? old.tries : 0, n: ++seq, uf: uf };
-    if (warm) o.seen = -o.n;
+    if (warm) { o.seen = -o.n; pStart(id, 'warm'); }
+    else if (!PJ[id]) pStart(id, 'open');
     frames[id] = o;
     p.onload = function () {
       if (frames[id] !== o || o.loaded) return;
-      o.loaded = true;
+      o.loaded = true; pMark(id, 'load');
       if (cur === id && !o.ready) stage(.7, .9);
       // بعد اكتمال الصفحة: إن لم تصل أي إشارة خلال لحظات فهي صفحة خطأ من جوجل، فيُعاد الفتح تلقائياً مرة
       o.wd2 = setTimeout(function () {
         if (frames[id] !== o || healthy(o)) return;
         if ((rt[id] || 0) < 2) { rt[id] = (rt[id] || 0) + 1; ufFlip(); if (cur === id) relaunch(id, false); else dropFrame(id); }
-        else markReady(id);   // صفحة بلا إشارة (نادر): تُعرض كما هي
+        else markReady(id, 'nosig');   // صفحة بلا إشارة (نادر): تُعرض كما هي
       }, 1200);
     };
     // حد أقصى للانتظار
     o.wd = setTimeout(function () {
       if (frames[id] !== o || o.ready) return;
       if (!o.loaded) {
-        if ((rt[id] || 0) < 2) { rt[id] = (rt[id] || 0) + 1; ufFlip(); if (cur === id) relaunch(id, true); else dropFrame(id); }
+        if (offline()) { rt[id] = 0; if (cur === id) loaderErr(); else dropFrame(id); }
+        else if ((rt[id] || 0) < 2) { rt[id] = (rt[id] || 0) + 1; ufFlip(); if (cur === id) relaunch(id, true); else dropFrame(id); }
         else { rt[id] = 0; if (cur === id) loaderErr(); else dropFrame(id); }
       }
-      else markReady(id);
+      else markReady(id, 'wd');
     }, 14000);
     p.src = ufForm(url, uf);
     $('pbody').appendChild(p);
     trim(id); sendAlive();
     return o;
   }
-  function markReady(id) {
+  function markReady(id, how) {
     var o = frames[id]; if (!o) return;
+    if (!o.ready) { pMark(id, 'ready'); pEnd(id, how || 'ok'); }
     o.ready = true; rt[id] = 0; clearTimeout(o.wd); if (o.uf === uf) { try { localStorage.setItem(UFK, uf); } catch (e) {} }
     if (cur === id) loaderDone();
   }
@@ -380,13 +399,16 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   /* أوامر سوار */
   function onPrep(id, name, icon, rect) {
     if (frames[id]) dropFrame(id);
+    pStart(id, 'open');
     markCur(id);
     loaderShow(name, icon, rect);
     showLayer();
+    if (offline()) loaderErr();
   }
-  function onOpen(id, url, name, icon) {
+  function onOpen(id, url, name, icon, src) {
     if (cur !== id || $('prog').className !== 'on') { markCur(id); loaderShow(name, icon, null); showLayer(); }
     progUrl = url;
+    var j = PJ[id]; if (j) { j.s = src || ''; pMark(id, 'tix'); }
     var o = makeFrame(id, url, name, icon, false);
     markCur(id);
     stage(.42, .66);
@@ -396,7 +418,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     var o = frames[id];
     if (!o || Date.now() - o.t > FRAME_AGE) { if (o) dropFrame(id); toPortal({ siwar: 'relaunch', id: id }); return; }
     markCur(id);
-    if (o.ready) { $('pload').className = 'pload gone'; }
+    if (o.ready) { $('pload').className = 'pload gone'; pStart(id, 'show'); pEnd(id, 'ok'); }
     else { loaderShow(o.name, o.icon, null); stage(o.loaded ? .7 : .42, .9); }
     showLayer();
   }
@@ -411,6 +433,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     cur = '';
     for (var k in frames) frames[k].f.className = 'pf';
     syncPause();
+    toPortal({ siwar: 'home' });   // سوار تجدد تذاكر الأنظمة الآن، فالانتقال لنظام آخر لا ينتظر طلباً جديداً
     if (!fromHistory && history.state && history.state.prog) history.back();
   }
   // السحب لأسفل أو F5 أو «إعادة المحاولة»: يُعاد فتح النظام بتذكرة جديدة
@@ -420,9 +443,11 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     var o = frames[id];
     var name = o ? o.name : $('pname').textContent, icon = o ? o.icon : null;
     if (o) dropFrame(id);
+    pStart(id, 'relaunch');
     markCur(id);
     loaderShow(name, icon, null);
     showLayer();
+    if (offline()) { loaderErr(); return; }
     toPortal({ siwar: 'relaunch', id: id });
   }
 
@@ -454,7 +479,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     if (mine) {
       if (d.siwar === 'portalReady') { hideSplash(); sendAlive(); return; }
       if (d.siwar === 'prep') { onPrep(id || '_', String(d.name || ''), ic, d.rect && typeof d.rect === 'object' ? d.rect : null); return; }
-      if (d.siwar === 'open' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onOpen(id || '_', String(d.url), String(d.name || ''), ic); return; }
+      if (d.siwar === 'open' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onOpen(id || '_', String(d.url), String(d.name || ''), ic, String(d.src || '')); return; }
       if (d.siwar === 'show' && frames[id]) { onShow(id); return; }
       if (d.siwar === 'show') { toPortal({ siwar: 'relaunch', id: id }); return; }
       if (d.siwar === 'warm' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onWarm(id, String(d.url), String(d.name || ''), ic); return; }
@@ -479,8 +504,10 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     if (!o) return;
     if (d.siwar === 'kv') { kvOp(fid, d, e.source, e.origin); return; }
     if (/^(hold|alive|ready)$/.test(d.siwar) && o.win !== e.source) { o.win = e.source; o.ps = ''; if (!o.netSent) { o.netSent = 1; if (!navigator.onLine) try { e.source.postMessage({ siwar: 'net', on: false }, '*'); } catch (x) {} } setTimeout(syncPause, 0); }
-    if (d.siwar === 'hold') { o.held = true; if (cur === fid && !o.ready) stage(.82, .95); }
-    else if (d.siwar === 'alive') o.alive = true;
+    if (d.siwar === 'hold') { o.held = true; pMark(fid, 'hold'); if (d.g && PJ[fid]) PJ[fid].g = String(d.g).slice(0, 8); if (cur === fid && !o.ready) stage(.82, .95); }
+    else if (d.siwar === 'alive') { o.alive = true; pMark(fid, 'alive'); }
+    else if (d.siwar === 'paint') { pMark(fid, 'paint'); if (cur === fid && !o.ready) loaderDone(); }   // الشاشة المحفوظة ظهرت: تُعرض فوراً والبيانات الجديدة تصل خلفها
+    else if (d.siwar === 'mark' && /^[\w:.-]{1,40}$/.test(String(d.n || ''))) pMark(fid, String(d.n), typeof d.ms === 'number' ? d.ms : null);
     else if (d.siwar === 'ready') markReady(fid);
     else if (d.siwar === 'close' || d.siwar === 'logout') { if (cur === fid) hideLayer(false); dropFrame(fid); }
     else if (d.siwar === 'reload' && cur === fid) relaunch(fid, false);
