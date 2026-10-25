@@ -1925,18 +1925,21 @@ async function boot() {
     return;
   }
 
-  if (S.token && !DEMO && DIRECT_OK) S.pendingPre = postApi('pending', {}).catch(() => null);
   // الصفحة الرئيسية من آخر جلسة فوراً، والتأكد من الخادم في الخلفية
   const snap = S.token && !OPEN && !PAIR ? snapGet() : null;
   if (snap) {
     S.fromSnap = true;
     enterSession(snap, false);
+    perfBoot('home');
     clearTimeout(slow); S.ready = true;
     setTimeout(() => $('#splash').classList.add('out'), 60);
     if (SHELL) try { window.top.postMessage({ siwar: 'portalReady' }, SHELL); } catch (e) {}
-    api('init', { tix: S.inApp ? 1 : 0 }).then(d => {
+    const ti = performance.now();
+    S.initP = api('init', { tix: S.inApp ? 1 : 0 });
+    S.initP.then(d => {
+      perfBoot('init', performance.now() - ti);
       applyConfig(d.config);
-      if (d.tix && d.tix.urls) S.tix = { at: Date.now(), urls: d.tix.urls };
+      if (d.tix && d.tix.urls) S.tix = { at: Date.now(), urls: d.tix.urls, src: 'init' };
       if (!d.session) { clearSession(); show('login'); return; }
       snapSet(d.session); S.fromSnap = false;
       S.user = d.session.user; S.apps = d.session.apps || [];
@@ -1946,10 +1949,13 @@ async function boot() {
     return;
   }
   try {
-    const d = await api('init', { tix: S.inApp ? 1 : 0 });
+    const ti = performance.now();
+    S.initP = api('init', { tix: S.inApp ? 1 : 0 });
+    const d = await S.initP;
+    perfBoot('init', performance.now() - ti);
     applyConfig(d.config);
-    if (d.tix && d.tix.urls) S.tix = { at: Date.now(), urls: d.tix.urls };
-    if (d.session) { snapSet(d.session); enterSession(d.session, false); }
+    if (d.tix && d.tix.urls) S.tix = { at: Date.now(), urls: d.tix.urls, src: 'init' };
+    if (d.session) { snapSet(d.session); enterSession(d.session, false); perfBoot('home'); }
     else { clearSession(); show('login'); }
   } catch (c) {
     show('login');
@@ -2109,7 +2115,8 @@ function enterSession(d, fresh) {
   renderUserChrome();
   renderHome();
   show('home');
-  if (!S.user.mustChange) loadPending(false);
+  // العدادات بعد ظهور الرئيسية بلحظات، فلا تزاحم الدخول ولا فتح أول نظام
+  if (!S.user.mustChange) setTimeout(() => { if (S.token && S.screen === 'home') loadPending(false); }, S.inApp ? 5000 : 1500);
   afterHome();
   navRestore();
   if (fresh) toast(t('ok_welcome', { name: L(S.user, 'name') || S.user.username }), 'ok');
@@ -2167,6 +2174,8 @@ function clearSession() {
   try { localStorage.removeItem(SNAP_K); } catch (e) {}
   S.token = null; S.user = null; S.apps = []; S.admin = null; S.draft = null; S.review = null; S.pending = null; S.pendingAt = 0;
   store.del('sp_token'); sess.del('sp_token');
+  // أي نهاية للجلسة تغلق شاشات الأنظمة المفتوحة في التطبيق وتمسح ذاكرتها
+  if (S.inApp) try { window.top.postMessage({ siwar: 'logout' }, '*'); } catch (e) {}
 }
 
 function sessionEnded(code) {
@@ -2520,13 +2529,13 @@ function prefetchTickets(force) {
   if (tixBusy) return tixBusy;
   const ids = S.apps.filter(a => !a.locked && !a.jisrOnly).map(a => a.id);
   tixBusy = postApi('launchMany', { appIds: ids }).then(r => {
-    if (r && r.ok && r.data && r.data.urls) S.tix = { at: Date.now(), urls: r.data.urls };
+    if (r && r.ok && r.data && r.data.urls) S.tix = { at: Date.now(), urls: r.data.urls, src: 'prefetch' };
   }).catch(() => {}).then(() => { tixBusy = null; });
   return tixBusy;
 }
 function takeTicket(id) {
   const u = S.tix.urls[id];
-  if (!u || Date.now() - S.tix.at > 200000) return '';
+  if (!u || Date.now() - S.tix.at > 270000) return '';
   delete S.tix.urls[id];
   return u;
 }
@@ -2540,7 +2549,13 @@ async function launchInApp(btn, app) {
   btn.classList.add('is-launching');
   try { window.top.postMessage({ siwar: 'prep', id: id, name: name, icon: icon, rect: iconRect(btn) }, '*'); } catch (e) {}
   try {
-    let url = go ? '' : takeTicket(id);
+    let url = go ? '' : takeTicket(id), src = url ? (S.tix.src || 'prefetch') : 'launch';
+    // ضغطة أثناء الإقلاع: تذكرة هذا النظام في طريقها مع init، فننتظرها بدل طلب جديد
+    if (!url && !go && S.initP && S.fromSnap) {
+      await Promise.race([S.initP.catch(() => null), new Promise(r => setTimeout(r, 9000))]);
+      url = takeTicket(id); if (url) src = 'init';
+    }
+    if (!url && !go && tixBusy) { await Promise.race([tixBusy, new Promise(r => setTimeout(r, 6000))]); url = takeTicket(id); if (url) src = 'prefetch'; }
     if (!url) {
       let d = null, err = null;
       for (let k = 0; k < 3 && !d; k++) {
@@ -2550,9 +2565,23 @@ async function launchInApp(btn, app) {
       if (!d) throw err;
       url = d.url;
     } else postApi('opened', { appId: id }).catch(() => {});
-    window.top.postMessage({ siwar: 'open', id: id, url: url, name: name, icon: icon }, '*');
+    window.top.postMessage({ siwar: 'open', id: id, url: url, name: name, icon: icon, src: src }, '*');
   } catch (c) { try { window.top.postMessage({ siwar: 'close', id: id }, '*'); } catch (e) {} showErr(c); }
   finally { btn.classList.remove('is-launching'); setTimeout(() => prefetchTickets(true), 400); }
+}
+
+// قياس السرعة: إقلاع سوار نفسها، ويُرسل مع صفوف التطبيق
+const PERF = { q: [], boot: null };
+function perfDev() { return /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ? 'ios' : /Android/.test(navigator.userAgent) ? 'android' : 'desktop'; }
+function perfBoot(name, ms) {
+  if (DEMO) return;
+  if (!PERF.boot) { PERF.boot = { at: Date.now(), a: 'portal', k: 'boot', s: S.fromSnap ? 'snap' : 'net', d: perfDev(), n: navigator.onLine === false ? 0 : 1, h: 'ok', g: S.inApp ? 'app' : 'web', m: {} }; setTimeout(() => { if (PERF.boot) { PERF.q.push(PERF.boot); PERF.boot = null; perfSend([]); } }, 20000); }
+  if (PERF.boot.m[name] == null) PERF.boot.m[name] = Math.round(ms != null ? ms : performance.now());
+}
+function perfSend(rows) {
+  if (DEMO || !S.token) return;
+  const all = PERF.q.splice(0).concat(Array.isArray(rows) ? rows : []);
+  if (all.length) postApi('perf', { rows: all.slice(0, 50) }).catch(() => {});
 }
 
 function warmLastApp() {
@@ -2604,7 +2633,7 @@ function setupInApp() {
   if (!SHELL || setupInApp.done) return;
   setupInApp.done = true;
   const go = SIWAR_PTR(ptrRefresh);
-  window.addEventListener('message', e => { if (e.origin === SHELL && e.source === window.top && e.data) { if (e.data.siwar === 'relaunch') relaunchLast(String(e.data.id || '')); else if (e.data.siwar === 'refresh') go(); else if (e.data.siwar === 'alive') { S.alive = {}; (e.data.ids || []).forEach(x => { S.alive[x] = 1; }); } } });
+  window.addEventListener('message', e => { if (e.origin === SHELL && e.source === window.top && e.data) { if (e.data.siwar === 'relaunch') relaunchLast(String(e.data.id || '')); else if (e.data.siwar === 'refresh') go(); else if (e.data.siwar === 'alive') { S.alive = {}; (e.data.ids || []).forEach(x => { S.alive[x] = 1; }); } else if (e.data.siwar === 'home') prefetchTickets(false); else if (e.data.siwar === 'perf') perfSend(e.data.rows); } });
 }
 
 function openInstall() {
