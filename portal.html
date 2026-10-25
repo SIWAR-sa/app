@@ -544,6 +544,8 @@ tr.is-off .mx-user { opacity: .5; }
 .t-bar { position: absolute; bottom: 0; inset-inline-start: 0; height: 2px; width: 100%; background: var(--pink); transform-origin: left; animation: toastBar 3.8s linear forwards; }
 [dir="rtl"] .t-bar { transform-origin: right; }
 .t-err .t-bar { background: #D89491; }
+.t-stay .t-bar { display: none; }
+.t-stay { cursor: pointer; }
 
 [data-theme="identity"] .apps, [data-theme="glass"] .apps, [data-theme="aurora"] .apps, [data-theme="luxe"] .apps { grid-template-columns: minmax(0, 1fr); max-width: 780px; margin-inline: auto; }
 [data-theme="identity"] .pending, [data-theme="glass"] .pending, [data-theme="aurora"] .pending, [data-theme="luxe"] .pending { max-width: 780px; }
@@ -1924,10 +1926,30 @@ async function boot() {
   }
 
   if (S.token && !DEMO && DIRECT_OK) S.pendingPre = postApi('pending', {}).catch(() => null);
+  // الصفحة الرئيسية من آخر جلسة فوراً، والتأكد من الخادم في الخلفية
+  const snap = S.token && !OPEN && !PAIR ? snapGet() : null;
+  if (snap) {
+    S.fromSnap = true;
+    enterSession(snap, false);
+    clearTimeout(slow); S.ready = true;
+    setTimeout(() => $('#splash').classList.add('out'), 60);
+    if (SHELL) try { window.top.postMessage({ siwar: 'portalReady' }, SHELL); } catch (e) {}
+    api('init', { tix: S.inApp ? 1 : 0 }).then(d => {
+      applyConfig(d.config);
+      if (d.tix && d.tix.urls) S.tix = { at: Date.now(), urls: d.tix.urls };
+      if (!d.session) { clearSession(); show('login'); return; }
+      snapSet(d.session); S.fromSnap = false;
+      S.user = d.session.user; S.apps = d.session.apps || [];
+      renderUserChrome(); if (S.screen === 'home') renderHome();
+      if (S.user.mustChange) openChangePin(true); else afterHome();
+    }).catch(c => { S.fromSnap = false; if (c !== '__handled') afterHome(); });
+    return;
+  }
   try {
-    const d = await api('init', {});
+    const d = await api('init', { tix: S.inApp ? 1 : 0 });
     applyConfig(d.config);
-    if (d.session) enterSession(d.session, false);
+    if (d.tix && d.tix.urls) S.tix = { at: Date.now(), urls: d.tix.urls };
+    if (d.session) { snapSet(d.session); enterSession(d.session, false); }
     else { clearSession(); show('login'); }
   } catch (c) {
     show('login');
@@ -2138,7 +2160,11 @@ async function openPair() {
   });
 }
 
+const SNAP_K = 'sp_snap';
+function snapGet() { try { const s = JSON.parse(localStorage.getItem(SNAP_K) || 'null'); return s && s.at && Date.now() - s.at < 30 * 864e5 && s.d && s.d.user && Array.isArray(s.d.apps) ? s.d : null; } catch (e) { return null; } }
+function snapSet(d) { try { localStorage.setItem(SNAP_K, JSON.stringify({ at: Date.now(), d: { user: d.user, apps: d.apps || [] } })); } catch (e) {} }
 function clearSession() {
+  try { localStorage.removeItem(SNAP_K); } catch (e) {}
   S.token = null; S.user = null; S.apps = []; S.admin = null; S.draft = null; S.review = null; S.pending = null; S.pendingAt = 0;
   store.del('sp_token'); sess.del('sp_token');
 }
@@ -2534,14 +2560,15 @@ function warmLastApp() {
   let id = ''; try { id = localStorage.getItem('sp_last_app') || ''; } catch (e) {}
   const list = S.apps.filter(a => !a.locked && !a.jisrOnly && !S.alive[a.id]);
   list.sort((a, b) => (b.id === id ? 1 : 0) - (a.id === id ? 1 : 0));
-  list.forEach((app, i) => setTimeout(() => {
+  const n = /Android|iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ? 1 : 2;
+  list.slice(0, id ? n : 0).forEach((app, i) => setTimeout(() => {
     if (S.alive[app.id]) return;
     const url = takeTicket(app.id);
     if (url) try { window.top.postMessage({ siwar: 'warm', id: app.id, url: url, name: L(app, 'name'), icon: appIconMsg(app) }, '*'); } catch (e) {}
   }, i * 2200));
 }
 function afterHome() {
-  if (!S.inApp || !S.token || (S.user && S.user.mustChange)) return;
+  if (S.fromSnap || !S.inApp || !S.token || (S.user && S.user.mustChange)) return;
   prefetchTickets(false).then(() => setTimeout(warmLastApp, 800));
 }
 document.addEventListener('visibilitychange', () => { if (!document.hidden && S.screen === 'home') prefetchTickets(false); });
@@ -3528,7 +3555,7 @@ function uOnClick(el, e) {
     return api('u_fetchRegistry', { appId: el.dataset.id }).then(r => {
       el.disabled = false;
       if (!r.ok) { toast(r.code === 'NO_REGISTRY' ? 'هذا النظام لم يجهّز وصف إعداداته بعد' : 'تعذّر الوصول للنظام', 'err'); return; }
-      toast(r.settings + ' إعداداً و' + r.caps + ' صلاحية' + (r.imported ? ' · نُقلت ' + r.imported + ' قيمة من النظام' : '') + (r.importedAccess ? ' · نُقلت صلاحيات ' + r.importedAccess + ' موظفاً' : ''), 'ok'); uFlushSoon(); uLoad();
+      toast(r.settings + ' إعداداً و' + r.caps + ' صلاحية' + (r.imported ? ' · نُقلت ' + r.imported + ' قيمة من النظام' : '') + (r.importedAccess ? ' · نُقلت صلاحيات ' + r.importedAccess + ' موظفاً' : '') + (r.moved && (r.moved.roles || r.moved.profiles || r.moved.people) ? ' · نُقلت منح الخصائص المستبدلة' : ''), 'ok'); uFlushSoon(); uLoad();
     }).catch(c => { el.disabled = false; showErr(c); });
   }
   if (k === 'setDay') {
@@ -4441,7 +4468,8 @@ function toast(msg, type) {
   while (box.children.length > 4) box.firstChild.remove();
   requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('in')));
   const kill = () => { el.classList.remove('in'); el.classList.add('out'); setTimeout(() => el.remove(), 350); };
-  const timer = setTimeout(kill, 3800);
+  const timer = type === 'err' ? 0 : setTimeout(kill, 3800);
+  if (type === 'err') { el.classList.add('t-stay'); el.title = S.lang === 'en' ? 'Tap to close' : 'اضغط للإغلاق'; }
   el.addEventListener('click', () => { clearTimeout(timer); kill(); });
 }
 

@@ -1,6 +1,6 @@
 /* عامل الخدمة: يحفظ ملفات صفحة التطبيق وسوار الثابتة فقط (لا يحفظ أي بيانات من سوار أو البرامج).
-   الشبكة أولاً بمهلة قصيرة: إن تأخرت تُعرض النسخة المحفوظة فوراً، وأي تحديث على GitHub يصل في الفتح التالي. */
-const CACHE = 'siwar-app-v47';
+   النسخة المحفوظة تُعرض فوراً، وأي تحديث على GitHub يصل في الفتح التالي. */
+const CACHE = 'siwar-app-v48';
 const FILES = ['./', './index.html', './portal.html', './config.js', './manifest.webmanifest', './icons/logo.webp', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/favicon-32.png', './icons/favicon-64.png'];
 
 self.addEventListener('install', e => {
@@ -17,11 +17,10 @@ self.addEventListener('fetch', e => {
   const isIcon = /\/icons\//.test(url.pathname);
   // مفتاح الحفظ بلا معاملات (?open=… لا تُنشئ نسخاً مكررة)
   const key = new Request(url.origin + url.pathname);
-  e.respondWith(caches.open(CACHE).then(c => {
-    const hit = c.match(key);
+  // من ذاكرة الجهاز فوراً، والتحديث من GitHub يُحفظ في الخلفية ويظهر في الفتح التالي
+  e.respondWith(caches.open(CACHE).then(c => c.match(key).then(hit => {
     const net = fetch(e.request).then(r => { if (r && r.ok) c.put(key, r.clone()).catch(() => {}); return r; });
-    if (isIcon) return hit.then(h => h || net);   // الأيقونات لا تتغير: من الذاكرة مباشرة
-    const timeout = new Promise(res => setTimeout(res, 900)).then(() => hit.then(h => h || net));
-    return Promise.race([net, timeout]).catch(() => hit.then(h => h || c.match('./index.html')));
-  }));
+    if (hit) { e.waitUntil(net.catch(() => {})); return hit; }
+    return net.catch(() => c.match('./index.html'));
+  })));
 });

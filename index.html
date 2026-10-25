@@ -117,10 +117,16 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
 .btn{width:100%;height:50px;border:0;border-radius:999px;background:linear-gradient(180deg,#F0C3C1,#DE9C9A);color:var(--text);font:inherit;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 10px 22px -10px rgba(201,132,130,.8)}
 .link{border:0;background:none;color:#A65F5D;font:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:6px}
 .err{padding:24px;text-align:center;color:var(--muted)}
+/* شريط انقطاع الاتصال */
+#net{position:fixed;left:50%;top:calc(var(--top) + 10px);z-index:50;transform:translate(-50%,-80px);display:flex;align-items:center;gap:8px;height:36px;padding:0 16px;border-radius:999px;background:rgba(16,26,46,.94);color:#F6E6C4;font-size:13.5px;font-weight:600;box-shadow:0 10px 26px -10px rgba(0,0,0,.5);transition:transform .3s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+#net.on{transform:translate(-50%,0)}
+#net i{width:8px;height:8px;border-radius:50%;background:#E2A6A4}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
+
+<div id="net" role="status" aria-live="polite"><i></i><span id="netTxt"></span></div>
 
 <div id="splash"><div class="sp"><img src="icons/logo.webp" alt="سوار"><div class="bar"><i></i></div></div></div>
 
@@ -299,13 +305,19 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   $('plRetry').onclick = function () { if (cur) { rt[cur] = 0; relaunch(cur, true); } };
 
   function showLayer() {
-    $('prog').className = 'on'; $('prog').setAttribute('aria-hidden', 'false'); $('home').hidden = false;
+    $('prog').className = 'on'; $('prog').setAttribute('aria-hidden', 'false'); $('home').hidden = false; setTimeout(syncPause, 0);
     if (!history.state || !history.state.prog) history.pushState({ prog: 1 }, '');
   }
   function markCur(id) {
     cur = id;
     for (var k in frames) frames[k].f.className = 'pf' + (k === id ? ' cur' : '');
     if (frames[id]) frames[id].seen = Date.now();
+    syncPause();
+  }
+  // النظام المخفي يتوقف عن الطلبات الدورية حتى يعود للشاشة
+  function syncPause() {
+    var on = $('prog').className === 'on';
+    for (var k in frames) { var o = frames[k]; if (!o.win) continue; var st = on && k === cur ? 'resume' : 'pause'; if (o.ps === st) continue; o.ps = st; try { o.win.postMessage({ siwar: st }, '*'); } catch (e) {} }
   }
   function dropFrame(id) {
     var o = frames[id]; if (!o) return;
@@ -332,6 +344,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     p.allow = 'clipboard-read; clipboard-write; fullscreen; camera; microphone; geolocation';
     p.className = 'pf' + (cur === id ? ' cur' : '');
     var o = { f: p, url: url, name: name, icon: icon, t: Date.now(), seen: warm ? 0 : Date.now(), tries: old ? old.tries : 0, n: ++seq, uf: uf };
+    if (warm) o.seen = -o.n;
     frames[id] = o;
     p.onload = function () {
       if (frames[id] !== o || o.loaded) return;
@@ -397,6 +410,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     $('pload').className = 'pload gone';
     cur = '';
     for (var k in frames) frames[k].f.className = 'pf';
+    syncPause();
     if (!fromHistory && history.state && history.state.prog) history.back();
   }
   // السحب لأسفل أو F5 أو «إعادة المحاولة»: يُعاد فتح النظام بتذكرة جديدة
@@ -445,7 +459,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
       if (d.siwar === 'show') { toPortal({ siwar: 'relaunch', id: id }); return; }
       if (d.siwar === 'warm' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onWarm(id, String(d.url), String(d.name || ''), ic); return; }
       if (d.siwar === 'close') { if (id && frames[id] && !frames[id].ready) dropFrame(id); hideLayer(false); return; }
-      if (d.siwar === 'logout') { hideLayer(false); Object.keys(frames).forEach(dropFrame); return; }
+      if (d.siwar === 'logout') { hideLayer(false); Object.keys(frames).forEach(dropFrame); kvClear(); return; }
     }
     // حفظ دخول سوار ولغتها في صفحة التطبيق (للإصدار السابق من سوار)
     if (d.siwar === 'storeGet') {
@@ -463,12 +477,48 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     // من النظام نفسه: نحدد أي إطار أرسل
     var fid = frameIdOf(e.source), o = frames[fid];
     if (!o) return;
+    if (d.siwar === 'kv') { kvOp(fid, d, e.source, e.origin); return; }
+    if (/^(hold|alive|ready)$/.test(d.siwar) && o.win !== e.source) { o.win = e.source; o.ps = ''; if (!o.netSent) { o.netSent = 1; if (!navigator.onLine) try { e.source.postMessage({ siwar: 'net', on: false }, '*'); } catch (x) {} } setTimeout(syncPause, 0); }
     if (d.siwar === 'hold') { o.held = true; if (cur === fid && !o.ready) stage(.82, .95); }
     else if (d.siwar === 'alive') o.alive = true;
     else if (d.siwar === 'ready') markReady(fid);
     else if (d.siwar === 'close' || d.siwar === 'logout') { if (cur === fid) hideLayer(false); dropFrame(fid); }
     else if (d.siwar === 'reload' && cur === fid) relaunch(fid, false);
   });
+  /* ذاكرة دائمة للأنظمة: كل نظام يحفظ نسخة شاشاته وكوده هنا (ذاكرة التطبيق تبقى بعد إغلاقه)،
+     لأن ذاكرة إطار النظام نفسه تُمسح مع كل إغلاق على أندرويد. المفاتيح منفصلة لكل نظام، وتُمسح عند الخروج */
+  var kvDb = null;
+  function kvOpen() {
+    if (kvDb) return kvDb;
+    kvDb = new Promise(function (res, rej) {
+      try { var r = indexedDB.open('siwar_kv', 1); r.onupgradeneeded = function () { r.result.createObjectStore('kv'); }; r.onsuccess = function () { res(r.result); }; r.onerror = function () { rej(r.error); }; }
+      catch (e) { rej(e); }
+    });
+    kvDb.catch(function () { kvDb = null; });
+    return kvDb;
+  }
+  function kvOp(fid, d, src, origin) {
+    var op = String(d.op || ''), key = fid + '|' + String(d.key || '').slice(0, 200), done = function (v) { try { src.postMessage({ siwar: 'kv', rid: d.rid, val: v === undefined ? null : v }, origin); } catch (e) {} };
+    if (!/^(get|set|del)$/.test(op) || !d.key) return done(null);
+    kvOpen().then(function (db) {
+      var tx = db.transaction('kv', op === 'get' ? 'readonly' : 'readwrite'), st = tx.objectStore('kv');
+      if (op === 'get') { var g = st.get(key); g.onsuccess = function () { done(g.result); }; g.onerror = function () { done(null); }; }
+      else { if (op === 'set') st.put(d.val, key); else st.delete(key); tx.oncomplete = function () { done(true); }; tx.onerror = function () { done(false); }; }
+    }).catch(function () { done(null); });
+  }
+  function kvClear() { kvOpen().then(function (db) { db.transaction('kv', 'readwrite').objectStore('kv').clear(); }).catch(function () {}); }
+
+  /* انقطاع الاتصال: شريط هادئ واحد، ويُبلَّغ كل نظام مفتوح */
+  function netState() {
+    var on = navigator.onLine !== false;
+    $('netTxt').textContent = LANG === 'en' ? 'No internet connection' : 'لا يوجد اتصال بالإنترنت';
+    $('net').className = on ? '' : 'on';
+    for (var k in frames) if (frames[k].win) try { frames[k].win.postMessage({ siwar: 'net', on: on }, '*'); } catch (e) {}
+    toPortal({ siwar: 'net', on: on });
+  }
+  window.addEventListener('online', netState); window.addEventListener('offline', netState);
+  if (navigator.onLine === false) setTimeout(netState, 0);
+
   // F5 أو Ctrl+R على الكمبيوتر: تحديث ما على الشاشة (سوار أو النظام المفتوح) بدل إعادة تحميل التطبيق كله
   window.addEventListener('keydown', function (e) {
     if (!(e.key === 'F5' || ((e.ctrlKey || e.metaKey) && !e.shiftKey && /^[rRق]$/.test(e.key)))) return;
