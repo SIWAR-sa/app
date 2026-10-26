@@ -1122,6 +1122,51 @@ tr.is-off .mx-user { opacity: .5; }
 .u-pk-row.on .u-pk-ck { background: var(--pink-deep, #b4436c); border-color: var(--pink-deep, #b4436c); }
 .u-pk-row.on .u-pk-ck::after { content: ''; position: absolute; inset: 3px 5px 6px 5px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
 .u-rolesel { margin: 0 0 10px; padding-bottom: 10px; border-bottom: 1px dashed var(--line, #e6e0da); }
+/* «يعمل لـ» ومفتاح الإشعارات في صفحة الموظف */
+.u-wf { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; }
+.u-wf-hint { font-size: 12.5px; }
+/* إشعارات الجوال: المفتاح العام ومصفوفة الشركات والأنظمة */
+.pz-box { grid-column: 1 / -1; }
+.pz-head { display: flex; align-items: center; gap: 14px; }
+.pz-bell { width: 48px; height: 48px; flex: none; border-radius: 16px; display: grid; place-items: center; color: var(--gold-deep);
+  background: linear-gradient(150deg, #FFF8EA, #F4DEB6); box-shadow: inset 0 1px 0 #fff, inset 0 -2px 6px rgba(194,146,63,.18), 0 10px 22px -12px rgba(194,146,63,.75); }
+.pz-bell .ic { width: 24px; height: 24px; }
+.pz-title { flex: 1; min-width: 0; }
+.pz-title b { display: block; font-size: 17px; }
+.pz-title small { display: block; margin-top: 3px; color: var(--muted); font-size: 12.5px; }
+.pz-sw { position: relative; flex: none; width: 50px; height: 30px; border-radius: 999px; border: 1px solid var(--border-strong); padding: 0; cursor: pointer;
+  background: linear-gradient(180deg, #EFE9E3, #F8F4EF); box-shadow: inset 0 2px 4px rgba(63,58,55,.12); transition: background .25s, border-color .25s; }
+.pz-sw::after { content: ''; position: absolute; top: 3px; inset-inline-start: 3px; width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(180deg, #fff, #F4F0EC);
+  box-shadow: 0 2px 5px rgba(63,58,55,.28), inset 0 -1px 0 rgba(0,0,0,.05); transition: transform .28s cubic-bezier(.3,1.4,.5,1); }
+.pz-sw.on { background: linear-gradient(180deg, #EDBDBB, #DE9C9A); border-color: #D69492; box-shadow: inset 0 2px 4px rgba(150,80,78,.25); }
+.pz-sw.on::after { transform: translateX(20px); }
+[dir="rtl"] .pz-sw.on::after { transform: translateX(-20px); }
+.pz-sw.lg { width: 58px; height: 34px; } .pz-sw.lg::after { width: 26px; height: 26px; }
+.pz-sw.lg.on::after { transform: translateX(24px); } [dir="rtl"] .pz-sw.lg.on::after { transform: translateX(-24px); }
+.pz-sw:disabled { opacity: .45; cursor: default; }
+.pz-stats { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; }
+.pz-chip { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; background: #FBF6EE; border: 1px solid var(--border); font-size: 12.5px; color: var(--muted); }
+.pz-chip b { color: var(--text); font-weight: 700; }
+.pz-cos { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-top: 18px; transition: opacity .25s; }
+.pz-box.is-off .pz-cos { opacity: .45; }
+.pz-co { border-radius: 20px; padding: 6px 16px 10px; border: 1px solid transparent;
+  background: linear-gradient(180deg, #FFFEFB, #FBF5EC) padding-box, linear-gradient(140deg, #F3DDB0, #EADFD1 40%, #F6E7CB) border-box;
+  box-shadow: 0 1px 0 #fff inset, 0 14px 30px -24px rgba(110,80,40,.55); }
+.pz-co-h { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.pz-co-h b { flex: 1; font-size: 15.5px; }
+.pz-co-h em { font-style: normal; font-size: 12px; color: var(--muted); }
+.pz-app { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px dashed rgba(234,223,209,.8); transition: opacity .2s; }
+.pz-app:last-child { border-bottom: 0; }
+.pz-app span.nm { flex: 1; font-size: 14px; }
+.pz-app .app-icon { width: 32px; height: 32px; flex: none; }
+.pz-co.is-off .pz-app { opacity: .42; }
+.pz-nums { display: flex; flex-wrap: wrap; gap: 14px 22px; margin-top: 18px; }
+.pz-num { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.pz-num .inp { width: 84px; text-align: center; }
+.pz-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
+.pz-foot .u-muted { font-size: 13px; }
+.pz-warn { margin: 14px 0 0; padding: 10px 14px; border-radius: 14px; background: #FBF0DC; color: #8C6524; font-size: 13px; }
+@media (max-width: 720px) { .pz-head { flex-wrap: wrap; } .pz-cos { grid-template-columns: 1fr; } .pz-foot .btn { width: 100%; justify-content: center; } }
 </style>
 <style id="sdfix">input[type=date],input[type=time],input[type=month],input[type=datetime-local]{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important;word-spacing:normal!important;text-align:start!important}input[type=date]::-webkit-datetime-edit,input[type=time]::-webkit-datetime-edit,input[type=month]::-webkit-datetime-edit,input[type=datetime-local]::-webkit-datetime-edit{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important}</style></head>
 <body>
@@ -1142,6 +1187,7 @@ tr.is-off .mx-user { opacity: .5; }
         <div class="menu-head"><span class="avatar" id="avatar2"></span><div><b id="menuName"></b><small class="ltr" id="menuUser"></small></div></div>
         <button class="menu-item" data-act="openChangePin"><i data-ic="key"></i><span data-i18n="changePin"></span></button>
         <button class="menu-item" data-act="installApp" data-install hidden><i data-ic="phone"></i><span data-i18n="installApp"></span></button>
+        <button class="menu-item" data-act="pushOpen" data-pushmenu hidden><i data-ic="bell"></i><span data-i18n="pushMenu"></span></button>
         <button class="menu-item admin-only" data-act="openAdmin"><i data-ic="shield"></i><span data-i18n="adminPanel"></span></button>
         <button class="menu-item" data-act="logout"><i data-ic="logout" class="flip"></i><span data-i18n="signOut"></span></button>
       </div>
@@ -1300,6 +1346,7 @@ tr.is-off .mx-user { opacity: .5; }
             <button class="btn btn-primary" type="submit" id="settingsBtn"><i data-ic="save"></i><span data-i18n="save"></span></button>
           </form>
         </div>
+        <div class="panel-box pz-box" id="pushBox"></div>
         <div class="panel-box mail-box">
           <h3><i data-ic="send"></i><span data-i18n="mailTitle"></span></h3>
           <div class="seg" id="mLangSeg"><button type="button" class="seg-btn on" data-act="mailLang" data-l="ar">العربية</button><button type="button" class="seg-btn" data-act="mailLang" data-l="en">English</button></div>
@@ -1360,6 +1407,8 @@ tr.is-off .mx-user { opacity: .5; }
 
 const I18N = {
   ar: {
+    pushMenu: 'إشعارات الجوال', act_PUSH: 'إشعار جوال', act_PUSH_OFF: 'إشعار لم يُرسل (متوقف)', act_PUSH_SUB: 'تفعيل إشعارات جهاز', act_PUSH_UNSUB: 'إيقاف إشعارات جهاز', act_PUSH_DEAD: 'حذف جهاز منتهٍ', act_PUSH_SWITCH: 'مفاتيح إشعارات الجوال', act_PUSH_SETUP: 'تهيئة إشعارات الجوال', act_U_WORKSFOR: 'تحديد «يعمل لـ»',
+    PUSH_NOT_READY: 'إرسال الإشعارات لم يُهيأ بعد.', PUSH_BAD_ENDPOINT: 'هذا المتصفح لا يدعم الإشعارات بالطريقة المعتمدة.', ERR_RANGE: 'القيمة خارج الحدود المسموحة.',
     langName: 'English', switchLang: 'تبديل اللغة', username: 'اسم المستخدم', userOrEmail: 'البريد الإلكتروني', pin: 'كلمة المرور', signIn: 'دخول',
     forgot: 'نسيت كلمة المرور؟', forgotIntro: '', sendRequest: 'متابعة', backToLogin: 'العودة لتسجيل الدخول',
     resetIntro: 'إذا كان لحسابك بريد مسجّل فسيصلك رمز تحقق من 6 أرقام، وإلا فسيصل طلبك إلى مدير النظام لإعادة التعيين.',
@@ -1434,6 +1483,8 @@ const I18N = {
     ERR_SERVER: 'حدث خطأ غير متوقع.', ERR_ACTION: 'إجراء غير معروف.', ERR_VALIDATION: 'بيانات غير صالحة.', ERR_POPUP: 'اسمح بالنوافذ المنبثقة لفتح البرامج.'
   },
   en: {
+    pushMenu: 'Phone notifications', act_PUSH: 'Phone notification', act_PUSH_OFF: 'Notification not sent (off)', act_PUSH_SUB: 'Device notifications on', act_PUSH_UNSUB: 'Device notifications off', act_PUSH_DEAD: 'Expired device removed', act_PUSH_SWITCH: 'Notification switches', act_PUSH_SETUP: 'Notifications set up', act_U_WORKSFOR: '«Works for» set',
+    PUSH_NOT_READY: 'Notifications are not set up yet.', PUSH_BAD_ENDPOINT: 'This browser does not support notifications in the supported way.', ERR_RANGE: 'The value is out of the allowed range.',
     langName: 'العربية', switchLang: 'Switch language', username: 'Username', userOrEmail: 'Email', pin: 'Password', signIn: 'Sign in',
     forgot: 'Forgot your password?', forgotIntro: '', sendRequest: 'Continue', backToLogin: 'Back to sign in',
     resetIntro: 'If your account has a registered email, a 6-digit code will be sent to it; otherwise your request goes to the system admin for a reset.',
@@ -1511,6 +1562,7 @@ const I18N = {
 
 const ICONS = {
   phone: '<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>',
+  bell: '<path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.6 2H4.4z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/>',
   globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
   logout: '<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 16l-4-4 4-4M6 12h10"/>',
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>',
@@ -1983,6 +2035,7 @@ function applyConfig(cfg) {
   if (cfg && cfg.nameAR) try { localStorage.setItem('sp_cfg', JSON.stringify({ nameAR: S.config.nameAR, nameEN: S.config.nameEN, theme: S.config.theme, logo: S.config.logo, appUrl: S.config.appUrl })); } catch (e) {}
 
   $$('[data-install]').forEach(el => { el.hidden = !S.config.appUrl || S.inApp; });
+  $$('[data-pushmenu]').forEach(el => { el.hidden = !SHELL; });
   applyTheme(currentTheme());
   applyBrand();
 }
@@ -2640,7 +2693,17 @@ function setupInApp() {
   if (!SHELL || setupInApp.done) return;
   setupInApp.done = true;
   const go = SIWAR_PTR(ptrRefresh);
-  window.addEventListener('message', e => { if (e.origin === SHELL && e.source === window.top && e.data) { if (e.data.siwar === 'relaunch') relaunchLast(String(e.data.id || ''), e.data.go); else if (e.data.siwar === 'refresh') go(); else if (e.data.siwar === 'alive') { S.alive = {}; (e.data.ids || []).forEach(x => { S.alive[x] = 1; }); } else if (e.data.siwar === 'home') { S.sysOn = false; prefetchTickets(false); } else if (e.data.siwar === 'perf') perfSend(e.data.rows); } });
+  window.addEventListener('message', e => { if (e.origin === SHELL && e.source === window.top && e.data) { if (e.data.siwar === 'relaunch') relaunchLast(String(e.data.id || ''), e.data.go); else if (e.data.siwar === 'refresh') go(); else if (e.data.siwar === 'alive') { S.alive = {}; (e.data.ids || []).forEach(x => { S.alive[x] = 1; }); } else if (e.data.siwar === 'home') { S.sysOn = false; prefetchTickets(false); } else if (e.data.siwar === 'perf') perfSend(e.data.rows); else if (e.data.siwar === 'pushApi') pushRelay(e.data); } });
+}
+
+// إشعارات الجوال: غلاف التطبيق يطلب عمليات الاشتراك عبر سوار، لأن الجلسة هنا
+const PUSH_OPS = { info: 'push_info', sub: 'push_sub', unsub: 'push_unsub', test: 'push_test' };
+async function pushRelay(d) {
+  const reply = o => { try { window.top.postMessage(Object.assign({ siwar: 'pushRes', rid: d.rid }, o), SHELL); } catch (e) {} };
+  const a = PUSH_OPS[d.op]; if (!a) return reply({ ok: false, code: 'ERR_ACTION' });
+  if (!S.token || !S.user) return reply({ ok: false, code: 'NO_SESSION' });
+  try { reply({ ok: true, data: await api(a, d.data && typeof d.data === 'object' ? d.data : {}), lang: S.lang }); }
+  catch (c) { reply({ ok: false, code: String(c || 'ERR_SERVER') }); }
 }
 
 function openInstall() {
@@ -2686,7 +2749,7 @@ function uBar() {
   $('#uSaveN').textContent = n === 1 ? 'تعديل واحد لم يُحفظ' : n === 2 ? 'تعديلان لم يُحفظا' : n + ' تعديلات لم تُحفظ';
 }
 function uDiscard() { if (U.base) U.d = U.base; U.base = null; U.dirty.clear(); U.draft = null; uBar(); uRender(); }
-const U_OPNAME = { personRole: 'دور موظف', personCopy: 'نسخ صلاحيات', roleSave: 'حفظ دور', roleArchive: 'أرشفة دور', roleDelete: 'حذف دور', person: 'صلاحيات موظف', personInfo: 'بيانات موظف', personProfile: 'وظيفة موظف', personRest: 'يوم الراحة', personTitle: 'مسمى موظف', personLang: 'لغة الإيميلات', setting: 'إعداد', shared: 'إعداد مشترك' };
+const U_OPNAME = { personRole: 'دور موظف', personCopy: 'نسخ صلاحيات', roleSave: 'حفظ دور', roleArchive: 'أرشفة دور', roleDelete: 'حذف دور', person: 'صلاحيات موظف', personInfo: 'بيانات موظف', personProfile: 'وظيفة موظف', personRest: 'يوم الراحة', personTitle: 'مسمى موظف', personLang: 'لغة الإيميلات', personWorksFor: 'يعمل لـ', personPush: 'إشعارات الجوال', setting: 'إعداد', shared: 'إعداد مشترك' };
 function uSaveFail(code, op, ops, det) {
   const o = op >= 0 && ops ? ops[op] : null, p = o && o.personId ? U.d.people.find(x => x.id === o.personId) : null;
   if (det && (det.q || det.msg)) {
@@ -2789,6 +2852,7 @@ function uHome() {
     '<button class="link-btn" data-u="showIds" data-ids="' + esc(x.ids.join(',')) + '">عرضهم</button>'));
   if (!D.people.some(p => p.source === 'jisr')) todo.unshift(row('fresh', 'بيانات الموظفين لم تُنقل من كوادر بعد', '<button class="link-btn" data-u="srcKawader">نقلها الآن</button>'));
   else if (!D.people.some(p => (p.restDays || []).length)) todo.unshift(row('fresh', 'أيام الراحة لم تُنقل من التحليلات بعد', '<button class="link-btn" data-u="srcRest">نقلها الآن</button>'));
+  if (D.people.length && !D.people.some(p => p.worksFor)) todo.unshift(row('fresh', '«يعمل لـ» لم يُحدَّد للموظفين بعد', '<button class="link-btn" data-u="srcWf">تحديده الآن</button>'));
   if (D.people.length && !D.people.some(p => p.mailLang)) todo.unshift(row('fresh', 'لغة الإيميلات لم تُنقل من الأنظمة بعد', '<button class="link-btn" data-u="srcLang">نقلها الآن</button>'));
   const undeclared = D.apps.filter(a => !uReg(a.id)).length;
   if (undeclared) todo.push(row('nomail', undeclared + ' من الأنظمة لم تربط إعداداتها بسوار بعد', '<button class="link-btn" data-unav="systems">عرضها</button>'));
@@ -2818,6 +2882,7 @@ function uPeople() {
       '</button>').join('') : '<div class="empty">' + ic('search') + '<span>لا نتائج</span></div>') + '</div>';
 }
 
+function uWfHint(w) { return !w ? '' : w === 'BOTH' ? 'يرى طلبات الشركتين في مهام وإجراءات.' : 'يرى طلبات ' + uCo(w) + ' في مهام وإجراءات.'; }
 function uTitleOpts(cur) {
   const set = {}; (U.d.people || []).forEach(x => { if (x.title) set[x.title] = 1; });
   if (cur) set[cur] = 1;
@@ -2835,13 +2900,18 @@ function uPerson() {
     (p.email && !p.owner && !me && !uLeftP(p) ? '<button class="btn btn-primary btn-sm" data-u="pInvite" data-pid="' + esc(p.id) + '">' + ic('send') + '<span>إرسال دعوة</span></button>' : '') + (p.owner || me ? '' : p.stopped ? '<button class="btn btn-ghost btn-sm" data-u="pResume">' + ic('check') + '<span>إعادة تفعيل</span></button>' : '<button class="btn btn-ghost btn-sm" data-u="pStop">' + ic('lock') + '<span>إيقاف في كل الأنظمة</span></button>') + '</div>';
   const rd = p.restDays || [];
   const hasAcct = !!p.userId;
+  const wfMay = !me || (p.owner && S.user && S.user.role === 'owner'), cosL = (D.shared || {}).companies || [];
+  const wfCur = p.worksFor || (cosL.some(c => c.code === p.company) ? p.company : '');
+  const wfRow = '<div class="u-q"><span class="u-q-t">يعمل لـ</span><span class="u-q-v u-wf"><span class="seg" data-pwf="1">' + cosL.map(c => [c.code, c.nameAR]).concat([['BOTH', 'الشركتان']]).map(o => '<button type="button" class="seg-btn' + (wfCur === o[0] ? ' on' : '') + '" data-u="pWf" data-w="' + esc(o[0]) + '"' + (wfMay ? '' : ' disabled') + '>' + esc(o[1]) + '</button>').join('') + '</span><span class="u-muted u-wf-hint" id="uWfHint">' + esc(uWfHint(wfCur)) + '</span></span></div>';
+  const pOn = p.pushAllow === 'yes' ? true : p.pushAllow === 'no' ? false : p.pushDef !== false;
+  const pushRow = '<div class="u-q"><span class="u-q-t">إشعارات الجوال</span><span class="u-q-v u-wf"><span class="seg" data-ppush="1">' + [['1', 'تعمل'], ['0', 'متوقفة']].map(o => '<button type="button" class="seg-btn' + ((pOn ? '1' : '0') === o[0] ? ' on' : '') + '" data-u="pPush" data-on="' + o[0] + '"' + (wfMay ? '' : ' disabled') + '>' + o[1] + '</button>').join('') + '</span>' + (!p.pushAllow && p.pushDef === false ? '<span class="u-muted u-wf-hint">متوقفة افتراضياً للمدير العام.</span>' : '') + '</span></div>';
   const langRow = '<div class="u-q"><span class="u-q-t">لغة الإيميلات</span><span class="u-q-v"><span class="seg" data-plang="1">' + [['ar', 'العربية'], ['en', 'English']].map(l => '<button type="button" class="seg-btn' + (p.mailLang === l[0] ? ' on' : '') + '" data-u="pLang" data-l="' + l[0] + '">' + l[1] + '</button>').join('') + '</span></span></div>';
-  const info = p.owner ? '<section class="panel-box u-work u-info">' + langRow + '</section>' : '<section class="panel-box u-work u-info"><div class="u-q"><span class="u-q-t">الاسم</span><span class="u-q-v"><input class="inp" data-uc="pInfo" data-f="name" maxlength="80" value="' + esc(p.name || '') + '"' + (me ? ' disabled' : '') + '></span></div>' +
+  const info = p.owner ? '<section class="panel-box u-work u-info">' + wfRow + langRow + pushRow + '</section>' : '<section class="panel-box u-work u-info"><div class="u-q"><span class="u-q-t">الاسم</span><span class="u-q-v"><input class="inp" data-uc="pInfo" data-f="name" maxlength="80" value="' + esc(p.name || '') + '"' + (me ? ' disabled' : '') + '></span></div>' +
     '<div class="u-q"><span class="u-q-t">الاسم بالإنجليزية</span><span class="u-q-v"><input class="inp" dir="ltr" data-uc="pInfo" data-f="nameEN" maxlength="80" value="' + esc(p.nameEN || '') + '"' + (me ? ' disabled' : '') + '></span></div>' +
-    '<div class="u-q"><span class="u-q-t">الشركة</span><span class="u-q-v"><select class="inp" data-uc="pInfo" data-f="company"' + (me ? ' disabled' : '') + '><option value="">—</option>' + ((D.shared || {}).companies || []).map(c => '<option value="' + esc(c.code) + '"' + (p.company === c.code ? ' selected' : '') + '>' + esc(c.nameAR) + '</option>').join('') + '</select></span></div>' +
+    '<div class="u-q"><span class="u-q-t">الشركة</span><span class="u-q-v"><select class="inp" data-uc="pInfo" data-f="company"' + (me ? ' disabled' : '') + '><option value="">—</option>' + ((D.shared || {}).companies || []).map(c => '<option value="' + esc(c.code) + '"' + (p.company === c.code ? ' selected' : '') + '>' + esc(c.nameAR) + '</option>').join('') + '</select></span></div>' + wfRow +
     '<div class="u-q"><span class="u-q-t">الإدارة</span><span class="u-q-v"><input class="inp" list="uDeptL" data-uc="pInfo" data-f="dept" maxlength="80" value="' + esc(p.dept || '') + '"' + (me ? ' disabled' : '') + '><datalist id="uDeptL">' + Array.from(new Set(D.people.map(x => x.dept).filter(Boolean))).sort().map(x => '<option value="' + esc(x) + '">').join('') + '</datalist></span></div>' +
     '<div class="u-q"><span class="u-q-t">القسم</span><span class="u-q-v"><input class="inp" list="uSecL" data-uc="pInfo" data-f="section" maxlength="80" value="' + esc(p.section || '') + '"' + (me ? ' disabled' : '') + '><datalist id="uSecL">' + Array.from(new Set(D.people.map(x => x.section).filter(Boolean))).sort().map(x => '<option value="' + esc(x) + '">').join('') + '</datalist></span></div>' +
-    '<div class="u-q"><span class="u-q-t">البريد الإلكتروني</span><span class="u-q-v"><input class="inp" dir="ltr" type="email" data-uc="pInfo" data-f="email" maxlength="120" autocapitalize="none" spellcheck="false" value="' + esc(p.email || '') + '"' + (me || hasAcct ? ' disabled' : '') + '></span></div>' + langRow +
+    '<div class="u-q"><span class="u-q-t">البريد الإلكتروني</span><span class="u-q-v"><input class="inp" dir="ltr" type="email" data-uc="pInfo" data-f="email" maxlength="120" autocapitalize="none" spellcheck="false" value="' + esc(p.email || '') + '"' + (me || hasAcct ? ' disabled' : '') + '></span></div>' + langRow + pushRow +
     (hasAcct ? '<p class="u-muted u-note">له حساب في سوار؛ يتغير بريده من «تعديل الحساب».</p>' : '') + '</section>';
   const work = '<section class="panel-box u-work"><div class="u-q"><span class="u-q-t">يوم الراحة الأسبوعي</span><span class="u-days" data-prest="1">' + U_DAYS.map((n, i) => '<button class="seg-btn' + (rd.indexOf(i) >= 0 ? ' on' : '') + '" data-u="pRest" data-i="' + i + '"' + (me && !p.owner ? ' disabled' : '') + '>' + n + '</button>').join('') + '</span></div>' +
     (p.owner ? '' : '<div class="u-q"><span class="u-q-t">المسمى الوظيفي</span><span class="u-q-v"><select class="inp" data-uc="pTitle"' + (me ? ' disabled' : '') + '>' + uTitleOpts(p.title) + '</select></span></div>') + (p.owner ? '' : '<div class="u-q"><span class="u-q-t">وظيفته</span><span class="u-q-v"><select class="inp" data-uc="pProf"' + (me ? ' disabled' : '') + '><option value="">' + esc(U_BYTITLE) + '</option>' + D.profiles.map(f => '<option value="' + esc(f.id) + '"' + (p.profileId === f.id ? ' selected' : '') + '>' + esc(f.nameAR) + '</option>').join('') + '</select></span></div>') + (p.owner ? '' : uBundleSel(p, me)) + '</section>';
@@ -3112,6 +3182,9 @@ async function uSrc(action, title) {
     if (action === 'u_importMailLang') { const c = r.counts; out.innerHTML = '<div class="u-prev"><span><b>' + r.fill + '</b> موظفاً ستُحدَّد لغتهم</span><span><b>' + c.en + '</b> بالإنجليزية</span><span><b>' + c.def + '</b> بالعربية لعدم وجود لغة لهم في أي نظام</span></div>' +
       '<p class="u-muted">المصدر: مهام ' + c.tasks + ' · كوادر ' + c.kawader + ' · مخازن ' + c.stores + ' · التحليلات ' + c.analysis + '. عند الاختلاف تُعتمد لغته في مهام.</p>' +
       (r.nConflicts ? '<p class="u-muted">اختلفت الأنظمة في ' + r.nConflicts + ': ' + esc(r.conflicts.join('؛ ')) + '</p>' : '') + (r.skipped.length ? '<p class="u-err">لم تُقرأ: ' + esc(r.skipped.join('، ')) + '</p>' : ''); }
+    else if (action === 'u_importWorksFor') { const c = r.counts; out.innerHTML = '<div class="u-prev"><span><b>' + r.fill + '</b> موظفاً سيُحدَّد لهم</span><span><b>' + c.both + '</b> للشركتين</span>' + ((U.d.shared || {}).companies || []).map(x => '<span><b>' + (c[x.code] || 0) + '</b> ل' + esc(x.nameAR) + '</span>').join('') + '</div>' +
+      (r.both.length ? '<p class="u-muted">للشركتين (الإدارة المشتركة في فريق مهام وإجراءات): ' + esc(r.both.join('، ')) + '</p>' : '') + (c.none ? '<p class="u-err">بلا شركة، يُحدَّد لهم من صفحاتهم: ' + esc(r.none.join('، ')) + '</p>' : '') +
+      (r.skipped.length ? '<p class="u-err">لم تُقرأ: ' + esc(r.skipped.join('، ')) + '</p>' : '') + '<p class="u-muted">من حُدِّد له يدوياً لا يتغيّر.</p>'; }
     else if (action === 'u_importRestDays') out.innerHTML = '<div class="u-prev"><span><b>' + r.matched + '</b> موظفاً طابقنا يوم راحته</span><span><b>' + r.missing + '</b> لم نجد مطابقاً</span></div>' + (r.sampleMissing.length ? '<p class="u-muted">لم يطابَق: ' + esc(r.sampleMissing.join('، ')) + '</p>' : '');
     else { const c = r.counts, sm = r.sample; out.innerHTML = '<div class="u-prev"><span><b>' + c.fresh + '</b> جديد</span><span><b>' + c.changed + '</b> تغيّرت بياناتهم</span><span><b>' + c.left + '</b> غادروا</span><span><b>' + c.same + '</b> بلا تغيير</span></div>' +
       (sm.left.length ? '<p class="u-err">سيُوقف دخول من غادر في كل الأنظمة: ' + esc(sm.left.join('، ')) + (c.left > sm.left.length ? '…' : '') + '</p>' : '') + '<p class="u-muted">لا تُنقل الرواتب ولا أرقام الإقامة.</p>'; }
@@ -3120,7 +3193,7 @@ async function uSrc(action, title) {
 }
 async function uSrcApply() {
   $('#uSrcApply').disabled = true;
-  try { const r = await api(U.src, { apply: true }); closeModal(true); toast(U.src === 'u_importMailLang' ? 'حُدّدت لغة الإيميلات لـ ' + r.fill + ' موظفاً' : U.src === 'u_importRestDays' ? 'نُقلت أيام الراحة لـ ' + r.matched + ' موظفاً' : 'نُقلت البيانات: ' + r.counts.fresh + ' جديد · ' + r.counts.changed + ' تغيّر', 'ok'); uFlushSoon(); uLoad(); }
+  try { const r = await api(U.src, { apply: true }); closeModal(true); toast(U.src === 'u_importWorksFor' ? 'حُدّد «يعمل لـ» لـ ' + r.fill + ' موظفاً' : U.src === 'u_importMailLang' ? 'حُدّدت لغة الإيميلات لـ ' + r.fill + ' موظفاً' : U.src === 'u_importRestDays' ? 'نُقلت أيام الراحة لـ ' + r.matched + ' موظفاً' : 'نُقلت البيانات: ' + r.counts.fresh + ' جديد · ' + r.counts.changed + ' تغيّر', 'ok'); uFlushSoon(); uLoad(); }
   catch (c) { showErr(c); }
 }
 
@@ -3677,12 +3750,22 @@ function uOnClick(el, e) {
   if (k === 'srcKawader') return uSrc('u_importKawader', 'نقل بيانات الموظفين من كوادر');
   if (k === 'srcRest') return uSrc('u_importRestDays', 'نقل أيام الراحة من التحليلات');
   if (k === 'srcLang') return uSrc('u_importMailLang', 'نقل لغة الإيميلات من الأنظمة');
+  if (k === 'srcWf') return uSrc('u_importWorksFor', 'تحديد «يعمل لـ» للموظفين');
   if (k === 'srcApply') return uSrcApply();
   if (k === 'pRest') {
     const p = D.people.find(x => x.id === U.id); el.classList.toggle('on');
     if (!U.base) U.base = JSON.parse(JSON.stringify(U.d));
     p.restDays = $$('[data-prest] .seg-btn').map((b, i) => b.classList.contains('on') ? i : -1).filter(i => i >= 0);
     return uMark('pr:' + p.id, { t: 'personRest', personId: p.id, restDays: p.restDays });
+  }
+  if (k === 'pWf' || k === 'pPush') {
+    const p = D.people.find(x => x.id === U.id);
+    if (!U.base) U.base = JSON.parse(JSON.stringify(U.d));
+    $$(k === 'pWf' ? '[data-pwf] .seg-btn' : '[data-ppush] .seg-btn').forEach(b => b.classList.toggle('on', b === el));
+    const row = el.closest('.u-q'); if (row) row.classList.add('is-dirty');
+    if (k === 'pWf') { p.worksFor = el.dataset.w; const h = $('#uWfHint'); if (h) h.textContent = uWfHint(p.worksFor); return uMark('pw:' + p.id, { t: 'personWorksFor', personId: p.id, worksFor: p.worksFor }); }
+    p.pushAllow = el.dataset.on === '1' ? 'yes' : 'no';
+    return uMark('pp:' + p.id, { t: 'personPush', personId: p.id, on: el.dataset.on === '1' });
   }
   if (k === 'pLang') {
     const p = D.people.find(x => x.id === U.id);
@@ -4077,6 +4160,7 @@ async function mailSave(btn) {
 
 function renderSettings() {
   const s = S.admin.settings;
+  renderPush();
   if (!$('#mailForm').contains(document.activeElement)) mailFill();
   $('#themesAdmin').innerHTML = themeCards(S.pendingTheme || s.theme, 'pickAdminTheme');
   if (document.activeElement && document.activeElement.closest('#settingsForm')) return;
@@ -4089,6 +4173,60 @@ function renderSettings() {
   $('#sWebApp').value = s.webAppUrl || '';
   $('#sShort').value = s.shortUrl || '';
   $('#sAppUrl').value = s.appUrl || '';
+}
+
+// ── إشعارات الجوال: المفتاح العام، ومفتاح لكل شركة، ومفتاح لكل نظام داخل كل شركة. الحفظ بزر «حفظ» فقط ──
+const pzClone = d => ({ on: !!d.on, matrix: JSON.parse(JSON.stringify(d.matrix || {})), max: d.max, hours: d.hours });
+async function pushLoad() {
+  if (S.pushLoading) return; S.pushLoading = true; S.pushErr = '';
+  try { const d = await api('admin_push', {}); S.push = d; S.pushDraft = pzClone(d); }
+  catch (c) { S.pushErr = c === '__handled' ? '' : String(c || 'ERR_SERVER'); }
+  finally { S.pushLoading = false; renderPush(); }
+}
+function pzIs(co, app) { const m = (S.pushDraft.matrix || {})[co] || {}; return app ? !(m.apps && m.apps[app] === false) : m.on !== false; }
+function pzDirty() { return !!S.push && JSON.stringify(S.pushDraft) !== JSON.stringify(pzClone(S.push)); }
+function renderPush() {
+  const box = $('#pushBox'); if (!box || !S.admin) return;
+  const head = (sub, sw) => '<div class="pz-head"><span class="pz-bell">' + ic('bell') + '</span><div class="pz-title"><b>إشعارات الجوال</b>' + (sub ? '<small>' + sub + '</small>' : '') + '</div>' + (sw || '') + '</div>';
+  if (!S.push) {
+    box.innerHTML = head('') + (S.pushErr ? '<p class="pz-warn">' + esc(t(I18N.ar[S.pushErr] ? S.pushErr : 'ERR_SERVER')) + ' <button class="link-btn" data-act="pzReload">إعادة المحاولة</button></p>' : '<div class="u-wait"><span class="u-spin"></span><span>جارٍ التحميل…</span></div>');
+    if (!S.pushErr) pushLoad(); return;
+  }
+  const P = S.push, d = S.pushDraft, apps = (S.admin.apps || []).filter(a => a.status === 'Active'), cos = P.companies || [];
+  const sw = (on, attrs, lg) => '<button type="button" class="pz-sw' + (lg ? ' lg' : '') + (on ? ' on' : '') + '" role="switch" aria-checked="' + (on ? 'true' : 'false') + '" data-act="pzToggle" ' + attrs + '></button>';
+  const sub = d.on ? 'الإرسال يعمل للموظفين الذين فعّلوا الإشعارات على أجهزتهم.' : 'الإرسال متوقف لكل الموظفين.';
+  const cards = cos.map(c => { const con = pzIs(c.code);
+    return '<div class="pz-co' + (con ? '' : ' is-off') + '"><div class="pz-co-h"><b>' + esc(c.nameAR) + '</b><em>' + (con ? 'يعمل' : 'متوقف') + '</em>' + sw(con, 'data-co="' + esc(c.code) + '" aria-label="' + esc(c.nameAR) + '"') + '</div>' +
+      apps.map(a => '<div class="pz-app"><span class="app-icon tint-' + esc(a.tint || 'gold') + imgCls(a.icon, a.shape) + '">' + iconHtml(a.icon) + '</span><span class="nm">' + esc(a.nameAR) + '</span>' +
+        sw(pzIs(c.code, a.id), 'data-co="' + esc(c.code) + '" data-app="' + esc(a.id) + '" aria-label="' + esc(c.nameAR + ' · ' + a.nameAR) + '"' + (con ? '' : ' disabled')) + '</div>').join('') + '</div>'; }).join('');
+  box.classList.toggle('is-off', !d.on);
+  box.innerHTML = head(sub, sw(d.on, 'data-co="*" aria-label="إشعارات الجوال"', true)) +
+    (P.ready ? '' : '<p class="pz-warn">الإرسال لم يُهيأ بعد على الخادم؛ يعمل بعد تشغيل pushSetup مرة واحدة من محرر Apps Script.</p>') +
+    '<div class="pz-stats"><span class="pz-chip"><b>' + P.devices + '</b> جهاز مفعّل</span><span class="pz-chip"><b>' + P.people + '</b> موظف</span></div>' +
+    '<div class="pz-cos">' + cards + '</div>' +
+    '<div class="pz-nums"><label class="pz-num"><span>الحد لكل موظف في الساعة</span><input class="inp" type="number" inputmode="numeric" min="1" max="60" id="pzMax" value="' + esc(d.max) + '"></label>' +
+    '<label class="pz-num"><span>يبقى الإشعار صالحاً (ساعة)</span><input class="inp" type="number" inputmode="numeric" min="1" max="72" id="pzHours" value="' + esc(d.hours) + '"></label></div>' +
+    '<div class="pz-foot"><span class="u-muted" id="pzState">' + (pzDirty() ? 'تعديلات لم تُحفظ' : '') + '</span><button type="button" class="btn btn-primary" data-act="pzSave" id="pzSaveBtn"' + (pzDirty() ? '' : ' disabled') + '>' + ic('save') + '<span>حفظ</span></button></div>';
+  if (!box.dataset.bound) { box.dataset.bound = '1'; box.addEventListener('input', e => { if (!S.pushDraft) return; if (e.target.id === 'pzMax') S.pushDraft.max = e.target.value; else if (e.target.id === 'pzHours') S.pushDraft.hours = e.target.value; else return; pzMarkDirty(); }); }
+}
+function pzMarkDirty() { const on = pzDirty(); const b = $('#pzSaveBtn'), st = $('#pzState'); if (b) b.disabled = !on; if (st) st.textContent = on ? 'تعديلات لم تُحفظ' : ''; }
+function pzToggle(el) {
+  const d = S.pushDraft; if (!d) return;
+  const co = el.dataset.co, app = el.dataset.app;
+  if (co === '*') d.on = !d.on;
+  else { const m = d.matrix[co] = d.matrix[co] || { on: true, apps: {} }; m.apps = m.apps || {};
+    if (app) m.apps[app] = !pzIs(co, app); else m.on = !pzIs(co); }
+  renderPush();
+}
+async function pzSave(btn) {
+  const d = S.pushDraft, max = Math.round(Number(d.max)), hours = Math.round(Number(d.hours));
+  const bad = !(max >= 1 && max <= 60) ? 'الحد لكل موظف في الساعة: من 1 إلى 60.' : !(hours >= 1 && hours <= 72) ? 'مدة صلاحية الإشعار: من 1 إلى 72 ساعة.' : '';
+  const fail = msg => openModal({ title: ic('info') + '<span>لم تُحفظ إعدادات الإشعارات</span>', body: '<p>' + esc(msg) + '</p><p class="u-muted">تعديلاتك ما زالت في الصفحة.</p>', foot: '<button class="btn btn-primary" data-act="closeModal">' + ic('check') + '<span>حسناً</span></button>' });
+  if (bad) return fail(bad);
+  setLoading(btn, true);
+  try { const r = await api('admin_savePush', { on: !!d.on, matrix: d.matrix, max: max, hours: hours }); S.push = r; S.pushDraft = pzClone(r); renderPush(); toast('حُفظت إعدادات الإشعارات', 'ok'); }
+  catch (c) { if (c !== '__handled') fail(c === 'ERR_NETWORK' ? 'تعذّر الاتصال بالخادم. لم يُحفظ شيء؛ اضغط «حفظ» مرة أخرى.' : t(I18N.ar[c] ? c : 'ERR_SERVER')); }
+  finally { setLoading($('#pzSaveBtn'), false); pzMarkDirty(); }
 }
 
 async function saveSettings(e) {
@@ -4609,6 +4747,10 @@ const ACTIONS = {
   launch: el => launchApp(el),
   svToggle: el => svToggle(el),
   installApp: () => { closeMenu(); openInstall(); },
+  pushOpen: () => { closeMenu(); try { window.top.postMessage({ siwar: 'pushOpen', lang: S.lang }, SHELL); } catch (e) {} },
+  pzToggle: el => pzToggle(el),
+  pzSave: el => pzSave(el),
+  pzReload: () => { S.push = null; renderPush(); },
   closeProgView: () => closeProgView(),
   copyTemp: el => { const v = $('#tempPw').textContent; try { navigator.clipboard.writeText(v).then(() => toast(t('copied'), 'ok')); } catch (e) { toast(v, 'info'); } },
   tab: el => switchTab(el.dataset.tab),

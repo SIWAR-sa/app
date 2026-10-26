@@ -16,6 +16,8 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://script.google.com">
 <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
 <script src="config.js"></script>
 <style>
 :root{--bg:#FDFAF5;--bg2:#F7EEE4;--text:#3F3A37;--muted:#6F6761;--gold:#C2923F;--gold-l:#E3B66D;--pink:#E2A6A4;--line:#EADFD1;
@@ -121,6 +123,39 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
 #net{position:fixed;left:50%;top:calc(var(--top) + 10px);z-index:50;transform:translate(-50%,-80px);display:flex;align-items:center;gap:8px;height:36px;padding:0 16px;border-radius:999px;background:rgba(16,26,46,.94);color:#F6E6C4;font-size:13.5px;font-weight:600;box-shadow:0 10px 26px -10px rgba(0,0,0,.5);transition:transform .3s cubic-bezier(.2,.8,.2,1);pointer-events:none}
 #net.on{transform:translate(-50%,0)}
 #net i{width:8px;height:8px;border-radius:50%;background:#E2A6A4}
+/* إشعارات الجوال */
+#push{position:fixed;inset:0;z-index:45;display:grid;align-items:end;justify-items:center;background:rgba(43,37,34,.34);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+@media (min-width:700px){#push{align-items:center}}
+.pz{position:relative;width:min(440px,100%);margin:0 0 calc(10px + var(--bottom));padding:30px 24px 20px;border-radius:28px;text-align:center;overflow:hidden;
+  background:linear-gradient(180deg,#FFFEFB 0%,#FBF5EC 100%) padding-box,linear-gradient(150deg,#F6E2BA,#E3B66D 28%,#FFF6E2 52%,#D7A657 76%,#F3DDB0) border-box;border:1.5px solid transparent;
+  box-shadow:0 30px 70px -20px rgba(43,37,34,.45),0 1px 0 #fff inset;animation:up .38s cubic-bezier(.2,.8,.2,1)}
+@media (min-width:700px){.pz{margin:0}}
+.pz::before{content:"";position:absolute;left:50%;top:-120px;width:340px;height:240px;margin-left:-170px;border-radius:50%;background:radial-gradient(closest-side,rgba(243,213,142,.35),transparent);pointer-events:none}
+.pz-x{position:absolute;top:12px;inset-inline-end:12px;width:36px;height:36px;border:0;border-radius:50%;background:rgba(63,58,55,.06);color:var(--muted);font-size:20px;line-height:1;cursor:pointer}
+.pz-med{position:relative;width:92px;height:92px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 50% 30%,#FFFFFF,#FBEFD8 60%,#F0D49E);box-shadow:inset 0 0 0 1px rgba(194,146,63,.45),inset 0 -6px 14px rgba(194,146,63,.22),0 18px 34px -16px rgba(140,101,36,.7)}
+.pz-med svg{width:42px;height:42px;stroke:#A87B2F;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.pz-med i{position:absolute;top:16px;inset-inline-end:16px;width:14px;height:14px;border-radius:50%;border:2px solid #FFFDF8;background:#B9B0A8}
+.pz[data-st="on"] .pz-med i{background:#4E9A63;box-shadow:0 0 0 4px rgba(78,154,99,.16)}
+.pz[data-st="blocked"] .pz-med i,.pz[data-st="err"] .pz-med i{background:#C0574F}
+.pz[data-st="on"] .pz-med svg{animation:ring 2.4s ease-in-out 1}
+@keyframes ring{0%,60%,100%{transform:none}10%{transform:rotate(14deg)}20%{transform:rotate(-12deg)}30%{transform:rotate(8deg)}40%{transform:rotate(-5deg)}}
+.pz h1{margin:0;font-size:20px;font-weight:700}
+.pz-chip{display:inline-flex;align-items:center;gap:7px;height:30px;margin:10px 0 0;padding:0 14px;border-radius:999px;font-size:13px;font-weight:600;background:#F2EDE7;color:var(--muted)}
+.pz-chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.pz[data-st="on"] .pz-chip{background:#E7F1E9;color:#3E6B4A}
+.pz[data-st="blocked"] .pz-chip,.pz[data-st="err"] .pz-chip{background:#FBE6E3;color:#9A5A57}
+.pz p{margin:14px 0 0;color:var(--muted);font-size:14px;line-height:1.85}
+.pz .steps{margin-top:14px}
+.pz .btn{margin-top:18px;display:flex;align-items:center;justify-content:center;gap:10px}
+.pz .btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pz .btn[disabled]{opacity:.7;cursor:default}
+.pz .btn .spin{width:18px;height:18px;border-radius:50%;border:2px solid rgba(63,58,55,.25);border-top-color:var(--text);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pz-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+.pz-note{margin-top:12px!important;padding:10px 14px;border-radius:14px;background:#FBF0DC;color:#8C6524!important;font-size:13px!important}
+.pz-note.bad{background:#FBE6E3;color:#9A5A57!important}
+.pz-note.good{background:#E7F1E9;color:#3E6B4A!important}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -154,6 +189,16 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     <h1 id="iT">تثبيت تطبيق سوار</h1>
     <div id="iBody"></div>
     <button class="link" id="iLater">لاحقاً</button>
+  </div>
+</div>
+
+<div id="push" hidden>
+  <div class="pz" role="dialog" aria-modal="true" aria-labelledby="pzT" id="pzCard">
+    <button class="pz-x" id="pzX" aria-label="إغلاق">×</button>
+    <div class="pz-med"><svg viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.6 2H4.4z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/></svg><i></i></div>
+    <h1 id="pzT"></h1>
+    <span class="pz-chip" id="pzChip"></span>
+    <div id="pzBody"></div>
   </div>
 </div>
 
@@ -500,14 +545,16 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     if (!mine && !/\.googleusercontent\.com$|^https:\/\/script\.google\.com$/.test(e.origin)) return;
     var d = e.data || {}, ic = d.icon && typeof d.icon === 'object' ? d.icon : null, id = String(d.id || '');
     if (mine) {
-      if (d.siwar === 'portalReady') { hideSplash(); sendAlive(); return; }
+      if (d.siwar === 'portalReady') { hideSplash(); sendAlive(); portalOk = true; return; }
       if (d.siwar === 'prep') { onPrep(id || '_', String(d.name || ''), ic, d.rect && typeof d.rect === 'object' ? d.rect : null); return; }
       if (d.siwar === 'open' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onOpen(id || '_', String(d.url), String(d.name || ''), ic, String(d.src || '')); return; }
       if (d.siwar === 'show' && frames[id]) { onShow(id); return; }
       if (d.siwar === 'show') { toPortal({ siwar: 'relaunch', id: id }); return; }
       if (d.siwar === 'warm' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onWarm(id, String(d.url), String(d.name || ''), ic); return; }
       if (d.siwar === 'close') { if (id && frames[id] && !frames[id].ready) dropFrame(id); hideLayer(false); return; }
-      if (d.siwar === 'logout') { hideLayer(false); Object.keys(frames).forEach(dropFrame); kvClear(); curClear(); return; }
+      if (d.siwar === 'logout') { hideLayer(false); Object.keys(frames).forEach(dropFrame); kvClear(); curClear(); pushDropDevice(); return; }
+      if (d.siwar === 'pushOpen') { if (d.lang) applyLang(String(d.lang)); pushOpen(); return; }
+      if (d.siwar === 'pushRes') { pushGot(d); return; }
       if (d.siwar === 'reloadCur') { if ($('prog').className === 'on' && cur) relaunch(cur, false); return; }
     }
     // حفظ دخول سوار ولغتها في صفحة التطبيق (للإصدار السابق من سوار)
@@ -578,6 +625,155 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     e.preventDefault();
     if ($('prog').className === 'on' && cur) relaunch(cur, false);
     else toPortal({ siwar: 'refresh' });
+  });
+
+  /* ── إشعارات الجوال ──
+     الاشتراك هنا في غلاف التطبيق (الصفحة التي يتحكم بها عامل الخدمة)، وطلبات الحفظ تمر عبر سوار لأن الجلسة فيها.
+     رمز الجهاز وعنوان سوار يُحفظان في ذاكرة عامل الخدمة (siwar-push) ليطلب نصوص الإشعار عند وصوله. */
+  var portalOk = false, PUSHC = 'siwar-push', PUSHK = './__push', pzWait = {}, pzSeq = 0, pzInfo = null;
+  var PZT = {
+    ar: { title: 'إشعارات الجوال', on: 'مفعّلة على هذا الجهاز', off: 'غير مفعّلة على هذا الجهاز', blocked: 'محجوبة من المتصفح', unsup: 'غير متاحة في هذا المتصفح', ios: 'تحتاج تثبيت التطبيق',
+      offTxt: 'يصلك إشعار على هذا الجهاز حين يُطلب منك إجراء في أنظمة سوار، ويفتح الإشعار الطلب نفسه مباشرة.', enable: 'تفعيل الإشعارات',
+      onTxt: 'تصلك على هذا الجهاز الإشعارات التي تخصك وحدك.', test: 'إرسال إشعار تجريبي', disable: 'إيقاف على هذا الجهاز',
+      blockedTxt: 'سبق رفض الإشعارات لهذا التطبيق. افتح إعدادات الموقع في المتصفح (رمز القفل بجانب العنوان، أو إعدادات التطبيق على الجوال)، واسمح بالإشعارات، ثم ارجع هنا.', retry: 'تحقق مرة أخرى',
+      iosTxt: 'على الآيفون والآيباد تعمل الإشعارات بعد تثبيت تطبيق سوار على الشاشة الرئيسية (iOS 16.4 أو أحدث)، ثم فتحه من أيقونته.', ios1: 'افتح سوار في Safari', ios2: 'اضغط زر المشاركة ', ios3: 'اختر «إضافة إلى الشاشة الرئيسية» ثم افتح التطبيق من أيقونته',
+      unsupTxt: 'هذا المتصفح لا يدعم الإشعارات. استخدم Chrome أو Edge أو Safari بإصدار حديث.',
+      sent: 'أُرسل إشعار تجريبي، ويصل خلال ثوانٍ.', masterOff: 'إرسال الإشعارات متوقف الآن من إدارة سوار.', personOff: 'الإشعارات متوقفة لحسابك من إدارة سوار.', limited: 'وصلت للحد المسموح من الإشعارات في هذه الساعة.',
+      nokey: 'إرسال الإشعارات لم يُهيأ بعد في سوار.', nosess: 'سجّل الدخول إلى سوار أولاً.', fail: 'تعذّر إكمال العملية. تحقق من الاتصال ثم أعد المحاولة.', denied: 'لم يُسمح بالإشعارات.', close: 'إغلاق' },
+    en: { title: 'Phone notifications', on: 'On for this device', off: 'Off on this device', blocked: 'Blocked by the browser', unsup: 'Not available in this browser', ios: 'Needs the installed app',
+      offTxt: 'Get a notification on this device when an action is needed from you in SIWAR systems; tapping it opens the item directly.', enable: 'Turn on notifications',
+      onTxt: 'This device receives the notifications meant for you only.', test: 'Send a test notification', disable: 'Turn off on this device',
+      blockedTxt: 'Notifications were refused for this app. Open the site settings in your browser (the lock icon next to the address, or the app settings on your phone), allow notifications, then come back.', retry: 'Check again',
+      iosTxt: 'On iPhone and iPad, notifications work after you add the SIWAR app to the Home Screen (iOS 16.4 or later) and open it from its icon.', ios1: 'Open SIWAR in Safari', ios2: 'Tap the Share button ', ios3: 'Choose “Add to Home Screen”, then open the app from its icon',
+      unsupTxt: 'This browser does not support notifications. Use a recent Chrome, Edge or Safari.',
+      sent: 'A test notification was sent; it arrives within seconds.', masterOff: 'Sending notifications is turned off by SIWAR administration.', personOff: 'Notifications are turned off for your account by SIWAR administration.', limited: 'You reached the notification limit for this hour.',
+      nokey: 'Notifications are not set up in SIWAR yet.', nosess: 'Sign in to SIWAR first.', fail: 'Could not complete. Check the connection, then try again.', denied: 'Notifications were not allowed.', close: 'Close' }
+  };
+  function PT(k) { return (PZT[LANG] || PZT.ar)[k]; }
+  function pushApi(op, data) {
+    return new Promise(function (res) {
+      var rid = 'p' + (++pzSeq) + '_' + Date.now();
+      pzWait[rid] = res;
+      toPortal({ siwar: 'pushApi', rid: rid, op: op, data: data || {} });
+      setTimeout(function () { if (pzWait[rid]) { delete pzWait[rid]; res({ ok: false, code: 'ERR_NETWORK' }); } }, 30000);
+    });
+  }
+  function pushGot(d) { var f = pzWait[d.rid]; if (f) { delete pzWait[d.rid]; f(d); } }
+  function pushSupported() { return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; }
+  function pushCfg() { if (!window.caches) return Promise.resolve(null); return caches.open(PUSHC).then(function (c) { return c.match(PUSHK); }).then(function (r) { return r ? r.json() : null; }).catch(function () { return null; }); }
+  function pushCfgSet(v) { if (!window.caches) return Promise.resolve(); return caches.open(PUSHC).then(function (c) { return v ? c.put(PUSHK, new Response(JSON.stringify(v), { headers: { 'Content-Type': 'application/json' } })) : c.delete(PUSHK); }).catch(function () {}); }
+  function swReg() { return navigator.serviceWorker.getRegistration('./').then(function (r) { return r || navigator.serviceWorker.register('sw.js').then(function () { return navigator.serviceWorker.ready; }); }); }
+  function b64u(s) { s = String(s || '').replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; var b = atob(s), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; }
+  function sameKey(sub, key) { try { var a = new Uint8Array(sub.options.applicationServerKey), b = b64u(key); if (a.length !== b.length) return false; for (var i = 0; i < a.length; i++) if (a[i] !== b[i]) return false; return true; } catch (e) { return true; } }
+  // الحالة: ios (يحتاج التثبيت) · unsup · blocked · on · off
+  function pushState() {
+    if (iOS && !standalone) return Promise.resolve('ios');
+    if (!pushSupported()) return Promise.resolve('unsup');
+    if (Notification.permission === 'denied') return Promise.resolve('blocked');
+    return Promise.all([swReg().then(function (r) { return r.pushManager.getSubscription(); }).catch(function () { return null; }), pushCfg()]).then(function (a) {
+      return a[0] && a[1] && a[1].id && Notification.permission === 'granted' ? 'on' : 'off';
+    });
+  }
+  var svgBell = '<svg viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.6 2H4.4z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/></svg>';
+  var svgSend = '<svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2.5-6.5z"/><path d="M11.5 13.5L20 4"/></svg>';
+  function pzBtn(id, txt, svg, cls) { return '<button class="' + (cls || 'btn') + '" id="' + id + '">' + (svg || '') + '<span>' + txt + '</span></button>'; }
+  function pzRender(st, note, noteCls) {
+    $('pzCard').setAttribute('data-st', st);
+    $('pzT').textContent = PT('title'); $('pzX').setAttribute('aria-label', PT('close'));
+    $('pzChip').textContent = PT({ on: 'on', off: 'off', blocked: 'blocked', unsup: 'unsup', ios: 'ios', err: 'off' }[st]);
+    var b = $('pzBody'), n = note ? '<p class="pz-note' + (noteCls ? ' ' + noteCls : '') + '" role="status">' + note + '</p>' : '';
+    if (st === 'off' || st === 'err') b.innerHTML = '<p>' + PT('offTxt') + '</p>' + n + pzBtn('pzOn', PT('enable'), svgBell);
+    else if (st === 'on') b.innerHTML = '<p>' + PT('onTxt') + '</p>' + n + pzBtn('pzTest', PT('test'), svgSend) + '<div class="pz-row"><button class="link" id="pzOff">' + PT('disable') + '</button></div>';
+    else if (st === 'blocked') b.innerHTML = '<p>' + PT('blockedTxt') + '</p>' + n + pzBtn('pzRe', PT('retry'));
+    else if (st === 'ios') b.innerHTML = '<p>' + PT('iosTxt') + '</p><div class="steps">' + step('1', PT('ios1')) + step('2', PT('ios2') + svgShare) + step('3', PT('ios3')) + '</div>';
+    else b.innerHTML = '<p>' + PT('unsupTxt') + '</p>';
+    if ($('pzOn')) $('pzOn').onclick = pushEnable;
+    if ($('pzTest')) $('pzTest').onclick = pushTest;
+    if ($('pzOff')) $('pzOff').onclick = pushDisable;
+    if ($('pzRe')) $('pzRe').onclick = function () { pushState().then(function (s2) { pzRender(s2); }); };
+  }
+  function pzBusy(id, on) { var b = $(id); if (!b) return; b.disabled = on; var sp = b.querySelector('.spin'); if (on && !sp) { var i = document.createElement('i'); i.className = 'spin'; b.insertBefore(i, b.firstChild); } else if (!on && sp) sp.remove(); }
+  function pzCode(c) { return c === 'NO_SESSION' ? PT('nosess') : c === 'PUSH_NOT_READY' ? PT('nokey') : PT('fail'); }
+  function pushOpen() {
+    $('push').hidden = false; pzRender('off'); $('pzBody').innerHTML = '<p>&nbsp;</p>';
+    pushState().then(function (st) { pzRender(st); });
+    pzInfo = null; pushApi('info').then(function (r) { if (r.ok) pzInfo = r.data; });   // المفتاح العام جاهز قبل الضغط، فيبقى الطلب داخل لمسة المستخدم
+  }
+  $('pzX').onclick = function () { $('push').hidden = true; };
+  $('push').addEventListener('click', function (e) { if (e.target === $('push')) $('push').hidden = true; });
+  function pushEnable() {
+    pzBusy('pzOn', true);
+    var infoP = pzInfo ? Promise.resolve({ ok: true, data: pzInfo }) : pushApi('info');
+    var permP = Notification.permission === 'granted' ? Promise.resolve('granted') : Notification.requestPermission();
+    Promise.all([permP, infoP]).then(function (a) {
+      var perm = a[0], info = a[1];
+      if (perm === 'denied') { pzRender('blocked'); return; }
+      if (perm !== 'granted') { pzRender('off', PT('denied'), 'bad'); return; }
+      if (!info.ok) { pzRender('err', pzCode(info.code), 'bad'); return; }
+      if (!info.data.key) { pzRender('err', PT('nokey'), 'bad'); return; }
+      return swReg().then(function (reg) {
+        return reg.pushManager.getSubscription().then(function (old) {
+          if (old && !sameKey(old, info.data.key)) return old.unsubscribe().then(function () { return null; });
+          return old;
+        }).then(function (sub) { return sub || reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u(info.data.key) }); });
+      }).then(function (sub) {
+        return pushCfg().then(function (old) {
+          var j = sub.toJSON(), dev = (iOS ? 'iPhone' : /Android/.test(ua) ? 'Android' : 'Desktop') + ' · ' + (/Edg\//.test(ua) ? 'Edge' : /Chrome\//.test(ua) ? 'Chrome' : /Firefox\//.test(ua) ? 'Firefox' : /Safari\//.test(ua) ? 'Safari' : 'Browser');
+          return pushApi('sub', { sub: { endpoint: j.endpoint, keys: j.keys }, device: dev }).then(function (r) {
+            if (!r.ok) { pzRender('err', pzCode(r.code), 'bad'); return; }
+            return pushCfgSet({ url: PORTAL, id: r.data.id, tok: r.data.tok, lang: LANG }).then(function () {
+              if (old && old.id && old.id !== r.data.id) pushApi('unsub', { id: old.id });
+              pzRender('on', info.data.on === false ? PT('masterOff') : info.data.allowed === false ? PT('personOff') : '', info.data.on === false || info.data.allowed === false ? '' : 'good');
+            });
+          });
+        });
+      });
+    }).catch(function () { pzRender('err', PT('fail'), 'bad'); });
+  }
+  function pushTest() {
+    pzBusy('pzTest', true);
+    pushApi('test').then(function (r) {
+      var d = r.data || {};
+      if (!r.ok) pzRender('on', pzCode(r.code), 'bad');
+      else if (d.off) pzRender('on', PT('masterOff'));
+      else if (d.person) pzRender('on', PT('personOff'));
+      else if (d.limited) pzRender('on', PT('limited'));
+      else if (d.sent) pzRender('on', PT('sent'), 'good');
+      else pushState().then(function (s2) { pzRender(s2, s2 === 'on' ? PT('fail') : '', 'bad'); });
+    });
+  }
+  function pushDisable() {
+    pzBusy('pzOff', true);
+    pushCfg().then(function (cfg) {
+      var srv = cfg && cfg.id ? pushApi('unsub', { id: cfg.id }) : Promise.resolve({ ok: true });
+      return srv.then(function (r) {
+        if (!r.ok && cfg) dropDirect(cfg);
+        return swReg().then(function (reg) { return reg.pushManager.getSubscription(); }).then(function (s2) { return s2 && s2.unsubscribe(); }).catch(function () {}).then(function () { return pushCfgSet(null); });
+      });
+    }).then(function () { pzRender('off'); }, function () { pzRender('off'); });
+  }
+  // الخروج من سوار: يُحذف اشتراك هذا الجهاز برمزه (الجلسة انتهت)، فلا تصل إشعارات الحساب السابق لمن يستخدم الجهاز بعده
+  function dropDirect(cfg) { try { return fetch(cfg.url || PORTAL, { method: 'POST', credentials: 'omit', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'push_drop', id: cfg.id, tok: cfg.tok }) }).catch(function () {}); } catch (e) { return Promise.resolve(); } }
+  function pushDropDevice() {
+    pushCfg().then(function (cfg) {
+      if (!cfg || !cfg.id) return;
+      dropDirect(cfg);
+      pushCfgSet(null);
+      if (pushSupported()) swReg().then(function (reg) { return reg.pushManager.getSubscription(); }).then(function (s2) { return s2 && s2.unsubscribe(); }).catch(function () {});
+    });
+  }
+  // الضغط على الإشعار والتطبيق مفتوح: يُفتح النظام والصفحة فوراً بلا إعادة تحميل
+  if ('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', function (e) {
+    var d = e.data || {};
+    if (d.siwar !== 'deep') return;
+    var u; try { u = new URL(String(d.url || ''), location.href); } catch (x) { return; }
+    var id = u.searchParams.get('open') || '', go = cleanGo(u.searchParams.get('go') || '');
+    if (!portalOk || !/^[A-Za-z0-9_-]{1,40}$/.test(id)) { location.href = u.href; return; }
+    $('push').hidden = true;
+    if (frames[id]) dropFrame(id);
+    pStart(id, 'push'); markCur(id); curSave(id, go);
+    loaderShow('', null, null); showLayer();
+    toPortal({ siwar: 'relaunch', id: id, go: go });
   });
 
   /* ── التثبيت ── */
