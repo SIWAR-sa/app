@@ -2848,7 +2848,7 @@ function uPerson() {
   const pick = p.owner ? '' : '<label class="u-scope u-pick"><span>وظيفته:</span><select class="inp" data-uc="pProf"><option value="">' + esc(U_BYTITLE) + '</option>' + D.profiles.map(f => '<option value="' + esc(f.id) + '"' + (p.profileId === f.id ? ' selected' : '') + '>' + esc(f.nameAR) + '</option>').join('') + '</select></label>';
   const line = p.owner ? '<div class="u-like">المالك: كل الصلاحيات في كل الأنظمة دائماً، ولا يستطيع أحد تقليلها.</div>' : p.profile
     ? '<div class="u-like">' + (n ? 'وظيفته «' + esc(p.profile) + '»، ومختلف عنها في ' + (n === 1 ? 'نقطة واحدة' : n + ' نقاط') + ' <button class="btn btn-ghost btn-sm" data-u="reset" data-id="' + esc(p.id) + '">' + ic('undo') + '<span>اجعله مثل وظيفته</span></button>' : 'مثل باقي «' + esc(p.profile) + '» تماماً') + '</div>'
-    : '<div class="u-like u-like-grey">لا توجد وظيفة تطابق مسماه' + (p.title ? ' «' + esc(p.title) + '»' : '') + '. حدّد ما يستطيعه هنا، أو <button class="link-btn" data-u="newProfile" data-title="' + esc(p.title || '') + '">أنشئ وظيفة بهذا المسمى</button></div>';
+    : '';
   const cards = D.apps.map(a => {
     const e = p.access[a.id] || { on: false, caps: [], diff: {} }, d = uReg(a.id);
     const sw = '<label class="switch"><input type="checkbox" data-uc="pOn" data-app="' + esc(a.id) + '"' + (e.on ? ' checked' : '') + (me ? ' disabled' : '') + '><span></span></label>';
