@@ -1761,6 +1761,8 @@ function api(action, payload) {
         return resolve(res.data);
       }
       const code = (res && res.code) || 'ERR_SERVER';
+      // «مشغول» يعني أن الطلب لم يُنفَّذ أصلاً (القفل لم يُؤخذ): يُعاد بهدوء مرتين قبل إظهار الرسالة
+      if (code === 'ERR_BUSY' && (done.n = (done.n || 0) + 1) <= 2 && !DEMO) { busy(1); setTimeout(() => { (DIRECT_OK ? postApi(action, payload).then(done).catch(() => done({ ok: false, code: 'ERR_BUSY' })) : google.script.run.withSuccessHandler(done).withFailureHandler(() => done({ ok: false, code: 'ERR_NETWORK' })).api(action, payload || {}, S.token || '')); }, done.n * 2500); return; }
       if (S.token && (code === 'ERR_SESSION' || code === 'ERR_SUSPENDED') && action !== 'login') { sessionEnded(code); return reject('__handled'); }
       if (S.token && code === 'ERR_MUST_CHANGE') { if (S.user) S.user.mustChange = true; if (!$('#cpNew')) openChangePin(true); return reject('__handled'); }
       reject(code);
