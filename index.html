@@ -165,6 +165,25 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   var ua = navigator.userAgent || '';
   var iOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   var deferred = null, progUrl = '';
+  /* النظام المعروض الآن ومكانه داخله: يُحفظ في ذاكرة هذه النافذة، فإعادة التحميل تفتحه هو لا الرئيسية */
+  var CURK = 'siwar_cur';
+  function cleanGo(g) { g = String(g == null ? '' : g); return g.length <= 300 && !/[\s<>"'`\\]/.test(g) ? g : ''; }
+  function goOfUrl(u) { var m = /[?&]go=([^&#]*)/.exec(String(u || '')); if (!m) return ''; try { return cleanGo(decodeURIComponent(m[1])); } catch (e) { return ''; } }
+  function curSave(id, go) {
+    if (!/^[A-Za-z0-9_-]{1,40}$/.test(String(id || ''))) return;
+    try {
+      if (go == null) { var old = curLoad(); go = old && old.id === id ? old.go : ''; }
+      sessionStorage.setItem(CURK, JSON.stringify({ id: id, go: cleanGo(go), at: Date.now() }));
+    } catch (e) {}
+  }
+  function curLoad() {
+    try {
+      var v = JSON.parse(sessionStorage.getItem(CURK) || 'null');
+      if (!v || !/^[A-Za-z0-9_-]{1,40}$/.test(String(v.id || '')) || !(Date.now() - Number(v.at) < 6 * 3600000)) return null;
+      return { id: String(v.id), go: cleanGo(v.go) };
+    } catch (e) { return null; }
+  }
+  function curClear() { try { sessionStorage.removeItem(CURK); } catch (e) {} }
   /* النصوص بلغة سوار: تصل اللغة من سوار وتُحفظ على الجهاز */
   var TXT = {
     ar: { back: 'رجوع', ext: 'فتح في المتصفح', title: 'تثبيت تطبيق سوار', later: 'لاحقاً', prog: 'برنامج', noUrl: 'لم يُضبط رابط سوار في config.js',
@@ -210,6 +229,10 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
       var go = q.get('go') || '';
       if (go && go.length <= 300 && !/[\s<>"'`\\]/.test(go)) deep += '&go=' + encodeURIComponent(go);
       try { history.replaceState(null, '', location.pathname); } catch (e) {}
+    } else {
+      // إعادة تحميل الصفحة وهو داخل نظام: يُفتح النظام نفسه على الصفحة نفسها بدل الرئيسية
+      var rs = curLoad();
+      if (rs) deep = '&open=' + encodeURIComponent(rs.id) + (rs.go ? '&go=' + encodeURIComponent(rs.go) : '') + '&back=1';
     }
     f.src = 'portal.html?app=1' + deep;
     // شاشة تحميل واحدة: تبقى حتى تقول سوار إنها جاهزة (والحد الأقصى 12 ثانية)
@@ -359,7 +382,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     p.title = name || T('prog');
     p.allow = 'clipboard-read; clipboard-write; fullscreen; camera; microphone; geolocation';
     p.className = 'pf' + (cur === id ? ' cur' : '');
-    var o = { f: p, url: url, name: name, icon: icon, t: Date.now(), seen: warm ? 0 : Date.now(), tries: old ? old.tries : 0, n: ++seq, uf: uf };
+    var o = { f: p, url: url, name: name, icon: icon, t: Date.now(), seen: warm ? 0 : Date.now(), tries: old ? old.tries : 0, n: ++seq, uf: uf, go: goOfUrl(url) };
     if (warm) { o.seen = -o.n; pStart(id, 'warm'); }
     else if (!PJ[id]) pStart(id, 'open');
     frames[id] = o;
@@ -400,7 +423,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   function onPrep(id, name, icon, rect) {
     if (frames[id]) dropFrame(id);
     pStart(id, 'open');
-    markCur(id);
+    markCur(id); curSave(id);
     loaderShow(name, icon, rect);
     showLayer();
     if (offline()) loaderErr();
@@ -410,14 +433,14 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     progUrl = url;
     var j = PJ[id]; if (j) { j.s = src || ''; pMark(id, 'tix'); }
     var o = makeFrame(id, url, name, icon, false);
-    markCur(id);
+    markCur(id); curSave(id, o.go);
     stage(.42, .66);
     return o;
   }
   function onShow(id) {
     var o = frames[id];
     if (!o || Date.now() - o.t > FRAME_AGE) { if (o) dropFrame(id); toPortal({ siwar: 'relaunch', id: id }); return; }
-    markCur(id);
+    markCur(id); curSave(id, o.go);
     if (o.ready) { $('pload').className = 'pload gone'; pStart(id, 'show'); pEnd(id, 'ok'); }
     else { loaderShow(o.name, o.icon, null); stage(o.loaded ? .7 : .42, .9); }
     showLayer();
@@ -430,7 +453,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     var o = frames[cur];
     if (o && !o.ready && !o.loaded) dropFrame(cur);   // نظام لم يكتمل فتحه لا يبقى في الخلفية
     $('pload').className = 'pload gone';
-    cur = '';
+    cur = ''; curClear();
     for (var k in frames) frames[k].f.className = 'pf';
     syncPause();
     toPortal({ siwar: 'home' });   // سوار تجدد تذاكر الأنظمة الآن، فالانتقال لنظام آخر لا ينتظر طلباً جديداً
@@ -441,14 +464,14 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   function relaunch(id, force) {
     if (!force && Date.now() - relT < 1500) return; relT = Date.now();
     var o = frames[id];
-    var name = o ? o.name : $('pname').textContent, icon = o ? o.icon : null;
+    var name = o ? o.name : $('pname').textContent, icon = o ? o.icon : null, at = o ? o.go : (curLoad() || {}).go;
     if (o) dropFrame(id);
     pStart(id, 'relaunch');
-    markCur(id);
+    markCur(id); curSave(id, at || '');
     loaderShow(name, icon, null);
     showLayer();
     if (offline()) { loaderErr(); return; }
-    toPortal({ siwar: 'relaunch', id: id });
+    toPortal({ siwar: 'relaunch', id: id, go: at || '' });
   }
 
   $('back').onclick = function () { hideLayer(false); };
@@ -484,7 +507,8 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
       if (d.siwar === 'show') { toPortal({ siwar: 'relaunch', id: id }); return; }
       if (d.siwar === 'warm' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onWarm(id, String(d.url), String(d.name || ''), ic); return; }
       if (d.siwar === 'close') { if (id && frames[id] && !frames[id].ready) dropFrame(id); hideLayer(false); return; }
-      if (d.siwar === 'logout') { hideLayer(false); Object.keys(frames).forEach(dropFrame); kvClear(); return; }
+      if (d.siwar === 'logout') { hideLayer(false); Object.keys(frames).forEach(dropFrame); kvClear(); curClear(); return; }
+      if (d.siwar === 'reloadCur') { if ($('prog').className === 'on' && cur) relaunch(cur, false); return; }
     }
     // حفظ دخول سوار ولغتها في صفحة التطبيق (للإصدار السابق من سوار)
     if (d.siwar === 'storeGet') {
@@ -511,6 +535,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     else if (d.siwar === 'ready') markReady(fid);
     else if (d.siwar === 'close' || d.siwar === 'logout') { if (cur === fid) hideLayer(false); dropFrame(fid); }
     else if (d.siwar === 'reload' && cur === fid) relaunch(fid, false);
+    else if (d.siwar === 'at') { o.go = cleanGo(d.go); if (cur === fid && $('prog').className === 'on') curSave(fid, o.go); }
   });
   /* ذاكرة دائمة للأنظمة: كل نظام يحفظ نسخة شاشاته وكوده هنا (ذاكرة التطبيق تبقى بعد إغلاقه)،
      لأن ذاكرة إطار النظام نفسه تُمسح مع كل إغلاق على أندرويد. المفاتيح منفصلة لكل نظام، وتُمسح عند الخروج */

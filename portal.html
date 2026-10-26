@@ -1722,7 +1722,7 @@ const EXEC_URL = STATIC ? String(window.SIWAR_PORTAL) : '__EXEC_URL__';
 const QS = (() => { try { return new URLSearchParams(location.search); } catch (e) { return { get: () => null }; } })();
 
 let OPEN = (() => {
-  if (STATIC) { const a = QS.get('open') || '', g = QS.get('go') || ''; return /^[A-Za-z0-9_-]{1,40}$/.test(a) ? { app: a, go: g.length <= 300 && !/[\s<>"'`\\]/.test(g) ? g : '' } : null; }
+  if (STATIC) { const a = QS.get('open') || '', g = QS.get('go') || ''; return /^[A-Za-z0-9_-]{1,40}$/.test(a) ? { app: a, go: g.length <= 300 && !/[\s<>"'`\\]/.test(g) ? g : '', back: QS.get('back') === '1' } : null; }
   const v = '__OPEN__'; return v && typeof v === 'object' && v.app ? v : null;
 })();
 
@@ -1926,7 +1926,8 @@ async function boot() {
   }
 
   // الصفحة الرئيسية من آخر جلسة فوراً، والتأكد من الخادم في الخلفية
-  const snap = S.token && !OPEN && !PAIR ? snapGet() : null;
+  // إعادة تحميل التطبيق وهو داخل نظام (back=1): الرئيسية من آخر جلسة فوراً ثم يُفتح النظام نفسه مباشرة
+  const snap = S.token && (!OPEN || OPEN.back) && !PAIR ? snapGet() : null;
   if (snap) {
     S.fromSnap = true;
     enterSession(snap, false);
@@ -1944,7 +1945,7 @@ async function boot() {
       snapSet(d.session); S.fromSnap = false;
       S.user = d.session.user; S.apps = d.session.apps || [];
       renderUserChrome(); if (S.screen === 'home') renderHome();
-      if (S.user.mustChange) openChangePin(true); else afterHome();
+      if (S.user.mustChange) openChangePin(true); else { afterHome(); if (OPEN) openDeep(); }
     }).catch(c => { S.fromSnap = false; if (c !== '__handled') afterHome(); });
     return;
   }
@@ -2486,6 +2487,8 @@ async function openDeep() {
   const o = OPEN; OPEN = null;
   if (!o) return;
   const app = S.apps.find(a => a.id === o.app && !a.locked);
+  // قائمة الأنظمة من آخر جلسة: يُعاد التحقق بعد وصول الجلسة من الخادم
+  if (!app && S.fromSnap) { OPEN = o; return; }
   if (!app) { toast(t('lockedTip'), 'err'); return; }
   const stub = { dataset: { id: app.id, go: o.go || '' }, classList: { add() {}, remove() {}, contains() { return false; } } };
   if (S.inApp) return launchInApp(stub, app);
@@ -2541,7 +2544,7 @@ function takeTicket(id) {
 }
 async function launchInApp(btn, app) {
   const id = btn.dataset.id, go = btn.dataset.go || '';
-  S.lastLaunch = { btn: btn, app: app, id: id, go: go };
+  S.lastLaunch = { btn: btn, app: app, id: id, go: go }; S.sysOn = true;
   try { localStorage.setItem('sp_last_app', id); } catch (e) {}
   const icon = appIconMsg(app), name = L(app, 'name');
 
@@ -2612,6 +2615,7 @@ function end(){if(y0==null)return;y0=null;if(d<TH){hide();return}go()}
 function go(){if(busy)return;busy=true;var u=ui();u.style.transition='transform .2s ease,opacity .2s ease';u.style.opacity='1';u.style.transform='translateY(30px)';u.firstChild.style.animation='siwarPtrSpin .75s linear infinite';var fin=false,done=function(){if(fin)return;fin=true;busy=false;hide()};setTimeout(done,9000);try{run(done)}catch(x){done()}}
 addEventListener('keydown',function(e){if(e.key==='F5'||((e.ctrlKey||e.metaKey)&&!e.shiftKey&&(e.key==='r'||e.key==='R'||e.key==='ق'))){e.preventDefault();go()}});addEventListener('touchend',end,{passive:true});addEventListener('touchcancel',function(){y0=null;hide()},{passive:true});return go}
 async function ptrRefresh(done) {
+  if (S.inApp && S.sysOn) { try { window.top.postMessage({ siwar: 'reloadCur' }, '*'); } catch (e) {} done(); return; }
   if (S.screen !== 'home' || !S.token || document.querySelector('.modal.open')) { done(); return; }
   const pend = loadPending(true);
   try {
@@ -2622,9 +2626,10 @@ async function ptrRefresh(done) {
   pend.catch(() => {});
 }
 
-async function relaunchLast(id) {
+async function relaunchLast(id, at) {
   const app = id ? S.apps.find(a => a.id === id && !a.locked) : (S.lastLaunch && S.lastLaunch.app);
-  const go = !id || (S.lastLaunch && S.lastLaunch.id === id) ? (S.lastLaunch && S.lastLaunch.go) || '' : '';
+  const here = typeof at === 'string' && at.length <= 300 && !/[\s<>"'`\\]/.test(at) ? at : '';
+  const go = here || (!id || (S.lastLaunch && S.lastLaunch.id === id) ? (S.lastLaunch && S.lastLaunch.go) || '' : '');
   if (!app || !S.token) { try { window.top.postMessage({ siwar: 'close' }, '*'); } catch (e) {} return; }
   const fake = { fresh: true, classList: { add() {}, remove() {} }, dataset: { id: app.id, go: go } };
   launchInApp(fake, app);
@@ -2633,7 +2638,7 @@ function setupInApp() {
   if (!SHELL || setupInApp.done) return;
   setupInApp.done = true;
   const go = SIWAR_PTR(ptrRefresh);
-  window.addEventListener('message', e => { if (e.origin === SHELL && e.source === window.top && e.data) { if (e.data.siwar === 'relaunch') relaunchLast(String(e.data.id || '')); else if (e.data.siwar === 'refresh') go(); else if (e.data.siwar === 'alive') { S.alive = {}; (e.data.ids || []).forEach(x => { S.alive[x] = 1; }); } else if (e.data.siwar === 'home') prefetchTickets(false); else if (e.data.siwar === 'perf') perfSend(e.data.rows); } });
+  window.addEventListener('message', e => { if (e.origin === SHELL && e.source === window.top && e.data) { if (e.data.siwar === 'relaunch') relaunchLast(String(e.data.id || ''), e.data.go); else if (e.data.siwar === 'refresh') go(); else if (e.data.siwar === 'alive') { S.alive = {}; (e.data.ids || []).forEach(x => { S.alive[x] = 1; }); } else if (e.data.siwar === 'home') { S.sysOn = false; prefetchTickets(false); } else if (e.data.siwar === 'perf') perfSend(e.data.rows); } });
 }
 
 function openInstall() {
@@ -2679,7 +2684,7 @@ function uBar() {
   $('#uSaveN').textContent = n === 1 ? 'تعديل واحد لم يُحفظ' : n === 2 ? 'تعديلان لم يُحفظا' : n + ' تعديلات لم تُحفظ';
 }
 function uDiscard() { if (U.base) U.d = U.base; U.base = null; U.dirty.clear(); U.draft = null; uBar(); uRender(); }
-const U_OPNAME = { personRole: 'دور موظف', personCopy: 'نسخ صلاحيات', roleSave: 'حفظ دور', roleArchive: 'أرشفة دور', roleDelete: 'حذف دور', person: 'صلاحيات موظف', personInfo: 'بيانات موظف', personProfile: 'وظيفة موظف', personRest: 'يوم الراحة', personTitle: 'مسمى موظف', setting: 'إعداد', shared: 'إعداد مشترك' };
+const U_OPNAME = { personRole: 'دور موظف', personCopy: 'نسخ صلاحيات', roleSave: 'حفظ دور', roleArchive: 'أرشفة دور', roleDelete: 'حذف دور', person: 'صلاحيات موظف', personInfo: 'بيانات موظف', personProfile: 'وظيفة موظف', personRest: 'يوم الراحة', personTitle: 'مسمى موظف', personLang: 'لغة الإيميلات', setting: 'إعداد', shared: 'إعداد مشترك' };
 function uSaveFail(code, op, ops, det) {
   const o = op >= 0 && ops ? ops[op] : null, p = o && o.personId ? U.d.people.find(x => x.id === o.personId) : null;
   if (det && (det.q || det.msg)) {
@@ -2782,6 +2787,7 @@ function uHome() {
     '<button class="link-btn" data-u="showIds" data-ids="' + esc(x.ids.join(',')) + '">عرضهم</button>'));
   if (!D.people.some(p => p.source === 'jisr')) todo.unshift(row('fresh', 'بيانات الموظفين لم تُنقل من كوادر بعد', '<button class="link-btn" data-u="srcKawader">نقلها الآن</button>'));
   else if (!D.people.some(p => (p.restDays || []).length)) todo.unshift(row('fresh', 'أيام الراحة لم تُنقل من التحليلات بعد', '<button class="link-btn" data-u="srcRest">نقلها الآن</button>'));
+  if (D.people.length && !D.people.some(p => p.mailLang)) todo.unshift(row('fresh', 'لغة الإيميلات لم تُنقل من الأنظمة بعد', '<button class="link-btn" data-u="srcLang">نقلها الآن</button>'));
   const undeclared = D.apps.filter(a => !uReg(a.id)).length;
   if (undeclared) todo.push(row('nomail', undeclared + ' من الأنظمة لم تربط إعداداتها بسوار بعد', '<button class="link-btn" data-unav="systems">عرضها</button>'));
   todo.push(row('nomail', 'المراجعة الدورية للصلاحيات', '<button class="link-btn" data-unav="review">فتح</button>'));
@@ -2827,12 +2833,13 @@ function uPerson() {
     (p.email && !p.owner && !me && !uLeftP(p) ? '<button class="btn btn-primary btn-sm" data-u="pInvite" data-pid="' + esc(p.id) + '">' + ic('send') + '<span>إرسال دعوة</span></button>' : '') + (p.owner || me ? '' : p.stopped ? '<button class="btn btn-ghost btn-sm" data-u="pResume">' + ic('check') + '<span>إعادة تفعيل</span></button>' : '<button class="btn btn-ghost btn-sm" data-u="pStop">' + ic('lock') + '<span>إيقاف في كل الأنظمة</span></button>') + '</div>';
   const rd = p.restDays || [];
   const hasAcct = !!p.userId;
-  const info = p.owner ? '' : '<section class="panel-box u-work u-info"><div class="u-q"><span class="u-q-t">الاسم</span><span class="u-q-v"><input class="inp" data-uc="pInfo" data-f="name" maxlength="80" value="' + esc(p.name || '') + '"' + (me ? ' disabled' : '') + '></span></div>' +
+  const langRow = '<div class="u-q"><span class="u-q-t">لغة الإيميلات</span><span class="u-q-v"><span class="seg" data-plang="1">' + [['ar', 'العربية'], ['en', 'English']].map(l => '<button type="button" class="seg-btn' + (p.mailLang === l[0] ? ' on' : '') + '" data-u="pLang" data-l="' + l[0] + '">' + l[1] + '</button>').join('') + '</span></span></div>';
+  const info = p.owner ? '<section class="panel-box u-work u-info">' + langRow + '</section>' : '<section class="panel-box u-work u-info"><div class="u-q"><span class="u-q-t">الاسم</span><span class="u-q-v"><input class="inp" data-uc="pInfo" data-f="name" maxlength="80" value="' + esc(p.name || '') + '"' + (me ? ' disabled' : '') + '></span></div>' +
     '<div class="u-q"><span class="u-q-t">الاسم بالإنجليزية</span><span class="u-q-v"><input class="inp" dir="ltr" data-uc="pInfo" data-f="nameEN" maxlength="80" value="' + esc(p.nameEN || '') + '"' + (me ? ' disabled' : '') + '></span></div>' +
     '<div class="u-q"><span class="u-q-t">الشركة</span><span class="u-q-v"><select class="inp" data-uc="pInfo" data-f="company"' + (me ? ' disabled' : '') + '><option value="">—</option>' + ((D.shared || {}).companies || []).map(c => '<option value="' + esc(c.code) + '"' + (p.company === c.code ? ' selected' : '') + '>' + esc(c.nameAR) + '</option>').join('') + '</select></span></div>' +
     '<div class="u-q"><span class="u-q-t">الإدارة</span><span class="u-q-v"><input class="inp" list="uDeptL" data-uc="pInfo" data-f="dept" maxlength="80" value="' + esc(p.dept || '') + '"' + (me ? ' disabled' : '') + '><datalist id="uDeptL">' + Array.from(new Set(D.people.map(x => x.dept).filter(Boolean))).sort().map(x => '<option value="' + esc(x) + '">').join('') + '</datalist></span></div>' +
     '<div class="u-q"><span class="u-q-t">القسم</span><span class="u-q-v"><input class="inp" list="uSecL" data-uc="pInfo" data-f="section" maxlength="80" value="' + esc(p.section || '') + '"' + (me ? ' disabled' : '') + '><datalist id="uSecL">' + Array.from(new Set(D.people.map(x => x.section).filter(Boolean))).sort().map(x => '<option value="' + esc(x) + '">').join('') + '</datalist></span></div>' +
-    '<div class="u-q"><span class="u-q-t">البريد الإلكتروني</span><span class="u-q-v"><input class="inp" dir="ltr" type="email" data-uc="pInfo" data-f="email" maxlength="120" autocapitalize="none" spellcheck="false" value="' + esc(p.email || '') + '"' + (me || hasAcct ? ' disabled' : '') + '></span></div>' +
+    '<div class="u-q"><span class="u-q-t">البريد الإلكتروني</span><span class="u-q-v"><input class="inp" dir="ltr" type="email" data-uc="pInfo" data-f="email" maxlength="120" autocapitalize="none" spellcheck="false" value="' + esc(p.email || '') + '"' + (me || hasAcct ? ' disabled' : '') + '></span></div>' + langRow +
     (hasAcct ? '<p class="u-muted u-note">له حساب في سوار؛ يتغير بريده من «تعديل الحساب».</p>' : '') + '</section>';
   const work = '<section class="panel-box u-work"><div class="u-q"><span class="u-q-t">يوم الراحة الأسبوعي</span><span class="u-days" data-prest="1">' + U_DAYS.map((n, i) => '<button class="seg-btn' + (rd.indexOf(i) >= 0 ? ' on' : '') + '" data-u="pRest" data-i="' + i + '"' + (me && !p.owner ? ' disabled' : '') + '>' + n + '</button>').join('') + '</span></div>' +
     (p.owner ? '' : '<div class="u-q"><span class="u-q-t">المسمى الوظيفي</span><span class="u-q-v"><select class="inp" data-uc="pTitle"' + (me ? ' disabled' : '') + '>' + uTitleOpts(p.title) + '</select></span></div>') + (p.owner ? '' : '<div class="u-q"><span class="u-q-t">وظيفته</span><span class="u-q-v"><select class="inp" data-uc="pProf"' + (me ? ' disabled' : '') + '><option value="">' + esc(U_BYTITLE) + '</option>' + D.profiles.map(f => '<option value="' + esc(f.id) + '"' + (p.profileId === f.id ? ' selected' : '') + '>' + esc(f.nameAR) + '</option>').join('') + '</select></span></div>') + (p.owner ? '' : uBundleSel(p, me)) + '</section>';
@@ -3100,7 +3107,10 @@ async function uSrc(action, title) {
   try {
     const r = await api(action, { apply: false }), out = $('#uSrcOut'); if (!out) return;
     if (!r.ok) { out.innerHTML = '<p class="u-err">' + esc(t(r.code || 'ERR_SERVER')) + '</p>'; return; }
-    if (action === 'u_importRestDays') out.innerHTML = '<div class="u-prev"><span><b>' + r.matched + '</b> موظفاً طابقنا يوم راحته</span><span><b>' + r.missing + '</b> لم نجد مطابقاً</span></div>' + (r.sampleMissing.length ? '<p class="u-muted">لم يطابَق: ' + esc(r.sampleMissing.join('، ')) + '</p>' : '');
+    if (action === 'u_importMailLang') { const c = r.counts; out.innerHTML = '<div class="u-prev"><span><b>' + r.fill + '</b> موظفاً ستُحدَّد لغتهم</span><span><b>' + c.en + '</b> بالإنجليزية</span><span><b>' + c.def + '</b> بالعربية لعدم وجود لغة لهم في أي نظام</span></div>' +
+      '<p class="u-muted">المصدر: مهام ' + c.tasks + ' · كوادر ' + c.kawader + ' · مخازن ' + c.stores + ' · التحليلات ' + c.analysis + '. عند الاختلاف تُعتمد لغته في مهام.</p>' +
+      (r.nConflicts ? '<p class="u-muted">اختلفت الأنظمة في ' + r.nConflicts + ': ' + esc(r.conflicts.join('؛ ')) + '</p>' : '') + (r.skipped.length ? '<p class="u-err">لم تُقرأ: ' + esc(r.skipped.join('، ')) + '</p>' : ''); }
+    else if (action === 'u_importRestDays') out.innerHTML = '<div class="u-prev"><span><b>' + r.matched + '</b> موظفاً طابقنا يوم راحته</span><span><b>' + r.missing + '</b> لم نجد مطابقاً</span></div>' + (r.sampleMissing.length ? '<p class="u-muted">لم يطابَق: ' + esc(r.sampleMissing.join('، ')) + '</p>' : '');
     else { const c = r.counts, sm = r.sample; out.innerHTML = '<div class="u-prev"><span><b>' + c.fresh + '</b> جديد</span><span><b>' + c.changed + '</b> تغيّرت بياناتهم</span><span><b>' + c.left + '</b> غادروا</span><span><b>' + c.same + '</b> بلا تغيير</span></div>' +
       (sm.left.length ? '<p class="u-err">سيُوقف دخول من غادر في كل الأنظمة: ' + esc(sm.left.join('، ')) + (c.left > sm.left.length ? '…' : '') + '</p>' : '') + '<p class="u-muted">لا تُنقل الرواتب ولا أرقام الإقامة.</p>'; }
     $('#uSrcApply').disabled = false;
@@ -3108,7 +3118,7 @@ async function uSrc(action, title) {
 }
 async function uSrcApply() {
   $('#uSrcApply').disabled = true;
-  try { const r = await api(U.src, { apply: true }); closeModal(true); toast(U.src === 'u_importRestDays' ? 'نُقلت أيام الراحة لـ ' + r.matched + ' موظفاً' : 'نُقلت البيانات: ' + r.counts.fresh + ' جديد · ' + r.counts.changed + ' تغيّر', 'ok'); uFlushSoon(); uLoad(); }
+  try { const r = await api(U.src, { apply: true }); closeModal(true); toast(U.src === 'u_importMailLang' ? 'حُدّدت لغة الإيميلات لـ ' + r.fill + ' موظفاً' : U.src === 'u_importRestDays' ? 'نُقلت أيام الراحة لـ ' + r.matched + ' موظفاً' : 'نُقلت البيانات: ' + r.counts.fresh + ' جديد · ' + r.counts.changed + ' تغيّر', 'ok'); uFlushSoon(); uLoad(); }
   catch (c) { showErr(c); }
 }
 
@@ -3664,12 +3674,19 @@ function uOnClick(el, e) {
   if (k === 'import') return uOpenImport();
   if (k === 'srcKawader') return uSrc('u_importKawader', 'نقل بيانات الموظفين من كوادر');
   if (k === 'srcRest') return uSrc('u_importRestDays', 'نقل أيام الراحة من التحليلات');
+  if (k === 'srcLang') return uSrc('u_importMailLang', 'نقل لغة الإيميلات من الأنظمة');
   if (k === 'srcApply') return uSrcApply();
   if (k === 'pRest') {
     const p = D.people.find(x => x.id === U.id); el.classList.toggle('on');
     if (!U.base) U.base = JSON.parse(JSON.stringify(U.d));
     p.restDays = $$('[data-prest] .seg-btn').map((b, i) => b.classList.contains('on') ? i : -1).filter(i => i >= 0);
     return uMark('pr:' + p.id, { t: 'personRest', personId: p.id, restDays: p.restDays });
+  }
+  if (k === 'pLang') {
+    const p = D.people.find(x => x.id === U.id);
+    if (!U.base) U.base = JSON.parse(JSON.stringify(U.d));
+    p.mailLang = el.dataset.l; $$('[data-plang] .seg-btn').forEach(b => b.classList.toggle('on', b === el));
+    return uMark('pl:' + p.id, { t: 'personLang', personId: p.id, lang: p.mailLang });
   }
   if (k === 'pStop' || k === 'pResume') {
     const p = D.people.find(x => x.id === U.id), stop = k === 'pStop';
