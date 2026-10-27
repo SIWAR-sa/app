@@ -1167,6 +1167,107 @@ tr.is-off .mx-user { opacity: .5; }
 .pz-foot .u-muted { font-size: 13px; }
 .pz-warn { margin: 14px 0 0; padding: 10px 14px; border-radius: 14px; background: #FBF0DC; color: #8C6524; font-size: 13px; }
 @media (max-width: 720px) { .pz-head { flex-wrap: wrap; } .pz-cos { grid-template-columns: 1fr; } .pz-foot .btn { width: 100%; justify-content: center; } }
+/* ===== الهيكل التنظيمي (@95) ===== */
+.og { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 18px; align-items: start; }
+.og-side { position: sticky; top: 84px; padding: 16px; border-radius: var(--radius-lg); background: linear-gradient(170deg, rgba(255,255,255,.9), rgba(251,230,227,.55)); border: 1px solid var(--border); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 8px; }
+.og-side h3 { font-size: 14px; color: var(--muted); font-weight: 700; margin: 2px 4px 2px; }
+.og-dl { display: flex; flex-direction: column; gap: 8px; }
+.og-di { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; padding: 11px 14px; border-radius: 14px; background: var(--surface); border: 1px solid var(--border-strong); font-weight: 700; font-size: 15px; color: var(--text); text-align: start; box-shadow: 0 4px 10px rgba(110,98,90,.06); transition: transform .15s, box-shadow .15s; }
+.og-di:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(110,98,90,.12); }
+.og-di b { font-weight: 600; font-size: 13px; color: var(--faint); }
+.og-di.on { background: linear-gradient(145deg, #3A332E, #221E1B); color: #fff; border-color: transparent; box-shadow: 0 12px 24px rgba(33,29,26,.28), inset 0 1px 0 rgba(255,255,255,.1); }
+.og-di.on b { color: var(--gold); }
+.og-di.og-un { border-style: dashed; color: #9A5A57; }
+.og-di.og-un.on { color: #fff; }
+.og-add { justify-content: center; margin-top: 4px; }
+.og-main { min-width: 0; padding: 22px 24px; border-radius: var(--radius-lg); background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow); }
+.og-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+.og-top h2 { font-size: 24px; margin: 0; }
+.og-en { font-size: 13px; }
+.og-co { margin-inline-start: auto; }
+.og-tools { display: inline-flex; gap: 4px; }
+.og-ib { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px; color: var(--muted); background: transparent; }
+.og-ib:hover { background: var(--surface-3); color: var(--text); }
+.og-ib .ic { width: 17px; height: 17px; }
+.og-tree { display: flex; flex-direction: column; align-items: center; }
+.og-head { min-width: 260px; padding: 14px 20px; border-radius: 18px; text-align: center; background: #fff; border: 1px solid var(--border-strong); box-shadow: 0 12px 26px rgba(60,40,30,.09); cursor: default; }
+.og-head[role="button"] { cursor: pointer; }
+.og-head .t { font-size: 13px; color: var(--faint); }
+.og-head .nm { font-size: 19px; font-weight: 700; margin-top: 3px; }
+.og-head .rl { font-size: 14px; color: var(--muted); margin-top: 2px; }
+.og-head.is-dept { background: linear-gradient(145deg, #3A332E, #211D1A); border-color: transparent; color: #fff; box-shadow: 0 18px 34px rgba(33,29,26,.3), inset 0 1px 0 rgba(255,255,255,.1); }
+.og-head.is-dept .t { color: var(--gold); } .og-head.is-dept .rl { color: #D9CFC5; } .og-head.is-dept .og-none { color: #CDBFB2; }
+.og-vl { width: 2px; height: 26px; background: linear-gradient(var(--gold), #E9D7B5); }
+.og-row { display: flex; gap: 16px; justify-content: center; flex-wrap: nowrap; position: relative; padding-top: 26px; width: 100%; overflow-x: auto; padding-inline: 12px; padding-bottom: 6px; }
+.og-row.many { justify-content: flex-start; }
+.og-row::before { content: ''; position: absolute; top: 0; inset-inline: 12%; height: 2px; background: #E9D7B5; }
+.og-row.one::before { display: none; }
+.og-col { position: relative; display: flex; flex-direction: column; align-items: center; flex: 1 1 0; min-width: 176px; max-width: 250px; padding-top: 12px; }
+.og-col::before { content: ''; position: absolute; top: -26px; width: 2px; height: 38px; background: #E9D7B5; }
+.og-sec { position: relative; width: 100%; padding: 14px 16px 14px; border-radius: 18px; background: linear-gradient(170deg, #fff, #FFF7F0); border: 1px solid var(--border-strong); box-shadow: 0 12px 26px rgba(60,40,30,.09), inset 0 1px 0 #fff; text-align: center; cursor: pointer; transition: transform .15s, box-shadow .15s, border-color .15s; }
+.og-sec:hover { transform: translateY(-2px); box-shadow: 0 18px 32px rgba(60,40,30,.13); }
+.og-sec.on { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(227,182,109,.35), 0 18px 32px rgba(60,40,30,.13); }
+.og-sec .t { font-size: 13px; color: var(--faint); }
+.og-sec .nm { font-size: 18px; font-weight: 700; margin-top: 2px; }
+.og-sec .rl { font-size: 13.5px; color: var(--muted); margin-top: 3px; }
+.og-cnt { position: absolute; top: -11px; inset-inline-end: -11px; min-width: 30px; height: 30px; padding: 0 8px; border-radius: 999px; display: grid; place-items: center; font-weight: 700; font-size: 13.5px; color: #3A2A10; background: linear-gradient(145deg, #F3D49A, #D9A650); box-shadow: 0 6px 12px rgba(201,151,63,.35), inset 0 1px 0 rgba(255,255,255,.6); }
+.og-mem { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; min-height: 34px; }
+.og-av { width: 34px; height: 34px; border-radius: 50%; display: inline-grid; place-items: center; flex: none; font-size: 14px; font-weight: 700; color: #9A5A57; background: var(--pink-soft); border: 2px solid #fff; box-shadow: 0 3px 8px rgba(60,40,30,.12); }
+.og-av[draggable="true"] { cursor: grab; }
+.og-av.og-more { background: #F6E7C8; color: #7A5418; }
+.og-none { color: var(--faint); font-weight: 400; }
+.og-over { outline: 2px dashed var(--gold-deep); outline-offset: 3px; background: #FFF4E0 !important; }
+body.og-dragging .og-sec, body.og-dragging .og-di { transition: none; }
+.og-list { margin-top: 20px; border: 1px solid var(--border-strong); border-radius: 18px; background: linear-gradient(180deg, #FCFAF7, #F7F1EA); overflow: hidden; }
+.og-mh { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,.7); }
+.og-mh b { font-size: 16px; }
+.og-mh .og-tools, .og-mh .btn { margin-inline-start: auto; }
+.og-r { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid rgba(232,223,211,.7); }
+.og-r:last-child { border-bottom: 0; }
+.og-ri { flex: 1; min-width: 0; }
+.og-rn { font-weight: 700; font-size: 15px; }
+.og-rs { font-size: 13.5px; color: var(--muted); margin-top: 2px; }
+.og-ra { display: flex; gap: 6px; flex: none; }
+.og-src { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 11.5px; font-weight: 600; vertical-align: 1px; }
+.og-src-siwar { background: #FBF0DC; color: #8C6524; } .og-src-org { background: #EAF3EC; color: #3E6B4C; } .og-src-jisr { background: #E8ECF7; color: #2C3E7A; }
+.og-pad { padding: 12px 16px; margin: 0; }
+.og-acts { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.og-used { margin-top: 20px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 12px 16px; border-radius: 16px; background: linear-gradient(180deg, #FCFAF7, #F6F0E8); border: 1px solid var(--border); font-size: 14.5px; }
+.og-chip { padding: 5px 12px; border-radius: 999px; background: #fff; border: 1px solid var(--border-strong); font-size: 13.5px; }
+.og-save { display: flex; align-items: center; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+.og-dirty { font-size: 13.5px; font-weight: 600; color: #8C6524; }
+.og-save .btn.is-busy { opacity: .7; pointer-events: none; }
+.og-empty { text-align: center; padding: 40px 24px; }
+.og-empty-ic { width: 64px; height: 64px; margin: 0 auto 12px; border-radius: 20px; display: grid; place-items: center; color: var(--gold); background: linear-gradient(145deg, #3A332E, #211D1A); box-shadow: 0 14px 28px rgba(33,29,26,.28); }
+.og-empty .savebar-actions { justify-content: center; margin-top: 14px; }
+.og-pk { display: flex; flex-direction: column; gap: 6px; max-height: 52vh; overflow: auto; margin-top: 10px; }
+.og-pkq { width: 100%; }
+.og-pi { display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 12px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); text-align: start; color: var(--text); }
+.og-pi:hover { background: var(--surface-2); border-color: var(--border-strong); }
+.og-pi.on { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(227,182,109,.3); }
+.og-pi b { display: block; font-size: 14.5px; } .og-pi small { display: block; font-size: 12.5px; color: var(--muted); }
+.og-pi-sec { margin-inline-start: 22px; width: calc(100% - 22px); }
+.og-dot { width: 12px; height: 12px; border-radius: 4px; flex: none; background: linear-gradient(145deg, #3A332E, #211D1A); }
+.og-dot.sec { background: linear-gradient(145deg, #F3D49A, #D9A650); border-radius: 50%; } .og-dot.none { background: #EFEBE7; }
+.og-seed { max-height: 40vh; overflow: auto; margin: 12px 0; padding: 12px 14px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--border); font-size: 14px; line-height: 1.8; }
+.og-seed ul { margin: 0 18px 6px 0; padding: 0; }
+@media (max-width: 720px) {
+  .og { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .og-side { position: static; padding: 10px; min-width: 0; }
+  .og-side h3 { display: none; }
+  .og-dl { flex-direction: row; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+  .og-di { width: auto; flex: none; padding: 9px 12px; font-size: 14px; }
+  .og-main { padding: 16px 14px; }
+  .og-top h2 { font-size: 20px; }
+  .og-co { margin-inline-start: 0; width: 100%; overflow-x: auto; }
+  .og-head { min-width: 0; width: 100%; }
+  .og-row { flex-direction: column; align-items: stretch; gap: 14px; overflow: visible; padding-inline: 0; }
+  .og-col { max-width: none; min-width: 0; padding-top: 0; }
+  .og-row::before, .og-col::before { display: none; }
+  .og-sec { width: 100%; }
+  .og-r { flex-wrap: wrap; }
+  .og-ra { width: 100%; justify-content: flex-end; }
+}
 </style>
 <style id="sdfix">input[type=date],input[type=time],input[type=month],input[type=datetime-local]{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important;word-spacing:normal!important;text-align:start!important}input[type=date]::-webkit-datetime-edit,input[type=time]::-webkit-datetime-edit,input[type=month]::-webkit-datetime-edit,input[type=datetime-local]::-webkit-datetime-edit{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important}</style></head>
 <body>
@@ -1274,6 +1375,7 @@ tr.is-off .mx-user { opacity: .5; }
     <nav class="tabs u-tabs" id="uTabs" hidden>
       <button class="tab" data-unav="home"><i data-ic="alert"></i><span>يحتاج قرارك</span><span class="count alert" id="uTodoN" hidden></span></button>
       <button class="tab" data-unav="people"><i data-ic="users"></i><span>الموظفون</span></button>
+      <button class="tab" data-unav="org"><i data-ic="org"></i><span>الهيكل التنظيمي</span></button>
       <button class="tab" data-unav="profiles"><i data-ic="lockOpen"></i><span>الوظائف</span></button>
       <button class="tab" data-unav="roles"><i data-ic="shield"></i><span>الأدوار</span></button>
       <button class="tab" data-unav="systems"><i data-ic="grid"></i><span>الأنظمة</span></button>
@@ -1473,7 +1575,7 @@ const I18N = {
     rs_noEmail: 'بلا بريد', rs_suspended: 'موقوف', rs_forbidden: 'خارج صلاحيتك', rs_mail: 'تعذّر الإرسال',
     ERR_NO_PORTAL_URL: 'احفظ رابط النشر في الإعدادات أولاً.', ERR_MAIL_QUOTA: 'تجاوز العدد المسموح للبريد اليوم.',
     ERR_INVALID_LOGIN: 'البريد أو كلمة المرور غير صحيحة.', ERR_LOCKED: 'محاولات كثيرة، انتظر قليلاً ثم حاول مجدداً أو استخدم «نسيت كلمة المرور؟».',
-    ERR_SUSPENDED: 'هذا الحساب موقوف.', ERR_SESSION: 'انتهت الجلسة، سجّل الدخول مجدداً.', ERR_ROLE_CHANGED: 'تغيّرت صلاحيات حسابك أو بياناته، سجّل الدخول من جديد.', ERR_STALE: 'عدّل غيرك بيانات هذا الموظف بعد أن فتحت الصفحة، فلم يُحفظ تعديلك.', ERR_BUSY_SAME: 'ما زال الحفظ السابق قيد التنفيذ. انتظر قليلاً ثم حدّث الصفحة وتحقق قبل إعادته.', ERR_FORBIDDEN: 'لا تملك صلاحية هذا الإجراء.', ERR_SENSITIVE: 'هذه صلاحية حساسة؛ يمنحها المالك فقط.', ERR_SHARED: 'هذا إعداد مشترك بين الأنظمة؛ يُعدَّل من صفحة «سوار» في الأنظمة.', ERR_RANGE: 'القيمة خارج الحد المسموح.', ERR_CONFLICT: 'عدّل غيرك هذا الإعداد بعد أن فتحت الصفحة.', ERR_RULE: 'القيم لا تتفق مع بعضها.', ERR_IN_USE: 'الدور مستخدم؛ أرشفه بدل حذفه.', ERR_ARCHIVED: 'الدور مؤرشف فلا يُسند لأحد جديد.', ERR_VALUE: 'القيمة غير مقبولة.', NO_SOURCE: 'تعذّر فتح ملف المصدر.',
+    ERR_SUSPENDED: 'هذا الحساب موقوف.', ERR_SESSION: 'انتهت الجلسة، سجّل الدخول مجدداً.', ERR_ROLE_CHANGED: 'تغيّرت صلاحيات حسابك أو بياناته، سجّل الدخول من جديد.', ERR_STALE: 'عدّل غيرك بيانات هذا الموظف بعد أن فتحت الصفحة، فلم يُحفظ تعديلك.', ERR_BUSY_SAME: 'ما زال الحفظ السابق قيد التنفيذ. انتظر قليلاً ثم حدّث الصفحة وتحقق قبل إعادته.', ERR_FORBIDDEN: 'لا تملك صلاحية هذا الإجراء.', ERR_SENSITIVE: 'هذه صلاحية حساسة؛ يمنحها المالك فقط.', ERR_SHARED: 'هذا إعداد مشترك بين الأنظمة؛ يُعدَّل من صفحة «سوار» في الأنظمة.', ERR_RANGE: 'القيمة خارج الحد المسموح.', ERR_CONFLICT: 'عدّل غيرك هذا الإعداد بعد أن فتحت الصفحة.', ERR_RULE: 'القيم لا تتفق مع بعضها.', ERR_IN_USE: 'الدور مستخدم؛ أرشفه بدل حذفه.', ERR_ARCHIVED: 'الدور مؤرشف فلا يُسند لأحد جديد.', ERR_VALUE: 'القيمة غير مقبولة.', NO_SOURCE: 'تعذّر فتح ملف المصدر.', ERR_EXISTS_ORG: 'الهيكل معرَّف بالفعل.',
     ERR_NO_URL: 'لم يُضبط رابط هذا البرنامج بعد.', ERR_USERNAME: 'اسم المستخدم من 2 إلى 40 حرفاً إنجليزياً أو رقماً.',
     ERR_NAME: 'الاسم بالعربية والإنجليزية مطلوب.', ERR_EMAIL: 'البريد الإلكتروني غير صحيح.', ERR_EXISTS: 'هذا البريد مسجل لموظف آخر من جسر، فلا يمكن استخدامه لموظف ثانٍ.', ERR_REQUIRED: 'حقل مطلوب فارغ.', ERR_HAS_ACCOUNT: 'لهذا الموظف حساب؛ عدّل بريده من الحساب.', ERR_DUP_USERNAME: 'اسم المستخدم مستخدم من قبل.',
     ERR_PIN: 'كلمة المرور 8 خانات على الأقل، فيها حروف وأرقام.', ERR_PIN_WEAK: 'كلمة المرور سهلة التخمين، اختر غيرها.', ERR_TEMP_EXPIRED: 'انتهت صلاحية كلمة المرور المؤقتة، اطلب واحدة جديدة من المسؤول.', tempTitle: 'كلمة المرور المؤقتة', tempNote: 'تظهر الآن فقط، ويُطلب من المستخدم تغييرها عند أول دخول.', tempMailed: 'أُرسلت إلى بريده.', tempSend: 'إرسال كلمة المرور المؤقتة بالبريد', copy: 'نسخ', copied: 'تم النسخ', noEmail: 'بلا بريد', tempCreate: 'إنشاء', ERR_DUP_EMAIL: 'هذا البريد مسجّل لمستخدم آخر.', ERR_MUST_CHANGE: 'اختر كلمة مرور خاصة بك أولاً.', ERR_BUSY: 'النظام مشغول لحظات، أعد المحاولة.', linkSaveFirst: 'احفظ التعديلات أولاً ثم افحص الربط.', regenYes: 'تغيير المفتاح', ERR_PIN_MATCH: 'كلمتا المرور غير متطابقتين.', ERR_PIN_WRONG: 'كلمة المرور الحالية غير صحيحة.',
@@ -1561,6 +1663,7 @@ const I18N = {
 };
 
 const ICONS = {
+  org: '<rect x="9" y="3" width="6" height="5" rx="1.2"/><rect x="3" y="16" width="6" height="5" rx="1.2"/><rect x="15" y="16" width="6" height="5" rx="1.2"/><path d="M12 8v4M6 16v-2.5h12V16"/>',
   phone: '<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>',
   bell: '<path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.6 2H4.4z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/>',
   globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
@@ -2861,13 +2964,14 @@ async function uSave(action, payload, okMsg) {
   try { const r = await api(action, payload); if (r && r.ok === false) { uSaveFail(r.code, -1, null, r.detail); uLoad(); return null; } if (okMsg) toast(okMsg, 'ok'); uFlushSoon(); uLoad(); return r; }
   catch (c) { if (c !== '__handled') uSaveFail(c, -1, null); uLoad(); return null; }
 }
-const U_TOP = { home: 1, people: 1, profiles: 1, roles: 1, systems: 1 };
+const U_TOP = { home: 1, people: 1, org: 1, profiles: 1, roles: 1, systems: 1 };
 const U_PARENT = { person: 'people', profile: 'profiles', role: 'roles', system: 'systems', shared: 'systems' };
 function uNavMark() {
   const cur = S.tab === 'unified' ? (U_PARENT[U.view] || U.view) : S.tab;
   $$('#uTabs .tab').forEach(b => b.classList.toggle('on', b.dataset.unav === cur));
 }
 async function uNav(v) {
+  if (U.view === 'org' && v !== 'org' && O.ops && O.ops.length) return ogLeave(v);
   if (!U_TOP[v] && U.dirty.size) { return uConfirm('عندك ' + U.dirty.size + ' تعديل لم يُحفظ. نحفظها قبل الانتقال؟', async () => { await uCommit(); uNav(v); }); }
   if (U_TOP[v]) { U.back = []; U.view = v; U.id = ''; U.ids = v === 'people' ? U.ids : null; U.draft = null; if (S.tab !== 'unified') await switchTab('unified'); else uRender(); }
   else await switchTab(v);
@@ -2900,7 +3004,7 @@ function uRender() {
   navSave();
   const root = $('#uRoot'); if (!root || !U.d) return;
   const v = U.view;
-  const html = ({ home: uHome, people: uPeople, person: uPerson, profiles: uProfiles, profile: uProfile, roles: uRoles, role: uRole, systems: uSystems, system: uSystem, shared: uSharedV })[v] || uHome;
+  const html = ({ home: uHome, people: uPeople, org: uOrg, person: uPerson, profiles: uProfiles, profile: uProfile, roles: uRoles, role: uRole, systems: uSystems, system: uSystem, shared: uSharedV })[v] || uHome;
   root.innerHTML = (['person', 'profile', 'role', 'system', 'shared'].indexOf(v) >= 0 ? '<button class="u-back" data-u="back">' + ic('arrow') + '<span>رجوع</span></button>' : '') + html();
   uAfter(); uNavMark(); uBar();
   const n = (U.d.todo || []).reduce((a, x) => a + (x.kind === 'nomail' ? 0 : x.n), 0), b = $('#uTodoN');
@@ -2959,7 +3063,7 @@ function uPerson() {
     '<p>' + esc([p.title, p.dept, uCo(p.company), p.no ? 'رقم ' + p.no : ''].filter(Boolean).join(' · ')) + '</p>' +
     '<p class="u-muted">' + (p.email ? esc(p.email) : 'لا بريد إلكتروني') + '</p></div>' +
     '<span class="u-tag' + (uLeftP(p) ? ' u-tag-grey' : '') + '">' + esc(p.stopped ? 'موقوف من سوار' : uLeftP(p) ? (p.status || 'غادر') : 'على رأس العمل') + '</span>' +
-    (p.email && !p.owner && !me && !uLeftP(p) ? '<button class="btn btn-primary btn-sm" data-u="pInvite" data-pid="' + esc(p.id) + '">' + ic('send') + '<span>إرسال دعوة</span></button>' : '') + (p.owner || me ? '' : p.stopped ? '<button class="btn btn-ghost btn-sm" data-u="pResume">' + ic('check') + '<span>إعادة تفعيل</span></button>' : '<button class="btn btn-ghost btn-sm" data-u="pStop">' + ic('lock') + '<span>إيقاف في كل الأنظمة</span></button>') + '</div>';
+    (p.email && !p.owner && !me && !uLeftP(p) ? '<button class="btn btn-primary btn-sm" data-u="pInvite" data-pid="' + esc(p.id) + '">' + ic('send') + '<span>إرسال دعوة</span></button>' : '') + (p.owner || me ? '' : p.stopped ? '<button class="btn btn-ghost btn-sm" data-u="pResume">' + ic('check') + '<span>إعادة تفعيل</span></button>' : '<button class="btn btn-ghost btn-sm" data-u="pStop">' + ic('lock') + '<span>إيقاف في كل الأنظمة</span></button>') + (p.canDel && !p.owner && !me ? '<button class="btn btn-danger btn-sm" data-og="pDel">' + ic('trash') + '<span>حذف نهائي</span></button>' : '') + '</div>';
   const rd = p.restDays || [];
   const hasAcct = !!p.userId;
   const wfMay = !me || (p.owner && S.user && S.user.role === 'owner'), cosL = (D.shared || {}).companies || [];
@@ -2971,10 +3075,12 @@ function uPerson() {
   const info = p.owner ? '<section class="panel-box u-work u-info">' + wfRow + langRow + pushRow + '</section>' : '<section class="panel-box u-work u-info"><div class="u-q"><span class="u-q-t">الاسم</span><span class="u-q-v"><input class="inp" data-uc="pInfo" data-f="name" maxlength="80" value="' + esc(p.name || '') + '"' + (me ? ' disabled' : '') + '></span></div>' +
     '<div class="u-q"><span class="u-q-t">الاسم بالإنجليزية</span><span class="u-q-v"><input class="inp" dir="ltr" data-uc="pInfo" data-f="nameEN" maxlength="80" value="' + esc(p.nameEN || '') + '"' + (me ? ' disabled' : '') + '></span></div>' +
     '<div class="u-q"><span class="u-q-t">الشركة</span><span class="u-q-v"><select class="inp" data-uc="pInfo" data-f="company"' + (me ? ' disabled' : '') + '><option value="">—</option>' + ((D.shared || {}).companies || []).map(c => '<option value="' + esc(c.code) + '"' + (p.company === c.code ? ' selected' : '') + '>' + esc(c.nameAR) + '</option>').join('') + '</select></span></div>' + wfRow +
-    '<div class="u-q"><span class="u-q-t">الإدارة</span><span class="u-q-v"><input class="inp" list="uDeptL" data-uc="pInfo" data-f="dept" maxlength="80" value="' + esc(p.dept || '') + '"' + (me ? ' disabled' : '') + '><datalist id="uDeptL">' + Array.from(new Set(D.people.map(x => x.dept).filter(Boolean))).sort().map(x => '<option value="' + esc(x) + '">').join('') + '</datalist></span></div>' +
-    '<div class="u-q"><span class="u-q-t">القسم</span><span class="u-q-v"><input class="inp" list="uSecL" data-uc="pInfo" data-f="section" maxlength="80" value="' + esc(p.section || '') + '"' + (me ? ' disabled' : '') + '><datalist id="uSecL">' + Array.from(new Set(D.people.map(x => x.section).filter(Boolean))).sort().map(x => '<option value="' + esc(x) + '">').join('') + '</datalist></span></div>' +
+    '<div class="u-q"><span class="u-q-t">قسمه في جسر</span><span class="u-q-v"><input class="inp" list="uDeptL" data-uc="pInfo" data-f="dept" maxlength="80" value="' + esc(p.dept || '') + '"' + (me ? ' disabled' : '') + '><datalist id="uDeptL">' + Array.from(new Set(D.people.map(x => x.dept).filter(Boolean))).sort().map(x => '<option value="' + esc(x) + '">').join('') + '</datalist></span></div>' +
+    '<div class="u-q"><span class="u-q-t">وحدة العمل في جسر</span><span class="u-q-v"><input class="inp" list="uSecL" data-uc="pInfo" data-f="section" maxlength="80" value="' + esc(p.section || '') + '"' + (me ? ' disabled' : '') + '><datalist id="uSecL">' + Array.from(new Set(D.people.map(x => x.section).filter(Boolean))).sort().map(x => '<option value="' + esc(x) + '">').join('') + '</datalist></span></div>' +
     '<div class="u-q"><span class="u-q-t">البريد الإلكتروني</span><span class="u-q-v"><input class="inp" dir="ltr" type="email" data-uc="pInfo" data-f="email" maxlength="120" autocapitalize="none" spellcheck="false" value="' + esc(p.email || '') + '"' + (me || hasAcct ? ' disabled' : '') + '></span></div>' + langRow + pushRow +
     (hasAcct ? '<p class="u-muted u-note">له حساب في سوار؛ يتغير بريده من «تعديل الحساب».</p>' : '') + '</section>';
+  const og = p.org ? '<section class="panel-box u-work u-info og-pbox"><div class="u-q"><span class="u-q-t">الإدارة والقسم</span><span class="u-q-v">' + (p.org.dn ? '<b>' + esc(p.org.dn) + '</b>' + (p.org.sn ? ' · ' + esc(p.org.sn) : '') : '<span class="u-muted">غير موزّع</span>') + ' <button class="link-btn" data-og="goOrg" data-id="' + esc(p.org.d || '__un') + '">تعديل في الهيكل التنظيمي</button></span></div>' +
+    '<div class="u-q"><span class="u-q-t">المدير المباشر</span><span class="u-q-v">' + (p.org.m ? esc(p.org.m) + ' <span class="og-src og-src-' + esc(p.org.src) + '">' + (OG_SRC[p.org.src] || '') + '</span>' : '<span class="u-muted">لا يوجد</span>') + '</span></div></section>' : '';
   const work = '<section class="panel-box u-work"><div class="u-q"><span class="u-q-t">يوم الراحة الأسبوعي</span><span class="u-days" data-prest="1">' + U_DAYS.map((n, i) => '<button class="seg-btn' + (rd.indexOf(i) >= 0 ? ' on' : '') + '" data-u="pRest" data-i="' + i + '"' + (me && !p.owner ? ' disabled' : '') + '>' + n + '</button>').join('') + '</span></div>' +
     (p.owner ? '' : '<div class="u-q"><span class="u-q-t">المسمى الوظيفي</span><span class="u-q-v"><select class="inp" data-uc="pTitle"' + (me ? ' disabled' : '') + '>' + uTitleOpts(p.title) + '</select></span></div>') + (p.owner ? '' : '<div class="u-q"><span class="u-q-t">وظيفته</span><span class="u-q-v"><select class="inp" data-uc="pProf"' + (me ? ' disabled' : '') + '><option value="">' + esc(U_BYTITLE) + '</option>' + D.profiles.map(f => '<option value="' + esc(f.id) + '"' + (p.profileId === f.id ? ' selected' : '') + '>' + esc(f.nameAR) + '</option>').join('') + '</select></span></div>') + (p.owner ? '' : uBundleSel(p, me)) + '</section>';
   const ua = p.userId && S.admin ? (S.admin.users || []).find(u => u.id === p.userId) : null;
@@ -3006,7 +3112,7 @@ function uPerson() {
     return '<section class="panel-box u-sys' + (e.on ? '' : ' is-off') + '"><div class="u-sys-head">' + uIcon(a) + '<b>' + esc(a.nameAR) + '</b>' + sw + '</div>' + (p.owner ? '' : uRoleSel(p, a, me)) + body + '</section>';
   }).join('');
   const copyBox = p.owner || me ? '' : '<section class="panel-box"><div class="u-q"><span class="u-q-t">نسخ صلاحياته إلى موظفين آخرين</span><span class="u-q-v"><button class="btn btn-ghost btn-sm" data-u="pCopy">' + ic('copy') + '<span>نسخ إلى…</span></button></span></div></section>';
-  return head + (me && !p.owner ? '<p class="u-muted u-note">لا يمكنك تعديل صلاحياتك بنفسك.</p>' : '') + line + info + work + '<div class="u-sys-grid">' + cards + '</div>' + copyBox + acct;
+  return head + (me && !p.owner ? '<p class="u-muted u-note">لا يمكنك تعديل صلاحياتك بنفسك.</p>' : '') + line + info + og + work + '<div class="u-sys-grid">' + cards + '</div>' + copyBox + acct;
 }
 
 function uProfiles() {
@@ -3727,6 +3833,285 @@ function uRoleClick(el, e) {
   }
   return false;
 }
+
+// ===== الهيكل التنظيمي (@95) — سوار المصدر الوحيد للإدارات والأقسام ورؤسائها والمدير المباشر =====
+// كل تعديل يظهر فوراً في الشاشة ويُجمع، ولا يُحفظ شيء إلا بزر «حفظ» (u_orgSave دفعة واحدة).
+const O = { d: null, w: null, ops: [], sel: '', open: '', co: '', tmp: 0, busy: false, at: 0 };
+const OG_SRC = { siwar: 'عُدِّل في سوار', org: 'من الهيكل', jisr: 'من جسر' };
+const ogN = s => String(s || '').replace(/[ً-ْـ]/g, '').replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/[.،,]+/g, ' ').replace(/\s+و\s+/g, ' و').replace(/\s+/g, ' ').trim().toLowerCase();
+const ogKey = s => ogN(s).replace(/^(قسم|اداره|الاداره)\s+(?=\S)/, '').trim();
+const ogU = id => (O.w.units || []).find(u => u.id === id) || null;
+const ogP = id => (O.w.people || []).find(p => p.id === id) || null;
+const ogDepts = () => O.w.units.filter(u => u.kind === 'dept').sort((a, b) => (a.order - b.order) || a.name.localeCompare(b.name, 'ar'));
+const ogSecs = d => O.w.units.filter(u => u.kind === 'section' && u.parent === d).sort((a, b) => (a.order - b.order) || a.name.localeCompare(b.name, 'ar'));
+// مكان الموظف ومديره المباشر — الحساب نفسه في الخادم (Org.js)
+function ogPlace(p) {
+  let id = p.org && ogU(p.org) ? p.org : '';
+  if (!id) { const h = O.w.units.filter(u => u.head === p.id); id = (h.find(u => u.kind === 'section') || h[0] || {}).id || ''; }
+  if (!id) { const k = ogKey(p.jdept); if (k) { const u = O.w.units.find(x => ogKey(x.name) === k) || O.w.units.find(x => (x.jisr || []).some(n => ogKey(n) === k)); id = u ? u.id : ''; } }
+  const u = id ? ogU(id) : null;
+  return !u ? { d: '', s: '' } : u.kind === 'section' ? { d: u.parent, s: u.id } : { d: u.id, s: '' };
+}
+function ogMgr(p) {
+  if (p.mgrPid && ogP(p.mgrPid) && p.mgrPid !== p.id) return { id: p.mgrPid, src: 'siwar' };
+  const pl = ogPlace(p), sh = pl.s && (ogU(pl.s) || {}).head, dh = pl.d && (ogU(pl.d) || {}).head;
+  if (sh && sh !== p.id && ogP(sh)) return { id: sh, src: 'org' };
+  if (dh && dh !== p.id && ogP(dh)) return { id: dh, src: 'org' };
+  if (p.jm && p.jm !== p.id) return { id: p.jm, src: 'jisr' };
+  return { id: '', src: '' };
+}
+const ogCoOk = p => !O.co || p.co === O.co;
+const ogNm = id => { const p = ogP(id); return p ? p.name : ''; };
+const ogAv = (p, drag) => '<span class="og-av" title="' + esc(p.name + (p.title ? ' · ' + p.title : '')) + '"' + (drag && O.d.edit ? ' draggable="true" data-ogp="' + esc(p.id) + '"' : '') + '>' + esc(String(p.name || '?').trim().charAt(0)) + '</span>';
+
+async function ogLoad(keepSel) {
+  if (O.busy) return;
+  O.busy = true;
+  let d, fail;
+  for (let k = 0; k < 3 && !d; k++) { try { d = await api('u_orgLoad', {}); } catch (c) { fail = c; if (c === '__handled') { O.busy = false; return; } await new Promise(r => setTimeout(r, 1000 * (k + 1))); } }
+  O.busy = false;
+  if (!d) { if (U.view === 'org') $('#uRoot').innerHTML = '<div class="empty">' + ic('alert') + '<span>تعذّر تحميل الهيكل التنظيمي. ' + esc(t(I18N.ar[fail] ? fail : 'ERR_NETWORK')) + '</span><button class="btn btn-ghost" data-og="reload">' + ic('refresh') + '<span>إعادة المحاولة</span></button></div>'; return; }
+  O.d = d; O.w = JSON.parse(JSON.stringify(d)); O.ops = []; O.at = Date.now();
+  if (!keepSel || (O.sel !== '__un' && !ogU(O.sel))) O.sel = (ogDepts()[0] || {}).id || '';
+  if (U.view === 'org') uRender();
+}
+function uOrg() {
+  if (O.d && !O.ops.length && Date.now() - O.at > 60000 && !O.busy) setTimeout(() => ogLoad(true), 0);
+  if (!O.d) { ogLoad(); return '<div class="u-wait"><span class="u-spin"></span><span>جارٍ تحميل الهيكل التنظيمي…</span></div>'; }
+  const D = O.w;
+  if (!D.units.length) return ogEmpty();
+  const depts = ogDepts(), counts = {}, un = [];
+  D.people.forEach(p => { const pl = ogPlace(p); if (pl.d) counts[pl.d] = (counts[pl.d] || 0) + 1; else un.push(p); });
+  if (O.sel !== '__un' && !ogU(O.sel)) O.sel = (depts[0] || {}).id || '';
+  const side = '<aside class="og-side"><h3>الإدارات</h3><div class="og-dl">' + depts.map(d => '<button class="og-di' + (O.sel === d.id ? ' on' : '') + '" data-og="sel" data-id="' + esc(d.id) + '" data-drop="' + esc(d.id) + '"><span>' + esc(d.name) + '</span><b class="n">' + (counts[d.id] || 0) + '</b></button>').join('') +
+    (un.length ? '<button class="og-di og-un' + (O.sel === '__un' ? ' on' : '') + '" data-og="sel" data-id="__un"><span>غير موزّعين</span><b class="n">' + un.length + '</b></button>' : '') + '</div>' +
+    (D.edit ? '<button class="btn btn-ghost og-add" data-og="addDept">' + ic('plus') + '<span>إدارة جديدة</span></button>' : '') + '</aside>';
+  const main = O.sel === '__un' ? ogUnplaced(un) : ogDept(ogU(O.sel));
+  return '<div class="og">' + side + '<section class="og-main">' + main + ogFoot() + '</section></div>';
+}
+function ogEmpty() {
+  return '<section class="panel-box og-empty"><span class="og-empty-ic">' + ic('grid') + '</span><h3>لم يُعرَّف الهيكل التنظيمي بعد</h3><p class="u-muted">تُعرَّف الإدارات والأقسام ورؤساؤها هنا مرة واحدة، وتقرأ منها الأنظمة.</p>' +
+    '<div class="savebar-actions">' + (O.d.owner ? '<button class="btn btn-primary" data-og="seed">' + ic('upload') + '<span>تعبئة أولى من كوادر ومهام وإجراءات</span></button>' : '') + (O.d.edit ? '<button class="btn btn-ghost" data-og="addDept">' + ic('plus') + '<span>إدارة جديدة</span></button>' : '') + '</div></section>' + ogFoot();
+}
+function ogCoSeg() {
+  return '<div class="seg og-co">' + [{ code: '', nameAR: 'الشركتان' }].concat(O.w.companies || []).map(c => '<button class="seg-btn' + (O.co === c.code ? ' on' : '') + '" data-og="co" data-co="' + esc(c.code) + '">' + esc(c.nameAR) + '</button>').join('') + '</div>';
+}
+function ogHeadBox(u, kind) {
+  const h = u.head ? ogP(u.head) : null;
+  return '<div class="og-head' + (kind === 'dept' ? ' is-dept' : '') + '"' + (O.d.edit ? ' data-og="pickHead" data-id="' + esc(u.id) + '" role="button" tabindex="0"' : '') + '><div class="t">' + (kind === 'dept' ? 'رئيس الإدارة' : 'رئيس القسم') + '</div><div class="nm">' + (h ? esc(h.name) : '<span class="og-none">لم يُحدَّد</span>') + '</div>' + (h && h.title ? '<div class="rl">' + esc(h.title) + '</div>' : '') + '</div>';
+}
+function ogDept(d) {
+  if (!d) return '';
+  const secs = ogSecs(d.id), all = O.w.people.filter(p => ogPlace(p).d === d.id), vis = all.filter(ogCoOk);
+  const card = (id, title, sub, head, list) => {
+    const n = list.length, shown = list.slice(0, 7);
+    return '<div class="og-sec' + (O.open === id ? ' on' : '') + '" data-og="open" data-id="' + esc(id) + '" data-drop="' + esc(id) + '" role="button" tabindex="0"><span class="og-cnt n">' + n + '</span><div class="t">' + sub + '</div><div class="nm">' + esc(title) + '</div>' +
+      '<div class="rl">' + head + '</div><div class="og-mem">' + shown.map(p => ogAv(p, true)).join('') + (n > shown.length ? '<span class="og-av og-more n" dir="ltr">+' + (n - shown.length) + '</span>' : '') + (!n ? '<span class="og-none">لا أحد</span>' : '') + '</div></div>';
+  };
+  const direct = vis.filter(p => !ogPlace(p).s && p.id !== d.head);
+  const cards = secs.map(s => card(s.id, s.name, 'قسم', 'رئيس القسم: ' + (s.head ? esc(ogNm(s.head)) : '<span class="og-none">لم يُحدَّد</span>'), vis.filter(p => ogPlace(p).s === s.id)))
+    .concat(direct.length || !secs.length ? [card(d.id, 'مباشرة تحت الإدارة', 'بلا قسم', 'المدير المباشر: رئيس الإدارة', direct)] : []);
+  const openU = O.open && (O.open === d.id || secs.some(s => s.id === O.open)) ? O.open : '';
+  const tools = O.d.edit ? '<span class="og-tools"><button class="og-ib" data-og="editUnit" data-id="' + esc(d.id) + '" title="تعديل الاسم">' + ic('edit') + '</button><button class="og-ib" data-og="delUnit" data-id="' + esc(d.id) + '" title="حذف الإدارة">' + ic('trash') + '</button></span>' : '';
+  return '<div class="og-top"><h2>' + esc(d.name) + '</h2>' + tools + (d.nameEN ? '<span class="u-muted og-en" dir="ltr">' + esc(d.nameEN) + '</span>' : '') + ogCoSeg() + '</div>' +
+    '<div class="og-tree">' + ogHeadBox(d, 'dept') + '<div class="og-vl"></div><div class="og-row' + (cards.length === 1 ? ' one' : '') + (cards.length > 4 ? ' many' : '') + '">' + cards.map(c => '<div class="og-col">' + c + '</div>').join('') + '</div></div>' +
+    (openU ? ogMembers(openU, openU === d.id ? direct : vis.filter(p => ogPlace(p).s === openU)) : '') +
+    (O.d.edit ? '<div class="og-acts"><button class="btn btn-ghost" data-og="addSec" data-id="' + esc(d.id) + '">' + ic('plus') + '<span>إضافة قسم</span></button><button class="btn btn-ghost" data-og="pickHead" data-id="' + esc(d.id) + '">' + ic('user') + '<span>تغيير رئيس الإدارة</span></button><button class="btn btn-ghost" data-og="addMem" data-id="' + esc(openU || d.id) + '">' + ic('userPlus') + '<span>إضافة موظف هنا</span></button></div>' : '');
+}
+function ogMembers(uid, list) {
+  const u = ogU(uid), isSec = u && u.kind === 'section';
+  const head = isSec ? '<div class="og-mh"><b>' + esc(u.name) + '</b>' + (O.d.edit ? '<span class="og-tools"><button class="og-ib" data-og="pickHead" data-id="' + esc(u.id) + '" title="رئيس القسم">' + ic('user') + '</button><button class="og-ib" data-og="editUnit" data-id="' + esc(u.id) + '" title="تعديل الاسم">' + ic('edit') + '</button><button class="og-ib" data-og="delUnit" data-id="' + esc(u.id) + '" title="حذف القسم">' + ic('trash') + '</button></span>' : '') + '</div>'
+    : '<div class="og-mh"><b>مباشرة تحت الإدارة</b></div>';
+  return '<div class="og-list">' + head + (list.length ? list.map(p => ogRow(p)).join('') : '<p class="u-muted og-pad">لا أحد هنا. اسحب موظفاً إلى البطاقة أو استخدم «إضافة موظف هنا».</p>') + '</div>';
+}
+function ogRow(p) {
+  const m = ogMgr(p), mp = m.id ? ogP(m.id) : null;
+  return '<div class="og-r">' + ogAv(p, true) + '<div class="og-ri"><div class="og-rn">' + esc(p.name) + (p.title ? '<span class="u-muted"> · ' + esc(p.title) + '</span>' : '') + '</div>' +
+    '<div class="og-rs">المدير المباشر: ' + (mp ? '<b>' + esc(mp.name) + '</b> <span class="og-src og-src-' + m.src + '">' + OG_SRC[m.src] + '</span>' : '<span class="og-none">لا يوجد</span>') + '</div></div>' +
+    (O.d.edit ? '<div class="og-ra"><button class="btn btn-ghost btn-sm" data-og="pickMgr" data-id="' + esc(p.id) + '">المدير المباشر</button><button class="btn btn-ghost btn-sm" data-og="move" data-id="' + esc(p.id) + '">نقل</button></div>' : '') + '</div>';
+}
+function ogUnplaced(un) {
+  const g = {}; un.filter(ogCoOk).forEach(p => { const k = String(p.jdept || '').trim() || '—'; (g[k] = g[k] || []).push(p); });
+  const keys = Object.keys(g).sort((a, b) => g[b].length - g[a].length);
+  return '<div class="og-top"><h2>غير موزّعين</h2>' + ogCoSeg() + '</div><p class="u-muted og-pad">موظفون لم يُحدَّد مكانهم، مجمّعون حسب قسمهم في جسر. ربط اسم جسر بوحدة ينقل المجموعة كلها، ومن يضيفه جسر لاحقاً بالاسم نفسه يدخل الوحدة مباشرة.</p>' +
+    keys.map(k => '<div class="og-list"><div class="og-mh"><b>«' + esc(k) + '» في جسر</b><span class="u-muted n">' + g[k].length + '</span>' + (O.d.edit && k !== '—' ? '<button class="btn btn-ghost btn-sm" data-og="alias" data-j="' + esc(k) + '">ربط المجموعة بوحدة…</button>' : '') + '</div>' + g[k].map(ogRow).join('') + '</div>').join('');
+}
+function ogFoot() {
+  const n = O.ops.length, rd = (O.w.readers || []).map(a => '<span class="og-chip">' + esc(a.nameAR) + '</span>').join('');
+  return (rd ? '<div class="og-used"><b>تقرأ منه:</b>' + rd + '</div>' : '') +
+    (O.d.edit ? '<div class="og-save"><button class="btn btn-primary" data-og="save" id="ogSave"' + (n ? '' : ' disabled') + '>' + ic('save') + '<span>حفظ</span></button>' + (n ? '<button class="btn btn-ghost" data-og="undo">' + ic('undo') + '<span>تراجع</span></button><span class="og-dirty">' + (n === 1 ? 'تعديل واحد لم يُحفظ' : n === 2 ? 'تعديلان لم يُحفظا' : n + ' تعديلات لم تُحفظ') + '</span>' : '') + '</div>' : '');
+}
+
+// ===== التعديل (محلي حتى «حفظ») =====
+function ogOp(op) { O.ops.push(op); uRender(); }
+function ogUnitForm(title, u, kind, parent) {
+  const cos = [{ code: '', nameAR: 'الشركتان' }].concat(O.w.companies || []);
+  O.form = { id: u ? u.id : '', kind: kind, parent: parent || '', co: u ? u.co || '' : '' };
+  openModal({ title: '<span>' + esc(title) + '</span>', body: '<div class="form-stack"><label class="field"><span>الاسم</span><input class="inp" id="ogFName" maxlength="80" value="' + esc(u ? u.name : '') + '"></label>' +
+    '<label class="field"><span>الاسم بالإنجليزية</span><input class="inp" id="ogFEn" dir="ltr" maxlength="80" value="' + esc(u ? u.nameEN || '' : '') + '"></label>' +
+    '<div class="field"><span>الشركة</span><div class="seg" id="ogFCo">' + cos.map(c => '<button type="button" class="seg-btn' + (O.form.co === c.code ? ' on' : '') + '" data-og="fco" data-co="' + esc(c.code) + '">' + esc(c.nameAR) + '</button>').join('') + '</div></div><p class="u-err" id="ogFErr" hidden></p></div>',
+    foot: '<button class="btn btn-ghost" data-act="closeModal"><span>إلغاء</span></button><button class="btn btn-primary" data-og="formOk">' + ic('check') + '<span>تم</span></button>' });
+  setTimeout(() => { const i = $('#ogFName'); if (i) i.focus(); }, 60);
+}
+function ogFormOk() {
+  const f = O.form, name = ($('#ogFName').value || '').replace(/\s+/g, ' ').trim(), en = ($('#ogFEn').value || '').trim(), err = $('#ogFErr');
+  const sib = O.w.units.filter(u => u.id !== f.id && u.kind === f.kind && (f.kind === 'dept' || u.parent === f.parent));
+  const msg = !name ? 'اكتب الاسم.' : sib.some(u => ogN(u.name) === ogN(name)) ? 'يوجد ' + (f.kind === 'dept' ? 'إدارة' : 'قسم') + ' بالاسم نفسه.' : '';
+  if (msg) { err.textContent = msg; err.hidden = false; return; }
+  if (f.id) { const u = ogU(f.id); u.name = name; u.nameEN = en; u.co = f.co; closeModal(true); return ogOp({ t: 'unitEdit', id: f.id, name: name, nameEN: en, co: f.co }); }
+  const tmp = 'n' + (++O.tmp), order = O.w.units.filter(u => u.kind === f.kind && (f.kind === 'dept' || u.parent === f.parent)).length + 1;
+  O.w.units.push({ id: tmp, kind: f.kind, parent: f.parent, name: name, nameEN: en, co: f.co, head: '', jisr: [], order: order });
+  if (f.kind === 'dept') O.sel = tmp; else O.open = tmp;
+  closeModal(true); ogOp({ t: 'unitAdd', tmp: tmp, kind: f.kind, parent: f.parent, name: name, nameEN: en, co: f.co, order: order });
+}
+// اختيار موظف (رئيس أو مدير مباشر أو موظف يُضاف)
+function ogPick(title, cur, none, cb) {
+  O.pk = { cb: cb, q: '', cur: cur || '', none: none };
+  openModal({ title: '<span>' + esc(title) + '</span>', body: '<div class="input-wrap og-pkq">' + ic('search') + '<input id="ogPkQ" type="search" placeholder="ابحث بالاسم أو المسمى أو الرقم" autocomplete="off"></div><div class="og-pk" id="ogPkL"></div>',
+    foot: '<button class="btn btn-ghost" data-act="closeModal"><span>إلغاء</span></button>' });
+  ogPkDraw(); const q = $('#ogPkQ'); q.oninput = () => { O.pk.q = q.value; ogPkDraw(); }; setTimeout(() => q.focus(), 60);
+}
+function ogPkDraw() {
+  const q = ogN(O.pk.q), L = $('#ogPkL'); if (!L) return;
+  const list = O.w.people.filter(p => !q || ogN([p.name, p.nameEN, p.title, p.no, p.jdept].join(' ')).indexOf(q) >= 0).sort((a, b) => a.name.localeCompare(b.name, 'ar')).slice(0, 60);
+  L.innerHTML = (O.pk.none ? '<button class="og-pi' + (!O.pk.cur ? ' on' : '') + '" data-og="pk" data-id=""><span class="og-av">—</span><span>' + esc(O.pk.none) + '</span></button>' : '') +
+    list.map(p => '<button class="og-pi' + (O.pk.cur === p.id ? ' on' : '') + '" data-og="pk" data-id="' + esc(p.id) + '">' + ogAv(p) + '<span><b>' + esc(p.name) + '</b><small>' + esc([p.title, (ogU(ogPlace(p).s) || ogU(ogPlace(p).d) || {}).name].filter(Boolean).join(' · ')) + '</small></span></button>').join('') +
+    (list.length ? '' : '<p class="u-muted og-pad">لا نتائج</p>');
+}
+function ogMoveTo(pid, uid) {
+  const p = ogP(pid); if (!p) return;
+  const cur = ogPlace(p), want = uid ? (ogU(uid).kind === 'section' ? { d: ogU(uid).parent, s: uid } : { d: uid, s: '' }) : { d: '', s: '' };
+  if (cur.d === want.d && cur.s === want.s && (p.org || !uid)) return;
+  p.org = uid; ogOp({ t: 'place', pid: pid, unit: uid });
+}
+function ogMovePick(pid) {
+  const p = ogP(pid); O.mv = pid;
+  const opts = ogDepts().map(d => '<button class="og-pi" data-og="mvTo" data-id="' + esc(d.id) + '"><span class="og-dot"></span><span><b>' + esc(d.name) + '</b><small>مباشرة تحت الإدارة</small></span></button>' +
+    ogSecs(d.id).map(s => '<button class="og-pi og-pi-sec" data-og="mvTo" data-id="' + esc(s.id) + '"><span class="og-dot sec"></span><span><b>' + esc(s.name) + '</b><small>' + esc(d.name) + '</small></span></button>').join('')).join('');
+  openModal({ title: '<span>نقل «' + esc(p.name) + '»</span>', body: '<div class="og-pk">' + opts + '<button class="og-pi" data-og="mvTo" data-id=""><span class="og-dot none"></span><span><b>بلا مكان</b><small>يعود حسب قسمه في جسر</small></span></button></div>', foot: '<button class="btn btn-ghost" data-act="closeModal"><span>إلغاء</span></button>' });
+}
+async function ogSave() {
+  if (!O.ops.length) return;
+  const b = $('#ogSave'); if (b) { b.disabled = true; b.classList.add('is-busy'); }
+  let r;
+  try { r = await api('u_orgSave', { was: O.d.ver, ops: O.ops }); }
+  catch (c) { if (b) { b.disabled = false; b.classList.remove('is-busy'); } return ogFail(c === '__handled' ? 'ERR_NETWORK' : c, null); }
+  if (!r || r.ok === false) { if (b) { b.disabled = false; b.classList.remove('is-busy'); } return ogFail(r ? r.code : 'ERR_SERVER', r); }
+  const n = O.ops.length, ids = r.ids || {};
+  if (O.sel && ids[O.sel]) O.sel = ids[O.sel]; if (O.open && ids[O.open]) O.open = ids[O.open];
+  O.ops = []; toast(n === 1 ? 'حُفظ التعديل' : 'حُفظت ' + n + ' تعديلات', 'ok'); uFlushSoon();
+  await ogLoad(true);
+}
+const OG_OPN = { unitAdd: 'إضافة وحدة', unitEdit: 'تعديل وحدة', unitHead: 'رئيس وحدة', unitDel: 'حذف وحدة', place: 'نقل موظف', alias: 'ربط اسم من جسر', mgr: 'المدير المباشر' };
+function ogFail(code, r) {
+  const det = (r && r.detail) || {}, o = r && r.op >= 0 ? O.ops[r.op] : null;
+  let why;
+  if (code === 'ERR_STALE') why = 'عدّل غيرك الهيكل بعد أن فتحت الشاشة' + (det.by ? ' (' + det.by + (det.at ? '، ' + String(det.at).slice(0, 16).replace('T', ' ') : '') + ')' : '') + '. اضغط «عرض الهيكل الحالي» ثم أعد تعديلك.';
+  else if (code === 'ERR_NETWORK') why = 'تعذّر الاتصال بالخادم. لم يُحفظ شيء؛ اضغط «حفظ» مرة أخرى.';
+  else why = (t(I18N.ar[code] ? code : 'ERR_SERVER')) + (det.msg ? ' — ' + det.msg : '');
+  openModal({ title: ic('info') + '<span>لم يُحفظ الهيكل</span>', body: '<p>' + esc(why) + '</p>' + (o ? '<p class="u-muted">التعديل: ' + esc(OG_OPN[o.t] || o.t) + (o.name ? ' «' + esc(o.name) + '»' : o.pid ? ' — ' + esc(ogNm(o.pid)) : '') + '</p>' : '') + '<p class="u-muted">تعديلاتك ما زالت في الصفحة ولم تضِع.</p>',
+    foot: code === 'ERR_STALE' ? '<button class="btn btn-ghost" data-act="closeModal"><span>إبقاء تعديلاتي</span></button><button class="btn btn-primary" data-og="staleFix">' + ic('refresh') + '<span>عرض الهيكل الحالي</span></button>' : '<button class="btn btn-primary" data-act="closeModal">' + ic('check') + '<span>حسناً</span></button>' });
+}
+async function ogSeed() {
+  openModal({ title: '<span>تعبئة أولى للهيكل</span>', body: '<div id="ogSeedOut"><div class="u-wait"><span class="u-spin"></span><span>قراءة كوادر ومهام وإجراءات…</span></div></div>', foot: '<button class="btn btn-ghost" data-act="closeModal"><span>إلغاء</span></button><button class="btn btn-primary" data-og="seedApply" id="ogSeedOk" disabled>' + ic('check') + '<span>اعتماد</span></button>' });
+  let r; try { r = await api('u_orgSeed', { apply: false }); } catch (c) { const o = $('#ogSeedOut'); if (o) o.innerHTML = '<p class="u-err">' + esc(t(I18N.ar[c] ? c : 'ERR_NETWORK')) + '</p>'; return; }
+  const out = $('#ogSeedOut'); if (!out) return;
+  if (!r.ok) { out.innerHTML = '<p class="u-err">' + esc(r.code === 'ERR_EXISTS' ? 'الهيكل معرَّف بالفعل.' : t(I18N.ar[r.code] ? r.code : 'ERR_SERVER')) + '</p>'; return; }
+  out.innerHTML = '<div class="u-prev"><span><b>' + r.depts.length + '</b> إدارات</span><span><b>' + r.depts.reduce((a, d) => a + d.secs.length, 0) + '</b> أقسام</span><span><b>' + (r.placed + r.viaJisr) + '</b> موظفاً في أماكنهم</span><span><b>' + r.unplaced + '</b> غير موزّعين</span></div>' +
+    '<div class="og-seed">' + r.depts.map(d => '<div><b>' + esc(d.name) + '</b>' + (d.head ? ' — ' + esc(d.head) : ' — <span class="og-none">بلا رئيس</span>') + (d.secs.length ? '<ul>' + d.secs.map(s => '<li>' + esc(s.name) + (s.head ? ' — ' + esc(s.head) : '') + '</li>').join('') + '</ul>' : '') + '</div>').join('') + '</div>' +
+    (r.mgrChanges && r.mgrChanges.length ? '<p class="u-muted"><b>يتغير المدير المباشر لـ' + r.mgrChanges.length + ' موظفاً</b> إلى رئيس قسمه أو إدارته: ' + esc(r.mgrChanges.slice(0, 12).map(x => x.name + ' (' + x.from + ' ← ' + x.to + ')').join('، ')) + (r.mgrChanges.length > 12 ? '…' : '') + '</p>' : '<p class="u-muted">لا يتغير المدير المباشر لأحد عمّا في جسر.</p>') +
+    (r.groups.length ? '<p class="u-muted">غير موزّعين حسب قسمهم في جسر: ' + esc(r.groups.slice(0, 8).map(g => g.jisr + ' (' + g.n + ')').join('، ')) + '. تُربط بعد الاعتماد من «غير موزّعين».</p>' : '') +
+    (r.skipped.length ? '<p class="u-err">لم يُقرأ: ' + esc(r.skipped.join('، ')) + '</p>' : '');
+  $('#ogSeedOk').disabled = !r.depts.length;
+}
+async function ogSeedApply() {
+  const b = $('#ogSeedOk'); b.disabled = true; b.classList.add('is-busy');
+  let r; try { r = await api('u_orgSeed', { apply: true }); } catch (c) { b.disabled = false; b.classList.remove('is-busy'); return ogFail(c === '__handled' ? 'ERR_NETWORK' : c, null); }
+  if (!r.ok) { b.disabled = false; b.classList.remove('is-busy'); return ogFail(r.code, r); }
+  closeModal(true); toast('عُرّف الهيكل: ' + r.depts.length + ' إدارات', 'ok'); uFlushSoon(); await ogLoad();
+}
+
+function ogClick(el, e) {
+  const k = el.dataset.og, id = el.dataset.id;
+  if (k === 'reload') return ogLoad(true);
+  if (k === 'sel') { O.sel = id; O.open = ''; return uRender(); }
+  if (k === 'co') { O.co = el.dataset.co; return uRender(); }
+  if (k === 'open') { if (e.target.closest('[data-ogp]') && e.type !== 'click') return; O.open = O.open === id ? '' : id; return uRender(); }
+  if (k === 'save') return ogSave();
+  if (k === 'undo') { O.w = JSON.parse(JSON.stringify(O.d)); O.ops = []; if (O.sel !== '__un' && !ogU(O.sel)) O.sel = (ogDepts()[0] || {}).id || ''; return uRender(); }
+  if (k === 'staleFix') { closeModal(true); O.ops = []; return ogLoad(true); }
+  if (k === 'seed') return ogSeed();
+  if (k === 'seedApply') return ogSeedApply();
+  if (k === 'addDept') return ogUnitForm('إدارة جديدة', null, 'dept', '');
+  if (k === 'addSec') return ogUnitForm('قسم جديد في «' + ogU(id).name + '»', null, 'section', id);
+  if (k === 'editUnit') { const u = ogU(id); return ogUnitForm(u.kind === 'dept' ? 'تعديل الإدارة' : 'تعديل القسم', u, u.kind, u.parent); }
+  if (k === 'fco') { O.form.co = el.dataset.co; $$('#ogFCo .seg-btn').forEach(b => b.classList.toggle('on', b === el)); return; }
+  if (k === 'formOk') return ogFormOk();
+  if (k === 'delUnit') {
+    const u = ogU(id), isD = u.kind === 'dept', n = O.w.people.filter(p => { const pl = ogPlace(p); return isD ? pl.d === id : pl.s === id; }).length;
+    O.del = id;
+    return openModal({ title: '<span>حذف ' + (isD ? 'الإدارة' : 'القسم') + ' «' + esc(u.name) + '»؟</span>', body: '<p>' + (isD ? 'تُحذف الإدارة وأقسامها (' + ogSecs(id).length + ')، ' : 'يُحذف القسم، ') + (n ? 'و' + n + ' موظفاً فيها ' + (isD ? 'يصبحون غير موزّعين.' : 'ينتقلون مباشرة تحت الإدارة.') : 'ولا أحد فيها.') + '</p><p class="u-muted">يتم الحذف عند «حفظ»، وتبقى في السجل.</p>',
+      foot: '<button class="btn btn-ghost" data-act="closeModal"><span>إلغاء</span></button><button class="btn btn-danger" data-og="delOk">' + ic('trash') + '<span>حذف</span></button>' });
+  }
+  if (k === 'delOk') {
+    const u = ogU(O.del), gone = [u.id].concat(u.kind === 'dept' ? ogSecs(u.id).map(s => s.id) : []);
+    O.w.people.forEach(p => { if (gone.indexOf(p.org) >= 0) p.org = u.kind === 'dept' ? '' : u.parent; });
+    O.w.units = O.w.units.filter(x => gone.indexOf(x.id) < 0);
+    if (gone.indexOf(O.sel) >= 0) O.sel = (ogDepts()[0] || {}).id || ''; if (gone.indexOf(O.open) >= 0) O.open = '';
+    closeModal(true); return ogOp({ t: 'unitDel', id: u.id });
+  }
+  if (k === 'pickHead') { const u = ogU(id); return ogPick(u.kind === 'dept' ? 'رئيس «' + u.name + '»' : 'رئيس قسم «' + u.name + '»', u.head, 'بلا رئيس', pid => { if (pid === (u.head || '')) return; u.head = pid; ogOp({ t: 'unitHead', id: u.id, pid: pid }); }); }
+  if (k === 'pickMgr') { const p = ogP(id); return ogPick('المدير المباشر لـ«' + p.name + '»', p.mgrPid, 'حسب الهيكل (رئيس قسمه أو إدارته)', pid => { if (pid === p.id) return toast('لا يكون الموظف مديراً لنفسه', 'err'); if (pid === (p.mgrPid || '')) return; p.mgrPid = pid; ogOp({ t: 'mgr', pid: p.id, mgr: pid }); }); }
+  if (k === 'addMem') { const u = ogU(id); return ogPick('إضافة موظف إلى «' + (u.kind === 'dept' ? u.name : u.name) + '»', '', '', pid => ogMoveTo(pid, id)); }
+  if (k === 'pk') { const cb = O.pk.cb; closeModal(true); return cb(el.dataset.id); }
+  if (k === 'move') return ogMovePick(id);
+  if (k === 'mvTo') { closeModal(true); return ogMoveTo(O.mv, id); }
+  if (k === 'alias') {
+    O.al = el.dataset.j;
+    const opts = ogDepts().map(d => '<button class="og-pi" data-og="alTo" data-id="' + esc(d.id) + '"><span class="og-dot"></span><span><b>' + esc(d.name) + '</b></span></button>' + ogSecs(d.id).map(s => '<button class="og-pi og-pi-sec" data-og="alTo" data-id="' + esc(s.id) + '"><span class="og-dot sec"></span><span><b>' + esc(s.name) + '</b><small>' + esc(d.name) + '</small></span></button>').join('')).join('');
+    return openModal({ title: '<span>ربط «' + esc(O.al) + '» من جسر</span>', body: '<p class="u-muted">من قسمه في جسر «' + esc(O.al) + '» ولم يُحدَّد مكانه يدخل الوحدة المختارة، الآن ومع كل استيراد قادم.</p><div class="og-pk">' + opts + '</div>', foot: '<button class="btn btn-ghost" data-act="closeModal"><span>إلغاء</span></button>' });
+  }
+  if (k === 'alTo') { const u = ogU(id); O.w.units.forEach(x => { x.jisr = (x.jisr || []).filter(n => ogKey(n) !== ogKey(O.al)); }); u.jisr = (u.jisr || []).concat([O.al]); closeModal(true); return ogOp({ t: 'alias', unit: id, jisr: O.al }); }
+}
+document.addEventListener('click', e => { const el = e.target.closest('[data-og]'); if (!el || !(el.closest('#uRoot') || el.closest('#modal'))) return; if (el.tagName === 'BUTTON') e.preventDefault(); ogClick(el, e); });
+document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.matches && e.target.matches('#uRoot [data-og][role="button"]')) { e.preventDefault(); ogClick(e.target, e); } });
+// السحب والإفلات على الكمبيوتر: موظف إلى قسم أو إدارة
+document.addEventListener('dragstart', e => { const a = e.target.closest && e.target.closest('[data-ogp]'); if (!a) return; e.dataTransfer.setData('text/plain', a.dataset.ogp); e.dataTransfer.effectAllowed = 'move'; document.body.classList.add('og-dragging'); });
+document.addEventListener('dragend', () => { document.body.classList.remove('og-dragging'); $$('.og-over').forEach(x => x.classList.remove('og-over')); });
+document.addEventListener('dragover', e => { const t = e.target.closest && e.target.closest('#uRoot [data-drop]'); if (!t || !O.d || !O.d.edit) return; e.preventDefault(); $$('.og-over').forEach(x => { if (x !== t) x.classList.remove('og-over'); }); t.classList.add('og-over'); });
+document.addEventListener('drop', e => { const t = e.target.closest && e.target.closest('#uRoot [data-drop]'); if (!t || !O.d || !O.d.edit) return; e.preventDefault(); t.classList.remove('og-over'); const pid = e.dataTransfer.getData('text/plain'); if (pid && ogP(pid)) ogMoveTo(pid, t.dataset.drop); });
+window.addEventListener('beforeunload', e => { if (O.ops && O.ops.length) { e.preventDefault(); e.returnValue = ''; } });
+
+// صفحة الموظف: الانتقال إلى الهيكل، والحذف النهائي لمن أُضيف يدوياً ولم يستخدم أي نظام
+function ogLeave(v) {
+  openModal({ title: '<span>تعديلات الهيكل لم تُحفظ</span>', body: '<p>عندك ' + O.ops.length + (O.ops.length === 1 ? ' تعديل' : ' تعديلات') + ' في الهيكل التنظيمي لم تُحفظ.</p>',
+    foot: '<button class="btn btn-ghost" data-og="leaveDrop" data-v="' + esc(v) + '"><span>ترك التعديلات</span></button><button class="btn btn-primary" data-act="closeModal">' + ic('undo') + '<span>البقاء في الهيكل</span></button>' });
+}
+function ogPersonClick(el) {
+  const k = el.dataset.og;
+  if (k === 'leaveDrop') { O.ops = []; O.w = O.d ? JSON.parse(JSON.stringify(O.d)) : null; closeModal(true); return uNav(el.dataset.v); }
+  if (k === 'goOrg') { O.sel = el.dataset.id; O.open = ''; if (O.d && Date.now() - O.at > 30000 && !O.ops.length) O.d = null; return uNav('org'); }
+  if (k === 'pDel') {
+    const p = U.d.people.find(x => x.id === U.id); if (!p) return;
+    return openModal({ title: '<span>حذف «' + esc(p.name) + '» نهائياً؟</span>', body: '<p>أُضيف يدوياً ولم يدخل أي نظام. سيُحذف من سوار ومن الأنظمة كلها مع حسابه وصلاحياته، ولا يمكن التراجع.</p>' +
+      '<label class="field"><span>سبب الحذف</span><textarea class="inp" id="ogDelWhy" rows="2" maxlength="200" placeholder="مثل: أُضيف للتجربة"></textarea></label><p class="u-err" id="ogDelErr" hidden></p>',
+      foot: '<button class="btn btn-ghost" data-act="closeModal"><span>إلغاء</span></button><button class="btn btn-danger" data-og="pDelOk" id="ogDelOk" disabled>' + ic('trash') + '<span>حذف نهائي</span></button>' }), setTimeout(() => { const w = $('#ogDelWhy'); if (w) { w.oninput = () => { $('#ogDelOk').disabled = w.value.trim().length < 3; }; w.focus(); } }, 60);
+  }
+  if (k === 'pDelOk') return ogDelete();
+}
+const OG_DEL_ERR = { DEL_REASON: 'اكتب سبب الحذف (3 أحرف على الأقل).', DEL_USED: 'دخل سوار من قبل، فلا يُحذف. أوقفه بدلاً من ذلك.', DEL_JISR: 'هذا موظف من جسر؛ يعود مع الاستيراد. أوقفه بدلاً من ذلك.', DEL_HEAD: 'رئيس لإدارة أو قسم في الهيكل التنظيمي. غيّر الرئيس أولاً.', DEL_MGR: 'مدير مباشر لموظف آخر في سوار. غيّر ذلك أولاً.' };
+async function ogDelete() {
+  const p = U.d.people.find(x => x.id === U.id), b = $('#ogDelOk'), err = $('#ogDelErr'), why = ($('#ogDelWhy').value || '').trim();
+  b.disabled = true; b.classList.add('is-busy'); err.hidden = true;
+  let r, code = '';
+  try { r = await api('u_personDelete', { pid: p.id, reason: why }); if (!r || r.ok === false) code = (r && r.code) || 'ERR_SERVER'; }
+  catch (c) { code = c === '__handled' ? 'ERR_NETWORK' : c; }
+  if (code) { b.disabled = false; b.classList.remove('is-busy'); err.textContent = 'لم يُحذف: ' + (OG_DEL_ERR[code] || t(I18N.ar[code] ? code : 'ERR_SERVER')); err.hidden = false; return; }
+  closeModal(true); toast('حُذف «' + p.name + '» نهائياً', 'ok'); uFlushSoon();
+  U.d.people = U.d.people.filter(x => x.id !== p.id); if (U.orig) U.orig.people = U.orig.people.filter(x => x.id !== p.id);
+  O.d = null; U.back = []; U.view = 'people'; U.id = ''; uRender(); uLoad();
+}
+document.addEventListener('click', e => { const el = e.target.closest('[data-og="goOrg"],[data-og="pDel"],[data-og="pDelOk"],[data-og="leaveDrop"]'); if (!el) return; e.preventDefault(); e.stopImmediatePropagation(); ogPersonClick(el); }, true);
 
 function uConfirm(msg, yes, no) {
   openModal({ title: 'تأكيد', body: '<p>' + esc(msg) + '</p>', foot: '<button class="btn btn-ghost" data-u="cNo">إلغاء</button><button class="btn btn-primary" data-u="cYes">نعم، احفظ</button>' });
