@@ -1268,6 +1268,141 @@ body.og-dragging .og-sec, body.og-dragging .og-di { transition: none; }
   .og-r { flex-wrap: wrap; }
   .og-ra { width: 100%; justify-content: flex-end; }
 }
+.pz-sub { display: flex; flex-direction: column; gap: 2px; margin: 18px 2px 4px; }
+.pz-sub b { font-size: 14.5px; }
+.pz-sub small { font-size: 12.5px; color: var(--muted); }
+/* ══ جرس سوار: بطاقات عائمة مجمّعة حسب النظام، ولوحة سفلية في الجوال ══ */
+.nb-btn { position: relative; }
+.nb-btn.on { background: #FFFBF2; color: var(--text); box-shadow: 0 0 0 3px rgba(194,146,63,.22), inset 0 1px 0 #fff; }
+.nb-badge { position: absolute; top: 1px; inset-inline-end: 0; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; display: grid; place-items: center;
+  background: linear-gradient(180deg, #8E2A38, #6E1A27); color: #fff; font: 700 10.5px/1 Montserrat, system-ui, sans-serif; box-shadow: 0 0 0 2px var(--surface, #fff), 0 4px 10px -4px rgba(110,26,39,.7); pointer-events: none; }
+.nb-veil { position: fixed; inset: 0; z-index: 88; background: rgba(43,39,35,.16); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); opacity: 0; transition: opacity .22s; }
+.nb-veil.on { opacity: 1; }
+.nb-panel { position: fixed; z-index: 90; width: 460px; max-width: calc(100vw - 32px); display: flex; flex-direction: column; padding: 16px 14px 10px; border-radius: 28px;
+  background: rgba(250,247,242,.97); -webkit-backdrop-filter: blur(18px) saturate(140%); backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.75), 0 0 0 1px rgba(110,80,40,.07), 0 40px 80px -30px rgba(40,25,10,.5);
+  opacity: 0; transform: translateY(-8px) scale(.985); transform-origin: top; transition: opacity .2s ease, transform .28s cubic-bezier(.2,.8,.2,1); }
+.nb-panel.on { opacity: 1; transform: none; }
+.nb-grab { display: none; }
+.nb-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 4px 8px 12px; }
+.nb-ttl { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.nb-ttl b { font-size: 21px; font-weight: 700; letter-spacing: -.2px; }
+.nb-new { font-size: 13px; font-weight: 700; color: #7E1F2C; white-space: nowrap; }
+.nb-sync { width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(194,146,63,.25); border-top-color: #C2923F; animation: uspin .8s linear infinite; align-self: center; }
+.nb-all { font-size: 13px; font-weight: 700; color: #8C6A1D; padding: 6px 4px; border-radius: 8px; white-space: nowrap; }
+.nb-all:hover { color: #6E531A; }
+.nb-chips { display: flex; gap: 6px; padding: 0 8px 10px; }
+.nb-chip { padding: 7px 15px; border-radius: 11px; font-size: 13px; color: var(--muted); background: rgba(255,255,255,.7); box-shadow: 0 0 0 1px rgba(110,80,40,.06); }
+.nb-chip.on { background: #2B2723; color: #F6EEDC; font-weight: 700; box-shadow: 0 8px 16px -10px rgba(0,0,0,.55); }
+.nb-body { overflow-y: auto; overscroll-behavior: contain; padding: 2px 8px 10px; margin: 0 -2px; scrollbar-width: thin; }
+.nb-warn { display: flex; align-items: center; gap: 10px; margin: 0 8px 10px; padding: 10px 12px; border-radius: 14px; font-size: 13px; color: #7E1F2C; background: #FBF1EF; box-shadow: inset 0 0 0 1px rgba(126,31,44,.14); }
+.nb-warn span { flex: 1; min-width: 0; }
+.nb-warn button { font-weight: 700; color: #7E1F2C; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+.nb-empty { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 46px 16px 40px; color: var(--muted); font-size: 14px; text-align: center; }
+.nb-empty .ic { width: 30px; height: 30px; color: #C2923F; opacity: .8; }
+.nb-wait { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 48px 16px; color: var(--muted); font-size: 14px; }
+.nb-wait i { width: 30px; height: 30px; border-radius: 50%; border: 3px solid rgba(194,146,63,.2); border-top-color: #C2923F; border-inline-end-color: #E3B66D; animation: uspin .9s linear infinite; }
+.nb-grp { position: relative; margin-top: 10px; }
+.nb-grp > .nb-item { margin-top: 0; z-index: 3; }
+.nb-peek { position: relative; z-index: 2; height: 12px; margin: 0 16px; border-radius: 0 0 16px 16px; background: #F3EEE7; box-shadow: 0 0 0 1px rgba(110,80,40,.08), 0 10px 18px -8px rgba(70,42,18,.3); }
+.nb-peek + .nb-peek { z-index: 1; height: 10px; margin: 0 32px; background: #ECE5DC; }
+.nb-more { position: absolute; bottom: -4px; inset-inline-start: 26px; z-index: 4; padding: 3px 10px; border-radius: 9px; font: 700 11.5px/1.4 Montserrat, system-ui, sans-serif; color: #8C6A1D; background: #F6EEDC; box-shadow: 0 0 0 1px rgba(194,146,63,.28), 0 4px 10px -6px rgba(70,42,18,.5); direction: ltr; unicode-bidi: isolate; }
+.nb-more.hot { color: #7E1F2C; background: #FBF1EF; box-shadow: 0 0 0 1px rgba(126,31,44,.2), 0 4px 10px -6px rgba(110,26,39,.5); }
+.nb-fold { display: block; margin: 8px auto 2px; font-size: 12.5px; font-weight: 700; color: #8C6A1D; }
+.nb-item { position: relative; display: flex; align-items: center; gap: 14px; width: 100%; margin-top: 10px; padding: 13px 16px; border-radius: 20px; text-align: start; cursor: pointer;
+  background: #fff; box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 0 0 1px rgba(110,80,40,.06), 0 24px 44px -26px rgba(70,42,18,.36), 0 10px 20px -14px rgba(70,42,18,.2);
+  transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s; }
+.nb-item:hover { transform: translateY(-2px); }
+.nb-item:active { transform: scale(.99); }
+.nb-item.read { background: #FAF8F5; box-shadow: 0 0 0 1px rgba(110,80,40,.07); }
+.nb-item.read .nb-t { font-weight: 500; color: var(--muted); }
+.nb-item.read .nb-ic { filter: saturate(.65); opacity: .85; }
+.nb-dot { position: absolute; top: 50%; inset-inline-start: -4px; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; background: #7E1F2C; box-shadow: 0 0 0 3px rgba(126,31,44,.14); }
+.nb-ic { flex: none; width: 50px; height: 50px; display: grid; place-items: center; }
+.nb-ic .app-icon { width: 48px !important; height: 48px !important; border-radius: 14px; box-shadow: 0 8px 16px -8px rgba(30,15,10,.5); }
+.nb-ic .app-icon.is-sw { width: 52px !important; height: 52px !important; box-shadow: none; }
+.nb-ic .app-icon.is-img { width: 52px !important; height: 44px !important; }
+.nb-ic .app-icon svg { width: 60%; height: 60%; }
+.nb-ic .app-icon.is-sw svg { width: auto; height: auto; }
+.nb-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.nb-t { font-size: 14.5px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nb-s { font-size: 12.5px; color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nb-tm { flex: none; display: inline-flex; align-items: center; height: 28px; padding: 0 11px; border-radius: 10px; font-size: 12.5px; color: var(--muted); background: #F2EDE5; white-space: nowrap; box-shadow: inset 0 1px 0 rgba(255,255,255,.8); }
+.nb-tm.now { color: #0F6E56; background: #E4F2EA; }
+.nb-item.read .nb-tm { background: #F1EDE7; }
+html.nb-lock, html.nb-lock body { overflow: hidden; }
+@media (max-width: 600px) {
+  .nb-panel { top: auto !important; left: 0 !important; right: 0 !important; bottom: 0; width: 100%; max-width: none; max-height: 88vh !important; padding: 8px 12px calc(10px + env(safe-area-inset-bottom)); border-radius: 30px 30px 0 0;
+    background: rgba(248,245,240,.98); transform: translateY(40px); transform-origin: bottom; }
+  .nb-panel.on { transform: none; }
+  .nb-veil { background: rgba(43,39,35,.28); }
+  .nb-grab { display: block; width: 46px; height: 5px; margin: 4px auto 10px; border-radius: 3px; background: #D9CFC3; }
+  .nb-h { padding: 6px 6px 12px; }
+  .nb-ttl b { font-size: 22px; }
+  .nb-item { padding: 12px 13px; gap: 12px; border-radius: 20px; }
+  .nb-t { font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { .nb-panel, .nb-veil, .nb-item { transition: none !important; } }
+
+/* ══ الرئيسية: طريقة العرض و«بطاقات عائمة» ══ */
+.hv { display: flex; align-items: center; justify-content: flex-end; gap: 10px; max-width: 880px; margin: 18px auto 0; }
+.hv-l { font-size: 13px; color: var(--faint); }
+.hv-seg { display: flex; padding: 4px; border-radius: 14px; background: rgba(255,255,255,.72); box-shadow: 0 0 0 1px rgba(110,80,40,.08); }
+.hv-seg button { display: inline-flex; align-items: center; gap: 7px; padding: 8px 14px; border-radius: 10px; font-size: 13.5px; color: var(--muted); transition: background .2s, color .2s; }
+.hv-seg button .ic { width: 16px; height: 16px; }
+.hv-seg button.on { background: #2B2723; color: #F6EEDC; font-weight: 700; box-shadow: 0 8px 16px -8px rgba(0,0,0,.5); }
+.fc-head { position: relative; text-align: center; padding: 22px 8px 6px; }
+.fc-h1 { margin: 0; font-size: clamp(30px, 5.4vw, 52px); font-weight: 700; letter-spacing: -.4px; line-height: 1.25; }
+.fc-h1 em { font-style: normal; background: linear-gradient(180deg, #C9A14A, #8C6A1D); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.fc-sub { margin: 8px 0 0; font-size: 15.5px; color: var(--faint); }
+.fc-list { position: relative; max-width: 820px; margin: 26px auto 0; display: flex; flex-direction: column; gap: 14px; }
+.fc-list::before { content: ''; position: absolute; left: 50%; top: -120px; width: 1100px; height: 1100px; margin-left: -550px; border-radius: 50%; border: 1px solid rgba(176,138,46,.13);
+  box-shadow: 0 0 0 170px transparent, inset 0 0 0 170px transparent; pointer-events: none; z-index: -1; }
+.fc-list::after { content: ''; position: absolute; left: 50%; top: 20px; width: 760px; height: 760px; margin-left: -380px; border-radius: 50%; border: 1px solid rgba(176,138,46,.11); pointer-events: none; z-index: -1; }
+.fc { position: relative; display: flex; align-items: center; gap: 18px; width: 100%; min-height: 96px; padding: 14px 24px; border-radius: 24px; text-align: start; cursor: pointer; background: #fff;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 0 0 1px rgba(110,80,40,.06), 0 30px 60px -24px rgba(70,42,18,.34), 0 12px 24px -14px rgba(70,42,18,.2);
+  transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s; }
+.fc:hover { transform: translateY(-3px); }
+.fc:active { transform: scale(.995); }
+.fc.calm { width: calc(100% - 56px); margin-inline: auto; background: #FBF9F6; box-shadow: 0 0 0 1px rgba(110,80,40,.07), 0 16px 30px -22px rgba(70,42,18,.3); }
+.fc.is-locked { width: calc(100% - 104px); margin-inline: auto; cursor: not-allowed; background: transparent; box-shadow: none; border: 1.5px dashed rgba(194,146,63,.35); }
+.fc.is-locked .fc-tx { opacity: .6; }
+.fc.is-locked .fc-t { font-size: 14.5px; font-weight: 500; }
+.fc .sv-ic { flex: none; }
+#screen-home .fc .app-icon:not(.is-img) { width: 64px; height: 64px; border-radius: 26%; }
+#screen-home .fc .app-icon.is-sw, [data-theme] #screen-home .fc .app-icon.is-sw { width: 70px; height: 70px; border-radius: 0; }
+#screen-home .fc .app-icon.is-img { width: 84px; height: 64px; }
+.fc-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.fc-nm { font-size: 13px; color: var(--faint); }
+.fc-t { font-size: 17.5px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fc-t small { font-size: 13.5px; font-weight: 500; color: var(--muted); }
+.fc.calm .fc-t { font-weight: 500; color: var(--muted); }
+.fc-n { flex: none; min-width: 46px; height: 46px; padding: 0 10px; border-radius: 14px; display: grid; place-items: center; font: 800 21px/1 Montserrat, system-ui, sans-serif; color: #7E1F2C; background: #FBF1EF; box-shadow: 0 0 0 1px rgba(126,31,44,.12); }
+.fc-ok { flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 10px; font-size: 13px; color: #0F6E56; background: #E4F2EA; }
+.fc-ok .ic { width: 15px; height: 15px; }
+.fc-go { flex: none; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: #F6F1EA; color: #8C6A1D; transition: transform .4s cubic-bezier(.2,.8,.2,1); }
+.fc-go .ic { width: 18px; height: 18px; }
+@media (hover: hover) and (pointer: fine) { .fc:not(.is-locked):hover .fc-go { transform: translateX(4px); } [dir="rtl"] .fc:not(.is-locked):hover .fc-go { transform: translateX(-4px); } }
+.fc-enter .fc { animation: svIn .8s cubic-bezier(.16,1,.3,1) both; animation-delay: calc(min(var(--i), 8) * 70ms); }
+@media (max-width: 720px) {
+  .hv { justify-content: center; margin-top: 14px; }
+  .hv-l { display: none; }
+  .hv-seg button { padding: 7px 12px; font-size: 13px; }
+  .fc-head { padding-top: 14px; }
+  .fc-sub { font-size: 14px; }
+  .fc-list { gap: 12px; margin-top: 20px; }
+  .fc-list::before, .fc-list::after { display: none; }
+  .fc { min-height: 82px; gap: 12px; padding: 12px 14px; border-radius: 22px; }
+  .fc.calm { width: calc(100% - 20px); }
+  .fc.is-locked { width: calc(100% - 40px); }
+  #screen-home .fc .app-icon:not(.is-img) { width: 52px; height: 52px; }
+  #screen-home .fc .app-icon.is-sw, [data-theme] #screen-home .fc .app-icon.is-sw { width: 56px; height: 56px; }
+  .fc-t { font-size: 15px; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .fc-n { min-width: 38px; height: 38px; font-size: 17px; border-radius: 12px; }
+  .fc-ok { height: 28px; padding: 0 9px; font-size: 12px; }
+  .fc-go { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .fc, .fc-enter .fc { animation: none !important; transition: none !important; } }
 </style>
 <style id="sdfix">input[type=date],input[type=time],input[type=month],input[type=datetime-local]{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important;word-spacing:normal!important;text-align:start!important}input[type=date]::-webkit-datetime-edit,input[type=time]::-webkit-datetime-edit,input[type=month]::-webkit-datetime-edit,input[type=datetime-local]::-webkit-datetime-edit{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important}</style></head>
 <body>
@@ -1281,6 +1416,7 @@ body.og-dragging .og-sec, body.og-dragging .og-di { transition: none; }
   <button class="tb-brand" data-act="goHome" id="tbBrand"></button>
   <div class="tb-actions">
     <button class="btn btn-ghost nav-btn" id="navBtn" data-act="toggleArea" hidden></button>
+    <button class="icon-btn nb-btn" id="nbBtn" data-act="nbToggle" data-i18n-title="nbTitle" aria-haspopup="dialog" aria-expanded="false"><i data-ic="bell"></i><span class="nb-badge" id="nbBadge" hidden></span></button>
     <button class="icon-btn" data-act="lang" data-i18n-title="switchLang"><i data-ic="globe"></i></button>
     <div class="menu" id="userMenu">
       <button class="avatar-btn" data-act="toggleMenu"><span class="avatar" id="avatar"></span><i data-ic="chevronDown"></i></button>
@@ -1295,6 +1431,8 @@ body.og-dragging .og-sec, body.og-dragging .og-di { transition: none; }
     </div>
   </div>
 </header>
+<div class="nb-veil" id="nbVeil" data-act="nbClose" hidden></div>
+<section class="nb-panel" id="nbPanel" role="dialog" aria-modal="true" hidden></section>
 
 <section id="screen-login" class="screen">
   <div class="login-top"><button class="chip" data-act="lang"><i data-ic="globe"></i><span data-i18n="langName"></span></button></div>
@@ -1350,7 +1488,9 @@ body.og-dragging .og-sec, body.og-dragging .og-di { transition: none; }
 
 <section id="screen-home" class="screen">
   <main class="wrap">
-    <div class="hero"><p class="hero-date" id="heroDate"></p><h2 class="hero-title" id="heroTitle"></h2></div>
+    <div class="hv" id="hvBar" hidden></div>
+    <div class="hero" id="heroBox"><p class="hero-date" id="heroDate"></p><h2 class="hero-title" id="heroTitle"></h2></div>
+    <div class="fc-head" id="fcHead" hidden></div>
     <div class="search-row" id="searchRow" hidden>
       <div class="input-wrap"><i data-ic="search"></i><input id="appSearch" type="search" data-i18n-ph="searchApps" autocomplete="off"></div>
     </div>
@@ -1515,6 +1655,10 @@ const I18N = {
     forgot: 'نسيت كلمة المرور؟', forgotIntro: '', sendRequest: 'متابعة', backToLogin: 'العودة لتسجيل الدخول',
     resetIntro: 'إذا كان لحسابك بريد مسجّل فسيصلك رمز تحقق من 6 أرقام، وإلا فسيصل طلبك إلى مدير النظام لإعادة التعيين.',
     code: 'رمز التحقق', newPin: 'كلمة المرور الجديدة', confirmPin: 'تأكيد كلمة المرور', setPin: 'حفظ كلمة المرور', currentPin: 'كلمة المرور الحالية',
+    nbTitle: 'الإشعارات', nbNew: '{n} جديدة', nbAll: 'تعليم الكل كمقروء', nbAllF: 'الكل', nbUnread: 'غير المقروءة', nbNone: 'لا توجد إشعارات', nbNoneU: 'لا توجد إشعارات غير مقروءة',
+    nbLoading: 'جارٍ تحميل الإشعارات…', nbFail: 'تعذّر تحميل الإشعارات. تحقق من الاتصال ثم أعد المحاولة.', nbStale: 'تعذّر التحديث؛ المعروض آخر نسخة محفوظة.', nbReadFail: 'لم تُحفظ حالة القراءة على الخادم بعد.',
+    nbRetry: 'إعادة المحاولة', nbFold: 'إخفاء', nbNoApp: 'لم يعد لديك دخول إلى هذا النظام.', ago_now: 'الآن', ago_m: 'منذ {n} د', ago_h1: 'منذ ساعة', ago_h: 'منذ {n} س', ago_y: 'أمس',
+    hvLabel: 'طريقة العرض', hvList: 'قائمة', hvFloat: 'بطاقات عائمة', fcTitle: 'كل أنظمتك في <em>مكان واحد</em>', fcWait: '{n} أمور بانتظارك', fcWait1: 'أمر واحد بانتظارك', fcNone: 'لا شيء بانتظارك', fcDone: 'مكتمل',
     morning: 'صباح الخير', evening: 'مساء الخير', sep: '، ', searchApps: 'ابحث عن برنامج', search: 'بحث',
     noApps: 'لا توجد برامج متاحة لحسابك حالياً.', noResults: 'لا توجد نتائج مطابقة.', opening: 'جارٍ فتح البرنامج…',
     adminPanel: 'لوحة الإدارة', programs: 'البرامج', changePin: 'تغيير كلمة المرور', signOut: 'تسجيل الخروج', myTheme: 'شكل الواجهة',
@@ -1591,6 +1735,10 @@ const I18N = {
     forgot: 'Forgot your password?', forgotIntro: '', sendRequest: 'Continue', backToLogin: 'Back to sign in',
     resetIntro: 'If your account has a registered email, a 6-digit code will be sent to it; otherwise your request goes to the system admin for a reset.',
     code: 'Verification code', newPin: 'New password', confirmPin: 'Confirm password', setPin: 'Save password', currentPin: 'Current password',
+    nbTitle: 'Notifications', nbNew: '{n} new', nbAll: 'Mark all as read', nbAllF: 'All', nbUnread: 'Unread', nbNone: 'No notifications', nbNoneU: 'No unread notifications',
+    nbLoading: 'Loading notifications…', nbFail: 'Could not load notifications. Check the connection and try again.', nbStale: 'Could not refresh; showing the last saved copy.', nbReadFail: 'Read status is not saved on the server yet.',
+    nbRetry: 'Try again', nbFold: 'Hide', nbNoApp: 'You no longer have access to this system.', ago_now: 'Now', ago_m: '{n} min ago', ago_h1: '1 h ago', ago_h: '{n} h ago', ago_y: 'Yesterday',
+    hvLabel: 'View', hvList: 'List', hvFloat: 'Floating cards', fcTitle: 'All your systems in <em>one place</em>', fcWait: '{n} items waiting for you', fcWait1: 'One item waiting for you', fcNone: 'Nothing waiting for you', fcDone: 'Done',
     morning: 'Good morning', evening: 'Good evening', sep: ', ', searchApps: 'Search apps', search: 'Search',
     noApps: 'No apps are available for your account yet.', noResults: 'No matching results.', opening: 'Opening app…',
     adminPanel: 'Admin panel', programs: 'Apps', changePin: 'Change password', signOut: 'Sign out', myTheme: 'Interface style',
@@ -1889,7 +2037,7 @@ let PAIR = (() => {
 let DIRECT_OK = /^https:\/\/script\.google\.com\/.+\/exec$/.test(EXEC_URL) && (STATIC || !(Number(store.get('sp_direct_off')) > Date.now()));
 
 const IDEMP = new Proxy({}, { get: (o, k) => typeof k === 'string' && /^u_/.test(k) && k !== 'u_load' });
-const READ_ONLY = { init: 1, pending: 1, admin_load: 1, u_load: 1, admin_review: 1, admin_invitePreview: 1 };
+const READ_ONLY = { init: 1, pending: 1, notif_list: 1, admin_load: 1, u_load: 1, admin_review: 1, admin_invitePreview: 1 };
 function postApi(action, payload) {
   const ro = !!READ_ONLY[action], idem = !!IDEMP[action];
   const ac = (ro || idem) && window.AbortController ? new AbortController() : null;
@@ -1985,7 +2133,15 @@ const Mock = (() => {
       'APP-001': { count: 2, items: [{ titleAR: 'تقييم نهاية فترة التجربة — [اسم الموظف]', titleEN: 'End of probation evaluation — [Employee]', subAR: 'يُستحق خلال 3 أيام', subEN: 'Due in 3 days', go: 'eval=demo' }, { titleAR: 'مقابلة مرشح — [المسمى الوظيفي]', titleEN: 'Candidate interview — [Job title]', subAR: '', subEN: '', go: 'interview=demo' }] },
       'APP-003': { count: 1, items: [{ titleAR: 'توقيع طلب PR-SW-0142', titleEN: 'Sign request PR-SW-0142', subAR: '', subEN: '', go: 'pr=PR-SW-0142' }] },
       'APP-005': { count: 1, items: [] }
-    } }),
+    }, okApps: ['APP-001', 'APP-002', 'APP-003', 'APP-005'] }),
+    notif_list: () => { const base = Date.now(); if (!db.nb) db.nb = { u: 0, ids: [], items: [
+      ['APP-003', 'مطلوب منك اعتماد', 'S26-0014 · اعتماد منتج جديد', 'APP-003|pr=S26-0014', 0.4], ['APP-005', 'مطلوب منك إفادة', 'تحقيق تالف جديد في المعرض · 3 أصناف', 'APP-005|case=T-0102', 5],
+      ['APP-003', 'مطلوب منك تنفيذ', 'S26-0012 · صيانة ثلاجة العرض', 'APP-003|pr=S26-0012', 14], ['APP-001', 'مطلوب منك تقييم', '3 تقييمات أداء مستحقة قبل 2 نوفمبر', 'APP-001|eval=demo', 61],
+      ['APP-002', 'اكتملت الطاقة اليومية', 'التحليلات', '', 300], ['APP-003', 'تم تنفيذ الطلب', 'S26-0009 · طباعة ملصقات', 'APP-003|pr=S26-0009', 1500], ['APP-003', 'اعتُمد الطلب', 'S26-0007', 'APP-003|pr=S26-0007', 1700]
+    ].map((r, i) => ({ id: String((base - r[4] * 60000) * 1000 + i), at: new Date(base - r[4] * 60000).toISOString(), app: r[0], t: r[1], b: r[2], g: r[3] })) };
+      db.nb.u = db.nb.u || Number(db.nb.items[4].id); const items = db.nb.items.map(x => Object.assign({}, x, { r: Number(x.id) <= db.nb.u || db.nb.ids.indexOf(x.id) >= 0 ? 1 : 0 }));
+      return { items: items, unread: items.filter(x => !x.r).length, poll: 3, at: new Date().toISOString() }; },
+    notif_read: p => { if (!db.nb) return {}; if (p.all) db.nb.u = Math.max(db.nb.u, Number(p.upto) || 0); (p.ids || []).forEach(i => db.nb.ids.push(String(i))); return { u: String(db.nb.u), ids: db.nb.ids }; },
     changePin: p => { if (!pwOk(p.next)) fail('ERR_PIN'); return { token: 'demo' }; },
     forgotPin: p => { if (!p.username) fail('ERR_USERNAME'); return { sent: true }; },
     resetWithCode: p => { if (String(p.code).length !== 6) fail('ERR_CODE'); return true; },
@@ -2276,6 +2432,7 @@ function enterSession(d, fresh) {
   show('home');
   // العدادات بعد ظهور الرئيسية بلحظات، فلا تزاحم الدخول ولا فتح أول نظام
   if (!S.user.mustChange) setTimeout(() => { if (S.token && S.screen === 'home') loadPending(false); }, S.inApp ? 5000 : 1500);
+  nbBoot();
   afterHome();
   navRestore();
   if (fresh) toast(t('ok_welcome', { name: L(S.user, 'name') || S.user.username }), 'ok');
@@ -2331,6 +2488,7 @@ function snapGet() { try { const s = JSON.parse(localStorage.getItem(SNAP_K) || 
 function snapSet(d) { try { localStorage.setItem(SNAP_K, JSON.stringify({ at: Date.now(), d: { user: d.user, apps: d.apps || [] } })); } catch (e) {} }
 function clearSession() {
   try { localStorage.removeItem(SNAP_K); } catch (e) {}
+  nbReset(true);
   S.token = null; S.user = null; S.apps = []; S.admin = null; S.draft = null; S.review = null; S.pending = null; S.pendingAt = 0;
   store.del('sp_token'); sess.del('sp_token');
   // أي نهاية للجلسة تغلق شاشات الأنظمة المفتوحة في التطبيق وتمسح ذاكرتها
@@ -2377,6 +2535,7 @@ function renderHome() {
   $('#heroTitle').textContent = t(h < 12 ? 'morning' : 'evening') + t('sep') + (L(u, 'name') || u.username).split(' ')[0];
   $('#heroDate').textContent = fmtr('w' + locale(), () => new Intl.DateTimeFormat(locale(), { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Riyadh' })).format(new Date());
   $('#searchRow').hidden = S.apps.length <= 8;
+  hvRender();
   renderPending();
   renderAppsGrid();
 }
@@ -2389,6 +2548,8 @@ async function loadPending(force) {
     const r = pre ? await pre : null;
     S.pending = r && r.ok ? r.data : await api('pending', { force: !!force });
     S.pendingAt = Date.now();
+    pendSave();
+    if (hvMode() === 'float') fcHeadRender();
     renderPending();
 
     const g = $('#appsGrid');
@@ -2443,6 +2604,8 @@ function renderAppsGrid() {
     .filter(a => !q || [a.nameAR, a.nameEN, a.descAR, a.descEN].join(' ').toLowerCase().indexOf(q) >= 0);
   $('#appsTools').hidden = S.apps.filter(a => !a.locked).length < 2;
   if (!list.length) { grid.innerHTML = '<div class="empty">' + ic('search') + '<span>' + esc(t('noResults')) + '</span></div>'; return; }
+  if (hvMode() === 'float') return fcRender(grid, list);
+  grid.classList.remove('fc-list'); grid.classList.add('sv-list');
 
   if (!S.svShown) { S.svShown = true; grid.classList.add('sv-enter'); setTimeout(() => grid.classList.remove('sv-enter'), 1800); }
   grid.innerHTML = list.map((a, i) => {
@@ -2461,6 +2624,231 @@ function renderAppsGrid() {
           ((S.lang === 'ar' ? it.subAR : it.subEN) ? '<span class="sv-it-s">' + esc(S.lang === 'ar' ? it.subAR : it.subEN) + '</span>' : '') + '</span>' + ic('arrow', 'flip') + '</button>').join('') +
         '</div></div>' : '') +
       '</div>';
+  }).join('');
+}
+// ══ جرس سوار ══
+// يُرسم فوراً من النسخة المحفوظة على الجهاز، ثم يُحدَّث في الخلفية بلا مؤشر انشغال (notif_list) كل NotifPollMin دقيقة وعند العودة للتطبيق.
+// القراءة تُطبَّق على الشاشة فوراً وتُحفظ في طابور حتى يؤكدها الخادم (notif_read)؛ إن فشلت يبقى سطر ثابت مع «إعادة المحاولة».
+const NB = { items: null, at: 0, poll: 3, filter: 'all', open: false, loading: false, err: '', rerr: false, q: [], grp: {}, timer: 0, key: '' };
+function nbKey() { return S.user ? 'sp_nb_' + String(S.user.id || S.user.email || S.user.username || '') : ''; }
+function nbSave() { if (!NB.key) return; try { localStorage.setItem(NB.key, JSON.stringify({ items: NB.items, at: NB.at, poll: NB.poll, q: NB.q })); } catch (e) {} }
+function nbApplyQ() {
+  (NB.items || []).forEach(x => { NB.q.forEach(o => { if ((o.all && Number(x.id) <= Number(o.upto)) || (o.ids && o.ids.indexOf(x.id) >= 0)) x.r = 1; }); });
+}
+function qApi(action, payload) {
+  const fin = res => {
+    if (res && res.ok) { if (res.t && S.token) { S.token = res.t; store.set('sp_token', res.t); } return res.data; }
+    throw (res && res.code) || 'ERR_SERVER';
+  };
+  if (DEMO) return new Promise(r => setTimeout(r, 180)).then(() => fin(Mock.call(action, payload || {})));
+  if (!DIRECT_OK) return new Promise((ok, no) => google.script.run.withSuccessHandler(ok).withFailureHandler(() => no('ERR_NETWORK')).api(action, payload || {}, S.token || '')).then(fin);
+  return postApi(action, payload).then(fin, () => { throw 'ERR_NETWORK'; });
+}
+function nbBoot() {
+  nbReset(false);
+  NB.key = nbKey();
+  try { const v = JSON.parse(localStorage.getItem(NB.key) || 'null'); if (v && Array.isArray(v.items)) { NB.items = v.items; NB.at = v.at || 0; NB.poll = v.poll || 3; NB.q = Array.isArray(v.q) ? v.q : []; nbApplyQ(); } } catch (e) {}
+  nbPaint();
+  // أول تحديث بعد ظهور الرئيسية بلحظات، فلا يزاحم الدخول ولا فتح أول نظام
+  clearTimeout(NB.timer); NB.timer = setTimeout(nbRefresh, S.inApp ? 6500 : 2500);
+}
+function nbReset(wipe) {
+  clearTimeout(NB.timer); NB.timer = 0;
+  if (NB.open) nbClose(true);
+  if (wipe && NB.key) try { localStorage.removeItem(NB.key); } catch (e) {}
+  if (wipe) try { const k = pendKey(); if (k) localStorage.removeItem(k); } catch (e) {}
+  Object.assign(NB, { items: null, at: 0, filter: 'all', loading: false, err: '', rerr: false, q: [], grp: {}, key: '' });
+  const b = $('#nbBadge'); if (b) b.hidden = true;
+}
+function nbSchedule() {
+  clearTimeout(NB.timer); NB.timer = 0;
+  if (!S.token) return;
+  NB.timer = setTimeout(() => { if (document.visibilityState !== 'hidden') nbRefresh(); else nbSchedule(); }, Math.max(1, NB.poll) * 60000);
+}
+async function nbFlush() {
+  while (NB.q.length && S.token) {
+    try { await qApi('notif_read', NB.q[0]); NB.q.shift(); NB.rerr = false; nbSave(); }
+    catch (c) { NB.rerr = true; return false; }
+  }
+  return true;
+}
+async function nbRefresh() {
+  if (!S.token || NB.loading) return;
+  NB.loading = true; nbRender();
+  try {
+    await nbFlush();
+    const d = await qApi('notif_list', {});
+    NB.items = Array.isArray(d.items) ? d.items : []; NB.poll = Number(d.poll) || NB.poll; NB.at = Date.now(); NB.err = '';
+    nbApplyQ(); nbSave();
+  } catch (c) {
+    if (c === 'ERR_SESSION' || c === 'ERR_SUSPENDED' || c === 'ERR_ROLE_CHANGED') { NB.loading = false; return; }
+    NB.err = c === 'ERR_NETWORK' ? 'net' : 'srv';
+  } finally { NB.loading = false; nbPaint(); }
+  nbSchedule();
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && S.token && NB.key && Date.now() - NB.at > 60000) nbRefresh(); });
+function nbUnread() { return (NB.items || []).filter(x => !x.r).length; }
+function nbPaint() {
+  const b = $('#nbBadge'), n = nbUnread();
+  if (b) { b.hidden = !n; b.textContent = n > 99 ? '99+' : String(n); }
+  const btn = $('#nbBtn'); if (btn) btn.setAttribute('aria-label', t('nbTitle') + (n ? ' · ' + t('nbNew', { n: n }) : ''));
+  nbRender();
+}
+function nbAgo(iso) {
+  const d = new Date(iso); if (isNaN(d)) return { s: '' };
+  const m = Math.floor((Date.now() - d) / 60000);
+  if (m < 1) return { s: t('ago_now'), now: 1 };
+  if (m < 60) return { s: t('ago_m', { n: m }) };
+  if (m < 120) return { s: t('ago_h1') };
+  const day = x => fmtr('dk', () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Riyadh' })).format(x);
+  if (m < 360) return { s: t('ago_h', { n: Math.floor(m / 60) }) };
+  if (day(d) === day(new Date())) return { s: fmtr('tm' + locale(), () => new Intl.DateTimeFormat(locale(), { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'Asia/Riyadh' })).format(d) };
+  if (day(d) === day(new Date(Date.now() - 864e5))) return { s: t('ago_y') };
+  return { s: fmtr('dm' + locale(), () => new Intl.DateTimeFormat(locale(), { day: 'numeric', month: 'long', timeZone: 'Asia/Riyadh' })).format(d) };
+}
+function nbAppOf(id) { return id ? S.apps.find(a => a.id === id) || null : null; }
+function nbIcon(a) {
+  if (!a) return '<span class="nb-ic"><span class="app-icon tint-gold">' + glyph('portal') + '</span></span>';
+  return '<span class="nb-ic"><span class="app-icon' + imgCls(a.icon, a.shape) + ' tint-' + esc(a.tint || 'gold') + '">' + iconHtml(a.icon) + '</span></span>';
+}
+function nbCard(x) {
+  const a = nbAppOf(x.app), m = /^([^|]*)(?:\|(.*))?$/.exec(x.g || '') || [], tm = nbAgo(x.at);
+  const appId = m[1] || x.app || '', name = a ? L(a, 'name') : (S.lang === 'ar' ? (S.config.nameAR || 'سوار') : (S.config.nameEN || 'SIWAR'));
+  const sub = [name, x.b && x.b !== name ? x.b : ''].filter(Boolean).join(' · ');
+  return '<button type="button" class="nb-item' + (x.r ? ' read' : '') + '" data-act="nbItem" data-nid="' + esc(x.id) + '" data-id="' + esc(appId) + '" data-go="' + esc(m[2] || '') + '">' +
+    (x.r ? '' : '<span class="nb-dot" aria-hidden="true"></span>') + nbIcon(a) +
+    '<span class="nb-tx"><span class="nb-t">' + esc(x.t || name) + '</span><span class="nb-s">' + esc(sub) + '</span></span>' +
+    (tm.s ? '<span class="nb-tm' + (tm.now ? ' now' : '') + '">' + esc(tm.s) + '</span>' : '') + '</button>';
+}
+function nbRender() {
+  const p = $('#nbPanel'); if (!p || !NB.open) return;
+  const all = NB.items || [], un = nbUnread(), list = NB.filter === 'unread' ? all.filter(x => !x.r) : all;
+  const head = '<span class="nb-grab" aria-hidden="true"></span><div class="nb-h"><div class="nb-ttl"><b>' + esc(t('nbTitle')) + '</b>' + (un ? '<span class="nb-new">' + esc(t('nbNew', { n: un })) + '</span>' : '') +
+    (NB.loading && NB.items ? '<span class="nb-sync" role="status" aria-label="…"></span>' : '') + '</div>' + (un ? '<button type="button" class="nb-all" data-act="nbAll">' + esc(t('nbAll')) + '</button>' : '') + '</div>' +
+    '<div class="nb-chips" role="tablist"><button type="button" role="tab" class="nb-chip' + (NB.filter === 'all' ? ' on' : '') + '" data-act="nbFilter" data-f="all" aria-selected="' + (NB.filter === 'all') + '">' + esc(t('nbAllF')) + '</button>' +
+    '<button type="button" role="tab" class="nb-chip' + (NB.filter === 'unread' ? ' on' : '') + '" data-act="nbFilter" data-f="unread" aria-selected="' + (NB.filter === 'unread') + '">' + esc(t('nbUnread')) + '</button></div>';
+  const warn = (msg, retry) => '<div class="nb-warn" role="alert">' + ic('info') + '<span>' + esc(msg) + '</span>' + (retry ? '<button type="button" data-act="nbRetry">' + esc(t('nbRetry')) + '</button>' : '') + '</div>';
+  let body = '';
+  if (!NB.items) body = NB.err ? warn(t('nbFail'), true) : '<div class="nb-wait" role="status"><i></i><span>' + esc(t('nbLoading')) + '</span></div>';
+  else {
+    if (NB.err) body += warn(t('nbStale'), true);
+    if (NB.rerr) body += warn(t('nbReadFail'), true);
+    if (!list.length) body += '<div class="nb-empty">' + ic('bell') + '<span>' + esc(t(NB.filter === 'unread' && all.length ? 'nbNoneU' : 'nbNone')) + '</span></div>';
+    const groups = [], by = {};
+    list.forEach(x => { const k = x.app || ''; if (!by[k]) { by[k] = []; groups.push(k); } by[k].push(x); });
+    body += groups.map(k => {
+      const g = by[k];
+      if (g.length === 1) return nbCard(g[0]);
+      if (NB.grp[k]) return g.map(nbCard).join('') + '<button type="button" class="nb-fold" data-act="nbGroup" data-app="' + esc(k) + '">' + esc(t('nbFold')) + '</button>';
+      const hidUn = g.slice(1).some(x => !x.r);
+      return '<div class="nb-grp">' + nbCard(g[0]) + '<div class="nb-peek"></div>' + (g.length > 2 ? '<div class="nb-peek"></div>' : '') +
+        '<button type="button" class="nb-more' + (hidUn ? ' hot' : '') + '" data-act="nbGroup" data-app="' + esc(k) + '" aria-expanded="false">+' + (g.length - 1) + '</button></div>';
+    }).join('');
+  }
+  const sc = $('.nb-body', p) ? $('.nb-body', p).scrollTop : 0;
+  p.innerHTML = head + '<div class="nb-body">' + body + '</div>';
+  $('.nb-body', p).scrollTop = sc;
+}
+function nbPlace() {
+  const p = $('#nbPanel'), b = $('#nbBtn'); if (!p || !b) return;
+  if (window.matchMedia('(max-width: 600px)').matches) { p.style.cssText = ''; return; }
+  const r = b.getBoundingClientRect(), w = Math.min(460, innerWidth - 32), top = r.bottom + 12;
+  let left = r.left + r.width / 2 < innerWidth / 2 ? r.left - 22 : r.right + 22 - w;
+  left = Math.max(16, Math.min(left, innerWidth - 16 - w));
+  p.style.cssText = 'top:' + top + 'px;left:' + left + 'px;max-height:' + Math.max(260, innerHeight - top - 20) + 'px';
+}
+function nbOpenPanel() {
+  if (!S.user) return;
+  closeMenu();
+  const p = $('#nbPanel'), v = $('#nbVeil'), phone = window.matchMedia('(max-width: 600px)').matches;
+  NB.open = true; NB.grp = {};
+  p.hidden = false; v.hidden = false; p.setAttribute('aria-label', t('nbTitle')); nbPlace(); nbRender();
+  $('#nbBtn').classList.add('on'); $('#nbBtn').setAttribute('aria-expanded', 'true');
+  if (phone) document.documentElement.classList.add('nb-lock');
+  requestAnimationFrame(() => { p.classList.add('on'); v.classList.add('on'); });
+  if (!NB.loading && (!NB.items || Date.now() - NB.at > 30000)) nbRefresh();
+  else if (NB.q.length && !NB.loading) nbFlush().then(nbRender);
+}
+function nbClose(now) {
+  const p = $('#nbPanel'), v = $('#nbVeil'); if (!p) return;
+  NB.open = false;
+  p.classList.remove('on'); v.classList.remove('on');
+  document.documentElement.classList.remove('nb-lock');
+  const b = $('#nbBtn'); if (b) { b.classList.remove('on'); b.setAttribute('aria-expanded', 'false'); }
+  const done = () => { if (!NB.open) { p.hidden = true; v.hidden = true; } };
+  if (now) done(); else setTimeout(done, 240);
+}
+addEventListener('resize', () => { if (NB.open) nbPlace(); });
+function nbQueue(op) { NB.q.push(op); nbSave(); nbFlush().then(() => { if (NB.open) nbRender(); }); }
+function nbItem(el) {
+  const x = (NB.items || []).find(i => i.id === el.dataset.nid); if (!x) return;
+  if (!x.r) { x.r = 1; nbQueue({ ids: [x.id] }); nbPaint(); }
+  const a = nbAppOf(el.dataset.id);
+  if (!el.dataset.id) return;
+  if (!a || a.locked) { openModal({ title: ic('info') + '<span>' + esc(t('nbTitle')) + '</span>', body: '<p>' + esc(t('nbNoApp')) + '</p>', foot: '<button class="btn btn-primary" data-act="closeModal">' + ic('check') + '<span>' + esc(S.lang === 'ar' ? 'حسناً' : 'OK') + '</span></button>' }); return; }
+  nbClose(true);
+  launchApp(el);
+}
+function nbMarkAll() {
+  const items = NB.items || []; if (!items.length) return;
+  const upto = items.reduce((m, x) => Math.max(m, Number(x.id) || 0), 0);
+  items.forEach(x => { x.r = 1; });
+  nbQueue({ all: true, upto: String(upto) }); nbPaint();
+}
+(() => { let y0 = null; document.addEventListener('touchstart', e => { const p = $('#nbPanel'); y0 = NB.open && p && e.target.closest && e.target.closest('.nb-grab, .nb-h') ? e.touches[0].clientY : null; }, { passive: true });
+  document.addEventListener('touchend', e => { if (y0 != null && e.changedTouches[0].clientY - y0 > 70) nbClose(); y0 = null; }, { passive: true }); })();
+
+// ══ الرئيسية: طريقة العرض («قائمة» أو «بطاقات عائمة») لكل مستخدم على جهازه ══
+const HV_K = 'sp_homeview';
+function hvMode() { try { return localStorage.getItem(HV_K) === 'float' ? 'float' : 'list'; } catch (e) { return 'list'; } }
+function hvSet(v) {
+  try { localStorage.setItem(HV_K, v === 'float' ? 'float' : 'list'); } catch (e) {}
+  S.fcShown = false; S.svShown = true;
+  hvRender(); renderAppsGrid();
+}
+function hvRender() {
+  const bar = $('#hvBar'), m = hvMode(), float = m === 'float';
+  if (bar) {
+    bar.hidden = !S.apps.length;
+    bar.innerHTML = '<span class="hv-l">' + esc(t('hvLabel')) + '</span><div class="hv-seg" role="group" aria-label="' + esc(t('hvLabel')) + '">' +
+      '<button type="button" data-act="hvSet" data-v="list" class="' + (float ? '' : 'on') + '" aria-pressed="' + !float + '">' + ic('list') + '<span>' + esc(t('hvList')) + '</span></button>' +
+      '<button type="button" data-act="hvSet" data-v="float" class="' + (float ? 'on' : '') + '" aria-pressed="' + float + '"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="7" rx="2.5"/><path d="M5 15h14M7.5 18.5h9"/></svg><span>' + esc(t('hvFloat')) + '</span></button></div>';
+  }
+  $('#heroBox').hidden = float;
+  $('#fcHead').hidden = !float;
+  if (float) fcHeadRender();
+}
+function pendKey() { return S.user ? 'sp_pend_' + String(S.user.id || S.user.email || S.user.username || '') : ''; }
+function pendSave() { const k = pendKey(); if (k && S.pending) try { localStorage.setItem(k, JSON.stringify({ at: Date.now(), d: S.pending })); } catch (e) {} }
+// آخر «بانتظارك» محفوظ (حتى 30 دقيقة) يُرسم به عرض البطاقات فوراً حتى يصل الجديد
+function pendCached() {
+  if (S.pending) return S.pending;
+  try { const v = JSON.parse(localStorage.getItem(pendKey()) || 'null'); return v && v.d && Date.now() - v.at < 1800000 ? v.d : null; } catch (e) { return null; }
+}
+function fcHeadRender() {
+  const u = S.user, box = $('#fcHead'); if (!u || !box) return;
+  const P = pendCached(), h = Number(fmtr('h', () => new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: 'Asia/Riyadh' })).format(new Date())) % 24;
+  const total = P && P.byApp ? S.apps.reduce((n, a) => n + ((P.byApp[a.id] && !a.locked) ? P.byApp[a.id].count : 0), 0) : 0;
+  const hi = t(h < 12 ? 'morning' : 'evening') + t('sep') + (L(u, 'name') || u.username).split(' ')[0];
+  box.innerHTML = '<h2 class="fc-h1">' + t('fcTitle') + '</h2><p class="fc-sub">' + esc(hi) + (total ? ' · ' + esc(total === 1 ? t('fcWait1') : t('fcWait', { n: total })) : '') + '</p>';
+}
+function fcRender(grid, list) {
+  grid.classList.remove('sv-list', 'sv-enter'); grid.classList.add('fc-list');
+  const P = pendCached(), ok = (P && P.okApps) || [];
+  const rows = list.map(a => { const g = !a.locked && P && P.byApp ? P.byApp[a.id] : null; return { a: a, n: g ? g.count : 0, top: g && g.items && g.items[0], known: ok.indexOf(a.id) >= 0 }; });
+  const order = rows.filter(r => !r.a.locked && r.n).concat(rows.filter(r => !r.a.locked && !r.n), rows.filter(r => r.a.locked));
+  if (!S.fcShown) { S.fcShown = true; grid.classList.add('fc-enter'); setTimeout(() => grid.classList.remove('fc-enter'), 1500); }
+  grid.innerHTML = order.map((r, i) => {
+    const a = r.a, icon = '<span class="sv-ic"><span class="app-icon' + imgCls(a.icon, a.shape) + ' tint-' + esc(a.tint || 'gold') + '">' + iconHtml(a.icon) + '</span></span>';
+    const nm = '<span class="fc-nm">' + esc(L(a, 'name')) + '</span>';
+    if (a.locked) return '<div class="fc is-locked" style="--i:' + i + '" aria-disabled="true" title="' + esc(t('lockedTip')) + '">' + icon + '<span class="fc-tx">' + nm + '<span class="fc-t">' + esc(t('lockedTip')) + '</span></span><span class="fc-go">' + ic('lock') + '</span></div>';
+    const sub = r.top ? (S.lang === 'ar' ? r.top.subAR : r.top.subEN) : '';
+    const line = r.top ? esc(S.lang === 'ar' ? r.top.titleAR : r.top.titleEN) + (sub ? '<small> · ' + esc(sub) + '</small>' : '')
+      : r.n ? esc(t('pendingMore', { n: r.n })) : r.known ? esc(t('fcNone')) : esc(L(a, 'desc') || '');
+    return '<button type="button" class="fc' + (r.n ? '' : ' calm') + '" style="--i:' + i + '" data-act="launch" data-id="' + esc(a.id) + '" data-go="' + esc(r.top && r.top.go || '') + '">' + icon +
+      '<span class="fc-tx">' + nm + '<span class="fc-t">' + line + '</span></span>' +
+      (r.n ? '<span class="fc-n">' + r.n + '</span>' : r.known ? '<span class="fc-ok">' + ic('check') + esc(t('fcDone')) + '</span>' : '') +
+      '<span class="fc-go">' + ic('arrow', 'flip') + '</span></button>';
   }).join('');
 }
 function svToggle(el) {
@@ -4628,7 +5016,7 @@ function renderSettings() {
 }
 
 // ── إشعارات الجوال: المفتاح العام، ومفتاح لكل شركة، ومفتاح لكل نظام داخل كل شركة. الحفظ بزر «حفظ» فقط ──
-const pzClone = d => ({ on: !!d.on, matrix: JSON.parse(JSON.stringify(d.matrix || {})), max: d.max, hours: d.hours });
+const pzClone = d => ({ on: !!d.on, matrix: JSON.parse(JSON.stringify(d.matrix || {})), max: d.max, hours: d.hours, bell: Object.assign({ max: 40, days: 14, poll: 3 }, d.bell || {}) });
 async function pushLoad() {
   if (S.pushLoading) return; S.pushLoading = true; S.pushErr = '';
   try { const d = await api('admin_push', {}); S.push = d; S.pushDraft = pzClone(d); }
@@ -4658,8 +5046,12 @@ function renderPush() {
     '<div class="pz-cos">' + cards + '</div>' +
     '<div class="pz-nums"><label class="pz-num"><span>الحد لكل موظف في الساعة</span><input class="inp" type="number" inputmode="numeric" min="1" max="60" id="pzMax" value="' + esc(d.max) + '"></label>' +
     '<label class="pz-num"><span>يبقى الإشعار صالحاً (ساعة)</span><input class="inp" type="number" inputmode="numeric" min="1" max="72" id="pzHours" value="' + esc(d.hours) + '"></label></div>' +
+    '<div class="pz-sub"><b>جرس سوار</b><small>يظهر فيه كل إشعار يخص الموظف داخل سوار، وإن لم يُرسل إلى جواله.</small></div>' +
+    '<div class="pz-nums"><label class="pz-num"><span>عدد الإشعارات في الجرس</span><input class="inp" type="number" inputmode="numeric" min="10" max="100" id="pzBMax" value="' + esc(d.bell.max) + '"></label>' +
+    '<label class="pz-num"><span>يبقى الإشعار في الجرس (يوم)</span><input class="inp" type="number" inputmode="numeric" min="1" max="60" id="pzBDays" value="' + esc(d.bell.days) + '"></label>' +
+    '<label class="pz-num"><span>تحديث الجرس كل (دقيقة)</span><input class="inp" type="number" inputmode="numeric" min="1" max="30" id="pzBPoll" value="' + esc(d.bell.poll) + '"></label></div>' +
     '<div class="pz-foot"><span class="u-muted" id="pzState">' + (pzDirty() ? 'تعديلات لم تُحفظ' : '') + '</span><button type="button" class="btn btn-primary" data-act="pzSave" id="pzSaveBtn"' + (pzDirty() ? '' : ' disabled') + '>' + ic('save') + '<span>حفظ</span></button></div>';
-  if (!box.dataset.bound) { box.dataset.bound = '1'; box.addEventListener('input', e => { if (!S.pushDraft) return; if (e.target.id === 'pzMax') S.pushDraft.max = e.target.value; else if (e.target.id === 'pzHours') S.pushDraft.hours = e.target.value; else return; pzMarkDirty(); }); }
+  if (!box.dataset.bound) { box.dataset.bound = '1'; box.addEventListener('input', e => { if (!S.pushDraft) return; if (e.target.id === 'pzMax') S.pushDraft.max = e.target.value; else if (e.target.id === 'pzHours') S.pushDraft.hours = e.target.value; else if (e.target.id === 'pzBMax') S.pushDraft.bell.max = e.target.value; else if (e.target.id === 'pzBDays') S.pushDraft.bell.days = e.target.value; else if (e.target.id === 'pzBPoll') S.pushDraft.bell.poll = e.target.value; else return; pzMarkDirty(); }); }
 }
 function pzMarkDirty() { const on = pzDirty(); const b = $('#pzSaveBtn'), st = $('#pzState'); if (b) b.disabled = !on; if (st) st.textContent = on ? 'تعديلات لم تُحفظ' : ''; }
 function pzToggle(el) {
@@ -4672,11 +5064,13 @@ function pzToggle(el) {
 }
 async function pzSave(btn) {
   const d = S.pushDraft, max = Math.round(Number(d.max)), hours = Math.round(Number(d.hours));
-  const bad = !(max >= 1 && max <= 60) ? 'الحد لكل موظف في الساعة: من 1 إلى 60.' : !(hours >= 1 && hours <= 72) ? 'مدة صلاحية الإشعار: من 1 إلى 72 ساعة.' : '';
+  const bell = { max: Math.round(Number(d.bell.max)), days: Math.round(Number(d.bell.days)), poll: Math.round(Number(d.bell.poll)) };
+  const bad = !(max >= 1 && max <= 60) ? 'الحد لكل موظف في الساعة: من 1 إلى 60.' : !(hours >= 1 && hours <= 72) ? 'مدة صلاحية الإشعار: من 1 إلى 72 ساعة.'
+    : !(bell.max >= 10 && bell.max <= 100) ? 'عدد الإشعارات في الجرس: من 10 إلى 100.' : !(bell.days >= 1 && bell.days <= 60) ? 'بقاء الإشعار في الجرس: من 1 إلى 60 يوماً.' : !(bell.poll >= 1 && bell.poll <= 30) ? 'تحديث الجرس: كل 1 إلى 30 دقيقة.' : '';
   const fail = msg => openModal({ title: ic('info') + '<span>لم تُحفظ إعدادات الإشعارات</span>', body: '<p>' + esc(msg) + '</p><p class="u-muted">تعديلاتك ما زالت في الصفحة.</p>', foot: '<button class="btn btn-primary" data-act="closeModal">' + ic('check') + '<span>حسناً</span></button>' });
   if (bad) return fail(bad);
   setLoading(btn, true);
-  try { const r = await api('admin_savePush', { on: !!d.on, matrix: d.matrix, max: max, hours: hours }); S.push = r; S.pushDraft = pzClone(r); renderPush(); toast('حُفظت إعدادات الإشعارات', 'ok'); }
+  try { const r = await api('admin_savePush', { on: !!d.on, matrix: d.matrix, max: max, hours: hours, bell: bell }); S.push = r; S.pushDraft = pzClone(r); renderPush(); toast('حُفظت إعدادات الإشعارات', 'ok'); }
   catch (c) { if (c !== '__handled') fail(c === 'ERR_NETWORK' ? 'تعذّر الاتصال بالخادم. لم يُحفظ شيء؛ اضغط «حفظ» مرة أخرى.' : t(I18N.ar[c] ? c : 'ERR_SERVER')); }
   finally { setLoading($('#pzSaveBtn'), false); pzMarkDirty(); }
 }
@@ -5199,6 +5593,14 @@ const ACTIONS = {
   openThemes: () => openThemes(),
   launch: el => launchApp(el),
   svToggle: el => svToggle(el),
+  nbToggle: () => NB.open ? nbClose() : nbOpenPanel(),
+  nbClose: () => nbClose(),
+  nbItem: el => nbItem(el),
+  nbAll: () => nbMarkAll(),
+  nbFilter: el => { NB.filter = el.dataset.f === 'unread' ? 'unread' : 'all'; nbRender(); },
+  nbGroup: el => { const k = el.dataset.app || ''; NB.grp[k] = !NB.grp[k]; nbRender(); },
+  nbRetry: () => { NB.err = ''; nbRefresh(); },
+  hvSet: el => hvSet(el.dataset.v),
   installApp: () => { closeMenu(); openInstall(); },
   pushOpen: () => { closeMenu(); try { window.top.postMessage({ siwar: 'pushOpen', lang: S.lang }, SHELL); } catch (e) {} },
   pzToggle: el => pzToggle(el),
@@ -5376,7 +5778,7 @@ function bindEvents() {
     if (el && CHANGES[el.dataset.change]) CHANGES[el.dataset.change](el);
   });
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { if ($('#modal').classList.contains('open')) closeModal(); closeMenu(); }
+    if (e.key === 'Escape') { if ($('#modal').classList.contains('open')) closeModal(); else if (NB.open) nbClose(); closeMenu(); }
     trapFocus(e);
   });
   document.addEventListener('error', e => {
