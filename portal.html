@@ -1473,7 +1473,7 @@ const I18N = {
     rs_noEmail: 'بلا بريد', rs_suspended: 'موقوف', rs_forbidden: 'خارج صلاحيتك', rs_mail: 'تعذّر الإرسال',
     ERR_NO_PORTAL_URL: 'احفظ رابط النشر في الإعدادات أولاً.', ERR_MAIL_QUOTA: 'تجاوز العدد المسموح للبريد اليوم.',
     ERR_INVALID_LOGIN: 'البريد أو كلمة المرور غير صحيحة.', ERR_LOCKED: 'محاولات كثيرة، انتظر قليلاً ثم حاول مجدداً أو استخدم «نسيت كلمة المرور؟».',
-    ERR_SUSPENDED: 'هذا الحساب موقوف.', ERR_SESSION: 'انتهت الجلسة، سجّل الدخول مجدداً.', ERR_FORBIDDEN: 'لا تملك صلاحية هذا الإجراء.', ERR_SENSITIVE: 'هذه صلاحية حساسة؛ يمنحها المالك فقط.', ERR_SHARED: 'هذا إعداد مشترك بين الأنظمة؛ يُعدَّل من صفحة «سوار» في الأنظمة.', ERR_RANGE: 'القيمة خارج الحد المسموح.', ERR_CONFLICT: 'عدّل غيرك هذا الإعداد بعد أن فتحت الصفحة.', ERR_RULE: 'القيم لا تتفق مع بعضها.', ERR_IN_USE: 'الدور مستخدم؛ أرشفه بدل حذفه.', ERR_ARCHIVED: 'الدور مؤرشف فلا يُسند لأحد جديد.', ERR_VALUE: 'القيمة غير مقبولة.', NO_SOURCE: 'تعذّر فتح ملف المصدر.',
+    ERR_SUSPENDED: 'هذا الحساب موقوف.', ERR_SESSION: 'انتهت الجلسة، سجّل الدخول مجدداً.', ERR_ROLE_CHANGED: 'تغيّرت صلاحيات حسابك أو بياناته، سجّل الدخول من جديد.', ERR_STALE: 'عدّل غيرك بيانات هذا الموظف بعد أن فتحت الصفحة، فلم يُحفظ تعديلك.', ERR_BUSY_SAME: 'ما زال الحفظ السابق قيد التنفيذ. انتظر قليلاً ثم حدّث الصفحة وتحقق قبل إعادته.', ERR_FORBIDDEN: 'لا تملك صلاحية هذا الإجراء.', ERR_SENSITIVE: 'هذه صلاحية حساسة؛ يمنحها المالك فقط.', ERR_SHARED: 'هذا إعداد مشترك بين الأنظمة؛ يُعدَّل من صفحة «سوار» في الأنظمة.', ERR_RANGE: 'القيمة خارج الحد المسموح.', ERR_CONFLICT: 'عدّل غيرك هذا الإعداد بعد أن فتحت الصفحة.', ERR_RULE: 'القيم لا تتفق مع بعضها.', ERR_IN_USE: 'الدور مستخدم؛ أرشفه بدل حذفه.', ERR_ARCHIVED: 'الدور مؤرشف فلا يُسند لأحد جديد.', ERR_VALUE: 'القيمة غير مقبولة.', NO_SOURCE: 'تعذّر فتح ملف المصدر.',
     ERR_NO_URL: 'لم يُضبط رابط هذا البرنامج بعد.', ERR_USERNAME: 'اسم المستخدم من 2 إلى 40 حرفاً إنجليزياً أو رقماً.',
     ERR_NAME: 'الاسم بالعربية والإنجليزية مطلوب.', ERR_EMAIL: 'البريد الإلكتروني غير صحيح.', ERR_EXISTS: 'هذا البريد مسجل لموظف آخر من جسر، فلا يمكن استخدامه لموظف ثانٍ.', ERR_REQUIRED: 'حقل مطلوب فارغ.', ERR_HAS_ACCOUNT: 'لهذا الموظف حساب؛ عدّل بريده من الحساب.', ERR_DUP_USERNAME: 'اسم المستخدم مستخدم من قبل.',
     ERR_PIN: 'كلمة المرور 8 خانات على الأقل، فيها حروف وأرقام.', ERR_PIN_WEAK: 'كلمة المرور سهلة التخمين، اختر غيرها.', ERR_TEMP_EXPIRED: 'انتهت صلاحية كلمة المرور المؤقتة، اطلب واحدة جديدة من المسؤول.', tempTitle: 'كلمة المرور المؤقتة', tempNote: 'تظهر الآن فقط، ويُطلب من المستخدم تغييرها عند أول دخول.', tempMailed: 'أُرسلت إلى بريده.', tempSend: 'إرسال كلمة المرور المؤقتة بالبريد', copy: 'نسخ', copied: 'تم النسخ', noEmail: 'بلا بريد', tempCreate: 'إنشاء', ERR_DUP_EMAIL: 'هذا البريد مسجّل لمستخدم آخر.', ERR_MUST_CHANGE: 'اختر كلمة مرور خاصة بك أولاً.', ERR_BUSY: 'النظام مشغول لحظات، أعد المحاولة.', linkSaveFirst: 'احفظ التعديلات أولاً ثم افحص الربط.', regenYes: 'تغيير المفتاح', ERR_PIN_MATCH: 'كلمتا المرور غير متطابقتين.', ERR_PIN_WRONG: 'كلمة المرور الحالية غير صحيحة.',
@@ -1549,7 +1549,7 @@ const I18N = {
     rs_noEmail: 'no email', rs_suspended: 'suspended', rs_forbidden: 'outside your access', rs_mail: 'send failed',
     ERR_NO_PORTAL_URL: 'Save the deployment URL in Settings first.', ERR_MAIL_QUOTA: 'Daily email limit reached.',
     ERR_INVALID_LOGIN: 'Incorrect email or password.', ERR_LOCKED: 'Too many attempts. Wait a little and try again, or use “Forgot your password?”.',
-    ERR_SUSPENDED: 'This account is suspended.', ERR_SESSION: 'Your session ended. Please sign in again.', ERR_FORBIDDEN: 'You are not allowed to do this.', ERR_SENSITIVE: 'Sensitive permission: owner only.', ERR_SHARED: 'Shared setting: edit it on the Siwar page under Systems.', ERR_RANGE: 'Value out of the allowed range.', ERR_CONFLICT: 'Someone else changed this setting after you opened the page.', ERR_RULE: 'The values do not agree with each other.', ERR_IN_USE: 'Role is in use; archive it instead.', ERR_ARCHIVED: 'Role is archived.', ERR_VALUE: 'Invalid value.', NO_SOURCE: 'Source file could not be opened.',
+    ERR_SUSPENDED: 'This account is suspended.', ERR_SESSION: 'Your session ended. Please sign in again.', ERR_ROLE_CHANGED: 'Your account permissions or details changed. Please sign in again.', ERR_STALE: 'Someone else changed this employee after you opened the page, so your change was not saved.', ERR_BUSY_SAME: 'The previous save is still running. Wait a moment, then refresh and check before trying again.', ERR_FORBIDDEN: 'You are not allowed to do this.', ERR_SENSITIVE: 'Sensitive permission: owner only.', ERR_SHARED: 'Shared setting: edit it on the Siwar page under Systems.', ERR_RANGE: 'Value out of the allowed range.', ERR_CONFLICT: 'Someone else changed this setting after you opened the page.', ERR_RULE: 'The values do not agree with each other.', ERR_IN_USE: 'Role is in use; archive it instead.', ERR_ARCHIVED: 'Role is archived.', ERR_VALUE: 'Invalid value.', NO_SOURCE: 'Source file could not be opened.',
     ERR_NO_URL: 'This app has no URL yet.', ERR_USERNAME: 'Username must be 2–40 English letters or digits.',
     ERR_NAME: 'Arabic and English names are required.', ERR_EMAIL: 'Invalid email address.', ERR_DUP_USERNAME: 'Username already exists.',
     ERR_PIN: 'Password must be at least 8 characters with letters and numbers.', ERR_PIN_WEAK: 'This password is too easy to guess.', ERR_TEMP_EXPIRED: 'Your temporary password expired. Ask the administrator for a new one.', tempTitle: 'Temporary password', tempNote: 'Shown only now. The user must change it at first sign-in.', tempMailed: 'Sent to their email.', tempSend: 'Email the temporary password', copy: 'Copy', copied: 'Copied', noEmail: 'No email', tempCreate: 'Create', ERR_DUP_EMAIL: 'This email belongs to another user.', ERR_MUST_CHANGE: 'Please choose your own password first.', ERR_BUSY: 'The system is busy for a moment — please retry.', linkSaveFirst: 'Save your changes first, then test the link.', regenYes: 'Change key', ERR_PIN_MATCH: 'Passwords do not match.', ERR_PIN_WRONG: 'Current password is incorrect.',
@@ -1815,7 +1815,7 @@ function api(action, payload) {
       const code = (res && res.code) || 'ERR_SERVER';
       // «مشغول» يعني أن الطلب لم يُنفَّذ أصلاً (القفل لم يُؤخذ): يُعاد بهدوء مرتين قبل إظهار الرسالة
       if (code === 'ERR_BUSY' && (done.n = (done.n || 0) + 1) <= 2 && !DEMO) { busy(1); setTimeout(() => { (DIRECT_OK ? postApi(action, payload).then(done).catch(() => done({ ok: false, code: 'ERR_BUSY' })) : google.script.run.withSuccessHandler(done).withFailureHandler(() => done({ ok: false, code: 'ERR_NETWORK' })).api(action, payload || {}, S.token || '')); }, done.n * 2500); return; }
-      if (S.token && (code === 'ERR_SESSION' || code === 'ERR_SUSPENDED') && action !== 'login') { sessionEnded(code); return reject('__handled'); }
+      if (S.token && (code === 'ERR_SESSION' || code === 'ERR_SUSPENDED' || code === 'ERR_ROLE_CHANGED') && action !== 'login') { sessionEnded(code); return reject('__handled'); }
       if (S.token && code === 'ERR_MUST_CHANGE') { if (S.user) S.user.mustChange = true; if (!$('#cpNew')) openChangePin(true); return reject('__handled'); }
       reject(code);
     };
@@ -1995,7 +1995,7 @@ async function boot() {
       perfBoot('init', performance.now() - ti);
       applyConfig(d.config);
       if (d.tix && d.tix.urls) S.tix = { at: Date.now(), urls: d.tix.urls, src: 'init' };
-      if (!d.session) { clearSession(); show('login'); return; }
+      if (!d.session) { clearSession(); show('login'); if (d.sessionCode === 'ERR_SUSPENDED' || d.sessionCode === 'ERR_ROLE_CHANGED') loginNote(d.sessionCode); return; }
       snapSet(d.session); S.fromSnap = false;
       S.user = d.session.user; S.apps = d.session.apps || [];
       renderUserChrome(); if (S.screen === 'home') renderHome();
@@ -2011,7 +2011,7 @@ async function boot() {
     applyConfig(d.config);
     if (d.tix && d.tix.urls) S.tix = { at: Date.now(), urls: d.tix.urls, src: 'init' };
     if (d.session) { snapSet(d.session); enterSession(d.session, false); perfBoot('home'); }
-    else { clearSession(); show('login'); }
+    else { clearSession(); show('login'); if (d.sessionCode === 'ERR_SUSPENDED' || d.sessionCode === 'ERR_ROLE_CHANGED') loginNote(d.sessionCode); }
   } catch (c) {
     show('login');
     const box = $('#bootErr');
@@ -2239,7 +2239,12 @@ function sessionEnded(code) {
   closeModal(true);
   showView('vLogin');
   show('login');
-  toast(t(code), 'err');
+  loginNote(code);
+}
+// سبب الخروج يبقى ظاهراً على بطاقة الدخول حتى يدخل من جديد
+function loginNote(code) {
+  const box = $('#bootErr'); if (!box || !code) return;
+  box.textContent = t(I18N.ar[code] ? code : 'ERR_SESSION'); box.hidden = false;
 }
 
 async function logout() {
@@ -2732,14 +2737,37 @@ async function uLoad() {
   let d, fail;
   for (let k = 0; k < 3 && !d; k++) { try { d = await api('u_load', {}); } catch (c) { fail = c; if (c === '__handled') return; await new Promise(r => setTimeout(r, 1200 * (k + 1))); } }
   if (!d) { if (U.d) { toast('تعذّر تحديث البيانات، المعروض آخر نسخة', 'err'); return; } showErr(fail); $('#uRoot').innerHTML = '<div class="empty">' + ic('alert') + '<span>تعذّر التحميل</span><button class="btn btn-ghost" data-u="reload">' + ic('refresh') + '<span>إعادة المحاولة</span></button></div>'; return; }
-  try { if (U.dirty && U.dirty.size) return; const y = window.scrollY; U.d = d; U.at = Date.now(); if (S.tab === 'unified') { uRender(); window.scrollTo(0, y); } }
+  try { if (U.dirty && U.dirty.size) return; const y = window.scrollY; U.d = d; U.orig = JSON.parse(JSON.stringify(d)); U.at = Date.now(); if (S.tab === 'unified') { uRender(); window.scrollTo(0, y); } }
   catch (c) { showErr(c); if (!U.d) $('#uRoot').innerHTML = '<div class="empty">' + ic('alert') + '<span>تعذّر التحميل</span><button class="btn btn-ghost" data-u="reload">' + ic('refresh') + '<span>إعادة المحاولة</span></button></div>'; }
 }
 
 U.dirty = new Map(); U.base = null;
 function uMark(key, op) {
   if (!U.base) U.base = JSON.parse(JSON.stringify(U.d));
-  U.dirty.set(key, op); uBar();
+  U.dirty.set(key, uWas(op)); uBar();
+}
+// القيمة كما فُتحت الصفحة لتعديلات الموظف الواحد؛ الخادم يرفض الحفظ إذا غيّرها غيرك بعد ذلك
+function uWas(op) {
+  const p = op && op.personId && U.orig ? (U.orig.people || []).find(x => x.id === op.personId) : null;
+  if (!p) return op;
+  const em = v => String(v || '').trim().toLowerCase();
+  const f = {
+    person: () => { const e = (p.access || {})[op.appId] || {}; return { en: e.en || '', caps: e.diff || {}, scope: e.scopeOwn || '' }; },
+    personRole: () => (p.roles || {})[op.appId] || '',
+    personProfile: () => p.profileId || '',
+    personTitle: () => p.title || '',
+    personInfo: () => ({ name: p.name || '', nameEN: p.nameEN || '', email: em(p.email), dept: p.dept || '', section: p.section || '', company: p.company || '' }),
+    personRest: () => p.restDays || [],
+    personLang: () => p.mailLang || '',
+    personWorksFor: () => p.worksFor || '',
+    personPush: () => p.pushAllow || ''
+  }[op.t];
+  return f ? Object.assign({}, op, { was: f() }) : op;
+}
+function uAccWas(pid) {
+  const p = U.orig && (U.orig.people || []).find(x => x.id === pid); if (!p) return null;
+  const w = {}; Object.keys(p.access || {}).forEach(a => { const e = p.access[a] || {}; w[a] = { en: e.en || '', caps: e.diff || {}, scope: e.scopeOwn || '' }; });
+  return w;
 }
 function uBar() {
   let bar = $('#uSaveBar');
@@ -2748,9 +2776,23 @@ function uBar() {
   bar.hidden = !n || S.tab !== 'unified' || S.screen !== 'admin';
   $('#uSaveN').textContent = n === 1 ? 'تعديل واحد لم يُحفظ' : n === 2 ? 'تعديلان لم يُحفظا' : n + ' تعديلات لم تُحفظ';
 }
-function uDiscard() { if (U.base) U.d = U.base; U.base = null; U.dirty.clear(); U.draft = null; uBar(); uRender(); }
+function uDiscard() { if (U.orig) U.d = JSON.parse(JSON.stringify(U.orig)); else if (U.base) U.d = U.base; U.base = null; U.dirty.clear(); U.draft = null; uBar(); uRender(); }
 const U_OPNAME = { personRole: 'دور موظف', personCopy: 'نسخ صلاحيات', roleSave: 'حفظ دور', roleArchive: 'أرشفة دور', roleDelete: 'حذف دور', person: 'صلاحيات موظف', personInfo: 'بيانات موظف', personProfile: 'وظيفة موظف', personRest: 'يوم الراحة', personTitle: 'مسمى موظف', personLang: 'لغة الإيميلات', personWorksFor: 'يعمل لـ', personPush: 'إشعارات الجوال', setting: 'إعداد', shared: 'إعداد مشترك' };
+const U_OPNAME_EN = { personRole: 'Employee role', personCopy: 'Copy permissions', roleSave: 'Save role', roleArchive: 'Archive role', roleDelete: 'Delete role', person: 'Employee permissions', personInfo: 'Employee details', personProfile: 'Employee job', personRest: 'Rest day', personTitle: 'Job title', personLang: 'Email language', personWorksFor: 'Works for', personPush: 'Phone notifications', setting: 'Setting', shared: 'Shared setting' };
+function uStaleFail(det, ops) {
+  const en = S.lang === 'en', d = det || {}, p = d.pid ? (U.d.people || []).find(x => x.id === d.pid) : null;
+  const app = d.app ? (U.d.apps || []).find(a => a.id === d.app) : null;
+  const field = (en ? U_OPNAME_EN : U_OPNAME)[d.f] || (en ? 'Employee details' : 'بيانات موظف');
+  const head = field + (app ? ' · ' + (en ? app.nameEN || app.nameAR : app.nameAR) : '') + (p ? ' — ' + (en ? p.nameEN || p.name : p.name) : '');
+  const when = d.at ? String(d.at).slice(0, 16).replace('T', ' ') : '';
+  const who = d.by ? (en ? 'Last changed by ' + d.by + (when ? ' at ' + when : '') + '.' : 'آخر تعديل: ' + d.by + (when ? ' في ' + when : '') + '.') : when ? (en ? 'Last changed at ' + when + '.' : 'آخر تعديل في ' + when + '.') : '';
+  const keep = en ? (ops ? 'Nothing was saved. Your edits are still on the page.' : 'Nothing was saved.') : (ops ? 'لم يُحفظ شيء، وتعديلاتك ما زالت في الصفحة.' : 'لم يُحفظ شيء.');
+  const next = en ? 'Press “Undo and show current values”, then make your change again.' : 'اضغط «تراجع وعرض القيم الحالية» ثم أعد تعديلك.';
+  openModal({ title: ic('info') + '<span>' + esc(en ? 'Not saved' : 'لم يُحفظ التعديل') + '</span>', body: '<p><b>' + esc(head) + '</b></p><p>' + esc(t('ERR_STALE')) + '</p>' + (who ? '<p class="u-muted">' + esc(who) + '</p>' : '') + '<p class="u-muted">' + esc(keep) + ' ' + esc(next) + '</p>',
+    foot: '<button class="btn btn-ghost" data-act="closeModal"><span>' + esc(en ? 'Keep my edits' : 'إبقاء تعديلاتي') + '</span></button><button class="btn btn-primary" data-u="staleFix">' + ic('refresh') + '<span>' + esc(en ? 'Undo and show current values' : 'تراجع وعرض القيم الحالية') + '</span></button>' });
+}
 function uSaveFail(code, op, ops, det) {
+  if (code === 'ERR_STALE') return uStaleFail(det, ops);
   const o = op >= 0 && ops ? ops[op] : null, p = o && o.personId ? U.d.people.find(x => x.id === o.personId) : null;
   if (det && (det.q || det.msg)) {
     const lim = code === 'ERR_RANGE' ? (det.min != null && det.max != null ? 'المسموح من ' + det.min + ' إلى ' + det.max + '.' : det.min != null ? 'أقل قيمة مسموحة ' + det.min + '.' : det.max != null ? 'أكبر قيمة مسموحة ' + det.max + '.' : '') : '';
@@ -2773,7 +2815,7 @@ async function uCommit() {
     try {
       const r = await api('u_batch', { ops: ops });
       if (!r.ok) { uSaveFail(r.code, r.op, ops, r.detail); return; }
-      U.dirty.clear(); U.base = null; uBar(); toast(ops.length === 1 ? 'حُفظ التعديل' : 'حُفظت ' + ops.length + ' تعديلات', 'ok'); uFlushSoon();
+      U.dirty.clear(); U.base = null; U.orig = JSON.parse(JSON.stringify(U.d)); uBar(); toast(ops.length === 1 ? 'حُفظ التعديل' : 'حُفظت ' + ops.length + ' تعديلات', 'ok'); uFlushSoon();
       setTimeout(uLoad, 1500);
     } catch (c) { uSaveFail(c, -1, ops); }
     finally { b.disabled = false; b.classList.remove('is-busy'); }
@@ -2796,8 +2838,8 @@ async function uHist(appId) {
 }
 function uFlushSoon() { clearTimeout(U.ft); U.ft = setTimeout(() => { api('u_flush', {}).catch(() => {}); }, 800); }
 async function uSave(action, payload, okMsg) {
-  try { const r = await api(action, payload); if (okMsg) toast(okMsg, 'ok'); uFlushSoon(); uLoad(); return r; }
-  catch (c) { showErr(c); uLoad(); return null; }
+  try { const r = await api(action, payload); if (r && r.ok === false) { uSaveFail(r.code, -1, null, r.detail); uLoad(); return null; } if (okMsg) toast(okMsg, 'ok'); uFlushSoon(); uLoad(); return r; }
+  catch (c) { if (c !== '__handled') uSaveFail(c, -1, null); uLoad(); return null; }
 }
 const U_TOP = { home: 1, people: 1, profiles: 1, roles: 1, systems: 1 };
 const U_PARENT = { person: 'people', profile: 'profiles', role: 'roles', system: 'systems', shared: 'systems' };
@@ -3564,7 +3606,7 @@ async function uRoleApi(ops, msg, done) {
   if (U.dirty.size) { toast('احفظ تعديلاتك الحالية أولاً ثم أعد المحاولة', 'err'); return false; }
   try {
     const r = await api('u_batch', { ops: ops });
-    if (!r.ok) { uSaveFail(r.code, r.op, null); return false; }
+    if (!r.ok) { uSaveFail(r.code, r.op, null, r.detail); return false; }
     toast(msg, 'ok'); uFlushSoon(); U.draft = null; if (done) done(); await uLoad(); return true;
   } catch (c) { if (c !== '__handled') uSaveFail(c, -1, null); return false; }
 }
@@ -3672,6 +3714,7 @@ function uOnClick(el, e) {
   if (k === 'reload') return uLoad();
   if (k === 'commit') return uCommit();
   if (k === 'discard') return uDiscard();
+  if (k === 'staleFix') { closeModal(true); uDiscard(); return uLoad(); }
   if (k === 'back') { U.draft = null; return uBack(); }
   if (k === 'go') { U.ids = null; return uGo(el.dataset.v); }
   if (k === 'showIds') { U.ids = el.dataset.ids.split(','); U.q = ''; U.co = ''; return uGo('people'); }
@@ -3692,7 +3735,7 @@ function uOnClick(el, e) {
     const p = D.people.find(x => x.id === el.dataset.id);
     return uConfirm('سيُحذف كل ما يميّز ' + p.name + ' عن وظيفته «' + p.profile + '» في كل الأنظمة.', () => {
       Object.keys(p.access).forEach(a => { const x = p.access[a]; x.diff = {}; x.en = ''; x.caps = (x.fromProfile || []).slice(); x.on = !!x.profileOn; });
-      uRender(); uSave('u_resetPerson', { personId: p.id }, 'أصبح مثل وظيفته');
+      const was = uAccWas(p.id); uRender(); uSave('u_resetPerson', was ? { personId: p.id, was: was } : { personId: p.id }, 'أصبح مثل وظيفته');
     });
   }
   if (k === 'cYes') { const f = U.cf; U.cf = null; closeModal(true); if (f && f.yes) f.yes(); return; }
@@ -4628,6 +4671,7 @@ async function submitChangePin(btn) {
       store.set('sp_token', r.token);
     }
     S.user.mustChange = false;
+    if (S.inApp && SHELL) try { window.top.postMessage({ siwar: 'dropFrames' }, SHELL); } catch (e) {}
     closeModal(true);
     toast(t('ok_pin'), 'ok');
     loadPending(true);

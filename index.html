@@ -553,6 +553,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
       if (d.siwar === 'warm' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onWarm(id, String(d.url), String(d.name || ''), ic); return; }
       if (d.siwar === 'close') { if (id && frames[id] && !frames[id].ready) dropFrame(id); hideLayer(false); return; }
       if (d.siwar === 'logout') { hideLayer(false); Object.keys(frames).forEach(dropFrame); kvClear(); curClear(); pushDropDevice(); return; }
+      if (d.siwar === 'dropFrames') { hideLayer(false); Object.keys(frames).forEach(dropFrame); return; }   // بعد تغيير كلمة المرور: جلسات الأنظمة انتهت فتُغلق شاشاتها وتُفتح من جديد بتذاكر جديدة
       if (d.siwar === 'pushOpen') { if (d.lang) applyLang(String(d.lang)); pushOpen(); return; }
       if (d.siwar === 'pushRes') { pushGot(d); return; }
       if (d.siwar === 'reloadCur') { if ($('prog').className === 'on' && cur) relaunch(cur, false); return; }
