@@ -405,8 +405,9 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   function dropFrame(id) {
     var o = frames[id]; if (!o) return;
     if (!o.ready) pEnd(id, 'drop');
+    warmedSay(o, id);
     delete frames[id];
-    clearTimeout(o.wd); clearTimeout(o.wd2);
+    clearTimeout(o.wd); clearTimeout(o.wd2); clearTimeout(o.wd3);
     try { o.f.src = 'about:blank'; } catch (e) {}
     o.f.remove();
     sendAlive();
@@ -420,6 +421,8 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   }
   // النظام سليم إذا أرسل أي إشارة من الحارس (hold أو ready أو alive). صفحة خطأ جوجل لا ترسل شيئاً
   function healthy(o) { return o.held || o.ready || o.alive; }
+  // التسخين في سوار يبدأ النظام التالي حين يرسل هذا أول إشارة (أو يُغلق)، فلا تُفتح الأنظمة كلها معاً
+  function warmedSay(o, id) { if (o.warm && !o.wsaid) { o.wsaid = 1; toPortal({ siwar: 'warmed', id: id }); } }
   function makeFrame(id, url, name, icon, warm) {
     var old = frames[id]; if (old) dropFrame(id);
     var p = document.createElement('iframe');
@@ -428,7 +431,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     p.allow = 'clipboard-read; clipboard-write; fullscreen; camera; microphone; geolocation';
     p.className = 'pf' + (cur === id ? ' cur' : '');
     var o = { f: p, url: url, name: name, icon: icon, t: Date.now(), seen: warm ? 0 : Date.now(), tries: old ? old.tries : 0, n: ++seq, uf: uf, go: goOfUrl(url) };
-    if (warm) { o.seen = -o.n; pStart(id, 'warm'); }
+    if (warm) { o.seen = -o.n; o.warm = true; pStart(id, 'warm'); }
     else if (!PJ[id]) pStart(id, 'open');
     frames[id] = o;
     p.onload = function () {
@@ -450,7 +453,11 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
         else if ((rt[id] || 0) < 2) { rt[id] = (rt[id] || 0) + 1; ufFlip(); if (cur === id) relaunch(id, true); else dropFrame(id); }
         else { rt[id] = 0; if (cur === id) loaderErr(); else dropFrame(id); }
       }
-      else markReady(id, 'wd');
+      else {
+        // الصفحة اكتملت ولم تقل «جاهز» بعد: تُخفى شاشة الفتح (كما كان) ويبقى القياس منتظراً الجاهزية الحقيقية حتى 60ث، فتُسجَّل late
+        o.late = true; if (cur === id) loaderDone();
+        o.wd3 = setTimeout(function () { if (frames[id] !== o || o.ready) return; pEnd(id, 'wd'); markReady(id); }, 46000);
+      }
     }, 14000);
     p.src = ufForm(url, uf);
     $('pbody').appendChild(p);
@@ -459,8 +466,8 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   }
   function markReady(id, how) {
     var o = frames[id]; if (!o) return;
-    if (!o.ready) { pMark(id, 'ready'); pEnd(id, how || 'ok'); }
-    o.ready = true; rt[id] = 0; clearTimeout(o.wd); if (o.uf === uf) { try { localStorage.setItem(UFK, uf); } catch (e) {} }
+    if (!o.ready) { pMark(id, 'ready'); pEnd(id, how || (o.late ? 'late' : 'ok')); }
+    o.ready = true; rt[id] = 0; clearTimeout(o.wd); clearTimeout(o.wd3); if (o.uf === uf) { try { localStorage.setItem(UFK, uf); } catch (e) {} }
     if (cur === id) loaderDone();
   }
 
@@ -487,6 +494,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     if (!o || Date.now() - o.t > FRAME_AGE) { if (o) dropFrame(id); toPortal({ siwar: 'relaunch', id: id }); return; }
     markCur(id); curSave(id, o.go);
     if (o.ready) { $('pload').className = 'pload gone'; pStart(id, 'show'); pEnd(id, 'ok'); }
+    else if (o.late) $('pload').className = 'pload gone';   // ظاهر للمستخدم منذ انتهاء الانتظار، والقياس ما زال ينتظر جاهزيته
     else { loaderShow(o.name, o.icon, null); stage(o.loaded ? .7 : .42, .9); }
     showLayer();
   }
@@ -575,6 +583,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     var fid = frameIdOf(e.source), o = frames[fid];
     if (!o) return;
     if (d.siwar === 'kv') { kvOp(fid, d, e.source, e.origin); return; }
+    if (/^(hold|alive|ready)$/.test(d.siwar)) warmedSay(o, fid);
     if (/^(hold|alive|ready)$/.test(d.siwar) && o.win !== e.source) { o.win = e.source; o.ps = ''; if (!o.netSent) { o.netSent = 1; if (!navigator.onLine) try { e.source.postMessage({ siwar: 'net', on: false }, '*'); } catch (x) {} } setTimeout(syncPause, 0); }
     if (d.siwar === 'hold') { o.held = true; pMark(fid, 'hold'); if (d.g && PJ[fid]) PJ[fid].g = String(d.g).slice(0, 8); if (cur === fid && !o.ready) stage(.82, .95); }
     else if (d.siwar === 'alive') { o.alive = true; pMark(fid, 'alive'); }
