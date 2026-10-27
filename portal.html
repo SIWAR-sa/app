@@ -2739,6 +2739,7 @@ function nbRender() {
     body += groups.map(k => {
       const g = by[k];
       if (g.length === 1) return nbCard(g[0]);
+      if (groups.length === 1) return g.map(nbCard).join('');
       if (NB.grp[k]) return g.map(nbCard).join('') + '<button type="button" class="nb-fold" data-act="nbGroup" data-app="' + esc(k) + '">' + esc(t('nbFold')) + '</button>';
       const hidUn = g.slice(1).some(x => !x.r);
       return '<div class="nb-grp">' + nbCard(g[0]) + '<div class="nb-peek"></div>' + (g.length > 2 ? '<div class="nb-peek"></div>' : '') +
@@ -2761,7 +2762,7 @@ function nbOpenPanel() {
   if (!S.user) return;
   closeMenu();
   const p = $('#nbPanel'), v = $('#nbVeil'), phone = window.matchMedia('(max-width: 600px)').matches;
-  NB.open = true; NB.grp = {};
+  NB.open = true; NB.grp = {}; NB.filter = 'all';
   p.hidden = false; v.hidden = false; p.setAttribute('aria-label', t('nbTitle')); nbPlace(); nbRender();
   $('#nbBtn').classList.add('on'); $('#nbBtn').setAttribute('aria-expanded', 'true');
   if (phone) document.documentElement.classList.add('nb-lock');
