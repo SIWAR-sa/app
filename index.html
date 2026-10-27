@@ -104,6 +104,50 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
 .pload.err .pl-spin{display:none}
 .pload.done .pl-em{transform:scale(1.06);opacity:.0;transition:transform .38s ease,opacity .38s ease}
 .pload.out .pl-glow,.pload.out .pl-sheen,.pload.out .pl-spin,.pload.gone .pl-glow,.pload.gone .pl-sheen,.pload.gone .pl-spin,#splash.out .bar i{animation:none}
+/* ── الفتح الفوري من الشاشة المحفوظة ──
+   النسخة في إطار معزول تماماً، يمكن تمريرها ولا تقبل الضغط. كبسولة أعلى الوسط (زجاجية) على الكمبيوتر،
+   وفي الجوال شريط ثابت أسفل الشاشة فوق المنطقة الآمنة (خلفية صلبة) فلا تغطي أي محتوى. وحافة ذهبية رفيعة أعلى النظام */
+.snap{position:absolute;inset:0;z-index:4;background:var(--bg)}
+.snap-sc{position:absolute;inset:0;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;transition:opacity .32s ease}
+.snap-sc iframe{display:block;width:100%;height:100%;border:0;background:var(--bg);pointer-events:none}
+.snap-cv{position:absolute;left:0;top:0;width:100%;cursor:default}
+.snap.ph .snap-sc{bottom:calc(64px + var(--bottom))}
+.snap-edge{position:absolute;left:0;right:0;top:0;height:3px;z-index:2;overflow:hidden;background:rgba(194,146,63,.14);transition:opacity .32s ease}
+.snap-edge i{position:absolute;top:0;bottom:0;width:40%;border-radius:3px;background:linear-gradient(90deg,rgba(227,182,109,0),#E3B66D 30%,#F8E3B4 55%,#C2923F 80%,rgba(194,146,63,0));box-shadow:0 0 10px 1px rgba(227,182,109,.75);animation:snEdge 1.5s cubic-bezier(.4,0,.2,1) infinite}
+[dir="rtl"] .snap-edge i{animation-name:snEdgeR}
+@keyframes snEdge{0%{left:-40%}100%{left:100%}}
+@keyframes snEdgeR{0%{left:100%}100%{left:-40%}}
+.snap.live .snap-edge i,.snap.rm .snap-edge i{animation:none;left:0;width:100%;background:linear-gradient(90deg,#C2923F,#F8E3B4 50%,#E3B66D)}
+.snap.rm:not(.live) .snap-edge i{width:55%;left:auto;right:0}
+.snap.fail .snap-edge{opacity:0}
+.snap-dock{position:absolute;left:0;right:0;top:10px;z-index:3;display:flex;justify-content:center;pointer-events:none;transition:opacity .3s ease}
+.snap.ph .snap-dock{top:auto;bottom:0;height:calc(64px + var(--bottom));padding:0 12px var(--bottom);align-items:center;background:var(--bg);border-top:1px solid var(--line);box-shadow:0 -10px 24px -18px rgba(63,48,30,.45);pointer-events:auto}
+.snap-pill{pointer-events:auto;display:flex;align-items:center;gap:10px;max-width:calc(100% - 24px);min-height:38px;padding:6px 18px 6px 14px;border-radius:999px;font-size:14px;font-weight:600;color:var(--text);line-height:1.35;
+  background:linear-gradient(180deg,rgba(255,254,251,.74),rgba(251,245,236,.6)) padding-box,linear-gradient(140deg,rgba(246,226,186,.95),rgba(214,166,87,.85) 35%,rgba(255,246,226,.95) 60%,rgba(201,150,70,.85)) border-box;
+  border:1px solid transparent;backdrop-filter:blur(18px) saturate(1.7);-webkit-backdrop-filter:blur(18px) saturate(1.7);
+  box-shadow:0 14px 32px -14px rgba(63,48,30,.45),0 2px 6px -2px rgba(63,48,30,.18),inset 0 1px 0 rgba(255,255,255,.9)}
+.snap.ph .snap-pill{background:linear-gradient(180deg,#FFFEFB,#FBF5EC) padding-box,linear-gradient(140deg,#F6E2BA,#D6A657 35%,#FFF6E2 60%,#C99646) border-box;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 8px 20px -12px rgba(63,48,30,.5),inset 0 1px 0 #fff}
+.snap-ic{position:relative;flex:none;width:18px;height:18px;border-radius:50%;border:2.2px solid rgba(194,146,63,.2);border-top-color:#D9AD5E;border-right-color:#E3B66D;animation:snSpin .9s linear infinite}
+.snap.rm .snap-ic{animation:none}
+@keyframes snSpin{to{transform:rotate(360deg)}}
+.snap-pill.done .snap-ic,.snap-pill.fail .snap-ic{animation:none;border:0;display:grid;place-items:center}
+.snap-pill.done .snap-ic{background:linear-gradient(180deg,#F6DCA0,#D9AD5E);box-shadow:0 2px 6px -2px rgba(140,101,36,.6)}
+.snap-pill.done .snap-ic::after{content:"";width:8px;height:4px;margin-top:-2px;border:solid #3B2A12;border-width:0 0 2.4px 2.4px;transform:rotate(-45deg)}
+.snap-pill.fail{color:#7A2E2B;background:linear-gradient(180deg,#FFFBFA,#FCEDEB) padding-box,linear-gradient(140deg,#EBC2BF,#C9827F) border-box;backdrop-filter:none;-webkit-backdrop-filter:none}
+.snap-pill.fail .snap-ic{background:#C0574F}
+.snap-pill.fail .snap-ic::after{content:"!";color:#fff;font-size:12px;font-weight:700;line-height:1}
+.snap-rt{flex:none;height:30px;padding:0 14px;border:0;border-radius:999px;font:inherit;font-size:13px;font-weight:700;color:#2B2116;background:linear-gradient(180deg,#F6DCA0,#D9AD5E);box-shadow:0 6px 14px -8px rgba(140,101,36,.8);cursor:pointer}
+.snap-pill.pulse{animation:snPulse .8s ease-in-out 2}
+.snap.rm .snap-pill.pulse{animation:none}
+@keyframes snPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06);box-shadow:0 0 0 6px rgba(227,182,109,.22),0 14px 32px -14px rgba(63,48,30,.45)}}
+.snap.live .snap-sc{opacity:0;pointer-events:none}
+.snap.live .snap-edge{opacity:0;transition-delay:.25s}
+.snap.rm .snap-sc,.snap.rm .snap-edge,.snap.rm .snap-dock{transition:none}
+.snap.bye .snap-dock{opacity:0}
+.snap.live{background:transparent;pointer-events:none}
+.snap.live .snap-dock{pointer-events:none}
+.sntoast{position:absolute;left:50%;top:10px;z-index:5;transform:translateX(-50%);display:flex;align-items:center;gap:8px;min-height:36px;padding:6px 16px;border-radius:999px;font-size:13.5px;font-weight:600;color:var(--text);background:linear-gradient(180deg,#FFFEFB,#FBF5EC) padding-box,linear-gradient(140deg,#F6E2BA,#D6A657 35%,#FFF6E2 60%,#C99646) border-box;border:1px solid transparent;box-shadow:0 12px 28px -14px rgba(63,48,30,.5);transition:opacity .3s}
+@media (max-width:699px){.sntoast{top:auto;bottom:calc(var(--bottom) + 14px)}}
 /* نافذة التثبيت */
 #install{position:fixed;inset:0;z-index:40;display:grid;align-items:end;justify-items:center;background:rgba(63,58,55,.28);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
 .sheet{width:min(460px,100%);margin:0 0 calc(12px + var(--bottom));padding:24px 22px 20px;border-radius:24px;background:#FFFDF9;box-shadow:0 24px 60px rgba(63,58,55,.25);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;animation:up .35s cubic-bezier(.2,.8,.2,1)}
@@ -349,6 +393,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   }
   function loaderShow(name, icon, rect) {
     var L = $('pload');
+    if (snapActive()) { L.className = 'pload gone'; return; }
     $('pname').textContent = name || '';
     setIcon(icon);
     $('plRing').style.transition = 'none'; ring(0); void $('plRing').offsetWidth; $('plRing').style.transition = '';
@@ -382,6 +427,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     var L = $('pload'), t = ERRT[LANG] || ERRT.ar;
     clearTimeout(creepT);
     if (cur) pEnd(cur, offline() ? 'offline' : 'fail');
+    if (snapActive()) { L.className = 'pload gone'; snapFail(); return; }
     $('plErrTxt').textContent = offline() ? t.off : t.msg; $('plRetry').textContent = t.retry;
     L.className = 'pload shown err';
   }
@@ -456,7 +502,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
       else {
         // الصفحة اكتملت ولم تقل «جاهز» بعد: تُخفى شاشة الفتح (كما كان) ويبقى القياس منتظراً الجاهزية الحقيقية حتى 60ث، فتُسجَّل late
         o.late = true; if (cur === id) loaderDone();
-        o.wd3 = setTimeout(function () { if (frames[id] !== o || o.ready) return; pEnd(id, 'wd'); markReady(id); }, 46000);
+        o.wd3 = setTimeout(function () { if (frames[id] !== o || o.ready) return; pEnd(id, 'wd'); if (SN && SN.id === id && SN.st !== 'done') { snapFail(); return; } markReady(id); }, 46000);
       }
     }, 14000);
     p.src = ufForm(url, uf);
@@ -469,16 +515,140 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     if (!o.ready) { pMark(id, 'ready'); pEnd(id, how || (o.late ? 'late' : 'ok')); }
     o.ready = true; rt[id] = 0; clearTimeout(o.wd); clearTimeout(o.wd3); if (o.uf === uf) { try { localStorage.setItem(UFK, uf); } catch (e) {} }
     if (cur === id) loaderDone();
+    if (SN && SN.id === id) snapDone(id);
+  }
+
+  /* ── الفتح الفوري من الشاشة المحفوظة (مع الحارس 11) ──
+     النظام يرسل بعد جاهزيته نسخة من شاشته بلا سكربتات. عند فتحه من جديد تُعرض النسخة فوراً في إطار معزول تماماً
+     (sandbox بلا سكربت ولا نفس الموقع) لا يقبل الضغط ويمكن تمريره، ومعها «نسخة 09:40 · جارٍ التحديث».
+     حين يرسل النظام الحي «جاهز» يحل محلها. نسخة أقدم من إعداد سوار (snapMinutes) أو بعرض شاشة مختلف → شاشة الفتح العادية. */
+  var SN = null, SNQ = null, SNKEEP = 4, SNLAST = {};
+  var RM = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var SNT = { ar: { up: 'نسخة {t} · جارٍ التحديث', wait: 'لحظة… جارٍ التحديث', done: 'تم التحديث', fail: 'تعذّر التحديث — المعروض نسخة {t}', retry: 'إعادة المحاولة', gone: 'لم يعد هذا العنصر متاحاً' },
+              en: { up: 'Saved {t} · Updating…', wait: 'One moment… updating', done: 'Updated', fail: 'Couldn’t update — showing the {t} copy', retry: 'Try again', gone: 'This item is no longer available' } };
+  function snT(k, at) {
+    var t = (SNT[LANG] || SNT.ar)[k];
+    if (at) { var d = new Date(at); t = t.replace('{t}', ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2)); }
+    return t;
+  }
+  function kvRaw(op, key, val) {
+    return kvOpen().then(function (db) {
+      return new Promise(function (res) {
+        var tx = db.transaction('kv', op === 'get' ? 'readonly' : 'readwrite'), st = tx.objectStore('kv');
+        if (op === 'get') { var g = st.get(key); g.onsuccess = function () { res(g.result == null ? null : g.result); }; g.onerror = function () { res(null); }; }
+        else { if (op === 'set') st.put(val, key); else st.delete(key); tx.oncomplete = function () { res(true); }; tx.onerror = function () { res(false); }; }
+      });
+    }).catch(function () { return null; });
+  }
+  // المفاتيح: id|__snapp|go → فلتر الشركة الأخير لهذا المكان، id|__snape|go|scope → النسخة، id|__snapi → قائمتها (يُحتفظ بآخر SNKEEP)
+  function snGo(g) { return String(g || '').slice(0, 300); }
+  function snapIn(fid, d) {
+    var o = frames[fid], go = snGo(o && o.go), sc = String(d.scope || '').slice(0, 40);
+    if (d.off) return snapDropAll(fid);
+    var ek = fid + '|__snape|' + go + '|' + sc, pk = fid + '|__snapp|' + go;
+    if (d.skip) return kvRaw('del', ek);
+    if (typeof d.html !== 'string' || d.html.length > 420000 || !(Number(d.w) > 0) || !(Number(d.at) > 0)) return;
+    var max = Math.max(1, Math.min(1440, Number(d.max) || 30));
+    var nm = {}; if (d.nums && typeof d.nums === 'object') Object.keys(d.nums).slice(0, 400).forEach(function (k) { if (typeof d.nums[k] === 'string' && k.length < 600) nm[k] = d.nums[k].slice(0, 30); });
+    kvRaw('set', ek, { html: d.html, w: Number(d.w), h: Number(d.h) || 0, at: Number(d.at), max: max, scope: sc, go: go, nums: nm });
+    kvRaw('set', pk, sc);
+    kvRaw('get', fid + '|__snapi').then(function (ix) {
+      ix = Array.isArray(ix) ? ix.filter(function (x) { return x && x.e !== ek; }) : [];
+      ix.push({ e: ek, p: pk });
+      while (ix.length > SNKEEP) { var x = ix.shift(); kvRaw('del', x.e); if (!ix.some(function (y) { return y.p === x.p; })) kvRaw('del', x.p); }
+      kvRaw('set', fid + '|__snapi', ix);
+    });
+  }
+  function snapDropAll(fid) {
+    return kvRaw('get', fid + '|__snapi').then(function (ix) {
+      (Array.isArray(ix) ? ix : []).forEach(function (x) { kvRaw('del', x.e); kvRaw('del', x.p); });
+      kvRaw('del', fid + '|__snapi');
+    });
+  }
+  function snapGet(fid, go) {
+    go = snGo(go);
+    return kvRaw('get', fid + '|__snapp|' + go).then(function (sc) { return sc == null ? null : kvRaw('get', fid + '|__snape|' + go + '|' + sc); });
+  }
+  function snapOk(s) {
+    if (!s || typeof s.html !== 'string' || !(s.w > 0)) return false;
+    var age = Date.now() - Number(s.at), max = Math.max(1, Math.min(1440, Number(s.max) || 30)) * 60000;
+    var w = $('pbody').clientWidth || window.innerWidth;
+    return age > -60000 && age <= max && Math.abs(s.w - w) <= w * 0.1;
+  }
+  function snapPill(st) {
+    var s = SN; if (!s) return;
+    var p = s.el.querySelector('.snap-pill'), tx = p.querySelector('.snap-tx'), rt = p.querySelector('.snap-rt');
+    p.className = 'snap-pill' + (st === 'show' ? '' : ' ' + st);
+    tx.textContent = st === 'done' ? snT('done') : st === 'fail' ? snT('fail', s.at) : st === 'pulse' ? snT('wait') : snT('up', s.at);
+    rt.hidden = st !== 'fail'; rt.textContent = snT('retry');
+    s.el.classList.toggle('fail', st === 'fail');
+  }
+  function snapShow(id, s) {
+    snapClear();
+    $('pload').className = 'pload gone';
+    var el = document.createElement('div');
+    el.className = 'snap' + (window.innerWidth < 700 ? ' ph' : '') + (RM ? ' rm' : '');
+    el.innerHTML = '<div class="snap-sc"><iframe sandbox="" referrerpolicy="no-referrer" tabindex="-1" aria-hidden="true" title=""></iframe><div class="snap-cv"></div></div>' +
+      '<div class="snap-edge"><i></i></div><div class="snap-dock"><div class="snap-pill" role="status" aria-live="polite"><span class="snap-ic"></span><span class="snap-tx"></span><button type="button" class="snap-rt" hidden></button></div></div>';
+    var f = el.querySelector('iframe'), h = Math.max(200, Math.min(60000, Number(s.h) || 0));
+    f.style.height = h + 'px'; el.querySelector('.snap-cv').style.height = h + 'px';
+    f.setAttribute('srcdoc', s.html);
+    // لا ضغطة على النسخة تُنفَّذ أو تُحفظ لما بعد: أي ضغطة تنبّه الكبسولة فقط، والتمرير يعمل
+    el.querySelector('.snap-cv').addEventListener('click', snapPulse);
+    el.querySelector('.snap-rt').onclick = snapRetry;
+    $('pbody').appendChild(el);
+    SN = { id: id, el: el, at: Number(s.at), nums: s.nums || {}, st: 'show', t: 0, pt: 0 };
+    SN.t = setTimeout(function () { if (SN && SN.id === id && SN.st === 'show') snapFail(); }, 60000);
+    snapPill('show');
+    pMark(id, 'snap');
+  }
+  function snapPulse() {
+    var s = SN; if (!s || s.st !== 'show') return;
+    clearTimeout(s.pt); snapPill('pulse');
+    s.pt = setTimeout(function () { if (SN === s && s.st === 'show') snapPill('show'); }, 1800);
+  }
+  function snapFail() {
+    var s = SN; if (!s || s.st === 'done') return;
+    clearTimeout(s.t); clearTimeout(s.pt); s.st = 'fail'; snapPill('fail');
+  }
+  function snapRetry() {
+    var s = SN; if (!s) return;
+    s.st = 'show'; snapPill('show'); clearTimeout(s.t);
+    s.t = setTimeout(function () { if (SN === s && s.st === 'show') snapFail(); }, 60000);
+    rt[s.id] = 0; relaunch(s.id, true);
+  }
+  function snapDone(id) {
+    var s = SN; if (!s || s.id !== id || s.st === 'done') return;
+    clearTimeout(s.t); clearTimeout(s.pt); s.st = 'done'; snapPill('done'); SNLAST[id] = Date.now();
+    var o = frames[id]; if (o && o.win) try { o.win.postMessage({ siwar: 'snapdiff', nums: s.nums }, '*'); } catch (e) {}
+    s.el.classList.add('live');
+    setTimeout(function () { if (SN !== s) return; s.el.classList.add('bye'); setTimeout(function () { if (SN === s) snapClear(); }, RM ? 0 : 320); }, 1100);
+  }
+  function snapClear() { var s = SN; SN = null; if (!s) return; clearTimeout(s.t); clearTimeout(s.pt); if (s.el.parentNode) s.el.parentNode.removeChild(s.el); }
+  function snapActive() { return !!(SN && SN.id === cur && SN.st !== 'done'); }
+  function snapToast(text) {
+    var t = document.createElement('div'); t.className = 'sntoast'; t.setAttribute('role', 'status'); t.textContent = text;
+    $('pbody').appendChild(t);
+    setTimeout(function () { t.style.opacity = '0'; setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 320); }, 2800);
   }
 
   /* أوامر سوار */
-  function onPrep(id, name, icon, rect) {
+  function onPrep(id, name, icon, rect, go) {
     if (frames[id]) dropFrame(id);
     pStart(id, 'open');
     markCur(id); curSave(id);
-    loaderShow(name, icon, rect);
+    snapClear();
+    $('pload').className = 'pload gone';
     showLayer();
-    if (offline()) loaderErr();
+    var tok = SNQ = {}, done = false;
+    var normal = function () { if (done || SNQ !== tok || cur !== id) return; done = true; loaderShow(name, icon, rect); if (offline()) loaderErr(); };
+    var fb = setTimeout(normal, 120);
+    snapGet(id, go || '').then(function (s) {
+      if (done || SNQ !== tok || cur !== id || $('prog').className !== 'on' || (frames[id] && frames[id].ready)) return;
+      if (!snapOk(s)) { clearTimeout(fb); normal(); return; }
+      clearTimeout(fb); done = true; snapShow(id, s);
+      if (offline()) snapFail();
+    }, function () { clearTimeout(fb); normal(); });
   }
   function onOpen(id, url, name, icon, src) {
     if (cur !== id || $('prog').className !== 'on') { markCur(id); loaderShow(name, icon, null); showLayer(); }
@@ -493,6 +663,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     var o = frames[id];
     if (!o || Date.now() - o.t > FRAME_AGE) { if (o) dropFrame(id); toPortal({ siwar: 'relaunch', id: id }); return; }
     markCur(id); curSave(id, o.go);
+    snapClear();
     if (o.ready) { $('pload').className = 'pload gone'; pStart(id, 'show'); pEnd(id, 'ok'); }
     else if (o.late) $('pload').className = 'pload gone';   // ظاهر للمستخدم منذ انتهاء الانتظار، والقياس ما زال ينتظر جاهزيته
     else { loaderShow(o.name, o.icon, null); stage(o.loaded ? .7 : .42, .9); }
@@ -502,7 +673,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   function hideLayer(fromHistory) {
     if ($('prog').className !== 'on') return;
     $('prog').className = ''; $('prog').setAttribute('aria-hidden', 'true'); $('home').hidden = true;
-    clearTimeout(creepT);
+    clearTimeout(creepT); snapClear(); SNQ = null;
     var o = frames[cur];
     if (o && !o.ready && !o.loaded) dropFrame(cur);   // نظام لم يكتمل فتحه لا يبقى في الخلفية
     $('pload').className = 'pload gone';
@@ -554,13 +725,13 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     var d = e.data || {}, ic = d.icon && typeof d.icon === 'object' ? d.icon : null, id = String(d.id || '');
     if (mine) {
       if (d.siwar === 'portalReady') { hideSplash(); sendAlive(); portalOk = true; return; }
-      if (d.siwar === 'prep') { onPrep(id || '_', String(d.name || ''), ic, d.rect && typeof d.rect === 'object' ? d.rect : null); return; }
+      if (d.siwar === 'prep') { onPrep(id || '_', String(d.name || ''), ic, d.rect && typeof d.rect === 'object' ? d.rect : null, typeof d.go === 'string' ? d.go : ''); return; }
       if (d.siwar === 'open' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onOpen(id || '_', String(d.url), String(d.name || ''), ic, String(d.src || '')); return; }
       if (d.siwar === 'show' && frames[id]) { onShow(id); return; }
       if (d.siwar === 'show') { toPortal({ siwar: 'relaunch', id: id }); return; }
       if (d.siwar === 'warm' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onWarm(id, String(d.url), String(d.name || ''), ic); return; }
       if (d.siwar === 'close') { if (id && frames[id] && !frames[id].ready) dropFrame(id); hideLayer(false); return; }
-      if (d.siwar === 'logout') { hideLayer(false); Object.keys(frames).forEach(dropFrame); kvClear(); curClear(); pushDropDevice(); return; }
+      if (d.siwar === 'logout') { hideLayer(false); snapClear(); Object.keys(frames).forEach(dropFrame); kvClear(); curClear(); pushDropDevice(); return; }
       if (d.siwar === 'dropFrames') { hideLayer(false); Object.keys(frames).forEach(dropFrame); return; }   // بعد تغيير كلمة المرور: جلسات الأنظمة انتهت فتُغلق شاشاتها وتُفتح من جديد بتذاكر جديدة
       if (d.siwar === 'pushOpen') { if (d.lang) applyLang(String(d.lang)); pushOpen(); return; }
       if (d.siwar === 'pushRes') { pushGot(d); return; }
@@ -583,6 +754,8 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     var fid = frameIdOf(e.source), o = frames[fid];
     if (!o) return;
     if (d.siwar === 'kv') { kvOp(fid, d, e.source, e.origin); return; }
+    if (d.siwar === 'snap') { snapIn(fid, d); return; }
+    if (d.siwar === 'gone') { if ((SN && SN.id === fid) || Date.now() - (SNLAST[fid] || 0) < 15000) snapToast(snT('gone')); return; }
     if (/^(hold|alive|ready)$/.test(d.siwar)) warmedSay(o, fid);
     if (/^(hold|alive|ready)$/.test(d.siwar) && o.win !== e.source) { o.win = e.source; o.ps = ''; if (!o.netSent) { o.netSent = 1; if (!navigator.onLine) try { e.source.postMessage({ siwar: 'net', on: false }, '*'); } catch (x) {} } setTimeout(syncPause, 0); }
     if (d.siwar === 'hold') { o.held = true; pMark(fid, 'hold'); if (d.g && PJ[fid]) PJ[fid].g = String(d.g).slice(0, 8); if (cur === fid && !o.ready) stage(.82, .95); }

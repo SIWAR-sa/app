@@ -2610,7 +2610,7 @@ async function launchInApp(btn, app) {
 
   if (!go && S.alive[id] && !btn.fresh) { try { window.top.postMessage({ siwar: 'show', id: id }, '*'); } catch (e) {} return; }
   btn.classList.add('is-launching');
-  try { window.top.postMessage({ siwar: 'prep', id: id, name: name, icon: icon, rect: iconRect(btn) }, '*'); } catch (e) {}
+  try { window.top.postMessage({ siwar: 'prep', id: id, name: name, icon: icon, rect: iconRect(btn), go: go }, '*'); } catch (e) {}
   try {
     let url = go ? '' : takeTicket(id), src = url ? (S.tix.src || 'prefetch') : 'launch';
     // ضغطة أثناء الإقلاع: تذكرة هذا النظام في طريقها مع init، فننتظرها بدل طلب جديد
@@ -2745,7 +2745,7 @@ function uDaysOf(v) {
   const a = Array.isArray(v) ? v : String(v || '').split(/[,،\s]+/).filter(Boolean);
   return a.map(x => { if (/^\d$/.test(String(x))) return Number(x); const s = String(x).trim().toLowerCase(); return N.findIndex(z => z.some(w => s === w || s.indexOf(w) === 0)); }).filter(i => i >= 0 && i <= 6);
 }
-const U_SHARED_ORDER = ['workweek', 'holidays', 'companies', 'departments', 'locations', 'contacts', 'roles', 'mailGroups', 'brand'];
+const U_SHARED_ORDER = ['workweek', 'holidays', 'companies', 'departments', 'locations', 'contacts', 'roles', 'mailGroups', 'brand', 'siwarApp'];
 
 function renderUnified() {
   if (!U.d) { $('#uRoot').innerHTML = '<div class="u-wait"><span class="u-spin"></span><span>جارٍ تحميل بيانات الموظفين والأنظمة…</span></div>'; uLoad(); return; }
@@ -3135,7 +3135,10 @@ function uSharedV(onlyKeys, sysId) {
     contacts: () => box('contacts', '<div class="u-qs">' + ['gm', 'cfo', 'hr'].map(pick).join('') + '</div>'),
     roles: () => box('roles', uRolesHtml(people)),
     mailGroups: () => box('mailGroups', rows('mailGroups'), saveBtn('mailGroups')),
-    brand: () => box('brand', '<label class="u-q"><span class="u-q-t">اسم المرسل الظاهر في الرسائل</span><input class="inp" data-uc="brand" value="' + esc((sh.brand || {}).senderName || '') + '"></label>')
+    brand: () => box('brand', '<label class="u-q"><span class="u-q-t">اسم المرسل الظاهر في الرسائل</span><input class="inp" data-uc="brand" value="' + esc((sh.brand || {}).senderName || '') + '"></label>'),
+    siwarApp: () => { const v = sh.siwarApp || {}, n = (f, l, unit, min, max, def, help) => '<div class="u-q"><span class="u-q-t">' + l + (help ? '<small class="u-cdesc">' + help + '</small>' : '') + '</span><span class="u-q-v"><input class="inp u-num" type="number" min="' + min + '" max="' + max + '" data-uc="appNum" data-f="' + f + '" value="' + esc(v[f] == null ? def : v[f]) + '"><span class="u-unit">' + unit + '</span></span></div>';
+      return box('siwarApp', '<div class="u-qs">' + n('snapMinutes', 'أقصى عمر للنسخة المحفوظة من شاشة النظام', 'دقيقة', 1, 1440, 30, 'عند فتح نظام تظهر آخر نسخة من شاشته فوراً حتى يكتمل تحديثها، إذا لم تكن أقدم من هذه المدة') +
+        n('linkDays', 'صلاحية روابط الإجراء في البريد', 'يوم', 1, 3650, 30) + n('linkLegacyDays', 'مهلة الروابط القديمة المرسلة قبل التحديث', 'يوم', 1, 3650, 30) + '</div>'); }
   };
   const keys = onlyKeys || U_SHARED_ORDER.filter(k => !usedBy(k).length);
   const body = keys.filter(k => B[k]).map(k => B[k]()).join('');
@@ -3505,6 +3508,7 @@ function uOnChange(el) {
   if (k === 'role') { const list = JSON.parse(JSON.stringify(D.shared.roles || [])), r = list[Number(el.dataset.i)]; if (!r) return; r[el.dataset.f] = el.value.trim(); uRolesSet(list); return; }
   if (k === 'contact') { if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); const c = Object.assign({}, D.shared.contacts || {}); c[el.dataset.r] = el.value; D.shared.contacts = c; uMark('sh:contacts', { t: 'shared', key: 'contacts', value: c }); return; }
   if (k === 'wkCap') { if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); const v = Object.assign({}, D.shared.workweek || {}, { maxRestShare: Math.min(100, Math.max(10, Number(el.value) || 50)) }); D.shared.workweek = v; uMark('sh:workweek', { t: 'shared', key: 'workweek', value: v }); const y = window.scrollY; uRender(); window.scrollTo(0, y); return; }
+  if (k === 'appNum') { if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); const f = el.dataset.f, lim = { snapMinutes: [1, 1440, 30], linkDays: [1, 3650, 30], linkLegacyDays: [1, 3650, 30] }[f]; if (!lim) return; const x = Math.round(Number(el.value)); if (!(x >= lim[0] && x <= lim[1])) { toast('القيمة من ' + lim[0] + ' إلى ' + lim[1], 'err'); el.value = (D.shared.siwarApp || {})[f] == null ? lim[2] : D.shared.siwarApp[f]; return; } const a = Object.assign({ snapMinutes: 30, linkDays: 30, linkLegacyDays: 30 }, D.shared.siwarApp || {}); a[f] = x; D.shared.siwarApp = a; uMark('sh:siwarApp', { t: 'shared', key: 'siwarApp', value: a }); return; }
   if (k === 'brand') { if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); const b = Object.assign({}, D.shared.brand || {}, { senderName: el.value.trim() }); D.shared.brand = b; uMark('sh:brand', { t: 'shared', key: 'brand', value: b }); return; }
 }
 // ===== الأدوار (واجهة) =====
