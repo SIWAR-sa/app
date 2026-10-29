@@ -1180,6 +1180,13 @@ tr.is-off .mx-user { opacity: .5; }
 .og-di.og-un { border-style: dashed; color: #9A5A57; }
 .og-di.og-un.on { color: #fff; }
 .og-add { justify-content: center; margin-top: 4px; }
+.og-xl { display: flex; gap: 6px; margin-top: 6px; padding-top: 10px; border-top: 1px dashed var(--border-strong); }
+.og-xl .btn { flex: 1 1 0; justify-content: center; min-width: 0; white-space: nowrap; }
+.og-xl-lists { display: flex; flex-direction: column; gap: 8px; margin: 10px 0 6px; }
+.og-xd { border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-2); padding: 0 14px; }
+.og-xd summary { cursor: pointer; padding: 10px 0; font-size: 14px; }
+.og-xd summary b { font-size: 16px; margin-inline-end: 4px; }
+.og-xd ul { margin: 0 0 10px; padding-inline-start: 20px; font-size: 13.5px; line-height: 1.9; max-height: 220px; overflow: auto; color: var(--muted); }
 .og-main { min-width: 0; padding: 22px 24px; border-radius: var(--radius-lg); background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow); }
 .og-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
 .og-top h2 { font-size: 24px; margin: 0; }
@@ -1849,7 +1856,8 @@ const ICONS = {
   undo: '<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',
   link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
   image: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>',
-  upload: '<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/>'
+  upload: '<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/>',
+  download: '<path d="M12 4v12M7 11l5 5 5-5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/>'
 };
 
 const APP_ICONS = {
@@ -4274,13 +4282,14 @@ function uOrg() {
   if (O.sel !== '__un' && !ogU(O.sel)) O.sel = (depts[0] || {}).id || '';
   const side = '<aside class="og-side"><h3>الإدارات</h3><div class="og-dl">' + depts.map(d => '<button class="og-di' + (O.sel === d.id ? ' on' : '') + '" data-og="sel" data-id="' + esc(d.id) + '" data-drop="' + esc(d.id) + '"><span>' + esc(d.name) + '</span><b class="n">' + (counts[d.id] || 0) + '</b></button>').join('') +
     (un.length ? '<button class="og-di og-un' + (O.sel === '__un' ? ' on' : '') + '" data-og="sel" data-id="__un"><span>غير موزّعين</span><b class="n">' + un.length + '</b></button>' : '') + '</div>' +
-    (D.edit ? '<button class="btn btn-ghost og-add" data-og="addDept">' + ic('plus') + '<span>إدارة جديدة</span></button>' : '') + '</aside>';
+    (D.edit ? '<button class="btn btn-ghost og-add" data-og="addDept">' + ic('plus') + '<span>إدارة جديدة</span></button>' : '') +
+    '<div class="og-xl"><button class="btn btn-ghost btn-sm" data-og="xlDown">' + ic('download') + '<span>تنزيل Excel</span></button>' + (D.edit ? '<button class="btn btn-ghost btn-sm" data-og="xlUp">' + ic('upload') + '<span>رفع Excel</span></button>' : '') + '</div></aside>';
   const main = O.sel === '__un' ? ogUnplaced(un) : ogDept(ogU(O.sel));
   return '<div class="og">' + side + '<section class="og-main">' + main + ogFoot() + '</section></div>';
 }
 function ogEmpty() {
   return '<section class="panel-box og-empty"><span class="og-empty-ic">' + ic('grid') + '</span><h3>لم يُعرَّف الهيكل التنظيمي بعد</h3><p class="u-muted">تُعرَّف الإدارات والأقسام ورؤساؤها هنا مرة واحدة، وتقرأ منها الأنظمة.</p>' +
-    '<div class="savebar-actions">' + (O.d.owner ? '<button class="btn btn-primary" data-og="seed">' + ic('upload') + '<span>تعبئة أولى من كوادر ومهام وإجراءات</span></button>' : '') + (O.d.edit ? '<button class="btn btn-ghost" data-og="addDept">' + ic('plus') + '<span>إدارة جديدة</span></button>' : '') + '</div></section>' + ogFoot();
+    '<div class="savebar-actions">' + (O.d.owner ? '<button class="btn btn-primary" data-og="seed">' + ic('upload') + '<span>تعبئة أولى من كوادر ومهام وإجراءات</span></button>' : '') + (O.d.edit ? '<button class="btn btn-ghost" data-og="addDept">' + ic('plus') + '<span>إدارة جديدة</span></button><button class="btn btn-ghost" data-og="xlUp">' + ic('upload') + '<span>رفع Excel</span></button>' : '') + '</div></section>' + ogFoot();
 }
 function ogCoSeg() {
   return '<div class="seg og-co">' + [{ code: '', nameAR: 'الشركتان' }].concat(O.w.companies || []).map(c => '<button class="seg-btn' + (O.co === c.code ? ' on' : '') + '" data-og="co" data-co="' + esc(c.code) + '">' + esc(c.nameAR) + '</button>').join('') + '</div>';
@@ -4298,7 +4307,7 @@ function ogDept(d) {
       '<div class="rl">' + head + '</div><div class="og-mem">' + shown.map(p => ogAv(p, true)).join('') + (n > shown.length ? '<span class="og-av og-more n" dir="ltr">+' + (n - shown.length) + '</span>' : '') + (!n ? '<span class="og-none">لا أحد</span>' : '') + '</div></div>';
   };
   const direct = vis.filter(p => !ogPlace(p).s && p.id !== d.head);
-  const cards = secs.map(s => card(s.id, s.name, 'قسم', 'رئيس القسم: ' + (s.head ? esc(ogNm(s.head)) : '<span class="og-none">لم يُحدَّد</span>'), vis.filter(p => ogPlace(p).s === s.id)))
+  const cards = secs.map(s => card(s.id, s.name, 'قسم', 'رئيس القسم: ' + (s.head ? esc(ogNm(s.head)) : '<span class="og-none">' + OG_XL_FOLLOW + '</span>'), vis.filter(p => ogPlace(p).s === s.id)))
     .concat(direct.length || !secs.length ? [card(d.id, 'مباشرة تحت الإدارة', 'بلا قسم', 'المدير المباشر: رئيس الإدارة', direct)] : []);
   const openU = O.open && (O.open === d.id || secs.some(s => s.id === O.open)) ? O.open : '';
   const tools = O.d.edit ? '<span class="og-tools"><button class="og-ib" data-og="editUnit" data-id="' + esc(d.id) + '" title="تعديل الاسم">' + ic('edit') + '</button><button class="og-ib" data-og="delUnit" data-id="' + esc(d.id) + '" title="حذف الإدارة">' + ic('trash') + '</button></span>' : '';
@@ -4420,6 +4429,236 @@ async function ogSeedApply() {
   closeModal(true); toast('عُرّف الهيكل: ' + r.depts.length + ' إدارات', 'ok'); uFlushSoon(); await ogLoad();
 }
 
+// ===== الهيكل في Excel: «تنزيل Excel» و«رفع Excel» (ورقتان: «الإدارات والأقسام» و«الموظفون») =====
+// الرفع يقارن الملف بالهيكل الحالي ويعرض ما سيتغير (نقل، مدير مباشر، وحدات جديدة ومحذوفة، رؤساء) ثم «اعتماد» يحفظه دفعة واحدة (u_orgSave).
+// الموظف يُطابَق برقمه في جسر أولاً ثم باسمه؛ لا يُضاف موظف جديد من الملف أبداً.
+const OG_XL_U = 'الإدارات والأقسام', OG_XL_P = 'الموظفون', OG_XL_FOLLOW = 'يتبع رئيس الإدارة';
+const OG_XL_H = {
+  code: ['الكود', 'الرقم الوظيفي', 'رقم الموظف', 'رقم جسر', 'Employee ID', 'Employee Number', 'ID'],
+  name: ['الاسم', 'الاسم كاملاً باللغة العربية', 'اسم الموظف', 'الاسم بالعربية', 'Name'],
+  title: ['المسمى', 'المسمى الوظيفي', 'Job Title'],
+  mcode: ['كود المدير المباشر', 'رقم المدير المباشر', 'الرقم الوظيفي للمدير المباشر', 'Manager ID'],
+  mname: ['المدير المباشر', 'Direct Manager', 'Manager'],
+  dept: ['الإدارة', 'Department'], sec: ['القسم', 'Section'], co: ['الشركة', 'Company'],
+  hcode: ['كود الرئيس'], hname: ['الرئيس'], en: ['الاسم بالإنجليزية']
+};
+function ogCoName(code) { const c = (O.w.companies || []).find(x => x.code === code); return c ? c.nameAR : ''; }
+function ogCoCode(name) { const n = ogN(name); if (!n) return ''; const c = (O.w.companies || []).find(x => ogN(x.nameAR) === n || ogN(x.code) === n); return c ? c.code : null; }
+async function ogXlDown(btn) {
+  if (btn) btn.disabled = true;
+  try {
+    const X = await uXlLib(), wb = new X.Workbook();
+    wb.views = [{ rightToLeft: true }];
+    const head = (ws, cols) => { ws.views = [{ rightToLeft: true, state: 'frozen', ySplit: 1 }]; ws.columns = cols.map(c => ({ header: c[0], key: c[1], width: c[2] })); const r = ws.getRow(1); r.font = { bold: true, color: { argb: 'FF3F3A37' } }; r.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFBF0DC' } }; r.height = 24; };
+    const place = {}; O.w.people.forEach(p => { place[p.id] = ogPlace(p); });
+    const count = (d, s) => O.w.people.filter(p => place[p.id].d === d && (!s || place[p.id].s === s)).length;
+    const W = wb.addWorksheet(OG_XL_U);
+    head(W, [['الإدارة', 'd', 26], ['القسم', 's', 22], ['كود الرئيس', 'hc', 12], ['الرئيس', 'h', 34], ['العدد', 'n', 9], ['الشركة', 'co', 12], ['الاسم بالإنجليزية', 'en', 26]]);
+    ogDepts().forEach(d => {
+      const hp = d.head ? ogP(d.head) : null;
+      W.addRow({ d: d.name, s: '', hc: hp ? hp.no : '', h: hp ? hp.name : '', n: count(d.id), co: ogCoName(d.co), en: d.nameEN || '' });
+      ogSecs(d.id).forEach(s => { const sp = s.head ? ogP(s.head) : null; W.addRow({ d: d.name, s: s.name, hc: sp ? sp.no : '', h: sp ? sp.name : OG_XL_FOLLOW, n: count(d.id, s.id), co: ogCoName(s.co || d.co), en: s.nameEN || '' }); });
+    });
+    const E = wb.addWorksheet(OG_XL_P);
+    head(E, [['الكود', 'c', 10], ['الاسم', 'n', 34], ['المسمى', 't', 24], ['كود المدير المباشر', 'mc', 12], ['المدير المباشر', 'm', 34], ['الإدارة', 'd', 24], ['القسم', 's', 20], ['الشركة', 'co', 11], ['في النظام', 'in', 10], ['ملاحظة', 'note', 30]]);
+    const ord = {}; ogDepts().forEach((d, i) => { ord[d.id] = i; });
+    O.w.people.slice().sort((a, b) => ((ord[place[a.id].d] != null ? ord[place[a.id].d] : 99) - (ord[place[b.id].d] != null ? ord[place[b.id].d] : 99)) || String(a.no || '~').localeCompare(String(b.no || '~'), 'en', { numeric: true }))
+      .forEach(p => {
+        const pl = place[p.id], m = ogMgr(p), mp = m.id ? ogP(m.id) : null;
+        E.addRow({ c: p.no || '', n: p.name, t: p.title || '', mc: mp ? mp.no || '' : '', m: mp ? mp.name : '', d: pl.d ? ogU(pl.d).name : '', s: pl.s ? ogU(pl.s).name : '', co: ogCoName(p.co), in: 'نعم',
+          note: m.src === 'siwar' ? 'المدير المباشر محدَّد له في سوار' : m.src === 'jisr' ? 'المدير المباشر من جسر' : !pl.d ? 'غير موزّع' : '' });
+      });
+    [W, E].forEach(ws => ws.eachRow((r, i) => { r.alignment = { vertical: 'middle', horizontal: 'right', readingOrder: 'rtl' }; }));
+    const buf = await wb.xlsx.writeBuffer();
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+    a.download = 'سوار_الهيكل_التنظيمي_' + new Date().toISOString().slice(0, 10) + '.xlsx'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+    toast('نُزّل الهيكل', 'ok');
+  } catch (c) { ogXlErr(typeof c === 'string' ? c : 'ERR_SERVER', 'تعذّر تنزيل الملف.'); console.error(c); }
+  finally { if (btn) btn.disabled = false; }
+}
+function ogXlErr(code, lead) {
+  openModal({ title: ic('info') + '<span>' + esc(lead) + '</span>', body: '<p>' + esc(code === 'ERR_NETWORK' ? 'تعذّر تحميل أداة Excel. تأكد من الاتصال ثم أعد المحاولة.' : t(I18N.ar[code] ? code : 'ERR_SERVER')) + '</p>', foot: '<button class="btn btn-primary" data-act="closeModal">' + ic('check') + '<span>حسناً</span></button>' });
+}
+function ogXlOpen() {
+  if (O.ops.length) return openModal({ title: ic('info') + '<span>احفظ تعديلاتك أولاً</span>', body: '<p>عندك ' + O.ops.length + (O.ops.length === 1 ? ' تعديل' : ' تعديلات') + ' في الهيكل لم تُحفظ. احفظها أو تراجع عنها، ثم ارفع الملف.</p>', foot: '<button class="btn btn-primary" data-act="closeModal">' + ic('check') + '<span>حسناً</span></button>' });
+  O.xl = null;
+  openModal({ wide: true, title: '<span>رفع الهيكل من Excel</span>', body:
+    '<p class="u-muted">الملف المنزّل من هنا بعد تعديله، أو ملف بالأعمدة نفسها. لا يتغير شيء قبل «اعتماد».</p><label class="btn btn-ghost u-file">' + ic('upload') + '<span>اختيار الملف</span><input type="file" id="ogXlFile" accept=".xlsx" hidden></label><div id="ogXlOut"></div>',
+    foot: '<button class="btn btn-ghost" data-act="closeModal"><span>إلغاء</span></button><button class="btn btn-primary" data-og="xlApply" id="ogXlApply" disabled>' + ic('check') + '<span>اعتماد</span></button>' });
+  $('#ogXlFile').onchange = e => { const f = e.target.files && e.target.files[0]; if (f) ogXlRead(f); };
+}
+// قراءة الملف وبناء التعديلات (دون إرسال شيء)
+async function ogXlRead(file) {
+  const out = $('#ogXlOut'); out.innerHTML = '<div class="u-wait"><span class="u-spin"></span><span>قراءة الملف…</span></div>'; $('#ogXlApply').disabled = true;
+  let wb;
+  try { const X = await uXlLib(); wb = new X.Workbook(); await wb.xlsx.load(await file.arrayBuffer()); }
+  catch (c) { out.innerHTML = '<p class="u-err">' + esc(c === 'ERR_NETWORK' ? 'تعذّر تحميل أداة Excel. تأكد من الاتصال ثم أعد المحاولة.' : 'تعذّرت قراءة الملف. تأكد أنه بصيغة xlsx.') + '</p>'; return; }
+  const r = ogXlPlan(wb);
+  O.xl = r;
+  out.innerHTML = ogXlView(r);
+  $('#ogXlApply').disabled = !!r.errs.length || !r.ops.length;
+}
+function ogXlSheets(wb) {
+  const val = c => { let v = c && c.value; if (v && typeof v === 'object') v = v.result != null ? v.result : v.richText ? v.richText.map(x => x.text).join('') : v.text != null ? v.text : ''; return v == null ? '' : String(v).replace(/\s+/g, ' ').trim(); };
+  const read = ws => {
+    if (!ws) return null;
+    let hr = 0, hdr = null;
+    for (let i = 1; i <= Math.min(5, ws.rowCount) && !hdr; i++) { const h = {}; ws.getRow(i).eachCell((c, j) => { const k = val(c); if (k) h[k] = j; }); if (Object.keys(h).length >= 2) { hdr = h; hr = i; } }
+    if (!hdr) return null;
+    const col = k => { const n = (OG_XL_H[k] || []).find(x => hdr[x]); return n ? hdr[n] : 0; };
+    const cols = {}; Object.keys(OG_XL_H).forEach(k => { cols[k] = col(k); });
+    const rows = []; ws.eachRow((row, i) => { if (i <= hr) return; const g = k => cols[k] ? val(row.getCell(cols[k])) : ''; const o = { r: i }; Object.keys(cols).forEach(k => { o[k] = g(k); }); if (Object.keys(cols).some(k => o[k])) rows.push(o); });
+    return { cols: cols, rows: rows };
+  };
+  let U0 = read(wb.getWorksheet(OG_XL_U)), P0 = read(wb.getWorksheet(OG_XL_P));
+  if (!U0 || !P0) wb.eachSheet(ws => {
+    const s = read(ws); if (!s) return;
+    if (!U0 && s.cols.dept && (s.cols.hname || s.cols.hcode) && !s.cols.code) U0 = s;
+    else if (!P0 && (s.cols.code || s.cols.name) && (s.cols.dept || s.cols.sec)) P0 = s;
+  });
+  return { U: U0, P: P0, names: wb.worksheets.map(w => w.name) };
+}
+function ogXlPlan(wb) {
+  const S = ogXlSheets(wb), errs = [], info = { unknown: [], byName: [], notInFile: [] }, ops = [], ch = { add: [], del: [], head: [], co: [], move: [], mgr: [] };
+  const bad = (sh, r, m) => errs.push({ sh: sh, r: r, m: m });
+  if (!S.U && !S.P) { bad('', '', 'لم أجد ورقة «' + OG_XL_U + '» ولا ورقة «' + OG_XL_P + '» بأعمدتها (الإدارة، القسم، الكود أو الاسم).'); return { errs: errs, ops: ops, ch: ch, info: info, S: S }; }
+  // نسخة للمحاكاة: تُطبَّق عليها التعديلات لحساب المدير المباشر الناتج
+  const W = JSON.parse(JSON.stringify(O.w)), live = W.units, uById = id => live.find(u => u.id === id);
+  const people = O.w.people, byNo = {}, nameIx = {};
+  people.forEach(p => { if (p.no) byNo[String(p.no).trim().toUpperCase()] = p; const n = ogN(p.name); (nameIx[n] = nameIx[n] || []).push(p); });
+  const findP = (code, name) => {
+    const c = String(code || '').trim().toUpperCase();
+    if (c && byNo[c]) return { p: byNo[c], how: 'code' };
+    const n = ogN(String(name || '').replace(/^…\s*/, ''));
+    if (!n) return { p: null };
+    if (nameIx[n] && nameIx[n].length === 1) return { p: nameIx[n][0], how: c ? 'name' : 'exact' };
+    const hits = people.filter(p => { const m = ogN(p.name); return m && (m.indexOf(n + ' ') === 0 || n.indexOf(m + ' ') === 0 || (n.length >= 8 && m.slice(-n.length) === n)); });
+    return hits.length === 1 ? { p: hits[0], how: 'name' } : { p: null, many: hits.length > 1 };
+  };
+  const dKey = name => ogN(name), sKey = (did, name) => did + '|' + ogN(name);
+  const findD = name => live.find(u => u.kind === 'dept' && dKey(u.name) === dKey(name));
+  const findS = (did, name) => live.find(u => u.kind === 'section' && u.parent === did && ogN(u.name) === ogN(name));
+  let tmpN = 0; const newTmp = () => 'x' + (++tmpN);
+  // 1) الإدارات والأقسام
+  if (S.U) {
+    const seen = {};
+    const ensure = (row, dName, sName, co) => {
+      let d = findD(dName);
+      if (!d) { d = { id: newTmp(), kind: 'dept', parent: '', name: dName, nameEN: '', co: co || '', head: '', jisr: [], order: live.filter(u => u.kind === 'dept').length + 1 }; live.push(d); ops.push({ t: 'unitAdd', tmp: d.id, kind: 'dept', name: dName, co: co || '', order: d.order }); ch.add.push(dName); }
+      seen[d.id] = 1;
+      if (!sName) return d;
+      let s = findS(d.id, sName);
+      if (!s) { s = { id: newTmp(), kind: 'section', parent: d.id, name: sName, nameEN: '', co: co || '', head: '', jisr: [], order: live.filter(u => u.kind === 'section' && u.parent === d.id).length + 1 }; live.push(s); ops.push({ t: 'unitAdd', tmp: s.id, kind: 'section', parent: d.id, name: sName, co: co || '', order: s.order }); ch.add.push(sName + ' (' + dName + ')'); }
+      seen[s.id] = 1; return s;
+    };
+    const heads = [];
+    S.U.rows.forEach(x => {
+      const dn = x.dept, sn = x.sec;
+      if (!dn) return bad(OG_XL_U, x.r, 'الإدارة فارغة');
+      if (dn.length > 80 || sn.length > 80) return bad(OG_XL_U, x.r, 'الاسم أطول من 80 حرفاً');
+      const co = x.co ? ogCoCode(x.co) : '';
+      if (co === null) return bad(OG_XL_U, x.r, 'شركة غير معروفة: ' + x.co);
+      const u = ensure(x.r, dn, sn, co);
+      if (co && (u.co || '') !== co && !String(u.id).startsWith('x')) { u.co = co; ops.push({ t: 'unitEdit', id: u.id, co: co }); ch.co.push(u.name + ' ← ' + x.co); }
+      heads.push({ r: x.r, u: u, code: x.hcode, name: ogN(x.hname) === ogN(OG_XL_FOLLOW) ? '' : x.hname });
+    });
+    heads.forEach(h => {
+      let pid = '';
+      if (h.code || h.name) { const f = findP(h.code, h.name); if (!f.p) return bad(OG_XL_U, h.r, 'الرئيس غير موجود في سوار: ' + (h.code ? h.code + ' ' : '') + h.name); pid = f.p.id; }
+      // قاعدة محمد: رئيس القسم يُحدَّد فقط إن كان غير رئيس الإدارة
+      if (h.u.kind === 'section' && pid && pid === (uById(h.u.parent) || {}).head) pid = '';
+      if (pid !== (h.u.head || '')) { const was = h.u.head ? ogNm(h.u.head) : ''; h.u.head = pid; ops.push({ t: 'unitHead', id: h.u.id, pid: pid }); ch.head.push(h.u.name + ': ' + (was || '—') + ' ← ' + (pid ? ogNm(pid) : (h.u.kind === 'section' ? OG_XL_FOLLOW : '—'))); }
+    });
+    live.slice().forEach(u => { if (seen[u.id]) return; if (u.kind === 'section' && !seen[u.parent]) return; ops.push({ t: 'unitDel', id: u.id }); ch.del.push(u.kind === 'dept' ? u.name : u.name + ' (' + (uById(u.parent) || {}).name + ')');
+      const gone = [u.id].concat(u.kind === 'dept' ? live.filter(z => z.parent === u.id).map(z => z.id) : []);
+      W.people.forEach(p => { if (gone.indexOf(p.org) >= 0) p.org = u.kind === 'dept' ? '' : u.parent; });
+      for (let i = live.length - 1; i >= 0; i--) if (gone.indexOf(live[i].id) >= 0) live.splice(i, 1); });
+  }
+  // 2) الموظفون
+  const want = {}, mgrWant = {};
+  if (S.P) {
+    const used = {};
+    S.P.rows.forEach(x => {
+      if (!x.code && !x.name) return;
+      const f = findP(x.code, x.name);
+      if (!f.p) { info.unknown.push((x.code ? x.code + ' · ' : '') + (x.name || '') + (f.many ? ' (أكثر من موظف بالاسم نفسه)' : '')); return; }
+      const p = f.p;
+      if (used[p.id]) return bad(OG_XL_P, x.r, 'الموظف مكرر في الملف: ' + p.name + ' (صف ' + used[p.id] + ')');
+      used[p.id] = x.r;
+      if (f.how === 'name') info.byName.push((x.code ? x.code + ' ' : '') + '«' + x.name + '» ← ' + p.name + (p.no ? ' (' + p.no + ')' : ''));
+      // المكان
+      if (S.P.cols.dept || S.P.cols.sec) {
+        let to = '';
+        if (S.P.cols.dept) {
+          if (x.dept) { const d = live.find(u => u.kind === 'dept' && dKey(u.name) === dKey(x.dept)); if (!d) return bad(OG_XL_P, x.r, 'إدارة غير موجودة: ' + x.dept);
+            to = d.id; if (x.sec) { const s = findS(d.id, x.sec); if (!s) return bad(OG_XL_P, x.r, 'قسم غير موجود في «' + x.dept + '»: ' + x.sec); to = s.id; } }
+          else if (x.sec) return bad(OG_XL_P, x.r, 'القسم بلا إدارة: ' + x.sec);
+        } else if (x.sec) {
+          // ملف جسر: «القسم» اسم وحدته في جسر — يُطابَق باسم وحدة أو باسم مربوط بها
+          const k = ogKey(x.sec), hit = live.filter(u => ogKey(u.name) === k || (u.jisr || []).some(n => ogKey(n) === k));
+          if (hit.length === 1) to = hit[0].id; else to = null;
+        }
+        if (to !== null) want[p.id] = to;
+      }
+      // المدير المباشر
+      if (S.P.cols.mcode || S.P.cols.mname) {
+        if (!x.mcode && !x.mname) mgrWant[p.id] = '';
+        else { const m = findP(x.mcode, x.mname); if (!m.p) return bad(OG_XL_P, x.r, 'المدير المباشر غير موجود في سوار: ' + (x.mcode ? x.mcode + ' ' : '') + x.mname); mgrWant[p.id] = m.p.id === p.id ? '' : m.p.id; }
+      }
+    });
+    people.forEach(p => { if (!used[p.id]) info.notInFile.push(p.name + (p.no ? ' (' + p.no + ')' : '')); });
+  }
+  // المحاكاة: المكان الجديد ثم المدير المباشر حسب الهيكل، ولا يُحفظ «مدير محدَّد» إلا إذا خالف الهيكل
+  const keepW = O.w; O.w = W;
+  try {
+    const before = {}; O.w = keepW; keepW.people.forEach(p => { before[p.id] = { pl: ogPlace(p), m: ogMgr(p).id }; }); O.w = W;
+    W.people.forEach(p => {
+      if (!(p.id in want)) return;
+      const to = want[p.id], cur = ogPlace(p), tu = to ? uById(to) : null, nw = !tu ? { d: '', s: '' } : tu.kind === 'section' ? { d: tu.parent, s: tu.id } : { d: tu.id, s: '' };
+      if (cur.d === nw.d && cur.s === nw.s) return;
+      p.org = to; ops.push({ t: 'place', pid: p.id, unit: to });
+      const b = before[p.id].pl, nm = z => z.s ? (uById(z.s) || {}).name : z.d ? (uById(z.d) || {}).name : 'غير موزّع', om = id => (keepW.units.find(u => u.id === id) || {}).name || '';
+      if (b.d !== nw.d || b.s !== nw.s) ch.move.push(p.name + ': ' + (b.s ? om(b.s) : b.d ? om(b.d) : 'غير موزّع') + ' ← ' + nm(nw));
+    });
+    W.people.forEach(p => {
+      if (!(p.id in mgrWant)) return;
+      const w = mgrWant[p.id], keep = p.mgrPid || '';
+      if (!w) { if (keep) { p.mgrPid = ''; ops.push({ t: 'mgr', pid: p.id, mgr: '' }); } return; }
+      if (w === ogMgr(p).id) return;
+      p.mgrPid = ''; const rule = ogMgr(p).id, desired = w === rule ? '' : w; p.mgrPid = keep;
+      if (desired !== keep) { p.mgrPid = desired; ops.push({ t: 'mgr', pid: p.id, mgr: desired }); }
+    });
+    W.people.forEach(p => { const a = before[p.id].m, b = ogMgr(p).id; if (a !== b) ch.mgr.push(p.name + ': ' + (a ? (keepW.people.find(z => z.id === a) || {}).name : '—') + ' ← ' + (b ? ogNm(b) : '—')); });
+  } finally { O.w = keepW; }
+  return { errs: errs, ops: ops, ch: ch, info: info, S: S };
+}
+function ogXlView(r) {
+  const c = r.ch, list = (title, arr, open) => arr.length ? '<details class="og-xd"' + (open ? ' open' : '') + '><summary><b>' + arr.length + '</b> ' + esc(title) + '</summary><ul>' + arr.slice(0, 200).map(x => '<li>' + esc(x) + '</li>').join('') + (arr.length > 200 ? '<li>…</li>' : '') + '</ul></details>' : '';
+  const n = c.move.length + c.mgr.length + c.add.length + c.del.length + c.head.length + c.co.length;
+  const chip = (k, l) => k ? '<span><b>' + k + '</b> ' + l + '</span>' : '';
+  return (n ? '<div class="u-prev">' + chip(c.move.length, 'نقل') + chip(c.mgr.length, 'مدير مباشر يتغير') + chip(c.add.length, 'وحدة جديدة') + chip(c.del.length, 'وحدة تُحذف') + chip(c.head.length, 'رئيس يتغير') + '</div>' : '') +
+    (r.errs.length ? '<p class="u-err">صحّح هذه في الملف ثم ارفعه من جديد:</p><ul class="u-errs">' + r.errs.slice(0, 40).map(e => '<li>' + (e.sh ? esc(e.sh) + ' · صف ' + esc(e.r) + ': ' : '') + esc(e.m) + '</li>').join('') + '</ul>' : '') +
+    '<div class="og-xl-lists">' + list('نقل', c.move, true) + list('المدير المباشر', c.mgr, true) + list('وحدات جديدة', c.add, true) + list('وحدات تُحذف (ومن فيها يصبح غير موزّع)', c.del, true) + list('رؤساء الوحدات', c.head, true) + list('شركة الوحدة', c.co) +
+    list('غير موجودين في سوار — لا يُضافون', r.info.unknown, true) + list('مطابَقون بالاسم — تأكد منهم', r.info.byName, true) + list('في سوار وليسوا في الملف — لا يتغير شيء لهم', r.info.notInFile) + '</div>' +
+    (!r.errs.length ? '<p class="u-muted">' + (n || r.ops.length ? 'اضغط «اعتماد» للتطبيق. يصل التغيير للأنظمة بعد الحفظ.' : 'الملف مطابق للهيكل الحالي. لا شيء يتغير.') + '</p>' : '');
+}
+async function ogXlApply() {
+  const r = O.xl, b = $('#ogXlApply'); if (!r || !r.ops.length || r.errs.length) return;
+  b.disabled = true; b.classList.add('is-busy');
+  let res, code = '';
+  try { res = await api('u_orgSave', { was: O.d.ver, ops: r.ops }); if (!res || res.ok === false) code = (res && res.code) || 'ERR_SERVER'; }
+  catch (c) { code = c === '__handled' ? 'ERR_NETWORK' : c; }
+  if (code) {
+    b.disabled = false; b.classList.remove('is-busy');
+    const det = (res && res.detail) || {}, o = res && res.op >= 0 ? r.ops[res.op] : null;
+    const why = code === 'ERR_STALE' ? 'عدّل غيرك الهيكل بعد أن فتحت الشاشة' + (det.by ? ' (' + det.by + ')' : '') + '. حُدِّث الهيكل الآن؛ اختر الملف من جديد لتُحسب التغييرات على النسخة الحالية.' : code === 'ERR_NETWORK' ? 'تعذّر الاتصال بالخادم. لم يُحفظ شيء؛ اضغط «اعتماد» مرة أخرى.' : t(I18N.ar[code] ? code : 'ERR_SERVER') + (det.msg ? ' — ' + det.msg : '');
+    const box = $('#ogXlOut'); if (box) { const old = box.querySelector('.og-xl-fail'); if (old) old.remove(); box.insertAdjacentHTML('afterbegin', '<p class="u-err og-xl-fail">لم يُحفظ: ' + esc(why) + (o ? ' (' + esc(OG_OPN[o.t] || o.t) + ')' : '') + '</p>'); }
+    if (code === 'ERR_STALE') { O.xl = null; b.disabled = true; ogLoad(true); }
+    return;
+  }
+  O.xl = null; closeModal(true); toast('طُبّق الملف: ' + r.ops.length + ' تعديلاً', 'ok'); uFlushSoon(); await ogLoad(true);
+}
+
 function ogClick(el, e) {
   const k = el.dataset.og, id = el.dataset.id;
   if (k === 'reload') return ogLoad(true);
@@ -4431,6 +4670,9 @@ function ogClick(el, e) {
   if (k === 'staleFix') { closeModal(true); O.ops = []; return ogLoad(true); }
   if (k === 'seed') return ogSeed();
   if (k === 'seedApply') return ogSeedApply();
+  if (k === 'xlDown') return ogXlDown(el);
+  if (k === 'xlUp') return ogXlOpen();
+  if (k === 'xlApply') return ogXlApply();
   if (k === 'addDept') return ogUnitForm('إدارة جديدة', null, 'dept', '');
   if (k === 'addSec') return ogUnitForm('قسم جديد في «' + ogU(id).name + '»', null, 'section', id);
   if (k === 'editUnit') { const u = ogU(id); return ogUnitForm(u.kind === 'dept' ? 'تعديل الإدارة' : 'تعديل القسم', u, u.kind, u.parent); }
@@ -4449,7 +4691,7 @@ function ogClick(el, e) {
     if (gone.indexOf(O.sel) >= 0) O.sel = (ogDepts()[0] || {}).id || ''; if (gone.indexOf(O.open) >= 0) O.open = '';
     closeModal(true); return ogOp({ t: 'unitDel', id: u.id });
   }
-  if (k === 'pickHead') { const u = ogU(id); return ogPick(u.kind === 'dept' ? 'رئيس «' + u.name + '»' : 'رئيس قسم «' + u.name + '»', u.head, 'بلا رئيس', pid => { if (pid === (u.head || '')) return; u.head = pid; ogOp({ t: 'unitHead', id: u.id, pid: pid }); }); }
+  if (k === 'pickHead') { const u = ogU(id), isS = u.kind === 'section'; return ogPick(isS ? 'رئيس قسم «' + u.name + '»' : 'رئيس «' + u.name + '»', u.head, isS ? 'بلا رئيس خاص (' + OG_XL_FOLLOW + ')' : 'بلا رئيس', pid => { if (isS && pid && pid === (ogU(u.parent) || {}).head) { toast('رئيس الإدارة يرأس أقسامها تلقائياً', 'ok'); pid = ''; } if (pid === (u.head || '')) return; u.head = pid; ogOp({ t: 'unitHead', id: u.id, pid: pid }); }); }
   if (k === 'pickMgr') { const p = ogP(id); return ogPick('المدير المباشر لـ«' + p.name + '»', p.mgrPid, 'حسب الهيكل (رئيس قسمه أو إدارته)', pid => { if (pid === p.id) return toast('لا يكون الموظف مديراً لنفسه', 'err'); if (pid === (p.mgrPid || '')) return; p.mgrPid = pid; ogOp({ t: 'mgr', pid: p.id, mgr: pid }); }); }
   if (k === 'addMem') { const u = ogU(id); return ogPick('إضافة موظف إلى «' + (u.kind === 'dept' ? u.name : u.name) + '»', '', '', pid => ogMoveTo(pid, id)); }
   if (k === 'pk') { const cb = O.pk.cb; closeModal(true); return cb(el.dataset.id); }
