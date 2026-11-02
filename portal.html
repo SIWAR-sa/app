@@ -1410,6 +1410,89 @@ html.nb-lock, html.nb-lock body { overflow: hidden; }
   .fc-go { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .fc, .fc-enter .fc { animation: none !important; transition: none !important; } }
+/* ══ مساحتي الخاصة: زر عائم في الرئيسية (vaultFab) — مدار مصغّر مثل رئيسية المساحة ══ */
+.vfab { --vf: 60px; position: fixed; z-index: 70; bottom: calc(env(safe-area-inset-bottom, 0px) + 18px); left: calc(env(safe-area-inset-left, 0px) + 16px); display: flex; flex-direction: column; align-items: flex-end; gap: 10px; pointer-events: none; }
+[dir="ltr"] .vfab { left: auto; right: calc(env(safe-area-inset-right, 0px) + 16px); }
+.vfab[hidden] { display: none; }
+.vfab > * { pointer-events: auto; }
+.vfab-dock { position: relative; display: flex; align-items: center; }
+.vfab-btn { position: relative; width: var(--vf); height: var(--vf); padding: 0; border-radius: 50%; border: 1.5px solid transparent; cursor: pointer; display: grid; place-items: center; overflow: visible; -webkit-tap-highlight-color: transparent;
+  background: radial-gradient(120% 120% at 32% 20%, #2E2A68 0%, #161442 48%, #0A0A22 100%) padding-box, linear-gradient(145deg, #F8E6BD 0%, #D9AA58 32%, #8E6528 58%, #E9C67F 100%) border-box;
+  box-shadow: 0 18px 34px -14px rgba(8,10,30,.8), 0 4px 10px -4px rgba(8,10,30,.45), 0 0 0 5px rgba(227,182,109,.12), inset 0 1px 0 rgba(255,255,255,.2), inset 0 -8px 14px rgba(0,0,0,.4);
+  transition: transform .25s cubic-bezier(.3,1.4,.5,1); }
+.vfab-btn::after { content: ''; position: absolute; inset: -10px; border-radius: 50%; background: radial-gradient(circle, rgba(233,196,106,.42) 0%, rgba(233,196,106,0) 66%); opacity: .5; z-index: -1; pointer-events: none; transition: opacity .3s; animation: vfabHalo 5s ease-in-out infinite; }
+.vfab-btn:hover { transform: translateY(-2px); }
+.vfab-btn:hover::after, .vfab.open .vfab-btn::after { opacity: 1; }
+.vfab-btn:active { transform: scale(.95); }
+.vfab-btn:focus-visible { outline: 2px solid #E3B66D; outline-offset: 4px; }
+.vfab-orbit { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 50%; overflow: visible; transition: opacity .25s, transform .35s cubic-bezier(.2,.8,.2,1); }
+.vfab-orbit .vo-sp { transform-box: view-box; transform-origin: 32px 32px; }
+.vfab-orbit .vo-a { animation: vfabSpin 9s linear infinite; }
+.vfab-orbit .vo-b { animation: vfabSpin 14s linear infinite reverse; }
+.vfab-orbit .vo-c { animation: vfabSpin 20s linear infinite; }
+.vfab-orbit .vo-d { animation: vfabSpin 26s linear infinite reverse; }
+.vfab-orbit .vo-pulse { transform-box: view-box; transform-origin: 32px 32px; opacity: 0; animation: vfabPulse 4.5s ease-out infinite; }
+.vfab-orbit .vo-core { transform-box: view-box; transform-origin: 32px 32px; animation: vfabCore 4.5s ease-in-out infinite; }
+.vfab-x { position: absolute; width: 24px; height: 24px; color: #F1D08F; opacity: 0; transform: rotate(-90deg) scale(.6); transition: opacity .22s, transform .3s cubic-bezier(.2,.8,.2,1); }
+.vfab.open .vfab-orbit { opacity: .18; transform: scale(.82); }
+.vfab.open .vfab-x { opacity: 1; transform: none; }
+@keyframes vfabSpin { to { transform: rotate(360deg); } }
+@keyframes vfabPulse { 0%, 62% { opacity: 0; transform: scale(.35); } 70% { opacity: .9; } 100% { opacity: 0; transform: scale(1.45); } }
+@keyframes vfabCore { 0%, 60%, 100% { transform: scale(1); } 68% { transform: scale(1.3); } }
+@keyframes vfabHalo { 0%, 60%, 100% { opacity: .5; } 70% { opacity: 1; } }
+.vfab-tip { position: absolute; top: 50%; left: calc(100% + 12px); transform: translate(-6px, -50%); padding: 7px 14px; border-radius: 999px; white-space: nowrap; font-size: 13.5px; font-weight: 600; color: #F6E6C4; background: rgba(16,16,44,.94); box-shadow: 0 10px 24px -12px rgba(8,10,30,.7), inset 0 0 0 1px rgba(227,182,109,.35); opacity: 0; pointer-events: none; transition: opacity .18s, transform .22s; }
+[dir="ltr"] .vfab-tip { left: auto; right: calc(100% + 12px); transform: translate(6px, -50%); }
+@media (hover: hover) and (pointer: fine) { .vfab:not(.open) .vfab-dock:hover .vfab-tip, .vfab:not(.open) .vfab-btn:focus-visible + .vfab-tip { opacity: 1; transform: translate(0, -50%); } }
+.vfab-menu { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; visibility: hidden; }
+.vfab.open .vfab-menu { visibility: visible; }
+.vfab-act { display: inline-flex; align-items: center; gap: 10px; height: 48px; padding: 0 7px 0 18px; border-radius: 999px; border: 1px solid transparent; cursor: pointer; font: inherit; font-size: 14.5px; font-weight: 600; color: #15213A; white-space: nowrap;
+  background: linear-gradient(180deg, #FFFEFB, #F8F0E3) padding-box, var(--gold-rim, linear-gradient(135deg, #F6E2BA, #E3B66D, #D7A657)) border-box;
+  box-shadow: 0 16px 30px -16px rgba(30,24,16,.55), 0 2px 6px -2px rgba(30,24,16,.18), inset 0 1px 0 #fff;
+  opacity: 0; transform: translateY(14px) scale(.9); transform-origin: left bottom; transition: opacity .2s, transform .28s cubic-bezier(.2,.9,.3,1.25); -webkit-tap-highlight-color: transparent; }
+[dir="ltr"] .vfab-act { padding: 0 18px 0 7px; transform-origin: right bottom; }
+.vfab.open .vfab-act { opacity: 1; transform: none; }
+.vfab.open .vfab-act.v-new { transition-delay: .03s; }
+.vfab.open .vfab-act.v-open { transition-delay: .08s; }
+.vfab-act:hover { background: linear-gradient(180deg, #FFFFFF, #FBF3E6) padding-box, var(--gold-rim, linear-gradient(135deg, #F6E2BA, #E3B66D, #D7A657)) border-box; }
+.vfab-act:active { transform: scale(.97); }
+.vfab-act:focus-visible, .vfab-ty:focus-visible { outline: 2px solid #C2923F; outline-offset: 2px; }
+.vfab-ai { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; flex: none; color: #F1D08F; background: radial-gradient(120% 120% at 30% 20%, #2E2A68, #121034 75%); box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 3px 8px -3px rgba(8,10,30,.6); }
+.vfab-ai svg { width: 18px; height: 18px; }
+.vfab-chev { width: 16px; height: 16px; color: #A57A33; margin-inline-start: 2px; transition: transform .25s; }
+.vfab.types .vfab-chev { transform: rotate(180deg); }
+.vfab.types .vfab-act.v-new { background: linear-gradient(180deg, #FFFFFF, #FBF1DF) padding-box, linear-gradient(135deg, #E9C67F, #B8862E) border-box; box-shadow: 0 16px 30px -16px rgba(30,24,16,.55), 0 0 0 4px rgba(227,182,109,.18); }
+.vfab-types { display: grid; grid-template-columns: repeat(4, 64px); gap: 4px; padding: 12px 10px 10px; border-radius: 24px; border: 1px solid transparent;
+  background: linear-gradient(180deg, rgba(255,254,251,.98), rgba(248,240,227,.98)) padding-box, var(--gold-rim, linear-gradient(135deg, #F6E2BA, #E3B66D, #D7A657)) border-box;
+  box-shadow: 0 22px 40px -20px rgba(30,24,16,.6), inset 0 1px 0 #fff; transform-origin: left bottom; }
+[dir="ltr"] .vfab-types { transform-origin: right bottom; }
+.vfab-types[hidden] { display: none; }
+.vfab.types .vfab-types { animation: vfabPop .3s cubic-bezier(.2,.9,.3,1.25) both; }
+@keyframes vfabPop { from { opacity: 0; transform: translateY(10px) scale(.92); } to { opacity: 1; transform: none; } }
+.vfab-ty { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 4px 0 2px; border: 0; background: none; cursor: pointer; font: inherit; font-size: 12.5px; font-weight: 600; color: #2A2A3E; border-radius: 14px; -webkit-tap-highlight-color: transparent; }
+.vfab-ty i { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; color: #fff;
+  background: radial-gradient(circle at 34% 28%, rgba(255,255,255,.75), var(--c) 46%, color-mix(in srgb, var(--c) 62%, #000) 100%);
+  box-shadow: 0 8px 16px -8px color-mix(in srgb, var(--c) 80%, transparent), 0 0 0 3px color-mix(in srgb, var(--c) 16%, transparent), inset 0 1px 1px rgba(255,255,255,.6); transition: transform .2s cubic-bezier(.3,1.4,.5,1); }
+.vfab-ty i svg { width: 20px; height: 20px; filter: drop-shadow(0 1px 1px rgba(0,0,0,.25)); }
+.vfab-ty:hover i { transform: translateY(-2px) scale(1.05); }
+.vfab-ty:active i { transform: scale(.94); }
+.vfab-veil { position: fixed; inset: 0; z-index: 69; background: rgba(22,22,40,.16); opacity: 0; transition: opacity .22s; }
+.vfab-veil[hidden] { display: none; }
+.vfab-veil.on { opacity: 1; }
+.vfab.in .vfab-btn { animation: vfabIn .7s cubic-bezier(.2,.9,.3,1.3) .35s both; }
+@keyframes vfabIn { from { opacity: 0; transform: translateY(18px) scale(.55); } to { opacity: 1; transform: none; } }
+#screen-home.vfab-room .wrap { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 100px); }
+@media (min-width: 900px) {
+  .vfab { --vf: 64px; bottom: 30px; left: 30px; gap: 12px; } [dir="ltr"] .vfab { left: auto; right: 30px; }
+  .vfab-menu { gap: 12px; margin-bottom: 4px; }
+  .vfab-act { height: 50px; font-size: 15px; }
+  .vfab-types { grid-template-columns: repeat(4, 72px); padding: 14px 12px 12px; }
+  .vfab-ty i { width: 48px; height: 48px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vfab-orbit .vo-sp, .vfab-orbit .vo-core, .vfab-btn::after, .vfab.in .vfab-btn, .vfab.types .vfab-types { animation: none; }
+  .vfab-orbit .vo-pulse { animation: none; opacity: 0; }
+  .vfab-btn, .vfab-orbit, .vfab-x, .vfab-act, .vfab-veil, .vfab-tip, .vfab-chev, .vfab-ty i { transition: none; }
+}
 </style>
 <style id="sdfix">input[type=date],input[type=time],input[type=month],input[type=datetime-local]{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important;word-spacing:normal!important;text-align:start!important}input[type=date]::-webkit-datetime-edit,input[type=time]::-webkit-datetime-edit,input[type=month]::-webkit-datetime-edit,input[type=datetime-local]::-webkit-datetime-edit{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important}</style></head>
 <body>
@@ -1506,6 +1589,22 @@ html.nb-lock, html.nb-lock body { overflow: hidden; }
     <div class="apps-tools" id="appsTools" hidden><button type="button" class="link-btn" data-act="openOrder"><i data-ic="list"></i><span data-i18n="orderApps"></span></button></div>
   </main>
 </section>
+
+<!-- مساحتي الخاصة: زر عائم (vaultFab) -->
+<div class="vfab-veil" id="vaultFabVeil" hidden></div>
+<div class="vfab" id="vaultFab" hidden>
+  <div class="vfab-menu" id="vaultFabMenu" role="menu">
+    <button type="button" class="vfab-act v-open" role="menuitem" data-act="launch" data-id="APP-003" data-go="page=vault"><span class="vfab-ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5" opacity=".55"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/><circle cx="18" cy="6.8" r="1.5" fill="currentColor" stroke="none"/></svg></span><span data-vf="open"></span></button>
+  <div class="vfab-types" id="vaultFabTypes" hidden>
+    <button type="button" class="vfab-ty" style="--c:#F2B544" data-act="launch" data-id="APP-003" data-go="page=vault&amp;new=1&amp;type=note"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h9l3 3v13H6z"/><path d="M9 11h6M9 15h4"/></svg></i><span data-vf="note"></span></button>
+    <button type="button" class="vfab-ty" style="--c:#2EC4B6" data-act="launch" data-id="APP-003" data-go="page=vault&amp;new=1&amp;type=task"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M8.5 12.2l2.4 2.4 4.8-5"/></svg></i><span data-vf="task"></span></button>
+    <button type="button" class="vfab-ty" style="--c:#8B6CF6" data-act="launch" data-id="APP-003" data-go="page=vault&amp;new=1&amp;type=list"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 7h9M10 12h9M10 17h9"/><circle cx="5.5" cy="7" r="1" fill="currentColor"/><circle cx="5.5" cy="12" r="1" fill="currentColor"/><circle cx="5.5" cy="17" r="1" fill="currentColor"/></svg></i><span data-vf="list"></span></button>
+    <button type="button" class="vfab-ty" style="--c:#FF6B6B" data-act="launch" data-id="APP-003" data-go="page=vault&amp;new=1&amp;type=voice"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M6 11.5a6 6 0 0 0 12 0M12 17.5v3"/></svg></i><span data-vf="voice"></span></button>
+  </div>
+    <button type="button" class="vfab-act v-new" role="menuitem" id="vaultFabNew" aria-expanded="false" aria-controls="vaultFabTypes"><span class="vfab-ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6v12M6 12h12"/></svg></span><span data-vf="new"></span><svg class="vfab-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
+  </div>
+  <div class="vfab-dock"><button type="button" class="vfab-btn" id="vaultFabBtn" aria-haspopup="menu" aria-expanded="false" aria-controls="vaultFabMenu"><svg class="vfab-orbit" viewBox="0 0 64 64" aria-hidden="true"><defs><filter id="vfGlow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="1.6"/></filter><radialGradient id="vfCore" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#FFF8E1"/><stop offset=".45" stop-color="#F7D98B"/><stop offset="1" stop-color="#C9962E"/></radialGradient><radialGradient id="vfO_am" cx=".34" cy=".28" r=".75"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".45" stop-color="#F2B544"/><stop offset="1" stop-color="#9A6A12"/></radialGradient><radialGradient id="vfO_te" cx=".34" cy=".28" r=".75"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".45" stop-color="#2EC4B6"/><stop offset="1" stop-color="#13756C"/></radialGradient><radialGradient id="vfO_vi" cx=".34" cy=".28" r=".75"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".45" stop-color="#8B6CF6"/><stop offset="1" stop-color="#4B33A8"/></radialGradient><radialGradient id="vfO_co" cx=".34" cy=".28" r=".75"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".45" stop-color="#FF6B6B"/><stop offset="1" stop-color="#A8343A"/></radialGradient></defs><circle cx="32" cy="32" r="11" fill="none" stroke="rgba(255,255,255,.3)" stroke-width=".8"/><circle cx="32" cy="32" r="18" fill="none" stroke="rgba(233,196,106,.6)" stroke-width=".9" stroke-dasharray="2 2.4"/><circle cx="32" cy="32" r="25" fill="none" stroke="rgba(255,255,255,.22)" stroke-width=".8"/><circle class="vo-pulse" cx="32" cy="32" r="14" fill="none" stroke="#F7D98B" stroke-width="1"/><g class="vo-sp vo-a"><circle cx="43" cy="32" r="6.720000000000001" fill="#F2B544" opacity=".55" filter="url(#vfGlow)"/><circle cx="43" cy="32" r="3.2" fill="url(#vfO_am)"/></g><g class="vo-sp vo-b"><circle cx="32" cy="14" r="7.9799999999999995" fill="#2EC4B6" opacity=".55" filter="url(#vfGlow)"/><circle cx="32" cy="14" r="3.8" fill="url(#vfO_te)"/></g><g class="vo-sp vo-c"><circle cx="15.7" cy="39.6" r="7.14" fill="#8B6CF6" opacity=".55" filter="url(#vfGlow)"/><circle cx="15.7" cy="39.6" r="3.4" fill="url(#vfO_vi)"/></g><g class="vo-sp vo-d"><circle cx="53.6" cy="44.6" r="6.300000000000001" fill="#FF6B6B" opacity=".55" filter="url(#vfGlow)"/><circle cx="53.6" cy="44.6" r="3.0" fill="url(#vfO_co)"/></g><circle cx="32" cy="32" r="7.4" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="1.3"/><circle cx="32" cy="32" r="7.4" fill="none" stroke="#E9C46A" stroke-width="1.3" stroke-linecap="round" stroke-dasharray="33 47" transform="rotate(-90 32 32)"/><g class="vo-core"><circle cx="32" cy="32" r="6.5" fill="#F7D98B" opacity=".45" filter="url(#vfGlow)"/><circle cx="32" cy="32" r="4.2" fill="url(#vfCore)"/></g></svg><svg class="vfab-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg></button><span class="vfab-tip" data-vf="name" aria-hidden="true"></span></div>
+</div>
 
 <section id="screen-admin" class="screen">
   <main class="wrap">
@@ -2362,6 +2461,7 @@ function show(screen) {
   nav.hidden = !isAdmin;
   if (isAdmin) nav.innerHTML = screen === 'admin' ? ic('grid') + '<span>' + esc(t('programs')) + '</span>' : ic('shield') + '<span>' + esc(t('adminPanel')) + '</span>';
   window.scrollTo(0, 0);
+  vaultFabSync();
 }
 
 function showView(id) {
@@ -2546,6 +2646,7 @@ function renderHome() {
   hvRender();
   renderPending();
   renderAppsGrid();
+  vaultFabSync();
 }
 
 async function loadPending(force) {
@@ -3019,7 +3120,7 @@ function openHr(btn, app) {
 
 async function launchApp(btn) {
   if (btn.classList.contains('is-launching')) return;
-  const app = S.apps.find(a => a.id === btn.dataset.id) || {};
+  const app = S.apps.find(a => a.id === btn.dataset.id) || vaultFabApp(btn) || {};
   if (app.hr && !btn.hrOk && !(btn.dataset && btn.dataset.go)) return openHr(btn, app);
   btn.hrOk = false;
   if (DEMO) { showLaunchPreview(app); return; }
@@ -6061,6 +6162,64 @@ function bindTilt() {
     card.style.setProperty('--my', (y * 100).toFixed(1) + '%');
   }, { passive: true });
   document.addEventListener('pointerleave', () => { reset(current); current = null; });
+}
+// ══ مساحتي الخاصة: زر عائم يفتح «مساحتي» في مهام وإجراءات (APP-003) لكل مستخدم داخل البوابة ══
+// يظهر في الرئيسية فقط (لا داخل نظام مفتوح ولا في لوحة الإدارة). الفتح بالمسار نفسه الذي تستعمله صفوف الرئيسية:
+// data-act="launch" ← launchApp ← api('launch', { appId: 'APP-003', go }). أماكن go المسموحة هي VAULT_GO فقط (ومثلها في الخادم).
+const VAULT_APP = 'APP-003', VAULT_GO = ['page=vault', 'page=vault&new=1', 'page=vault&new=1&type=note', 'page=vault&new=1&type=task', 'page=vault&new=1&type=list', 'page=vault&new=1&type=voice'];
+const VAULT_TXT = {
+  ar: { name: 'مساحتي الخاصة', open: 'فتح مساحتي', new: 'ملاحظة سريعة', note: 'ملاحظة', task: 'مهمة', list: 'قائمة', voice: 'تسجيل' },
+  en: { name: 'My private space', open: 'Open my space', new: 'Quick capture', note: 'Note', task: 'Task', list: 'List', voice: 'Voice' }
+};
+// لمن ليس له دخول لمهام وإجراءات: بطاقة الفتح تحمل اسم «مساحتي الخاصة» بدل اسم فارغ
+function vaultFabApp(btn) {
+  const d = btn && btn.dataset || {};
+  if (d.id !== VAULT_APP || VAULT_GO.indexOf(d.go || '') < 0) return null;
+  return { id: VAULT_APP, nameAR: VAULT_TXT.ar.name, nameEN: VAULT_TXT.en.name, icon: '', tint: 'gold' };
+}
+function vaultFabTypes(open) {
+  const box = $('#vaultFab'); if (!box) return;
+  open = !!open && box.classList.contains('open');
+  box.classList.toggle('types', open);
+  $('#vaultFabTypes').hidden = !open;
+  $('#vaultFabNew').setAttribute('aria-expanded', open ? 'true' : 'false');
+  if (open) setTimeout(() => { const f = box.querySelector('.vfab-ty'); if (f) f.focus({ preventScroll: true }); }, 60);
+}
+function vaultFabMenu(open) {
+  const box = $('#vaultFab'), veil = $('#vaultFabVeil'); if (!box) return;
+  open = !!open && !box.hidden;
+  if (box.classList.contains('open') === open) return;
+  box.classList.toggle('open', open);
+  if (!open) vaultFabTypes(false);
+  $('#vaultFabBtn').setAttribute('aria-expanded', open ? 'true' : 'false');
+  if (open) { veil.hidden = false; requestAnimationFrame(() => veil.classList.add('on')); setTimeout(() => { const f = box.querySelector('.vfab-act'); if (f) f.focus({ preventScroll: true }); }, 60); }
+  else { veil.classList.remove('on'); setTimeout(() => { if (!box.classList.contains('open')) veil.hidden = true; }, 230); }
+}
+function vaultFabSync() {
+  const box = $('#vaultFab'); if (!box) return;
+  const on = !!S.user && S.screen === 'home';
+  if (!box.dataset.wired) {
+    box.dataset.wired = '1';
+    $('#vaultFabBtn').addEventListener('click', () => vaultFabMenu(!box.classList.contains('open')));
+    $('#vaultFabNew').addEventListener('click', () => vaultFabTypes(!box.classList.contains('types')));
+    $('#vaultFabVeil').addEventListener('click', () => vaultFabMenu(false));
+    // بعد launchApp (مستمع الصفحة يعمل بعد هذا) تُغلق القائمة
+    box.querySelectorAll('[data-act="launch"]').forEach(b => b.addEventListener('click', () => setTimeout(() => vaultFabMenu(false), 0)));
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape' || !box.classList.contains('open')) return;
+      if (box.classList.contains('types')) { vaultFabTypes(false); $('#vaultFabNew').focus(); }
+      else { vaultFabMenu(false); $('#vaultFabBtn').focus(); }
+    });
+  }
+  const tx = VAULT_TXT[S.lang === 'en' ? 'en' : 'ar'];
+  const btn = $('#vaultFabBtn');
+  if (btn.getAttribute('aria-label') !== tx.name) { btn.setAttribute('aria-label', tx.name); $('#vaultFabMenu').setAttribute('aria-label', tx.name); }
+  box.querySelectorAll('[data-vf]').forEach(el => { el.textContent = tx[el.dataset.vf]; });
+  if (!on) vaultFabMenu(false);
+  $('#screen-home').classList.toggle('vfab-room', on);
+  if (box.hidden === !on) return;
+  box.hidden = !on;
+  if (on && !box.dataset.shown) { box.dataset.shown = '1'; box.classList.add('in'); setTimeout(() => box.classList.remove('in'), 1400); }
 }
 </script>
 </body>
