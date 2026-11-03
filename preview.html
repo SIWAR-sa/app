@@ -783,6 +783,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     if (mine) {
       if (d.siwar === 'portalReady') { hideSplash(); sendAlive(); portalOk = true; toPortal({ siwar: 'inst', st: standalone ? 1 : 0 }); return; }
       if (d.siwar === 'install') { instAsk(); return; }
+      if ((d.siwar === 'prep' || d.siwar === 'show') && id && frames[id]) { dropFrame(id); if (d.siwar === 'show') { toPortal({ siwar: 'relaunch', id: id }); return; } }   // المعاينة: شاشة التحميل تظهر في كل فتح
       if (d.siwar === 'prep') { onPrep(id || '_', String(d.name || ''), ic, d.rect && typeof d.rect === 'object' ? d.rect : null, typeof d.go === 'string' ? d.go : ''); return; }
       if (d.siwar === 'open' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onOpen(id || '_', String(d.url), String(d.name || ''), ic, String(d.src || '')); return; }
       if (d.siwar === 'show' && frames[id]) { onShow(id); return; }
