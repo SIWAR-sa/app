@@ -2139,6 +2139,7 @@ let PAIR = (() => {
 let DIRECT_OK = /^https:\/\/script\.google\.com\/.+\/exec$/.test(EXEC_URL) && (STATIC || !(Number(store.get('sp_direct_off')) > Date.now()));
 
 const IDEMP = new Proxy({}, { get: (o, k) => typeof k === 'string' && /^u_/.test(k) && k !== 'u_load' });
+let DATA_GEN = 0;   // يزيد مع كل حفظ في الإدارة؛ نسخة جُلبت قبله لا تُستعمل
 const READ_ONLY = { init: 1, pending: 1, notif_list: 1, admin_load: 1, u_load: 1, admin_review: 1, admin_invitePreview: 1 };
 function postApi(action, payload) {
   const ro = !!READ_ONLY[action], idem = !!IDEMP[action];
@@ -2155,25 +2156,29 @@ function postApi(action, payload) {
   }, e => { clearTimeout(to); throw e; });
 }
 
-function api(action, payload) {
+// opt.quiet: بلا مؤشر انشغال (للجلب المسبق وحفظ اللغة في الخلفية)
+function api(action, payload, opt) {
+  const B = opt && opt.quiet ? () => {} : busy;
+  const W = !READ_ONLY[action] && /^(u_|admin_)/.test(action); if (W) DATA_GEN++;
   if (IDEMP[action]) payload = Object.assign({}, payload || {}, { _rid: (window.crypto && crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(36).slice(2)).replace(/[^\w-]/g, '').slice(0, 40) });
-  busy(1);
+  B(1);
   return new Promise((resolve, reject) => {
     const done = res => {
-      busy(-1);
+      if (W) DATA_GEN++;
+      B(-1);
       if (res && res.ok) {
         if (res.t && S.token && action !== 'logout') { S.token = res.t; store.set('sp_token', res.t); }
         return resolve(res.data);
       }
       const code = (res && res.code) || 'ERR_SERVER';
       // «مشغول» يعني أن الطلب لم يُنفَّذ أصلاً (القفل لم يُؤخذ): يُعاد بهدوء مرتين قبل إظهار الرسالة
-      if (code === 'ERR_BUSY' && (done.n = (done.n || 0) + 1) <= 2 && !DEMO) { busy(1); setTimeout(() => { (DIRECT_OK ? postApi(action, payload).then(done).catch(() => done({ ok: false, code: 'ERR_BUSY' })) : google.script.run.withSuccessHandler(done).withFailureHandler(() => done({ ok: false, code: 'ERR_NETWORK' })).api(action, payload || {}, S.token || '')); }, done.n * 2500); return; }
+      if (code === 'ERR_BUSY' && (done.n = (done.n || 0) + 1) <= 2 && !DEMO) { B(1); setTimeout(() => { (DIRECT_OK ? postApi(action, payload).then(done).catch(() => done({ ok: false, code: 'ERR_BUSY' })) : google.script.run.withSuccessHandler(done).withFailureHandler(() => done({ ok: false, code: 'ERR_NETWORK' })).api(action, payload || {}, S.token || '')); }, done.n * 2500); return; }
       if (S.token && (code === 'ERR_SESSION' || code === 'ERR_SUSPENDED' || code === 'ERR_ROLE_CHANGED') && action !== 'login') { sessionEnded(code); return reject('__handled'); }
       if (S.token && code === 'ERR_MUST_CHANGE') { if (S.user) S.user.mustChange = true; if (!$('#cpNew')) openChangePin(true); return reject('__handled'); }
       reject(code);
     };
     if (DEMO) { setTimeout(() => done(Mock.call(action, payload || {})), 260); return; }
-    const viaRun = () => google.script.run.withSuccessHandler(done).withFailureHandler(err => { busy(-1); S.lastErr = String(err && err.message || err || ''); reject('ERR_NETWORK'); }).api(action, payload || {}, S.token || '');
+    const viaRun = () => google.script.run.withSuccessHandler(done).withFailureHandler(err => { B(-1); S.lastErr = String(err && err.message || err || ''); reject('ERR_NETWORK'); }).api(action, payload || {}, S.token || '');
     if (!DIRECT_OK) { viaRun(); return; }
 
     const tries = READ_ONLY[action] || IDEMP[action] ? [800, 1800, 3000] : [];
@@ -2183,7 +2188,7 @@ function api(action, payload) {
     });
     attempt().then(done).catch(err => {
 
-      if (STATIC || (err && err.name === 'AbortError' && !IDEMP[action] && !READ_ONLY[action])) { busy(-1); S.lastErr = String(err && err.message || err || ''); reject('ERR_NETWORK'); return; }
+      if (STATIC || (err && err.name === 'AbortError' && !IDEMP[action] && !READ_ONLY[action])) { B(-1); S.lastErr = String(err && err.message || err || ''); reject('ERR_NETWORK'); return; }
 
       console.warn('direct api failed, falling back', err);
       DIRECT_OK = false;
@@ -2441,8 +2446,18 @@ function toggleLang() {
   store.set('sp_lang', S.lang);
   if (!S.token) S.langPicked = true;
   applyLang();
-  if (S.token) api('setLang', { lang: S.lang }).catch(() => {});
+  if (S.token) langSync();
 }
+// حفظ اللغة على الخادم بعد توقف التبديل، بطلب واحد هادئ وبالترتيب، فتبقى آخر لغة اختارها هي المحفوظة
+const LG = { t: 0, busy: false, sent: '' };
+function langSync() { clearTimeout(LG.t); LG.t = setTimeout(langFlush, 700); }
+function langFlush() {
+  clearTimeout(LG.t); LG.t = 0;
+  if (!S.token || LG.busy || S.lang === LG.sent) return;
+  const want = S.lang; LG.busy = true;
+  api('setLang', { lang: want }, { quiet: true }).then(() => { LG.sent = want; }, () => {}).then(() => { LG.busy = false; if (S.token && S.lang !== LG.sent && !LG.t) langSync(); });
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden && LG.t) langFlush(); });
 
 const deb = (f, ms) => { let tm; return () => { clearTimeout(tm); tm = setTimeout(f, ms || 120); }; };
 function show(screen) {
@@ -2593,6 +2608,7 @@ function clearSession() {
   try { localStorage.removeItem(SNAP_K); } catch (e) {}
   nbReset(true);
   S.token = null; S.user = null; S.apps = []; S.admin = null; S.draft = null; S.review = null; S.pending = null; S.pendingAt = 0;
+  try { S.adminP = null; S.adminPre = null; U.p = null; U.pre = null; U.d = null; U.at = 0; O.d = null; O.at = 0; LG.sent = ''; clearTimeout(LG.t); LG.t = 0; } catch (e) {}
   store.del('sp_token'); sess.del('sp_token');
   // أي نهاية للجلسة تغلق شاشات الأنظمة المفتوحة في التطبيق وتمسح ذاكرتها
   if (S.inApp) try { window.top.postMessage({ siwar: 'logout' }, '*'); } catch (e) {}
@@ -3348,10 +3364,25 @@ function renderUnified() {
   uRender();
   if (Date.now() - U.at > 60000) uLoad();
 }
+// طلب u_load واحد في كل لحظة: كل من يحتاجه ينضم إلى الطلب الجاري؛ والنتيجة صالحة فقط إن لم يُحفظ شيء بعد بدء الطلب
+function uFetch(quiet) {
+  if (U.p && U.pg === DATA_GEN) { if (!quiet && U.pq) { busy(1); U.p.then(() => busy(-1), () => busy(-1)); U.pq = false; } return U.p; }
+  const g = DATA_GEN, p = U.p = api('u_load', {}, quiet ? { quiet: true } : undefined);
+  U.pg = g; U.pq = !!quiet;
+  p.then(d => { if (U.p === p) U.p = null; if (d && g === DATA_GEN && S.token) U.pre = { at: Date.now(), d: d, g: g }; }, () => { if (U.p === p) U.p = null; });
+  return p;
+}
+function uPre() {
+  if (myRank() < RANK.admin || (U.dirty && U.dirty.size) || (U.p && U.pg === DATA_GEN) || (U.d && Date.now() - U.at < 60000)) return;
+  if (U.pre && U.pre.g === DATA_GEN && Date.now() - U.pre.at < 60000) return;
+  uFetch(true).catch(() => {});
+}
 async function uLoad() {
   if (U.dirty && U.dirty.size) return;
   let d, fail;
-  for (let k = 0; k < 3 && !d; k++) { try { d = await api('u_load', {}); } catch (c) { fail = c; if (c === '__handled') return; await new Promise(r => setTimeout(r, 1200 * (k + 1))); } }
+  const pre = U.pre; U.pre = null;
+  if (pre && pre.g === DATA_GEN && Date.now() - pre.at < 60000) d = pre.d;
+  for (let k = 0; k < 3 && !d; k++) { try { d = await uFetch(false); U.pre = null; } catch (c) { fail = c; if (c === '__handled') return; await new Promise(r => setTimeout(r, 1200 * (k + 1))); } }
   if (!d) { if (U.d) { toast('تعذّر تحديث البيانات، المعروض آخر نسخة', 'err'); return; } showErr(fail); $('#uRoot').innerHTML = '<div class="empty">' + ic('alert') + '<span>تعذّر التحميل</span><button class="btn btn-ghost" data-u="reload">' + ic('refresh') + '<span>إعادة المحاولة</span></button></div>'; return; }
   try { if (U.dirty && U.dirty.size) return; const y = window.scrollY; U.d = d; U.orig = JSON.parse(JSON.stringify(d)); U.at = Date.now(); if (S.tab === 'unified') { uRender(); window.scrollTo(0, y); } }
   catch (c) { showErr(c); if (!U.d) $('#uRoot').innerHTML = '<div class="empty">' + ic('alert') + '<span>تعذّر التحميل</span><button class="btn btn-ghost" data-u="reload">' + ic('refresh') + '<span>إعادة المحاولة</span></button></div>'; }
@@ -4357,11 +4388,11 @@ const ogCoOk = p => !O.co || p.co === O.co;
 const ogNm = id => { const p = ogP(id); return p ? p.name : ''; };
 const ogAv = (p, drag) => '<span class="og-av" title="' + esc(p.name + (p.title ? ' · ' + p.title : '')) + '"' + (drag && O.d.edit ? ' draggable="true" data-ogp="' + esc(p.id) + '"' : '') + '>' + esc(String(p.name || '?').trim().charAt(0)) + '</span>';
 
-async function ogLoad(keepSel) {
+async function ogLoad(keepSel, quiet) {
   if (O.busy) return;
   O.busy = true;
   let d, fail;
-  for (let k = 0; k < 3 && !d; k++) { try { d = await api('u_orgLoad', {}); } catch (c) { fail = c; if (c === '__handled') { O.busy = false; return; } await new Promise(r => setTimeout(r, 1000 * (k + 1))); } }
+  for (let k = 0; k < 3 && !d; k++) { try { d = await api('u_orgLoad', {}, quiet ? { quiet: true } : undefined); } catch (c) { fail = c; if (c === '__handled') { O.busy = false; return; } await new Promise(r => setTimeout(r, 1000 * (k + 1))); } }
   O.busy = false;
   if (!d) { if (U.view === 'org') $('#uRoot').innerHTML = '<div class="empty">' + ic('alert') + '<span>تعذّر تحميل الهيكل التنظيمي. ' + esc(t(I18N.ar[fail] ? fail : 'ERR_NETWORK')) + '</span><button class="btn btn-ghost" data-og="reload">' + ic('refresh') + '<span>إعادة المحاولة</span></button></div>'; return; }
   O.d = d; O.w = JSON.parse(JSON.stringify(d)); O.ops = []; O.at = Date.now();
@@ -5021,11 +5052,23 @@ async function openAdmin() {
   show('admin');
 
   if (S.admin) { renderAdmin(); if (Date.now() - (S.adminAt || 0) < 60000) return; }
-  else renderAdminSkeleton();
+  else { renderAdminSkeleton(); if (myRank() >= RANK.admin && S.tab === 'unified') uPre(); }   // بيانات الموظفين مع بيانات اللوحة معاً لا بعدها
   await loadAdmin();
 }
+// جلب مسبق للوحة الإدارة (عند نية الفتح): طلب واحد، والفتح ينضم إليه أو يستعمل نتيجته إن جُلبت قبل أقل من دقيقة ولم يُحفظ شيء بعدها
+function adminPre() {
+  if (S.adminP || (S.admin && Date.now() - (S.adminAt || 0) < 60000)) return;
+  const g = DATA_GEN, p = S.adminP = api('admin_load', {}, { quiet: true });
+  p.then(d => { if (S.adminP === p) S.adminP = null; if (d && g === DATA_GEN && S.token) S.adminPre = { at: Date.now(), d: d, g: g }; }, () => { if (S.adminP === p) S.adminP = null; });
+}
 async function loadAdmin() {
-  try { setAdmin(await api('admin_load', {})); }
+  try {
+    let d = null;
+    const pre = S.adminPre; S.adminPre = null;
+    if (pre && pre.g === DATA_GEN && Date.now() - pre.at < 60000) d = pre.d;
+    else if (S.adminP) { busy(1); try { d = await S.adminP; } catch (e) { d = null; } busy(-1); S.adminPre = null; }
+    setAdmin(d || await api('admin_load', {}));
+  }
   catch (c) { showErr(c); }
 }
 function setAdmin(d) {
@@ -6138,6 +6181,19 @@ function bindEvents() {
   $('#rsCode').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6); });
 }
 
+// ══ الجلب عند نية الفتح: بقاء المؤشر 150 م.ث على زر لوحة الإدارة أو تبويب الهيكل، أو لمسه في الجوال، يبدأ الطلب نفسه بهدوء ══
+(function () {
+  let tm = 0;
+  const run = el => {
+    if (!S.token || !S.user || S.user.mustChange) return;
+    if (el.id === 'navBtn') { if (S.screen === 'admin' || myRank() < RANK.supervisor) return; adminPre(); if (S.tab === 'unified') uPre(); }
+    else if (el.dataset.unav === 'org' && myRank() >= RANK.admin && !O.d && !O.busy) ogLoad(false, true);
+  };
+  const pick = e => e.target && e.target.closest ? e.target.closest('#navBtn, [data-unav="org"]') : null;
+  document.addEventListener('pointerover', e => { const el = pick(e); clearTimeout(tm); if (el && e.pointerType === 'mouse') tm = setTimeout(() => run(el), 150); }, { passive: true });
+  document.addEventListener('pointerout', e => { if (pick(e)) clearTimeout(tm); }, { passive: true });
+  document.addEventListener('pointerdown', e => { const el = pick(e); if (el && e.pointerType !== 'mouse') run(el); }, { passive: true });
+})();
 // ══ مساحتي الخاصة: زر عائم يفتح «مساحتي» في مهام وإجراءات (APP-003) لكل مستخدم داخل البوابة ══
 // يظهر في الرئيسية فقط (لا داخل نظام مفتوح ولا في لوحة الإدارة). الفتح بالمسار نفسه الذي تستعمله صفوف الرئيسية:
 // data-act="launch" ← launchApp ← api('launch', { appId: 'APP-003', go }). أماكن go المسموحة هي VAULT_GO فقط (ومثلها في الخادم).
