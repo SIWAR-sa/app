@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>محاكي ألوان أنظمة سوار</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/*__CSS__*/
+</style>
+<style>
+html,body{height:auto;overflow:auto}
+body.sim{margin:0;background:#EFE7DC;font-family:"IBM Plex Sans Arabic",system-ui,sans-serif;color:#2E2925;direction:rtl}
+.sim-wrap{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;align-items:flex-start;padding:24px 16px 40px}
+.sim-phone{position:relative;width:min(430px,100%);height:min(880px,calc(100vh - 48px));min-height:640px;border-radius:40px;border:10px solid #1A1613;overflow:hidden;background:#FBF7F1;box-shadow:0 30px 70px -30px rgba(40,25,10,.6);transform:translateZ(0)}
+.sim-phone>iframe#simPortal{position:absolute;inset:0;width:100%;height:100%;border:0}
+.sim-phone #prog{position:absolute}
+.sim-phone .pf{position:absolute;inset:0;width:100%;height:100%;border:0;visibility:hidden}
+.sim-phone .pf.cur{visibility:visible}
+.sim-panel{width:min(340px,100%);background:#FFFDF9;border-radius:24px;padding:18px;box-shadow:0 20px 50px -26px rgba(40,25,10,.5),inset 0 0 0 1px rgba(201,160,78,.4);font-size:14px}
+.sim-panel h1{font-size:18px;margin:0 0 4px}
+.sim-panel p.n{color:#7A6E66;font-size:12.5px;margin:0 0 12px;line-height:1.7}
+.sim-seg{display:flex;gap:4px;background:#F4EBDD;border-radius:999px;padding:3px;margin-bottom:12px}
+.sim-seg button{flex:1;border:0;background:none;border-radius:999px;padding:7px;font:inherit;font-size:13px;cursor:pointer;color:#6B5A44}
+.sim-seg button.on{background:#fff;color:#2E2925;font-weight:700;box-shadow:0 2px 6px -2px rgba(0,0,0,.2)}
+.sim-sys{padding:9px 0;border-top:1px solid #EFE4D3}
+.sim-sys b{display:block;margin-bottom:6px;font-size:13.5px}
+.sim-sw{display:flex;flex-wrap:wrap;gap:6px}
+.sim-sw button{width:32px;height:32px;border-radius:10px;border:0;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.sim-sw button.on{box-shadow:0 0 0 2px #fff,0 0 0 4px #C9A04E}
+.sim-nm{font-size:12px;color:#8A817A;margin-top:4px}
+.sim-copy{width:100%;margin-top:12px;border:0;border-radius:999px;padding:11px;font:inherit;font-weight:700;background:linear-gradient(180deg,#E9C67F,#C9A04E);color:#2B2116;cursor:pointer}
+</style>
+</head>
+<body class="sim">
+<div class="sim-wrap">
+  <div class="sim-panel" id="simPanel"></div>
+  <div class="sim-phone" id="simPhone">
+    <iframe id="simPortal" title="سوار"></iframe>
+    <!--__PROG__-->
+  </div>
+</div>
+<script>
+var DATA = "__DATA__";
+var SYSX = [
+  {id:'APP-003',opts:[['ياقوت داكن','#7B1113'],['ماروني جلدي','#5C1A1B'],['قرمزي مخملي','#8B1A1A'],['بوردو','#5E1224'],['كرز أسود','#45121C'],['ماهوجني','#5A2418'],['العنابي الحالي','#640C12']]},
+  {id:'APP-001',opts:[['زمردي','#1E6B4F'],['الحالي','#084F4D']]},
+  {id:'APP-002',opts:[['ياقوت أزرق','#23407A'],['الحالي','#17181B']]},
+  {id:'APP-004',opts:[['بترولي','#145A63'],['الحالي','#0B2E6B']]},
+  {id:'APP-005',opts:[['باذنجاني','#5B2A6E'],['الحالي','#512259']]}
+];
+var ST = { soul: true, c: {} }; SYSX.forEach(function (s) { ST.c[s.id] = 0; });
+function $(id) { return document.getElementById(id); }
+function col(id) { var s = SYSX.find(function (x) { return x.id === id; }); return s ? s.opts[ST.c[id]][1] : '#101A2E'; }
+function nm(id) { return (DATA.names && DATA.names[id]) || id; }
+var pf = $('simPortal');
+pf.srcdoc = DATA.portal;
+function paint() {
+  var d = pf.contentDocument; if (!d || !d.documentElement) return;
+  d.documentElement.classList.toggle('pv-soul', ST.soul);
+  SYSX.forEach(function (s) {
+    d.querySelectorAll('[data-act="launch"][data-id="' + s.id + '"] .sw').forEach(function (e) { e.style.setProperty('--swc', col(s.id)); });
+  });
+}
+pf.addEventListener('load', paint);
+function panel() {
+  var h = '<h1>محاكي ألوان أنظمة سوار</h1><p class="n">البوابة وشاشة التحميل منسوختان من التطبيق الحقيقي كما هما، والأيقونات المعتمدة نفسها. شاشات الأنظمة الداخلية نسخة حقيقية من آخر فتح لها، وألوانها الداخلية ما زالت الحالية. اضغط أي نظام في البوابة.</p>' +
+    '<div class="sim-seg"><button type="button" data-soul="1" class="' + (ST.soul ? 'on' : '') + '">روح اللون</button><button type="button" data-soul="0" class="' + (!ST.soul ? 'on' : '') + '">مصمت</button></div>';
+  SYSX.forEach(function (s) {
+    h += '<div class="sim-sys"><b>' + nm(s.id) + '</b><div class="sim-sw">' + s.opts.map(function (o, k) { return '<button type="button" title="' + o[0] + '" data-s="' + s.id + '" data-k="' + k + '" class="' + (ST.c[s.id] === k ? 'on' : '') + '" style="background:' + o[1] + '"></button>'; }).join('') + '</div><div class="sim-nm">' + s.opts[ST.c[s.id]][0] + ' · ' + s.opts[ST.c[s.id]][1] + '</div></div>';
+  });
+  h += '<button type="button" class="sim-copy" id="simCopy">نسخ الاختيار</button>';
+  $('simPanel').innerHTML = h;
+}
+$('simPanel').addEventListener('click', function (e) {
+  var t = e.target;
+  if (t.dataset.soul != null) { ST.soul = t.dataset.soul === '1'; panel(); paint(); return; }
+  if (t.dataset.s) { ST.c[t.dataset.s] = +t.dataset.k; panel(); paint(); return; }
+  if (t.id === 'simCopy') {
+    var txt = 'اختيار ألوان الأنظمة (' + (ST.soul ? 'روح اللون' : 'مصمت') + ')\n' + SYSX.map(function (s) { var o = s.opts[ST.c[s.id]]; return nm(s.id) + ': ' + o[0] + ' ' + o[1]; }).join('\n');
+    try { navigator.clipboard.writeText(txt).then(function () { t.textContent = 'تم النسخ'; }, function () { t.textContent = txt; }); } catch (x) { t.textContent = txt; }
+  }
+});
+/* شاشة فتح النظام: نفس منطق التطبيق (الانفتاح الدائري من الأيقونة، الشعار يطير للمنتصف، الحلقة الذهبية تتقدم) */
+var RING = 502.65, T = [];
+function ring(p) { $('plRing').style.strokeDashoffset = String(RING * (1 - Math.max(0, Math.min(1, p)))); }
+function clearT() { T.forEach(clearTimeout); T = []; }
+window.simOpen = function (id, rect) {
+  clearT();
+  var prog = $('prog'), L = $('pload'), em = $('plEm'), body = $('pbody');
+  body.querySelectorAll('iframe.pf').forEach(function (f) { f.remove(); });
+  var f = document.createElement('iframe'); f.className = 'pf'; f.setAttribute('sandbox', 'allow-same-origin');
+  f.srcdoc = DATA.snaps[id] || '<html><body style="font-family:sans-serif;display:grid;place-items:center;height:100vh;margin:0;color:#888">لا توجد نسخة محفوظة من هذا النظام</body></html>';
+  body.insertBefore(f, body.firstChild);
+  $('ptitle').textContent = nm(id);
+  prog.style.setProperty('--pc', col(id));
+  $('pname').textContent = nm(id);
+  var box = $('picon'); box.innerHTML = ''; box.className = 'picon'; var img = document.createElement('img'); img.alt = ''; img.src = DATA.logo; box.appendChild(img);
+  prog.className = 'on'; prog.setAttribute('aria-hidden', 'false');
+  $('plRing').style.transition = 'none'; ring(0); void $('plRing').offsetWidth; $('plRing').style.transition = '';
+  em.className = 'pl-em'; em.style.transform = '';
+  var ph = $('simPhone').getBoundingClientRect(), pr = pf.getBoundingClientRect();
+  var cx = rect.x + rect.w / 2 + (pr.left - ph.left), cy = rect.y + rect.h / 2 + (pr.top - ph.top);
+  L.style.setProperty('--ox', cx + 'px'); L.style.setProperty('--oy', cy + 'px');
+  L.className = 'pload enter';
+  var r = em.getBoundingClientRect(), s = Math.max(.25, rect.w / r.width);
+  em.style.transform = 'translate(' + (cx + ph.left - (r.left + r.width / 2)) + 'px,' + (cy + ph.top - (r.top + r.height / 2)) + 'px) scale(' + s + ')';
+  void L.offsetWidth;
+  L.className = 'pload opening shown';
+  requestAnimationFrame(function () { em.className = 'pl-em fly'; em.style.transform = ''; });
+  T.push(setTimeout(function () { ring(.42); }, 250));
+  T.push(setTimeout(function () { ring(.66); }, 900));
+  T.push(setTimeout(function () { ring(.88); }, 1600));
+  T.push(setTimeout(function () {
+    $('plRing').style.transition = 'stroke-dashoffset .28s ease'; ring(1);
+    L.className = 'pload shown done'; f.classList.add('cur');
+    T.push(setTimeout(function () { L.className = 'pload out'; }, 260));
+    T.push(setTimeout(function () { L.className = 'pload gone'; }, 700));
+  }, 2400));
+};
+$('back').addEventListener('click', function () { clearT(); $('prog').className = ''; $('prog').setAttribute('aria-hidden', 'true'); });
+var ext = $('ext'); if (ext) ext.style.visibility = 'hidden';
+panel();
+</script>
+</body>
+</html>
