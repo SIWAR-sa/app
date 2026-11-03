@@ -1,0 +1,1171 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex"><title>سوار | SIWAR</title>
+<meta name="theme-color" content="#FDFAF5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="سوار">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png">
+<link rel="shortcut icon" href="icons/favicon.ico">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
+<script src="config.js"></script>
+<style>
+:root{--bg:#FDFAF5;--bg2:#F7EEE4;--text:#3F3A37;--muted:#6F6761;--gold:#C2923F;--gold-l:#E3B66D;--pink:#E2A6A4;--line:#EADFD1;
+  --top:env(safe-area-inset-top,0px);--bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans Arabic',Tahoma,system-ui,sans-serif;-webkit-tap-highlight-color:transparent;overflow:hidden}
+[hidden]{display:none!important}
+iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
+
+/* سوار تملأ الشاشة */
+#portal{position:fixed;inset:0;padding-top:var(--top);height:100%;width:100%}
+#portal iframe{height:100%}
+
+/* شاشة البداية */
+#splash{position:fixed;inset:0;z-index:30;display:grid;place-items:center;background:radial-gradient(circle at 50% 44%,#FFFDF9 0,var(--bg) 45%,var(--bg2) 100%);transition:opacity .45s ease,visibility .45s}
+#splash.out{opacity:0;visibility:hidden}
+.sp{display:flex;flex-direction:column;align-items:center;gap:26px}
+.sp img{width:min(260px,64vw);height:auto;animation:in .9s cubic-bezier(.2,.8,.2,1) both}
+.bar{width:120px;height:3px;border-radius:3px;background:rgba(194,146,63,.15);overflow:hidden}
+.bar i{display:block;width:40%;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold-l),var(--pink));animation:run 1.3s ease-in-out infinite}
+@keyframes in{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes run{0%{transform:translateX(120%)}100%{transform:translateX(-260%)}}
+
+/* طبقة البرنامج داخل التطبيق */
+#prog{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;background:var(--bg);transform:translateX(-100%);transition:transform .32s cubic-bezier(.2,.8,.2,1)}
+#prog.on{transform:none}
+/* البرنامج يملأ الشاشة كتطبيق: لا شريط علوي، والعودة لسوار من مقبض صغير على حافة الشاشة */
+.pbar{display:none!important;flex:none;display:flex;align-items:center;gap:8px;padding:calc(var(--top) + 6px) 10px 6px;background:rgba(253,250,245,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.pbtn{display:inline-flex;align-items:center;gap:6px;height:40px;min-width:44px;padding:0 12px;border:0;border-radius:999px;background:transparent;color:var(--text);font:inherit;font-size:15px;font-weight:600;cursor:pointer}
+.pbtn:active{background:rgba(194,146,63,.12)}
+.pbtn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ptitle{flex:1;min-width:0;text-align:center;font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pbody{position:relative;flex:1;min-height:0;padding-top:var(--top)}
+#home{position:fixed;z-index:25;left:0;top:50%;width:26px;height:68px;margin-top:-34px;border:0;padding:0;border-radius:0 18px 18px 0;
+  background:linear-gradient(180deg,#16223A,#0B1222);box-shadow:0 6px 18px -6px rgba(10,15,30,.6),inset -1px 0 0 rgba(214,170,94,.55);
+  display:grid;place-items:center;cursor:pointer;touch-action:none;opacity:.92;transition:width .2s,opacity .2s}
+#home:active,#home.drag{width:34px;opacity:1}
+#home svg{width:14px;height:14px;stroke:#E3B66D;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+#home[hidden]{display:none}
+[dir="ltr"] #home{left:auto;right:0;border-radius:18px 0 0 18px}
+[dir="ltr"] #home svg{transform:scaleX(-1)}
+/* ── شاشة فتح النظام ──
+   الدائرة الذهبية تتقدّم مع مراحل الفتح الفعلية (التذكرة ← تحميل الصفحة ← جاهزية البيانات)،
+   والشعار ينتقل من أيقونة النظام في سوار إلى منتصف الشاشة، والخلفية تنفتح دائرياً من موضع الضغطة */
+#prog{--pc:#101A2E}
+.pf{position:absolute;inset:0;visibility:hidden}
+.pf.cur{visibility:visible}
+.pload{position:absolute;inset:0;z-index:3;display:grid;place-items:center;overflow:hidden;color:#F4E3BF;
+  --ox:50%;--oy:50%;clip-path:circle(150% at var(--ox) var(--oy));
+  background:radial-gradient(70% 50% at 50% 42%,color-mix(in srgb,var(--pc) 70%,#fff 14%) 0,transparent 70%),
+             linear-gradient(180deg,color-mix(in srgb,var(--pc) 82%,#000 18%),color-mix(in srgb,var(--pc) 70%,#000 30%));
+  transition:opacity .38s ease}
+.pload.enter{clip-path:circle(0 at var(--ox) var(--oy))}
+.pload.opening{transition:clip-path .48s cubic-bezier(.3,.7,.2,1),opacity .38s ease}
+.pload.out{opacity:0;pointer-events:none}
+.pload.gone{display:none}
+.pl-glow{position:absolute;left:50%;top:44%;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(243,213,142,.30),rgba(243,213,142,.08) 38%,transparent 66%);animation:plBreath 3.2s ease-in-out infinite;pointer-events:none}
+.pl-sheen{position:absolute;inset:-40% -60%;background:linear-gradient(105deg,transparent 42%,rgba(255,240,205,.07) 50%,transparent 58%);animation:plSheen 3.6s ease-in-out infinite;pointer-events:none}
+@keyframes plBreath{0%,100%{opacity:.55;transform:scale(.94)}50%{opacity:1;transform:scale(1.04)}}
+@keyframes plSheen{0%{transform:translateX(-30%)}100%{transform:translateX(30%)}}
+.pl-core{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:22px;margin-top:-4vh}
+.pl-em{position:relative;width:164px;height:164px;display:grid;place-items:center;will-change:transform}
+.pl-em.fly{transition:transform .5s cubic-bezier(.25,.8,.25,1)}
+.pl-med{position:absolute;inset:14px;border-radius:50%;
+  background:radial-gradient(circle at 50% 30%,rgba(255,255,255,.20),rgba(255,255,255,.05) 60%,rgba(0,0,0,.10));
+  box-shadow:inset 0 0 0 1px rgba(243,213,142,.45),inset 0 2px 0 rgba(255,255,255,.18),0 24px 50px -18px rgba(0,0,0,.6),0 0 0 6px rgba(243,213,142,.06)}
+.pl-ring{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg);overflow:visible}
+.pl-ring circle{fill:none;stroke-width:2.2;stroke-linecap:round}
+.pl-ring .trk{stroke:rgba(243,213,142,.16)}
+.pl-ring .prg{stroke:url(#plGold);stroke-dasharray:502.65;stroke-dashoffset:502.65;transition:stroke-dashoffset 1.2s cubic-bezier(.2,.7,.2,1);filter:drop-shadow(0 0 6px rgba(243,213,142,.55))}
+.pl-spin{position:absolute;inset:0;animation:plSpin 1.6s linear infinite}
+.pl-spin::after{content:"";position:absolute;left:50%;top:-1px;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:#FFF1CC;box-shadow:0 0 10px 3px rgba(243,213,142,.8)}
+@keyframes plSpin{to{transform:rotate(360deg)}}
+.pload.done .pl-spin{opacity:0;transition:opacity .2s}
+.picon{position:relative;z-index:1;display:grid;place-items:center;width:100%;height:100%}
+.picon img{width:74%;height:auto;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
+.picon.img img{width:58%;border-radius:18px;filter:none}
+.pname{font-weight:700;font-size:19px;letter-spacing:.3px;color:#F6E6C4;text-shadow:0 1px 10px rgba(0,0,0,.35);opacity:0;transform:translateY(6px);transition:opacity .4s .18s,transform .4s .18s}
+.pload.shown .pname{opacity:1;transform:none}
+.pl-err{display:none;flex-direction:column;align-items:center;gap:14px;font-size:15px;color:#F6E6C4}
+.pl-err button{height:44px;padding:0 26px;border:0;border-radius:999px;font:inherit;font-weight:700;font-size:15px;color:#2B2116;background:linear-gradient(180deg,#F6DCA0,#D9AD5E);box-shadow:0 10px 24px -10px rgba(0,0,0,.6);cursor:pointer}
+.pload.err .pl-err{display:flex}
+.pload.err .pl-spin{display:none}
+.pload.done .pl-em{transform:scale(1.06);opacity:.0;transition:transform .38s ease,opacity .38s ease}
+.pload.out .pl-glow,.pload.out .pl-sheen,.pload.out .pl-spin,.pload.gone .pl-glow,.pload.gone .pl-sheen,.pload.gone .pl-spin,#splash.out .bar i{animation:none}
+/* ── الفتح الفوري من الشاشة المحفوظة ──
+   النسخة في إطار معزول تماماً، يمكن تمريرها ولا تقبل الضغط. كبسولة أعلى الوسط (زجاجية) على الكمبيوتر،
+   وفي الجوال شريط ثابت أسفل الشاشة فوق المنطقة الآمنة (خلفية صلبة) فلا تغطي أي محتوى. وحافة ذهبية رفيعة أعلى النظام */
+.snap{position:absolute;inset:0;z-index:4;background:var(--bg)}
+.snap-sc{position:absolute;inset:0;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;transition:opacity .32s ease}
+.snap-sc iframe{display:block;width:100%;height:100%;border:0;background:var(--bg);pointer-events:none}
+.snap-cv{position:absolute;left:0;top:0;width:100%;cursor:default}
+.snap.ph .snap-sc{bottom:calc(64px + var(--bottom))}
+.snap-edge{position:absolute;left:0;right:0;top:0;height:3px;z-index:2;overflow:hidden;background:rgba(194,146,63,.14);transition:opacity .32s ease}
+.snap-edge i{position:absolute;top:0;bottom:0;width:40%;border-radius:3px;background:linear-gradient(90deg,rgba(227,182,109,0),#E3B66D 30%,#F8E3B4 55%,#C2923F 80%,rgba(194,146,63,0));box-shadow:0 0 10px 1px rgba(227,182,109,.75);animation:snEdge 1.5s cubic-bezier(.4,0,.2,1) infinite}
+[dir="rtl"] .snap-edge i{animation-name:snEdgeR}
+@keyframes snEdge{0%{left:-40%}100%{left:100%}}
+@keyframes snEdgeR{0%{left:100%}100%{left:-40%}}
+.snap.live .snap-edge i,.snap.rm .snap-edge i{animation:none;left:0;width:100%;background:linear-gradient(90deg,#C2923F,#F8E3B4 50%,#E3B66D)}
+.snap.rm:not(.live) .snap-edge i{width:55%;left:auto;right:0}
+.snap.fail .snap-edge{opacity:0}
+.snap-dock{position:absolute;left:0;right:0;top:10px;z-index:3;display:flex;justify-content:center;pointer-events:none;transition:opacity .3s ease}
+.snap.ph .snap-dock{top:auto;bottom:0;height:calc(64px + var(--bottom));padding:0 12px var(--bottom);align-items:center;background:var(--bg);border-top:1px solid var(--line);box-shadow:0 -10px 24px -18px rgba(63,48,30,.45);pointer-events:auto}
+.snap-pill{pointer-events:auto;display:flex;align-items:center;gap:10px;max-width:calc(100% - 24px);min-height:38px;padding:6px 18px 6px 14px;border-radius:999px;font-size:14px;font-weight:600;color:var(--text);line-height:1.35;
+  background:linear-gradient(180deg,rgba(255,254,251,.74),rgba(251,245,236,.6)) padding-box,linear-gradient(140deg,rgba(246,226,186,.95),rgba(214,166,87,.85) 35%,rgba(255,246,226,.95) 60%,rgba(201,150,70,.85)) border-box;
+  border:1px solid transparent;backdrop-filter:blur(18px) saturate(1.7);-webkit-backdrop-filter:blur(18px) saturate(1.7);
+  box-shadow:0 14px 32px -14px rgba(63,48,30,.45),0 2px 6px -2px rgba(63,48,30,.18),inset 0 1px 0 rgba(255,255,255,.9)}
+.snap.ph .snap-pill{background:linear-gradient(180deg,#FFFEFB,#FBF5EC) padding-box,linear-gradient(140deg,#F6E2BA,#D6A657 35%,#FFF6E2 60%,#C99646) border-box;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 8px 20px -12px rgba(63,48,30,.5),inset 0 1px 0 #fff}
+.snap-ic{position:relative;flex:none;width:18px;height:18px;border-radius:50%;border:2.2px solid rgba(194,146,63,.2);border-top-color:#D9AD5E;border-right-color:#E3B66D;animation:snSpin .9s linear infinite}
+.snap.rm .snap-ic{animation:none}
+@keyframes snSpin{to{transform:rotate(360deg)}}
+.snap-pill.done .snap-ic,.snap-pill.fail .snap-ic{animation:none;border:0;display:grid;place-items:center}
+.snap-pill.done .snap-ic{background:linear-gradient(180deg,#F6DCA0,#D9AD5E);box-shadow:0 2px 6px -2px rgba(140,101,36,.6)}
+.snap-pill.done .snap-ic::after{content:"";width:8px;height:4px;margin-top:-2px;border:solid #3B2A12;border-width:0 0 2.4px 2.4px;transform:rotate(-45deg)}
+.snap-pill.fail{color:#7A2E2B;background:linear-gradient(180deg,#FFFBFA,#FCEDEB) padding-box,linear-gradient(140deg,#EBC2BF,#C9827F) border-box;backdrop-filter:none;-webkit-backdrop-filter:none}
+.snap-pill.fail .snap-ic{background:#C0574F}
+.snap-pill.fail .snap-ic::after{content:"!";color:#fff;font-size:12px;font-weight:700;line-height:1}
+.snap-rt{flex:none;height:30px;padding:0 14px;border:0;border-radius:999px;font:inherit;font-size:13px;font-weight:700;color:#2B2116;background:linear-gradient(180deg,#F6DCA0,#D9AD5E);box-shadow:0 6px 14px -8px rgba(140,101,36,.8);cursor:pointer}
+.snap-pill.pulse{animation:snPulse .8s ease-in-out 2}
+.snap.rm .snap-pill.pulse{animation:none}
+@keyframes snPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06);box-shadow:0 0 0 6px rgba(227,182,109,.22),0 14px 32px -14px rgba(63,48,30,.45)}}
+.snap.live .snap-sc{opacity:0;pointer-events:none}
+.snap.live .snap-edge{opacity:0;transition-delay:.25s}
+.snap.rm .snap-sc,.snap.rm .snap-edge,.snap.rm .snap-dock{transition:none}
+.snap.bye .snap-dock{opacity:0}
+.snap.live{background:transparent;pointer-events:none}
+.snap.live .snap-dock{pointer-events:none}
+.sntoast{position:absolute;left:50%;top:10px;z-index:5;transform:translateX(-50%);display:flex;align-items:center;gap:8px;min-height:36px;padding:6px 16px;border-radius:999px;font-size:13.5px;font-weight:600;color:var(--text);background:linear-gradient(180deg,#FFFEFB,#FBF5EC) padding-box,linear-gradient(140deg,#F6E2BA,#D6A657 35%,#FFF6E2 60%,#C99646) border-box;border:1px solid transparent;box-shadow:0 12px 28px -14px rgba(63,48,30,.5);transition:opacity .3s}
+@media (max-width:699px){.sntoast{top:auto;bottom:calc(var(--bottom) + 14px)}}
+/* نافذة التثبيت */
+#install{position:fixed;inset:0;z-index:40;display:grid;align-items:end;justify-items:center;background:rgba(63,58,55,.28);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.sheet{width:min(460px,100%);margin:0 0 calc(12px + var(--bottom));padding:24px 22px 20px;border-radius:24px;background:#FFFDF9;box-shadow:0 24px 60px rgba(63,58,55,.25);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;animation:up .35s cubic-bezier(.2,.8,.2,1)}
+@media (min-width:700px){#install{align-items:center}.sheet{margin:0}}
+.qr{width:200px;height:200px;padding:10px;border-radius:18px;background:#fff;box-shadow:inset 0 0 0 1px rgba(201,160,78,.45),0 10px 24px -14px rgba(63,48,30,.5)}.qr svg{width:100%;height:100%;display:block}.qr[hidden]{display:none}
+.qr-url{font-size:12.5px;color:#7A6E66;word-break:break-all}
+@keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.sheet img{width:84px;height:84px;border-radius:20px;box-shadow:0 8px 20px rgba(110,98,90,.18)}
+.sheet h1{margin:0;font-size:19px}
+.sheet p{margin:0;color:var(--muted);font-size:14px;line-height:1.8}
+.steps{width:100%;display:flex;flex-direction:column;gap:8px;text-align:start}
+.step{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:#FBF6EF;font-size:14px}
+.step b{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#FBF0DC;color:#8C6524;font-size:12.5px}
+.step svg{width:20px;height:20px;flex:none;stroke:var(--gold);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle}
+.btn{width:100%;height:50px;border:0;border-radius:999px;background:linear-gradient(180deg,#F0C3C1,#DE9C9A);color:var(--text);font:inherit;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 10px 22px -10px rgba(201,132,130,.8)}
+.link{border:0;background:none;color:#A65F5D;font:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:6px}
+.err{padding:24px;text-align:center;color:var(--muted)}
+/* شريط انقطاع الاتصال */
+#net{position:fixed;left:50%;top:calc(var(--top) + 10px);z-index:50;transform:translate(-50%,-80px);display:flex;align-items:center;gap:8px;height:36px;padding:0 16px;border-radius:999px;background:rgba(16,26,46,.94);color:#F6E6C4;font-size:13.5px;font-weight:600;box-shadow:0 10px 26px -10px rgba(0,0,0,.5);transition:transform .3s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+#net.on{transform:translate(-50%,0)}
+#net i{width:8px;height:8px;border-radius:50%;background:#E2A6A4}
+/* إشعارات الجوال */
+#push{position:fixed;inset:0;z-index:45;display:grid;align-items:end;justify-items:center;background:rgba(43,37,34,.34);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+@media (min-width:700px){#push{align-items:center}}
+#shr{position:fixed;inset:0;z-index:46;display:grid;align-items:end;justify-items:center;background:rgba(43,37,34,.34);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+@media (min-width:700px){#shr{align-items:center}}
+#shr[hidden]{display:none}
+.shr-pv{margin:14px auto 0;max-width:100%;border-radius:16px;overflow:hidden;background:#F4F1F0;box-shadow:inset 0 0 0 1px rgba(194,146,63,.28),0 14px 28px -18px rgba(43,37,34,.55)}
+.shr-pv img{display:block;width:100%;max-height:44vh;object-fit:contain}
+#shrGo{width:100%;min-height:52px;font-size:16px;font-weight:700}
+#shrGo svg{width:22px;height:22px;fill:currentColor;stroke:none}
+.pz{position:relative;width:min(440px,100%);margin:0 0 calc(10px + var(--bottom));padding:30px 24px 20px;border-radius:28px;text-align:center;overflow:hidden;
+  background:linear-gradient(180deg,#FFFEFB 0%,#FBF5EC 100%) padding-box,linear-gradient(150deg,#F6E2BA,#E3B66D 28%,#FFF6E2 52%,#D7A657 76%,#F3DDB0) border-box;border:1.5px solid transparent;
+  box-shadow:0 30px 70px -20px rgba(43,37,34,.45),0 1px 0 #fff inset;animation:up .38s cubic-bezier(.2,.8,.2,1)}
+@media (min-width:700px){.pz{margin:0}}
+.pz::before{content:"";position:absolute;left:50%;top:-120px;width:340px;height:240px;margin-left:-170px;border-radius:50%;background:radial-gradient(closest-side,rgba(243,213,142,.35),transparent);pointer-events:none}
+.pz-x{position:absolute;top:12px;inset-inline-end:12px;width:36px;height:36px;border:0;border-radius:50%;background:rgba(63,58,55,.06);color:var(--muted);font-size:20px;line-height:1;cursor:pointer}
+.pz-med{position:relative;width:92px;height:92px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 50% 30%,#FFFFFF,#FBEFD8 60%,#F0D49E);box-shadow:inset 0 0 0 1px rgba(194,146,63,.45),inset 0 -6px 14px rgba(194,146,63,.22),0 18px 34px -16px rgba(140,101,36,.7)}
+.pz-med svg{width:42px;height:42px;stroke:#A87B2F;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.pz-med i{position:absolute;top:16px;inset-inline-end:16px;width:14px;height:14px;border-radius:50%;border:2px solid #FFFDF8;background:#B9B0A8}
+.pz[data-st="on"] .pz-med i{background:#4E9A63;box-shadow:0 0 0 4px rgba(78,154,99,.16)}
+.pz[data-st="blocked"] .pz-med i,.pz[data-st="err"] .pz-med i{background:#C0574F}
+.pz[data-st="on"] .pz-med svg{animation:ring 2.4s ease-in-out 1}
+@keyframes ring{0%,60%,100%{transform:none}10%{transform:rotate(14deg)}20%{transform:rotate(-12deg)}30%{transform:rotate(8deg)}40%{transform:rotate(-5deg)}}
+.pz h1{margin:0;font-size:20px;font-weight:700}
+.pz-chip{display:inline-flex;align-items:center;gap:7px;height:30px;margin:10px 0 0;padding:0 14px;border-radius:999px;font-size:13px;font-weight:600;background:#F2EDE7;color:var(--muted)}
+.pz-chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.pz[data-st="on"] .pz-chip{background:#E7F1E9;color:#3E6B4A}
+.pz[data-st="blocked"] .pz-chip,.pz[data-st="err"] .pz-chip{background:#FBE6E3;color:#9A5A57}
+.pz p{margin:14px 0 0;color:var(--muted);font-size:14px;line-height:1.85}
+.pz .steps{margin-top:14px}
+.pz .btn{margin-top:18px;display:flex;align-items:center;justify-content:center;gap:10px}
+.pz .btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pz .btn[disabled]{opacity:.7;cursor:default}
+.pz .btn .spin{width:18px;height:18px;border-radius:50%;border:2px solid rgba(63,58,55,.25);border-top-color:var(--text);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pz-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+.pz-note{margin-top:12px!important;padding:10px 14px;border-radius:14px;background:#FBF0DC;color:#8C6524!important;font-size:13px!important}
+.pz-note.bad{background:#FBE6E3;color:#9A5A57!important}
+.pz-note.good{background:#E7F1E9;color:#3E6B4A!important}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="net" role="status" aria-live="polite"><i></i><span id="netTxt"></span></div>
+
+<div id="splash"><div class="sp"><img src="icons/logo.webp" alt="سوار"><div class="bar"><i></i></div></div></div>
+
+<div id="portal"></div>
+
+<div id="prog" aria-hidden="true">
+  <div class="pbar">
+    <button class="pbtn" id="back" aria-label="رجوع"><svg viewBox="0 0 24 24"><path id="backPath" d="M9 6l6 6-6 6"/></svg><span id="backTxt">رجوع</span></button>
+    <div class="ptitle" id="ptitle"></div>
+    <button class="pbtn" id="ext" aria-label="فتح في المتصفح" title="فتح في المتصفح"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg></button>
+  </div>
+  <div class="pbody" id="pbody"><div class="pload gone" id="pload"><div class="pl-glow"></div><div class="pl-sheen"></div>
+    <div class="pl-core"><div class="pl-em" id="plEm"><div class="pl-med"></div>
+      <svg class="pl-ring" viewBox="0 0 164 164" aria-hidden="true"><defs><linearGradient id="plGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF0C8"/><stop offset=".5" stop-color="#E9BE6E"/><stop offset="1" stop-color="#B9873A"/></linearGradient></defs><circle class="trk" cx="82" cy="82" r="80"/><circle class="prg" id="plRing" cx="82" cy="82" r="80"/></svg>
+      <div class="pl-spin" id="plSpin"></div><div class="picon" id="picon"></div></div>
+      <div class="pname" id="pname"></div>
+      <div class="pl-err"><span id="plErrTxt"></span><button id="plRetry"></button></div></div></div></div>
+</div>
+
+<button id="home" hidden aria-label="العودة إلى سوار"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+
+<div id="install" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="iT">
+    <img src="icons/apple-touch-icon.png" alt="">
+    <h1 id="iT">تثبيت تطبيق سوار</h1>
+    <div id="iBody"></div>
+    <button class="link" id="iLater">لاحقاً</button>
+  </div>
+</div>
+
+<div id="shr" hidden>
+  <div class="pz" role="dialog" aria-modal="true" aria-labelledby="shrT">
+    <button class="pz-x" id="shrX" aria-label="إغلاق">×</button>
+    <h1 id="shrT"></h1>
+    <span class="pz-chip" id="shrChip"></span>
+    <div class="shr-pv"><img id="shrImg" alt=""></div>
+    <button class="btn" id="shrGo" type="button"><svg viewBox="0 0 24 24"><path d="M12 2.5a9.4 9.4 0 0 0-8.1 14.2L2.6 21.4l4.8-1.3A9.4 9.4 0 1 0 12 2.5zm0 17.1a7.7 7.7 0 0 1-3.9-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A7.7 7.7 0 1 1 12 19.6zm4.3-5.8c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1a6.3 6.3 0 0 1-3.1-2.7c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.7-1.7c-.2-.4-.4-.4-.5-.4h-.4a.8.8 0 0 0-.6.3 2.5 2.5 0 0 0-.8 1.9 4.4 4.4 0 0 0 .9 2.3 10 10 0 0 0 3.8 3.4c1.4.6 2 .7 2.7.6a2.3 2.3 0 0 0 1.5-1.1 1.9 1.9 0 0 0 .1-1.1c-.1-.1-.2-.2-.4-.3z"/></svg><span id="shrGoL"></span></button>
+    <p id="shrP"></p>
+    <p class="pz-note" id="shrN" hidden></p>
+  </div>
+</div>
+<div id="push" hidden>
+  <div class="pz" role="dialog" aria-modal="true" aria-labelledby="pzT" id="pzCard">
+    <button class="pz-x" id="pzX" aria-label="إغلاق">×</button>
+    <div class="pz-med"><svg viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.6 2H4.4z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/></svg><i></i></div>
+    <h1 id="pzT"></h1>
+    <span class="pz-chip" id="pzChip"></span>
+    <div id="pzBody"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var PORTAL = String(window.SIWAR_PORTAL || '');
+  var standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  var ua = navigator.userAgent || '';
+  var iOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var deferred = null, progUrl = '';
+  /* النظام المعروض الآن ومكانه داخله: يُحفظ في ذاكرة هذه النافذة، فإعادة التحميل تفتحه هو لا الرئيسية */
+  var CURK = 'siwar_cur';
+  function cleanGo(g) { g = String(g == null ? '' : g); return g.length <= 300 && !/[\s<>"'`\\]/.test(g) ? g : ''; }
+  function goOfUrl(u) { var m = /[?&]go=([^&#]*)/.exec(String(u || '')); if (!m) return ''; try { return cleanGo(decodeURIComponent(m[1])); } catch (e) { return ''; } }
+  function curSave(id, go) {
+    if (!/^[A-Za-z0-9_-]{1,40}$/.test(String(id || ''))) return;
+    try {
+      if (go == null) { var old = curLoad(); go = old && old.id === id ? old.go : ''; }
+      sessionStorage.setItem(CURK, JSON.stringify({ id: id, go: cleanGo(go), at: Date.now() }));
+    } catch (e) {}
+  }
+  function curLoad() {
+    try {
+      var v = JSON.parse(sessionStorage.getItem(CURK) || 'null');
+      if (!v || !/^[A-Za-z0-9_-]{1,40}$/.test(String(v.id || '')) || !(Date.now() - Number(v.at) < 6 * 3600000)) return null;
+      return { id: String(v.id), go: cleanGo(v.go) };
+    } catch (e) { return null; }
+  }
+  function curClear() { try { sessionStorage.removeItem(CURK); } catch (e) {} }
+  /* النصوص بلغة سوار: تصل اللغة من سوار وتُحفظ على الجهاز */
+  var TXT = {
+    ar: { back: 'رجوع', ext: 'فتح في المتصفح', title: 'تثبيت تطبيق سوار', later: 'لاحقاً', prog: 'برنامج', noUrl: 'لم يُضبط رابط سوار في config.js',
+      desc: 'أيقونة على الشاشة الرئيسية، وتفتح الأنظمة في نافذة مستقلة.', install: 'تثبيت التطبيق',
+      ios1: 'افتح هذه الصفحة في متصفح Safari', ios2: 'اضغط زر المشاركة ', ios3: 'اختر «إضافة إلى الشاشة الرئيسية» ',
+      an1: 'افتح هذه الصفحة في Chrome أو Edge', an2a: 'من قائمة المتصفح ', an2b: ' اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية»',
+      phT: 'سوار على جوالك', phD: 'امسح الرمز بكاميرا الجوال، ثم ثبّت التطبيق من الصفحة التي تفتح.', copy: 'نسخ الرابط', copied: 'تم النسخ', close: 'إغلاق' },
+    en: { back: 'Back', ext: 'Open in browser', title: 'Install the SIWAR app', later: 'Later', prog: 'App', noUrl: 'The portal link is not set in config.js',
+      desc: 'An icon on your home screen; systems open in their own window.', install: 'Install app',
+      ios1: 'Open this page in Safari', ios2: 'Tap the Share button ', ios3: 'Choose “Add to Home Screen” ',
+      an1: 'Open this page in Chrome or Edge', an2a: 'From the browser menu ', an2b: ' choose “Install app” or “Add to Home screen”',
+      phT: 'SIWAR on your phone', phD: 'Scan the code with your phone camera, then install the app from the page that opens.', copy: 'Copy link', copied: 'Copied', close: 'Close' }
+  };
+  var LANG = 'ar';
+  try { LANG = localStorage.getItem('siwar_lang') === 'en' ? 'en' : 'ar'; } catch (e) {}
+  function T(k) { return TXT[LANG][k]; }
+  function applyLang(l) {
+    LANG = l === 'en' ? 'en' : 'ar';
+    try { localStorage.setItem('siwar_lang', LANG); } catch (e) {}
+    document.documentElement.lang = LANG; document.documentElement.dir = LANG === 'en' ? 'ltr' : 'rtl';
+    $('backTxt').textContent = T('back'); $('back').setAttribute('aria-label', T('back'));
+    $('backPath').setAttribute('d', LANG === 'en' ? 'M15 6l-6 6 6 6' : 'M9 6l6 6-6 6');
+    $('ext').title = T('ext'); $('ext').setAttribute('aria-label', T('ext'));
+    $('iT').textContent = T('title'); $('iLater').textContent = T('later');
+    if (!$('install').hidden) renderInstall();
+  }
+
+  applyLang(LANG);
+  /* لغة واحدة لكل الأنظمة (v71): سوار هي المرجع. نظام يبدّل لغته يرسل {siwar:'lang'} فتُعرض بها واجهة التطبيق وتُبلَّغ سوار لتحفظها،
+     والنظام المفتوح في الخلفية بلغة أخرى يُبلَّغ حين يظهر فقط (إن أعلن دعمه بـ langok)، فلا تحميل ولا نداء في الخلفية */
+  function langSet(l, fid) {
+    l = l === 'en' ? 'en' : l === 'ar' ? 'ar' : ''; if (!l) return;
+    if (l !== LANG) applyLang(l);
+    if (fid) { if (frames[fid]) frames[fid].lang = l; toPortal({ siwar: 'lang', lang: l }); }
+    if ($('prog').className === 'on' && cur) langTo(cur);
+  }
+  function langTo(id) {
+    var o = frames[id];
+    if (!o || !o.lw || !o.lang || o.lang === LANG) return;
+    o.lang = LANG;
+    try { o.lw.postMessage({ siwar: 'lang', lang: LANG, v: 1 }, '*'); } catch (e) {}
+  }
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
+
+  /* ── سوار ── */
+  if (!/^https:\/\/script\.google\.com\/.+\/exec$/.test(PORTAL)) {
+    $('portal').innerHTML = '<p class="err">' + T('noUrl') + '</p>';
+    $('splash').className = 'out';
+  } else {
+    var f = document.createElement('iframe');
+    f.title = 'سوار';
+    f.allow = 'clipboard-read; clipboard-write; fullscreen; web-share';
+    // سوار صفحة ثابتة من نفس موقع التطبيق (portal.html): تُفتح فوراً من ذاكرة الجهاز، وتكلّم الخادم مباشرة،
+    // فلا صفحة جوجل وسيطة ولا تعارض حسابات جوجل
+    // رابط زر الإيميل (?open=…&go=…) يُمرَّر لسوار لتفتح البرنامج مباشرة، ثم يُحذف من شريط العنوان
+    var q = new URLSearchParams(location.search), deep = '';
+    if (/^[A-Za-z0-9_-]{1,40}$/.test(q.get('open') || '')) {
+      deep = '&open=' + encodeURIComponent(q.get('open'));
+      var go = q.get('go') || '';
+      if (go && go.length <= 300 && !/[\s<>"'`\\]/.test(go)) deep += '&go=' + encodeURIComponent(go);
+      try { history.replaceState(null, '', location.pathname); } catch (e) {}
+    } else {
+      // إعادة تحميل الصفحة وهو داخل نظام: يُفتح النظام نفسه على الصفحة نفسها بدل الرئيسية
+      var rs = curLoad();
+      if (rs) deep = '&open=' + encodeURIComponent(rs.id) + (rs.go ? '&go=' + encodeURIComponent(rs.go) : '') + '&back=1';
+    }
+    f.src = 'portal-preview.html?app=1' + deep;
+    // شاشة تحميل واحدة: تبقى حتى تقول سوار إنها جاهزة (والحد الأقصى 12 ثانية)
+    f.onload = function () { setTimeout(hideSplash, 8000); };
+    $('portal').appendChild(f);
+    setTimeout(hideSplash, 12000);
+  }
+
+  function hideSplash() { $('splash').className = 'out'; }
+
+  /* ── فتح البرنامج داخل التطبيق ──
+     كل نظام في إطار خاص به يبقى حياً بعد العودة لسوار (حتى MAXF أنظمة)، فالرجوع إليه فوري.
+     شاشة الفتح تظهر مع الضغطة وتتقدّم مع مراحل الفتح الفعلية، وتختفي حين يقول النظام إنه جاهز. */
+  var MAXF = iOS || /Android/.test(ua) ? 3 : 5, FRAME_AGE = 6 * 3600000;   // كل الأنظمة الخمسة تبقى مفتوحة على الكمبيوتر، وثلاثة على الجوال: الرجوع لنظام فُتح فوري بلا تحميل
+  var frames = {}, cur = '', seq = 0, rt = {};
+  // صيغة رابط النظام: العام /macros/s/ أو رابط النطاق /a/macros/النطاق/s/. تعدد حسابات جوجل في المتصفح يجعل جوجل يحوّل العام إلى /u/N/ فيفشل،
+  // وحساب Gmail الشخصي لا يفتح رابط النطاق. فنبدأ بآخر صيغة نجحت على هذا الجهاز، وعند فشل الفتح نجرّب الأخرى ونحفظ ما نجح
+  var UFK = 'siwar_uf', uf = 'p', DOM = String(window.SIWAR_DOMAIN || 'siwar.com.sa');
+  try { uf = localStorage.getItem(UFK) === 'd' ? 'd' : 'p'; } catch (e) {}
+  function ufForm(u, f) {
+    var m = /^https:\/\/script\.google\.com\/(?:a\/macros\/[^\/]+|macros)\/s\/([\w-]+)\/exec([\s\S]*)$/.exec(String(u || ''));
+    if (!m) return u;
+    return f === 'd' ? 'https://script.google.com/a/macros/' + DOM + '/s/' + m[1] + '/exec' + m[2] : 'https://script.google.com/macros/s/' + m[1] + '/exec' + m[2];
+  }
+  function ufFlip() { uf = uf === 'd' ? 'p' : 'd'; }
+  var RING = 502.65;
+  var ERRT = { ar: { msg: 'تعذّر فتح النظام الآن.', off: 'لا يوجد اتصال بالإنترنت. تحقق من الاتصال ثم أعد المحاولة.', retry: 'إعادة المحاولة' }, en: { msg: 'The system could not be opened right now.', off: 'No internet connection. Check the connection, then try again.', retry: 'Try again' } };
+  function offline() { return navigator.onLine === false; }
+  /* ── قياس السرعة: كل فتح لنظام يُسجَّل بالطريقة نفسها لكل الأنظمة (من الضغطة حتى الجاهزية)، ويُرسل لسوار على دفعات ── */
+  var PJ = {}, PQ = [], DEV = iOS ? 'ios' : /Android/.test(ua) ? 'android' : 'desktop';
+  function pStart(id, kind, src) { PJ[id] = { a: id, k: kind, s: src || '', t0: performance.now(), at: Date.now(), m: {}, n: offline() ? 0 : 1 }; }
+  function pMark(id, name, ms) { var j = PJ[id]; if (!j || j.m[name] != null) return; j.m[name] = ms != null ? Math.round(ms) : Math.round(performance.now() - j.t0); }
+  function pEnd(id, how) {
+    var j = PJ[id]; if (!j) return; delete PJ[id];
+    j.m.end = Math.round(performance.now() - j.t0);
+    PQ.push({ at: j.at, a: j.a, k: j.k, s: j.s, d: DEV, n: j.n, h: how, g: j.g || '', m: j.m });
+    if (PQ.length >= 8) pFlush();
+  }
+  function pFlush() { if (!PQ.length) return; toPortal({ siwar: 'perf', rows: PQ.splice(0, 40) }); }
+  setInterval(pFlush, 60000);
+  document.addEventListener('visibilitychange', function () { if (document.hidden) pFlush(); });
+  function portalWin() { var pf = $('portal').querySelector('iframe'); return pf && pf.contentWindow; }
+  function toPortal(m) { var w = portalWin(); if (w) try { w.postMessage(m, location.origin); } catch (e) {} }
+  // nav: الأنظمة الجاهزة التي أعلنت أنها تفتح الرابط الداخلي في مكانها (navok)، فلا تنتظر سوار رداً من نظام لا يدعمه
+  function sendAlive() { toPortal({ siwar: 'alive', ids: Object.keys(frames), nav: Object.keys(frames).filter(function (k) { var o = frames[k]; return o.ready && o.nav && Date.now() - o.t <= FRAME_AGE; }) }); }
+  /* ── التنقل داخل نظام مفتوح (رابط الجرس و«بانتظارك» وزر المساحة): يُرسل المكان للنظام الحي، وعند تأكيده تظهر شاشته بلا إعادة تحميل ── */
+  var NAVP = {}, navSeq = 0;
+  function navLive(id, go, pn) {
+    var o = frames[id], res = function (ok) { toPortal({ siwar: 'navRes', n: pn, ok: !!ok }); };
+    go = cleanGo(go);
+    if (!o || !o.ready || !o.nav || !go || Date.now() - o.t > FRAME_AGE || offline()) return res(false);
+    var k = 'g' + (++navSeq);
+    NAVP[k] = { id: id, go: go, pn: pn, o: o, t: setTimeout(function () { if (NAVP[k]) { delete NAVP[k]; res(false); } }, 1000) };
+    try { o.nav.postMessage({ siwar: 'go', go: go, n: k }, '*'); } catch (e) { clearTimeout(NAVP[k].t); delete NAVP[k]; res(false); }
+  }
+  function navAck(fid, d) {
+    var k = String(d.n || ''), p = NAVP[k]; if (!p || p.id !== fid || frames[fid] !== p.o) return;
+    clearTimeout(p.t); delete NAVP[k];
+    if (d.ok) { p.o.go = p.go; snapClear(); SNQ = null; onShow(fid); }
+    toPortal({ siwar: 'navRes', n: p.pn, ok: !!d.ok });
+  }
+  function frameIdOf(src) {
+    for (var id in frames) {
+      var w = src;
+      for (var k = 0; k < 6 && w; k++) {
+        if (w === frames[id].f.contentWindow) return id;
+        try { if (w === w.parent) break; w = w.parent; } catch (e) { break; }
+      }
+    }
+    return '';
+  }
+  function setIcon(ic) {
+    var box = $('picon'); box.innerHTML = ''; box.className = 'picon';
+    $('prog').style.setProperty('--pc', ic && ic.kind === 'sw' && /^#[0-9a-f]{6}$/i.test(String(ic.color || '')) ? ic.color : '#101A2E');
+    var img = document.createElement('img'); img.alt = '';
+    if (ic && ic.kind === 'img' && /^(https:\/\/[^\s"'<>]+|data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+\/=]+)$/.test(String(ic.src || ''))) { box.className = 'picon img'; img.src = ic.src; }
+    else img.src = 'icons/logo.webp';
+    box.appendChild(img);
+  }
+  function ring(p) { $('plRing').style.strokeDashoffset = String(RING * (1 - Math.max(0, Math.min(1, p)))); }
+  // مرحلة الفتح: الدائرة تتقدم للمرحلة ثم تزحف ببطء نحو التالية، فلا تبدو متوقفة أثناء الانتظار
+  var creepT = 0;
+  function stage(p, next) {
+    clearTimeout(creepT); ring(p);
+    if (next) creepT = setTimeout(function () { $('plRing').style.transition = 'stroke-dashoffset 9s cubic-bezier(.1,.6,.3,1)'; ring(next); }, 1200);
+  }
+  function loaderShow(name, icon, rect) {
+    var L = $('pload');
+    if (snapActive()) { L.className = 'pload gone'; return; }
+    $('pname').textContent = name || '';
+    setIcon(icon);
+    $('plRing').style.transition = 'none'; ring(0); void $('plRing').offsetWidth; $('plRing').style.transition = '';
+    var ox = '50%', oy = '50%', em = $('plEm');
+    em.className = 'pl-em'; em.style.transform = '';
+    var pf = $('portal').querySelector('iframe'), off = pf ? pf.getBoundingClientRect().top : 0;
+    if (rect && rect.w) {
+      var cx = rect.x + rect.w / 2, cy = rect.y + off + rect.h / 2;
+      ox = cx + 'px'; oy = cy + 'px';
+    }
+    L.style.setProperty('--ox', ox); L.style.setProperty('--oy', oy);
+    L.className = 'pload enter';
+    if (rect && rect.w) {
+      // الشعار يبدأ من مكان أيقونة النظام في سوار ثم ينتقل للمنتصف
+      var r = em.getBoundingClientRect(), s = Math.max(.25, rect.w / r.width);
+      em.style.transform = 'translate(' + (cx - (r.left + r.width / 2)) + 'px,' + (cy - (r.top + r.height / 2)) + 'px) scale(' + s + ')';
+    }
+    void L.offsetWidth;
+    L.className = 'pload opening shown';
+    requestAnimationFrame(function () { em.className = 'pl-em fly'; em.style.transform = ''; });
+    stage(.16, .4);
+  }
+  function loaderDone() {
+    var L = $('pload'); if (/gone|out/.test(L.className)) return;
+    clearTimeout(creepT); $('plRing').style.transition = 'stroke-dashoffset .28s ease'; ring(1);
+    L.className = 'pload shown done';
+    setTimeout(function () { if (/done/.test(L.className)) L.className = 'pload out'; }, 260);
+    setTimeout(function () { if (L.className === 'pload out') L.className = 'pload gone'; }, 700);
+  }
+  function loaderErr() {
+    var L = $('pload'), t = ERRT[LANG] || ERRT.ar;
+    clearTimeout(creepT);
+    if (cur) pEnd(cur, offline() ? 'offline' : 'fail');
+    if (snapActive()) { L.className = 'pload gone'; snapFail(); return; }
+    $('plErrTxt').textContent = offline() ? t.off : t.msg; $('plRetry').textContent = t.retry;
+    L.className = 'pload shown err';
+  }
+  $('plRetry').onclick = function () { if (cur) { rt[cur] = 0; relaunch(cur, true); } };
+
+  function showLayer() {
+    $('prog').className = 'on'; $('prog').setAttribute('aria-hidden', 'false'); $('home').hidden = false; setTimeout(syncPause, 0);
+    if (!history.state || !history.state.prog) history.pushState({ prog: 1 }, '');
+  }
+  function markCur(id) {
+    cur = id;
+    for (var k in frames) frames[k].f.className = 'pf' + (k === id ? ' cur' : '');
+    if (frames[id]) frames[id].seen = Date.now();
+    syncPause();
+  }
+  // النظام المخفي يتوقف عن الطلبات الدورية حتى يعود للشاشة
+  function syncPause() {
+    var on = $('prog').className === 'on';
+    for (var k in frames) { var o = frames[k]; if (!o.win) continue; var st = on && k === cur ? 'resume' : 'pause'; if (o.ps === st) continue; o.ps = st; try { o.win.postMessage({ siwar: st }, '*'); } catch (e) {} }
+  }
+  function dropFrame(id) {
+    var o = frames[id]; if (!o) return;
+    if (!o.ready) pEnd(id, 'drop');
+    warmedSay(o, id);
+    delete frames[id];
+    clearTimeout(o.wd); clearTimeout(o.wd2); clearTimeout(o.wd3);
+    try { o.f.src = 'about:blank'; } catch (e) {}
+    o.f.remove();
+    sendAlive();
+  }
+  function trim(keep) {
+    var ids = Object.keys(frames).filter(function (k) { return k !== keep && k !== cur; });
+    while (Object.keys(frames).length > MAXF && ids.length) {
+      ids.sort(function (a, b) { return (frames[a].seen || 0) - (frames[b].seen || 0); });
+      dropFrame(ids.shift());
+    }
+  }
+  // النظام سليم إذا أرسل أي إشارة من الحارس (hold أو ready أو alive). صفحة خطأ جوجل لا ترسل شيئاً
+  function healthy(o) { return o.held || o.ready || o.alive; }
+  // التسخين في سوار يبدأ النظام التالي حين يرسل هذا أول إشارة (أو يُغلق)، فلا تُفتح الأنظمة كلها معاً
+  function warmedSay(o, id) { if (o.warm && !o.wsaid) { o.wsaid = 1; toPortal({ siwar: 'warmed', id: id }); } }
+  function makeFrame(id, url, name, icon, warm) {
+    var old = frames[id]; if (old) dropFrame(id);
+    var p = document.createElement('iframe');
+    p.setAttribute('credentialless', '');
+    p.title = name || T('prog');
+    p.allow = 'clipboard-read; clipboard-write; fullscreen; camera; microphone; geolocation; web-share';
+    p.className = 'pf' + (cur === id ? ' cur' : '');
+    var o = { f: p, url: url, name: name, icon: icon, t: Date.now(), seen: warm ? 0 : Date.now(), tries: old ? old.tries : 0, n: ++seq, uf: uf, go: goOfUrl(url), ul: (/[?&]ul=(en|ar)(?:&|$)/.exec(String(url)) || [])[1] || '' };
+    if (warm) { o.seen = -o.n; o.warm = true; pStart(id, 'warm'); }
+    else if (!PJ[id]) pStart(id, 'open');
+    frames[id] = o;
+    p.onload = function () {
+      if (frames[id] !== o || o.loaded) return;
+      o.loaded = true; pMark(id, 'load');
+      if (cur === id && !o.ready) stage(.7, .9);
+      // بعد اكتمال الصفحة: إن لم تصل أي إشارة خلال لحظات فهي صفحة خطأ من جوجل، فيُعاد الفتح تلقائياً مرة
+      o.wd2 = setTimeout(function () {
+        if (frames[id] !== o || healthy(o)) return;
+        if ((rt[id] || 0) < 2) { rt[id] = (rt[id] || 0) + 1; ufFlip(); if (cur === id) relaunch(id, false); else dropFrame(id); }
+        else markReady(id, 'nosig');   // صفحة بلا إشارة (نادر): تُعرض كما هي
+      }, 1200);
+    };
+    // حد أقصى للانتظار
+    o.wd = setTimeout(function () {
+      if (frames[id] !== o || o.ready) return;
+      if (!o.loaded) {
+        if (offline()) { rt[id] = 0; if (cur === id) loaderErr(); else dropFrame(id); }
+        else if ((rt[id] || 0) < 2) { rt[id] = (rt[id] || 0) + 1; ufFlip(); if (cur === id) relaunch(id, true); else dropFrame(id); }
+        else { rt[id] = 0; if (cur === id) loaderErr(); else dropFrame(id); }
+      }
+      else {
+        // الصفحة اكتملت ولم تقل «جاهز» بعد: تُخفى شاشة الفتح (كما كان) ويبقى القياس منتظراً الجاهزية الحقيقية حتى 60ث، فتُسجَّل late
+        o.late = true; if (cur === id) loaderDone();
+        o.wd3 = setTimeout(function () { if (frames[id] !== o || o.ready) return; pEnd(id, 'wd'); if (SN && SN.id === id && SN.st !== 'done') { snapFail(); return; } markReady(id); }, 46000);
+      }
+    }, 14000);
+    p.src = ufForm(url, uf);
+    $('pbody').appendChild(p);
+    trim(id); sendAlive();
+    return o;
+  }
+  function markReady(id, how) {
+    var o = frames[id]; if (!o) return;
+    if (!o.ready) { pMark(id, 'ready'); pEnd(id, how || (o.late ? 'late' : 'ok')); }
+    o.ready = true; rt[id] = 0; clearTimeout(o.wd); clearTimeout(o.wd3); if (o.uf === uf) { try { localStorage.setItem(UFK, uf); } catch (e) {} }
+    if (cur === id) loaderDone();
+    if (SN && SN.id === id) snapDone(id);
+    if (o.nav) sendAlive();
+  }
+
+  /* ── الفتح الفوري من الشاشة المحفوظة (مع الحارس 11) ──
+     النظام يرسل بعد جاهزيته نسخة من شاشته بلا سكربتات. عند فتحه من جديد تُعرض النسخة فوراً في إطار معزول تماماً
+     (sandbox بلا سكربت ولا نفس الموقع) لا يقبل الضغط ويمكن تمريره، ومعها «نسخة 09:40 · جارٍ التحديث».
+     حين يرسل النظام الحي «جاهز» يحل محلها. نسخة أقدم من إعداد سوار (snapMinutes) أو بعرض شاشة مختلف → شاشة الفتح العادية. */
+  var SN = null, SNQ = null, SNKEEP = 4, SNLAST = {};
+  var RM = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var SNT = { ar: { up: 'نسخة {t} · جارٍ التحديث', wait: 'لحظة… جارٍ التحديث', done: 'تم التحديث', fail: 'تعذّر التحديث — المعروض نسخة {t}', retry: 'إعادة المحاولة', gone: 'لم يعد هذا العنصر متاحاً' },
+              en: { up: 'Saved {t} · Updating…', wait: 'One moment… updating', done: 'Updated', fail: 'Couldn’t update — showing the {t} copy', retry: 'Try again', gone: 'This item is no longer available' } };
+  function snT(k, at) {
+    var t = (SNT[LANG] || SNT.ar)[k];
+    if (at) { var d = new Date(at); t = t.replace('{t}', ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2)); }
+    return t;
+  }
+  function kvRaw(op, key, val) {
+    return kvOpen().then(function (db) {
+      return new Promise(function (res) {
+        var tx = db.transaction('kv', op === 'get' ? 'readonly' : 'readwrite'), st = tx.objectStore('kv');
+        if (op === 'get') { var g = st.get(key); g.onsuccess = function () { res(g.result == null ? null : g.result); }; g.onerror = function () { res(null); }; }
+        else { if (op === 'set') st.put(val, key); else st.delete(key); tx.oncomplete = function () { res(true); }; tx.onerror = function () { res(false); }; }
+      });
+    }).catch(function () { return null; });
+  }
+  // المفاتيح: id|__snapp|go → فلتر الشركة الأخير لهذا المكان، id|__snape|go|scope → النسخة، id|__snapi → قائمتها (يُحتفظ بآخر SNKEEP)
+  function snGo(g) { return String(g || '').slice(0, 300); }
+  function snapIn(fid, d) {
+    var o = frames[fid], go = snGo(o && o.go), sc = String(d.scope || '').slice(0, 40);
+    if (d.off) return snapDropAll(fid);
+    var ek = fid + '|__snape|' + go + '|' + sc, pk = fid + '|__snapp|' + go;
+    if (d.skip) return kvRaw('del', ek);
+    if (typeof d.html !== 'string' || d.html.length > 420000 || !(Number(d.w) > 0) || !(Number(d.at) > 0)) return;
+    var max = Math.max(1, Math.min(1440, Number(d.max) || 30));
+    var nm = {}; if (d.nums && typeof d.nums === 'object') Object.keys(d.nums).slice(0, 400).forEach(function (k) { if (typeof d.nums[k] === 'string' && k.length < 600) nm[k] = d.nums[k].slice(0, 30); });
+    kvRaw('set', ek, { html: d.html, w: Number(d.w), h: Number(d.h) || 0, at: Number(d.at), max: max, scope: sc, go: go, nums: nm, lang: d.lang === 'en' ? 'en' : d.lang === 'ar' ? 'ar' : '' });
+    kvRaw('set', pk, sc);
+    kvRaw('get', fid + '|__snapi').then(function (ix) {
+      ix = Array.isArray(ix) ? ix.filter(function (x) { return x && x.e !== ek; }) : [];
+      ix.push({ e: ek, p: pk });
+      while (ix.length > SNKEEP) { var x = ix.shift(); kvRaw('del', x.e); if (!ix.some(function (y) { return y.p === x.p; })) kvRaw('del', x.p); }
+      kvRaw('set', fid + '|__snapi', ix);
+    });
+  }
+  function snapDropAll(fid) {
+    return kvRaw('get', fid + '|__snapi').then(function (ix) {
+      (Array.isArray(ix) ? ix : []).forEach(function (x) { kvRaw('del', x.e); kvRaw('del', x.p); });
+      kvRaw('del', fid + '|__snapi');
+    });
+  }
+  function snapGet(fid, go) {
+    go = snGo(go);
+    return kvRaw('get', fid + '|__snapp|' + go).then(function (sc) { return sc == null ? null : kvRaw('get', fid + '|__snape|' + go + '|' + sc); });
+  }
+  function snapOk(s) {
+    if (!s || typeof s.html !== 'string' || !(s.w > 0)) return false;
+    var age = Date.now() - Number(s.at), max = Math.max(1, Math.min(1440, Number(s.max) || 30)) * 60000;
+    var w = $('pbody').clientWidth || window.innerWidth;
+    return age > -60000 && age <= max && Math.abs(s.w - w) <= w * 0.1 && (!s.lang || s.lang === LANG);   // نسخة بلغة أخرى لا تُعرض
+  }
+  function snapPill(st) {
+    var s = SN; if (!s) return;
+    var p = s.el.querySelector('.snap-pill'), tx = p.querySelector('.snap-tx'), rt = p.querySelector('.snap-rt');
+    p.className = 'snap-pill' + (st === 'show' ? '' : ' ' + st);
+    tx.textContent = st === 'done' ? snT('done') : st === 'fail' ? snT('fail', s.at) : st === 'pulse' ? snT('wait') : snT('up', s.at);
+    rt.hidden = st !== 'fail'; rt.textContent = snT('retry');
+    s.el.classList.toggle('fail', st === 'fail');
+  }
+  function snapShow(id, s) {
+    snapClear();
+    $('pload').className = 'pload gone';
+    var el = document.createElement('div');
+    el.className = 'snap' + (window.innerWidth < 700 ? ' ph' : '') + (RM ? ' rm' : '');
+    el.innerHTML = '<div class="snap-sc"><iframe sandbox="" referrerpolicy="no-referrer" tabindex="-1" aria-hidden="true" title=""></iframe><div class="snap-cv"></div></div>' +
+      '<div class="snap-edge"><i></i></div><div class="snap-dock"><div class="snap-pill" role="status" aria-live="polite"><span class="snap-ic"></span><span class="snap-tx"></span><button type="button" class="snap-rt" hidden></button></div></div>';
+    var f = el.querySelector('iframe'), h = Math.max(200, Math.min(60000, Number(s.h) || 0));
+    f.style.height = h + 'px'; el.querySelector('.snap-cv').style.height = h + 'px';
+    f.setAttribute('srcdoc', s.html);
+    // لا ضغطة على النسخة تُنفَّذ أو تُحفظ لما بعد: أي ضغطة تنبّه الكبسولة فقط، والتمرير يعمل
+    el.querySelector('.snap-cv').addEventListener('click', snapPulse);
+    el.querySelector('.snap-rt').onclick = snapRetry;
+    $('pbody').appendChild(el);
+    SN = { id: id, el: el, at: Number(s.at), nums: s.nums || {}, st: 'show', t: 0, pt: 0 };
+    SN.t = setTimeout(function () { if (SN && SN.id === id && SN.st === 'show') snapFail(); }, 60000);
+    snapPill('show');
+    pMark(id, 'snap');
+  }
+  function snapPulse() {
+    var s = SN; if (!s || s.st !== 'show') return;
+    clearTimeout(s.pt); snapPill('pulse');
+    s.pt = setTimeout(function () { if (SN === s && s.st === 'show') snapPill('show'); }, 1800);
+  }
+  function snapFail() {
+    var s = SN; if (!s || s.st === 'done') return;
+    clearTimeout(s.t); clearTimeout(s.pt); s.st = 'fail'; snapPill('fail');
+  }
+  function snapRetry() {
+    var s = SN; if (!s) return;
+    s.st = 'show'; snapPill('show'); clearTimeout(s.t);
+    s.t = setTimeout(function () { if (SN === s && s.st === 'show') snapFail(); }, 60000);
+    rt[s.id] = 0; relaunch(s.id, true);
+  }
+  function snapDone(id) {
+    var s = SN; if (!s || s.id !== id || s.st === 'done') return;
+    clearTimeout(s.t); clearTimeout(s.pt); s.st = 'done'; snapPill('done'); SNLAST[id] = Date.now();
+    var o = frames[id]; if (o && o.win) try { o.win.postMessage({ siwar: 'snapdiff', nums: s.nums }, '*'); } catch (e) {}
+    s.el.classList.add('live');
+    setTimeout(function () { if (SN !== s) return; s.el.classList.add('bye'); setTimeout(function () { if (SN === s) snapClear(); }, RM ? 0 : 320); }, 1100);
+  }
+  function snapClear() { var s = SN; SN = null; if (!s) return; clearTimeout(s.t); clearTimeout(s.pt); if (s.el.parentNode) s.el.parentNode.removeChild(s.el); }
+  function snapActive() { return !!(SN && SN.id === cur && SN.st !== 'done'); }
+  function snapToast(text) {
+    var t = document.createElement('div'); t.className = 'sntoast'; t.setAttribute('role', 'status'); t.textContent = text;
+    $('pbody').appendChild(t);
+    setTimeout(function () { t.style.opacity = '0'; setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 320); }, 2800);
+  }
+
+  /* أوامر سوار */
+  function onPrep(id, name, icon, rect, go) {
+    if (frames[id]) dropFrame(id);
+    pStart(id, 'open');
+    markCur(id); curSave(id);
+    snapClear();
+    $('pload').className = 'pload gone';
+    showLayer();
+    var tok = SNQ = {}, done = false;
+    var normal = function () { if (done || SNQ !== tok || cur !== id) return; done = true; loaderShow(name, icon, rect); if (offline()) loaderErr(); };
+    var fb = setTimeout(normal, 120);
+    snapGet(id, go || '').then(function (s) {
+      if (done || SNQ !== tok || cur !== id || $('prog').className !== 'on' || (frames[id] && frames[id].ready)) return;
+      if (!snapOk(s)) { clearTimeout(fb); normal(); return; }
+      clearTimeout(fb); done = true; snapShow(id, s);
+      if (offline()) snapFail();
+    }, function () { clearTimeout(fb); normal(); });
+  }
+  function onOpen(id, url, name, icon, src) {
+    if (cur !== id || $('prog').className !== 'on') { markCur(id); loaderShow(name, icon, null); showLayer(); }
+    progUrl = url;
+    var j = PJ[id]; if (j) { j.s = src || ''; pMark(id, 'tix'); }
+    var o = makeFrame(id, url, name, icon, false);
+    markCur(id); curSave(id, o.go);
+    stage(.42, .66);
+    return o;
+  }
+  function onShow(id) {
+    var o = frames[id];
+    if (!o || Date.now() - o.t > FRAME_AGE) { if (o) dropFrame(id); toPortal({ siwar: 'relaunch', id: id }); return; }
+    // نظام فُتح بلغة أخرى ولم يعلن أنه يبدّلها في مكانه (langok): يُفتح من جديد بلغة سوار الحالية
+    if (!o.lw && o.ul && o.ul !== LANG) { dropFrame(id); toPortal({ siwar: 'relaunch', id: id }); return; }
+    markCur(id); curSave(id, o.go);
+    snapClear();
+    if (o.ready) { $('pload').className = 'pload gone'; pStart(id, 'show'); pEnd(id, 'ok'); }
+    else if (o.late) $('pload').className = 'pload gone';   // ظاهر للمستخدم منذ انتهاء الانتظار، والقياس ما زال ينتظر جاهزيته
+    else { loaderShow(o.name, o.icon, null); stage(o.loaded ? .7 : .42, .9); }
+    showLayer();
+    langTo(id);
+  }
+  function onWarm(id, url, name, icon) { if (!frames[id]) makeFrame(id, url, name, icon, true); }
+  function hideLayer(fromHistory) {
+    if ($('prog').className !== 'on') return;
+    $('prog').className = ''; $('prog').setAttribute('aria-hidden', 'true'); $('home').hidden = true;
+    clearTimeout(creepT); snapClear(); SNQ = null;
+    var o = frames[cur];
+    if (o && !o.ready && !o.loaded) dropFrame(cur);   // نظام لم يكتمل فتحه لا يبقى في الخلفية
+    $('pload').className = 'pload gone';
+    cur = ''; curClear();
+    for (var k in frames) frames[k].f.className = 'pf';
+    syncPause();
+    toPortal({ siwar: 'home' });   // سوار تجدد تذاكر الأنظمة الآن، فالانتقال لنظام آخر لا ينتظر طلباً جديداً
+    if (!fromHistory && history.state && history.state.prog) history.back();
+  }
+  // السحب لأسفل أو F5 أو «إعادة المحاولة»: يُعاد فتح النظام بتذكرة جديدة
+  var relT = 0;
+  function relaunch(id, force) {
+    if (!force && Date.now() - relT < 1500) return; relT = Date.now();
+    var o = frames[id];
+    var name = o ? o.name : $('pname').textContent, icon = o ? o.icon : null, at = o ? o.go : (curLoad() || {}).go;
+    if (o) dropFrame(id);
+    pStart(id, 'relaunch');
+    markCur(id); curSave(id, at || '');
+    loaderShow(name, icon, null);
+    showLayer();
+    if (offline()) { loaderErr(); return; }
+    toPortal({ siwar: 'relaunch', id: id, go: at || '' });
+  }
+
+  $('back').onclick = function () { hideLayer(false); };
+  // مقبض العودة: ضغطة تعيد لسوار (والنظام يبقى حياً)، وسحبه لأعلى أو لأسفل يغيّر مكانه
+  (function () {
+    var h = $('home'), sy = 0, st = 0, moved = false;
+    try { var y = Number(localStorage.getItem('siwar_home_y')); if (y > 0) h.style.top = y + 'px'; } catch (e) {}
+    h.addEventListener('pointerdown', function (e) { sy = e.clientY; st = h.getBoundingClientRect().top + 34; moved = false; h.setPointerCapture(e.pointerId); h.classList.add('drag'); });
+    h.addEventListener('pointermove', function (e) {
+      if (!h.classList.contains('drag')) return;
+      var d = e.clientY - sy; if (Math.abs(d) > 6) moved = true;
+      if (moved) h.style.top = Math.max(80, Math.min(window.innerHeight - 80, st + d)) + 'px';
+    });
+    h.addEventListener('pointerup', function () {
+      h.classList.remove('drag');
+      if (moved) { try { localStorage.setItem('siwar_home_y', parseInt(h.style.top, 10)); } catch (e) {} }
+      else hideLayer(false);
+    });
+  })();
+  $('ext').onclick = function () { if (progUrl) window.open(progUrl, '_blank'); };
+  window.addEventListener('popstate', function () { hideLayer(true); });   // زر الرجوع في الجوال
+
+  // الرسائل تُقبل من سوار (نفس الموقع) ومن صفحات Apps Script فقط
+  window.addEventListener('message', function (e) {
+    var mine = e.origin === location.origin;
+    if (!mine && !/\.googleusercontent\.com$|^https:\/\/script\.google\.com$/.test(e.origin)) return;
+    var d = e.data || {}, ic = d.icon && typeof d.icon === 'object' ? d.icon : null, id = String(d.id || '');
+    if (mine) {
+      if (d.siwar === 'portalReady') { hideSplash(); sendAlive(); portalOk = true; toPortal({ siwar: 'inst', st: standalone ? 1 : 0 }); return; }
+      if (d.siwar === 'install') { instAsk(); return; }
+      if (d.siwar === 'prep') { onPrep(id || '_', String(d.name || ''), ic, d.rect && typeof d.rect === 'object' ? d.rect : null, typeof d.go === 'string' ? d.go : ''); return; }
+      if (d.siwar === 'open' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onOpen(id || '_', String(d.url), String(d.name || ''), ic, String(d.src || '')); return; }
+      if (d.siwar === 'show' && frames[id]) { onShow(id); return; }
+      if (d.siwar === 'show') { toPortal({ siwar: 'relaunch', id: id }); return; }
+      if (d.siwar === 'warm' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onWarm(id, String(d.url), String(d.name || ''), ic); return; }
+      if (d.siwar === 'close') { if (id && frames[id] && !frames[id].ready) dropFrame(id); hideLayer(false); return; }
+      if (d.siwar === 'logout') { hideLayer(false); snapClear(); Object.keys(frames).forEach(dropFrame); kvClear(); curClear(); pushDropDevice(); return; }
+      if (d.siwar === 'dropFrames') { hideLayer(false); Object.keys(frames).forEach(dropFrame); return; }   // بعد تغيير كلمة المرور: جلسات الأنظمة انتهت فتُغلق شاشاتها وتُفتح من جديد بتذاكر جديدة
+      if (d.siwar === 'pushOpen') { if (d.lang) applyLang(String(d.lang)); pushOpen(); return; }
+      if (d.siwar === 'pushRes') { pushGot(d); return; }
+      if (d.siwar === 'reloadCur') { if ($('prog').className === 'on' && cur) relaunch(cur, false); return; }
+      if (d.siwar === 'nav') { navLive(id, String(d.go || ''), String(d.n || '').slice(0, 40)); return; }
+    }
+    // حفظ دخول سوار ولغتها في صفحة التطبيق (للإصدار السابق من سوار)
+    if (d.siwar === 'storeGet') {
+      var data = {};
+      ['sp_token', 'sp_lang', 'sp_theme', 'sp_direct_off'].forEach(function (k) { try { var v = localStorage.getItem('pt_' + k); if (v != null) data[k] = v; } catch (x) {} });
+      try { e.source.postMessage({ siwar: 'storeData', data: data }, e.origin); } catch (x) {}
+      return;
+    }
+    if ((d.siwar === 'storeSet' || d.siwar === 'storeDel') && /^sp_(token|lang|theme|direct_off)$/.test(String(d.k || ''))) {
+      try { if (d.siwar === 'storeSet') localStorage.setItem('pt_' + d.k, String(d.v).slice(0, 500)); else localStorage.removeItem('pt_' + d.k); } catch (x) {}
+      return;
+    }
+    if (d.siwar === 'lang' && mine) { langSet(String(d.lang || ''), ''); return; }
+    if (mine) return;
+    // من النظام نفسه: نحدد أي إطار أرسل
+    var fid = frameIdOf(e.source), o = frames[fid];
+    if (!o) { if (d.siwar === 'lang') applyLang(String(d.lang || '')); return; }   // سوار القديمة على عنوان Apps Script
+    if (d.siwar === 'lang' || d.siwar === 'langok') {
+      var lg = d.lang === 'en' ? 'en' : d.lang === 'ar' ? 'ar' : ''; if (!lg) return;
+      o.lw = e.source; o.lang = lg;
+      if (d.siwar === 'lang') langSet(lg, fid);
+      else if (cur === fid && $('prog').className === 'on') langTo(fid);
+      return;
+    }
+    if (d.siwar === 'share') { shareIn(d, e.source, e.origin); return; }
+    if (d.siwar === 'kv') { kvOp(fid, d, e.source, e.origin); return; }
+    if (d.siwar === 'snap') { snapIn(fid, d); return; }
+    if (d.siwar === 'navok') { if (o.nav !== e.source) { o.nav = e.source; if (o.ready) sendAlive(); } return; }
+    if (d.siwar === 'navack') { navAck(fid, d); return; }
+    if (d.siwar === 'gone') { if ((SN && SN.id === fid) || Date.now() - (SNLAST[fid] || 0) < 15000) snapToast(snT('gone')); return; }
+    if (/^(hold|alive|ready)$/.test(d.siwar)) warmedSay(o, fid);
+    if (/^(hold|alive|ready)$/.test(d.siwar) && o.win !== e.source) { o.win = e.source; o.ps = ''; if (!o.netSent) { o.netSent = 1; if (!navigator.onLine) try { e.source.postMessage({ siwar: 'net', on: false }, '*'); } catch (x) {} } setTimeout(syncPause, 0); }
+    if (d.siwar === 'hold') { o.held = true; pMark(fid, 'hold'); if (d.g && PJ[fid]) PJ[fid].g = String(d.g).slice(0, 8); if (cur === fid && !o.ready) stage(.82, .95); }
+    else if (d.siwar === 'alive') { o.alive = true; pMark(fid, 'alive'); }
+    else if (d.siwar === 'paint') { pMark(fid, 'paint'); if (cur === fid && !o.ready) loaderDone(); }   // الشاشة المحفوظة ظهرت: تُعرض فوراً والبيانات الجديدة تصل خلفها
+    else if (d.siwar === 'mark' && /^[\w:.-]{1,40}$/.test(String(d.n || ''))) pMark(fid, String(d.n), typeof d.ms === 'number' ? d.ms : null);
+    else if (d.siwar === 'ready') markReady(fid);
+    else if (d.siwar === 'close' || d.siwar === 'logout') { if (cur === fid) hideLayer(false); dropFrame(fid); }
+    else if (d.siwar === 'reload' && cur === fid) relaunch(fid, false);
+    else if (d.siwar === 'at') { o.go = cleanGo(d.go); if (cur === fid && $('prog').className === 'on') curSave(fid, o.go); }
+  });
+  /* ذاكرة دائمة للأنظمة: كل نظام يحفظ نسخة شاشاته وكوده هنا (ذاكرة التطبيق تبقى بعد إغلاقه)،
+     لأن ذاكرة إطار النظام نفسه تُمسح مع كل إغلاق على أندرويد. المفاتيح منفصلة لكل نظام، وتُمسح عند الخروج */
+  var kvDb = null;
+  function kvOpen() {
+    if (kvDb) return kvDb;
+    kvDb = new Promise(function (res, rej) {
+      try { var r = indexedDB.open('siwar_kv', 1); r.onupgradeneeded = function () { r.result.createObjectStore('kv'); }; r.onsuccess = function () { res(r.result); }; r.onerror = function () { rej(r.error); }; }
+      catch (e) { rej(e); }
+    });
+    kvDb.catch(function () { kvDb = null; });
+    return kvDb;
+  }
+  function kvOp(fid, d, src, origin) {
+    var op = String(d.op || ''), key = fid + '|' + String(d.key || '').slice(0, 200), done = function (v) { try { src.postMessage({ siwar: 'kv', rid: d.rid, val: v === undefined ? null : v }, origin); } catch (e) {} };
+    if (!/^(get|set|del)$/.test(op) || !d.key) return done(null);
+    kvOpen().then(function (db) {
+      var tx = db.transaction('kv', op === 'get' ? 'readonly' : 'readwrite'), st = tx.objectStore('kv');
+      if (op === 'get') { var g = st.get(key); g.onsuccess = function () { done(g.result); }; g.onerror = function () { done(null); }; }
+      else { if (op === 'set') st.put(d.val, key); else st.delete(key); tx.oncomplete = function () { done(true); }; tx.onerror = function () { done(false); }; }
+    }).catch(function () { done(null); });
+  }
+  function kvClear() { kvOpen().then(function (db) { db.transaction('kv', 'readwrite').objectStore('kv').clear(); }).catch(function () {}); }
+
+  /* «إرسال واتساب» من الأنظمة (مهام وإجراءات): إطارات Apps Script لا تملك المشاركة بالملفات، فيرسل النظام صورة الطلب ومرفقاته إلى هنا
+     ونفتح نافذة المشاركة من الصفحة العليا (واتساب بالصورة). نحاول فوراً لأن ضغطة المستخدم في الإطار تُحسب لهذه الصفحة أيضاً؛
+     وإن رفض المتصفح بلا ضغطة نعرض نافذة «إرسال عبر واتساب». الرد للنظام shareRes: open/sheet/shared/aborted أو noshare/fail */
+  var SHR = null, SHR_T = /^(image\/(png|jpeg|webp|gif)|application\/pdf|video\/(mp4|quicktime|webm)|audio\/(mpeg|mp4|ogg|wav)|text\/(plain|csv))$/;
+  function shrFiles(d) {
+    var L = Array.isArray(d.files) ? d.files.slice(0, 12) : [], out = [], tot = 0;
+    for (var i = 0; i < L.length; i++) {
+      var f = L[i]; if (!(f instanceof Blob) || !f.size) continue;
+      var ty = String(f.type || ''); if (!SHR_T.test(ty)) continue;
+      if (tot + f.size > 100 * 1048576) break; tot += f.size;
+      var nm = String(f.name || ('file' + (i + 1))).replace(/[\\\/:*?"<>|\u0000-\u001f]+/g, '_').slice(0, 120);
+      try { out.push(new File([f], nm, { type: ty })); } catch (e) {}
+    }
+    return out;
+  }
+  function shrCan(fs) { try { return !!(navigator.share && navigator.canShare && fs.length && navigator.canShare({ files: fs })); } catch (e) { return false; } }
+  function shrClose() { var w = $('shr'); if (w) w.hidden = true; if (SHR && SHR.url) try { URL.revokeObjectURL(SHR.url); } catch (e) {} SHR = null; }
+  function shrOpen(fs, d, go) {
+    shrClose();
+    var en = LANG === 'en', n = fs.length - 1, sk = Array.isArray(d.skip) ? d.skip.map(String).filter(Boolean).slice(0, 20) : [];
+    SHR = { url: URL.createObjectURL(fs[0]) };
+    $('shrT').textContent = en ? 'The request image is ready' : 'صورة الطلب جاهزة';
+    $('shrChip').textContent = n > 0 ? (en ? 'Request image + ' + n + ' attachment' + (n > 1 ? 's' : '') : 'صورة الطلب + ' + (n === 1 ? 'مرفق واحد' : n === 2 ? 'مرفقان' : n + ' مرفقات')) : (en ? 'Request image' : 'صورة الطلب');
+    $('shrImg').src = SHR.url;
+    $('shrGoL').textContent = en ? 'Send via WhatsApp' : 'إرسال عبر واتساب';
+    $('shrP').textContent = en ? 'Choose WhatsApp from the share list.' : 'اختر واتساب من قائمة المشاركة.';
+    var nt = $('shrN'); nt.hidden = !sk.length; nt.textContent = sk.length ? (en ? 'Not included: ' : 'لم تُضمَّن: ') + sk.join(en ? ', ' : '، ') : '';
+    $('shrX').setAttribute('aria-label', en ? 'Close' : 'إغلاق');
+    var b = $('shrGo'); b.disabled = false;
+    b.onclick = function () { b.disabled = true; go(true).then(function () { b.disabled = false; }); };
+    $('shr').hidden = false;
+    setTimeout(function () { try { b.focus(); } catch (e) {} }, 60);
+  }
+  function shareIn(d, src, origin) {
+    var rid = String(d.rid || '').slice(0, 40), reply = function (st) { try { src.postMessage({ siwar: 'shareRes', rid: rid, st: st }, origin); } catch (e) {} };
+    var fs = shrFiles(d), text = typeof d.text === 'string' ? d.text.slice(0, 500) : '';
+    if (fs.length > 1 && !shrCan(fs)) fs = fs.slice(0, 1);
+    if (!shrCan(fs)) { reply('noshare'); return; }
+    var data = { files: fs }; if (text) data.text = text;
+    var go = function (fromSheet) {
+      var p;
+      try { p = navigator.share(data); } catch (e) { p = Promise.reject(e); }
+      if (!fromSheet) reply('open');
+      return p.then(function () { shrClose(); reply('shared'); }, function (er) {
+        var nm = er && er.name;
+        if (nm === 'AbortError') { if (fromSheet) shrClose(); reply('aborted'); return; }
+        if (nm === 'NotAllowedError' && !fromSheet) { shrOpen(fs, d, go); reply('sheet'); return; }
+        shrClose(); reply('fail');
+      });
+    };
+    go(false);
+  }
+  window.__shareIn = shareIn;   // للاختبار
+  $('shrX').onclick = shrClose;
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && SHR) shrClose(); });
+  $('shr').addEventListener('click', function (e) { if (e.target === this) shrClose(); });
+
+  /* انقطاع الاتصال: شريط هادئ واحد، ويُبلَّغ كل نظام مفتوح */
+  function netState() {
+    var on = navigator.onLine !== false;
+    $('netTxt').textContent = LANG === 'en' ? 'No internet connection' : 'لا يوجد اتصال بالإنترنت';
+    $('net').className = on ? '' : 'on';
+    for (var k in frames) if (frames[k].win) try { frames[k].win.postMessage({ siwar: 'net', on: on }, '*'); } catch (e) {}
+    toPortal({ siwar: 'net', on: on });
+  }
+  window.addEventListener('online', netState); window.addEventListener('offline', netState);
+  if (navigator.onLine === false) setTimeout(netState, 0);
+
+  // F5 أو Ctrl+R على الكمبيوتر: تحديث ما على الشاشة (سوار أو النظام المفتوح) بدل إعادة تحميل التطبيق كله
+  window.addEventListener('keydown', function (e) {
+    if (!(e.key === 'F5' || ((e.ctrlKey || e.metaKey) && !e.shiftKey && /^[rRق]$/.test(e.key)))) return;
+    if (!portalWin()) return;
+    e.preventDefault();
+    if ($('prog').className === 'on' && cur) relaunch(cur, false);
+    else toPortal({ siwar: 'refresh' });
+  });
+
+  /* ── إشعارات الجوال ──
+     الاشتراك هنا في غلاف التطبيق (الصفحة التي يتحكم بها عامل الخدمة)، وطلبات الحفظ تمر عبر سوار لأن الجلسة فيها.
+     رمز الجهاز وعنوان سوار يُحفظان في ذاكرة عامل الخدمة (siwar-push) ليطلب نصوص الإشعار عند وصوله. */
+  var portalOk = false, PUSHC = 'siwar-push', PUSHK = './__push', pzWait = {}, pzSeq = 0, pzInfo = null;
+  var PZT = {
+    ar: { title: 'إشعارات الجوال', on: 'مفعّلة على هذا الجهاز', off: 'غير مفعّلة على هذا الجهاز', blocked: 'محجوبة من المتصفح', unsup: 'غير متاحة في هذا المتصفح', ios: 'تحتاج تثبيت التطبيق',
+      offTxt: 'يصلك إشعار على هذا الجهاز حين يُطلب منك إجراء في أنظمة سوار، ويفتح الإشعار الطلب نفسه مباشرة.', enable: 'تفعيل الإشعارات',
+      onTxt: 'تصلك على هذا الجهاز الإشعارات التي تخصك وحدك.', test: 'إرسال إشعار تجريبي', disable: 'إيقاف على هذا الجهاز',
+      blockedTxt: 'سبق رفض الإشعارات لهذا التطبيق. افتح إعدادات الموقع في المتصفح (رمز القفل بجانب العنوان، أو إعدادات التطبيق على الجوال)، واسمح بالإشعارات، ثم ارجع هنا.', retry: 'تحقق مرة أخرى',
+      iosTxt: 'على الآيفون والآيباد تعمل الإشعارات بعد تثبيت تطبيق سوار على الشاشة الرئيسية (iOS 16.4 أو أحدث)، ثم فتحه من أيقونته.', ios1: 'افتح سوار في Safari', ios2: 'اضغط زر المشاركة ', ios3: 'اختر «إضافة إلى الشاشة الرئيسية» ثم افتح التطبيق من أيقونته',
+      unsupTxt: 'هذا المتصفح لا يدعم الإشعارات. استخدم Chrome أو Edge أو Safari بإصدار حديث.',
+      sent: 'أُرسل إشعار تجريبي، ويصل خلال ثوانٍ.', masterOff: 'إرسال الإشعارات متوقف الآن من إدارة سوار.', personOff: 'الإشعارات متوقفة لحسابك من إدارة سوار.', limited: 'وصلت للحد المسموح من الإشعارات في هذه الساعة.',
+      nokey: 'إرسال الإشعارات لم يُهيأ بعد في سوار.', nosess: 'سجّل الدخول إلى سوار أولاً.', fail: 'تعذّر إكمال العملية. تحقق من الاتصال ثم أعد المحاولة.', denied: 'لم يُسمح بالإشعارات.', close: 'إغلاق' },
+    en: { title: 'Phone notifications', on: 'On for this device', off: 'Off on this device', blocked: 'Blocked by the browser', unsup: 'Not available in this browser', ios: 'Needs the installed app',
+      offTxt: 'Get a notification on this device when an action is needed from you in SIWAR systems; tapping it opens the item directly.', enable: 'Turn on notifications',
+      onTxt: 'This device receives the notifications meant for you only.', test: 'Send a test notification', disable: 'Turn off on this device',
+      blockedTxt: 'Notifications were refused for this app. Open the site settings in your browser (the lock icon next to the address, or the app settings on your phone), allow notifications, then come back.', retry: 'Check again',
+      iosTxt: 'On iPhone and iPad, notifications work after you add the SIWAR app to the Home Screen (iOS 16.4 or later) and open it from its icon.', ios1: 'Open SIWAR in Safari', ios2: 'Tap the Share button ', ios3: 'Choose “Add to Home Screen”, then open the app from its icon',
+      unsupTxt: 'This browser does not support notifications. Use a recent Chrome, Edge or Safari.',
+      sent: 'A test notification was sent; it arrives within seconds.', masterOff: 'Sending notifications is turned off by SIWAR administration.', personOff: 'Notifications are turned off for your account by SIWAR administration.', limited: 'You reached the notification limit for this hour.',
+      nokey: 'Notifications are not set up in SIWAR yet.', nosess: 'Sign in to SIWAR first.', fail: 'Could not complete. Check the connection, then try again.', denied: 'Notifications were not allowed.', close: 'Close' }
+  };
+  function PT(k) { return (PZT[LANG] || PZT.ar)[k]; }
+  function pushApi(op, data) {
+    return new Promise(function (res) {
+      var rid = 'p' + (++pzSeq) + '_' + Date.now();
+      pzWait[rid] = res;
+      toPortal({ siwar: 'pushApi', rid: rid, op: op, data: data || {} });
+      setTimeout(function () { if (pzWait[rid]) { delete pzWait[rid]; res({ ok: false, code: 'ERR_NETWORK' }); } }, 30000);
+    });
+  }
+  function pushGot(d) { var f = pzWait[d.rid]; if (f) { delete pzWait[d.rid]; f(d); } }
+  function pushSupported() { return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; }
+  function pushCfg() { if (!window.caches) return Promise.resolve(null); return caches.open(PUSHC).then(function (c) { return c.match(PUSHK); }).then(function (r) { return r ? r.json() : null; }).catch(function () { return null; }); }
+  function pushCfgSet(v) { if (!window.caches) return Promise.resolve(); return caches.open(PUSHC).then(function (c) { return v ? c.put(PUSHK, new Response(JSON.stringify(v), { headers: { 'Content-Type': 'application/json' } })) : c.delete(PUSHK); }).catch(function () {}); }
+  function swReg() { return navigator.serviceWorker.getRegistration('./').then(function (r) { return r || navigator.serviceWorker.register('sw.js').then(function () { return navigator.serviceWorker.ready; }); }); }
+  function b64u(s) { s = String(s || '').replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; var b = atob(s), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; }
+  function sameKey(sub, key) { try { var a = new Uint8Array(sub.options.applicationServerKey), b = b64u(key); if (a.length !== b.length) return false; for (var i = 0; i < a.length; i++) if (a[i] !== b[i]) return false; return true; } catch (e) { return true; } }
+  // الحالة: ios (يحتاج التثبيت) · unsup · blocked · on · off
+  function pushState() {
+    if (iOS && !standalone) return Promise.resolve('ios');
+    if (!pushSupported()) return Promise.resolve('unsup');
+    if (Notification.permission === 'denied') return Promise.resolve('blocked');
+    return Promise.all([swReg().then(function (r) { return r.pushManager.getSubscription(); }).catch(function () { return null; }), pushCfg()]).then(function (a) {
+      return a[0] && a[1] && a[1].id && Notification.permission === 'granted' ? 'on' : 'off';
+    });
+  }
+  var svgBell = '<svg viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.6 2H4.4z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/></svg>';
+  var svgSend = '<svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2.5-6.5z"/><path d="M11.5 13.5L20 4"/></svg>';
+  function pzBtn(id, txt, svg, cls) { return '<button class="' + (cls || 'btn') + '" id="' + id + '">' + (svg || '') + '<span>' + txt + '</span></button>'; }
+  function pzRender(st, note, noteCls) {
+    $('pzCard').setAttribute('data-st', st);
+    $('pzT').textContent = PT('title'); $('pzX').setAttribute('aria-label', PT('close'));
+    $('pzChip').textContent = PT({ on: 'on', off: 'off', blocked: 'blocked', unsup: 'unsup', ios: 'ios', err: 'off' }[st]);
+    var b = $('pzBody'), n = note ? '<p class="pz-note' + (noteCls ? ' ' + noteCls : '') + '" role="status">' + note + '</p>' : '';
+    if (st === 'off' || st === 'err') b.innerHTML = '<p>' + PT('offTxt') + '</p>' + n + pzBtn('pzOn', PT('enable'), svgBell);
+    else if (st === 'on') b.innerHTML = '<p>' + PT('onTxt') + '</p>' + n + pzBtn('pzTest', PT('test'), svgSend) + '<div class="pz-row"><button class="link" id="pzOff">' + PT('disable') + '</button></div>';
+    else if (st === 'blocked') b.innerHTML = '<p>' + PT('blockedTxt') + '</p>' + n + pzBtn('pzRe', PT('retry'));
+    else if (st === 'ios') b.innerHTML = '<p>' + PT('iosTxt') + '</p><div class="steps">' + step('1', PT('ios1')) + step('2', PT('ios2') + svgShare) + step('3', PT('ios3')) + '</div>';
+    else b.innerHTML = '<p>' + PT('unsupTxt') + '</p>';
+    if ($('pzOn')) $('pzOn').onclick = pushEnable;
+    if ($('pzTest')) $('pzTest').onclick = pushTest;
+    if ($('pzOff')) $('pzOff').onclick = pushDisable;
+    if ($('pzRe')) $('pzRe').onclick = function () { pushState().then(function (s2) { pzRender(s2); }); };
+  }
+  function pzBusy(id, on) { var b = $(id); if (!b) return; b.disabled = on; var sp = b.querySelector('.spin'); if (on && !sp) { var i = document.createElement('i'); i.className = 'spin'; b.insertBefore(i, b.firstChild); } else if (!on && sp) sp.remove(); }
+  function pzCode(c) { return c === 'NO_SESSION' ? PT('nosess') : c === 'PUSH_NOT_READY' ? PT('nokey') : PT('fail'); }
+  function pushOpen() {
+    $('push').hidden = false; pzRender('off'); $('pzBody').innerHTML = '<p>&nbsp;</p>';
+    pushState().then(function (st) { pzRender(st); });
+    pzInfo = null; pushApi('info').then(function (r) { if (r.ok) pzInfo = r.data; });   // المفتاح العام جاهز قبل الضغط، فيبقى الطلب داخل لمسة المستخدم
+  }
+  $('pzX').onclick = function () { $('push').hidden = true; };
+  $('push').addEventListener('click', function (e) { if (e.target === $('push')) $('push').hidden = true; });
+  function pushEnable() {
+    pzBusy('pzOn', true);
+    var infoP = pzInfo ? Promise.resolve({ ok: true, data: pzInfo }) : pushApi('info');
+    var permP = Notification.permission === 'granted' ? Promise.resolve('granted') : Notification.requestPermission();
+    Promise.all([permP, infoP]).then(function (a) {
+      var perm = a[0], info = a[1];
+      if (perm === 'denied') { pzRender('blocked'); return; }
+      if (perm !== 'granted') { pzRender('off', PT('denied'), 'bad'); return; }
+      if (!info.ok) { pzRender('err', pzCode(info.code), 'bad'); return; }
+      if (!info.data.key) { pzRender('err', PT('nokey'), 'bad'); return; }
+      return swReg().then(function (reg) {
+        return reg.pushManager.getSubscription().then(function (old) {
+          if (old && !sameKey(old, info.data.key)) return old.unsubscribe().then(function () { return null; });
+          return old;
+        }).then(function (sub) { return sub || reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u(info.data.key) }); });
+      }).then(function (sub) {
+        return pushCfg().then(function (old) {
+          var j = sub.toJSON(), dev = (iOS ? 'iPhone' : /Android/.test(ua) ? 'Android' : 'Desktop') + ' · ' + (/Edg\//.test(ua) ? 'Edge' : /Chrome\//.test(ua) ? 'Chrome' : /Firefox\//.test(ua) ? 'Firefox' : /Safari\//.test(ua) ? 'Safari' : 'Browser');
+          return pushApi('sub', { sub: { endpoint: j.endpoint, keys: j.keys }, device: dev }).then(function (r) {
+            if (!r.ok) { pzRender('err', pzCode(r.code), 'bad'); return; }
+            return pushCfgSet({ url: PORTAL, id: r.data.id, tok: r.data.tok, lang: LANG }).then(function () {
+              if (old && old.id && old.id !== r.data.id) pushApi('unsub', { id: old.id });
+              pzRender('on', info.data.on === false ? PT('masterOff') : info.data.allowed === false ? PT('personOff') : '', info.data.on === false || info.data.allowed === false ? '' : 'good');
+            });
+          });
+        });
+      });
+    }).catch(function () { pzRender('err', PT('fail'), 'bad'); });
+  }
+  function pushTest() {
+    pzBusy('pzTest', true);
+    pushApi('test').then(function (r) {
+      var d = r.data || {};
+      if (!r.ok) pzRender('on', pzCode(r.code), 'bad');
+      else if (d.off) pzRender('on', PT('masterOff'));
+      else if (d.person) pzRender('on', PT('personOff'));
+      else if (d.limited) pzRender('on', PT('limited'));
+      else if (d.sent) pzRender('on', PT('sent'), 'good');
+      else pushState().then(function (s2) { pzRender(s2, s2 === 'on' ? PT('fail') : '', 'bad'); });
+    });
+  }
+  function pushDisable() {
+    pzBusy('pzOff', true);
+    pushCfg().then(function (cfg) {
+      var srv = cfg && cfg.id ? pushApi('unsub', { id: cfg.id }) : Promise.resolve({ ok: true });
+      return srv.then(function (r) {
+        if (!r.ok && cfg) dropDirect(cfg);
+        return swReg().then(function (reg) { return reg.pushManager.getSubscription(); }).then(function (s2) { return s2 && s2.unsubscribe(); }).catch(function () {}).then(function () { return pushCfgSet(null); });
+      });
+    }).then(function () { pzRender('off'); }, function () { pzRender('off'); });
+  }
+  // الخروج من سوار: يُحذف اشتراك هذا الجهاز برمزه (الجلسة انتهت)، فلا تصل إشعارات الحساب السابق لمن يستخدم الجهاز بعده
+  function dropDirect(cfg) { try { return fetch(cfg.url || PORTAL, { method: 'POST', credentials: 'omit', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'push_drop', id: cfg.id, tok: cfg.tok }) }).catch(function () {}); } catch (e) { return Promise.resolve(); } }
+  function pushDropDevice() {
+    pushCfg().then(function (cfg) {
+      if (!cfg || !cfg.id) return;
+      dropDirect(cfg);
+      pushCfgSet(null);
+      if (pushSupported()) swReg().then(function (reg) { return reg.pushManager.getSubscription(); }).then(function (s2) { return s2 && s2.unsubscribe(); }).catch(function () {});
+    });
+  }
+  // الضغط على الإشعار والتطبيق مفتوح: يُفتح النظام والصفحة فوراً بلا إعادة تحميل
+  if ('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', function (e) {
+    var d = e.data || {};
+    if (d.siwar !== 'deep') return;
+    var u; try { u = new URL(String(d.url || ''), location.href); } catch (x) { return; }
+    var id = u.searchParams.get('open') || '', go = cleanGo(u.searchParams.get('go') || '');
+    if (!portalOk || !/^[A-Za-z0-9_-]{1,40}$/.test(id)) { location.href = u.href; return; }
+    $('push').hidden = true;
+    if (frames[id]) dropFrame(id);
+    pStart(id, 'push'); markCur(id); curSave(id, go);
+    loaderShow('', null, null); showLayer();
+    toPortal({ siwar: 'relaunch', id: id, go: go });
+  });
+
+  /* ── التثبيت ── */
+  var svgShare = '<svg viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>';
+  var svgPlus = '<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg>';
+  var svgMenu = '<svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="12" cy="19" r="1.4"/></svg>';
+  function step(n, html) { return '<div class="step"><b>' + n + '</b><span>' + html + '</span></div>'; }
+  function renderInstall() {
+    var b = $('iBody');
+    if (deferred) {
+      b.innerHTML = '<p>' + T('desc') + '</p>';
+      var btn = document.createElement('button'); btn.className = 'btn'; btn.textContent = T('install');
+      btn.onclick = function () {
+        deferred.prompt();
+        deferred.userChoice.then(function () { deferred = null; $('install').hidden = true; });
+      };
+      b.appendChild(btn);
+    } else if (iOS) {
+      b.innerHTML = '<div class="steps">' +
+        step('1', T('ios1')) +
+        step('2', T('ios2') + svgShare) +
+        step('3', T('ios3') + svgPlus) +
+        '</div>';
+    } else {
+      b.innerHTML = '<div class="steps">' +
+        step('1', T('an1')) +
+        step('2', T('an2a') + svgMenu + T('an2b')) +
+        '</div>';
+    }
+  }
+  function showInstall() { if (standalone) return; renderInstall(); $('install').hidden = false; }
+  /* زر التثبيت في سوار (v72): من المتصفح يفتح نافذة التثبيت دائماً، ومن التطبيق المثبّت يعرض رمز QR لتثبيته على الجوال */
+  var appLink = location.origin + location.pathname.replace(/index\.html$/, '');
+  function qrLib(cb) {
+    if (window.qrcode) return cb();
+    var sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js';
+    sc.onload = cb; sc.onerror = cb; document.head.appendChild(sc);
+  }
+  function showPhone() {
+    $('iT').textContent = T('phT');
+    var b = $('iBody');
+    b.innerHTML = '<p>' + T('phD') + '</p><div class="qr" id="iQr"></div><div class="qr-url" dir="ltr">' + appLink + '</div>';
+    var cp = document.createElement('button'); cp.className = 'btn'; cp.textContent = T('copy');
+    cp.onclick = function () {
+      var ok = function () { cp.textContent = T('copied'); setTimeout(function () { cp.textContent = T('copy'); }, 1600); };
+      try { navigator.clipboard.writeText(appLink).then(ok, function () {}); } catch (e) {}
+    };
+    b.appendChild(cp);
+    $('iLater').textContent = T('close'); $('iLater').dataset.ph = '1';
+    $('install').hidden = false;
+    qrLib(function () {
+      var box = $('iQr'); if (!box) return;
+      if (!window.qrcode) { box.hidden = true; return; }
+      try { var q = window.qrcode(0, 'M'); q.addData(appLink); q.make(); box.innerHTML = q.createSvgTag({ cellSize: 6, margin: 2, scalable: true }); } catch (e) { box.hidden = true; }
+    });
+  }
+  function instAsk() {
+    if (standalone) { showPhone(); return; }
+    $('iT').textContent = T('title'); $('iLater').textContent = T('later'); delete $('iLater').dataset.ph;
+    renderInstall(); $('install').hidden = false;
+  }
+  /* التحديثات: الإصدار الجديد يُجلب عند العودة للتطبيق، ويُطبَّق تلقائياً والتطبيق في الخلفية وليس فيه نظام مفتوح */
+  if ('serviceWorker' in navigator) {
+    var swNew = false, hadCtl = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', function () { if (!hadCtl) { hadCtl = true; return; } swNew = true; if (document.hidden && $('home').hidden) location.reload(); });
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { if (swNew && $('home').hidden) location.reload(); return; }
+      navigator.serviceWorker.getRegistration('./').then(function (r) { if (r) r.update().catch(function () {}); }).catch(function () {});
+    });
+  }
+  var forced = false, snoozed = true;
+  try { snoozed = Date.now() - Number(localStorage.getItem('inst_later') || 0) < 7 * 864e5; } catch (e) {}
+  $('iLater').onclick = function () { $('install').hidden = true; if ($('iLater').dataset.ph) return; try { localStorage.setItem('inst_later', String(Date.now())); } catch (e) {} };
+
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault(); deferred = e;
+    if (!$('install').hidden) renderInstall(); else if (!forced && !snoozed && !standalone) showInstall();
+  });
+  window.addEventListener('appinstalled', function () { $('install').hidden = true; });
+
+  // تظهر نافذة التثبيت عند فتح الصفحة من المتصفح (لا داخل التطبيق المثبّت)
+  if (!standalone) setTimeout(function () { if (forced || (!snoozed && (deferred || iOS))) showInstall(); }, forced ? 300 : 1800);
+})();
+</script>
+</body>
+</html>
