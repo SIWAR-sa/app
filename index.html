@@ -152,6 +152,8 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
 #install{position:fixed;inset:0;z-index:40;display:grid;align-items:end;justify-items:center;background:rgba(63,58,55,.28);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
 .sheet{width:min(460px,100%);margin:0 0 calc(12px + var(--bottom));padding:24px 22px 20px;border-radius:24px;background:#FFFDF9;box-shadow:0 24px 60px rgba(63,58,55,.25);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;animation:up .35s cubic-bezier(.2,.8,.2,1)}
 @media (min-width:700px){#install{align-items:center}.sheet{margin:0}}
+.qr{width:200px;height:200px;padding:10px;border-radius:18px;background:#fff;box-shadow:inset 0 0 0 1px rgba(201,160,78,.45),0 10px 24px -14px rgba(63,48,30,.5)}.qr svg{width:100%;height:100%;display:block}.qr[hidden]{display:none}
+.qr-url{font-size:12.5px;color:#7A6E66;word-break:break-all}
 @keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 .sheet img{width:84px;height:84px;border-radius:20px;box-shadow:0 8px 20px rgba(110,98,90,.18)}
 .sheet h1{margin:0;font-size:19px}
@@ -296,11 +298,13 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     ar: { back: 'رجوع', ext: 'فتح في المتصفح', title: 'تثبيت تطبيق سوار', later: 'لاحقاً', prog: 'برنامج', noUrl: 'لم يُضبط رابط سوار في config.js',
       desc: 'أيقونة على الشاشة الرئيسية، وتفتح الأنظمة في نافذة مستقلة.', install: 'تثبيت التطبيق',
       ios1: 'افتح هذه الصفحة في متصفح Safari', ios2: 'اضغط زر المشاركة ', ios3: 'اختر «إضافة إلى الشاشة الرئيسية» ',
-      an1: 'افتح هذه الصفحة في Chrome أو Edge', an2a: 'من قائمة المتصفح ', an2b: ' اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية»' },
+      an1: 'افتح هذه الصفحة في Chrome أو Edge', an2a: 'من قائمة المتصفح ', an2b: ' اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية»',
+      phT: 'سوار على جوالك', phD: 'امسح الرمز بكاميرا الجوال، ثم ثبّت التطبيق من الصفحة التي تفتح.', copy: 'نسخ الرابط', copied: 'تم النسخ', close: 'إغلاق' },
     en: { back: 'Back', ext: 'Open in browser', title: 'Install the SIWAR app', later: 'Later', prog: 'App', noUrl: 'The portal link is not set in config.js',
       desc: 'An icon on your home screen; systems open in their own window.', install: 'Install app',
       ios1: 'Open this page in Safari', ios2: 'Tap the Share button ', ios3: 'Choose “Add to Home Screen” ',
-      an1: 'Open this page in Chrome or Edge', an2a: 'From the browser menu ', an2b: ' choose “Install app” or “Add to Home screen”' }
+      an1: 'Open this page in Chrome or Edge', an2a: 'From the browser menu ', an2b: ' choose “Install app” or “Add to Home screen”',
+      phT: 'SIWAR on your phone', phD: 'Scan the code with your phone camera, then install the app from the page that opens.', copy: 'Copy link', copied: 'Copied', close: 'Close' }
   };
   var LANG = 'ar';
   try { LANG = localStorage.getItem('siwar_lang') === 'en' ? 'en' : 'ar'; } catch (e) {}
@@ -777,7 +781,8 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     if (!mine && !/\.googleusercontent\.com$|^https:\/\/script\.google\.com$/.test(e.origin)) return;
     var d = e.data || {}, ic = d.icon && typeof d.icon === 'object' ? d.icon : null, id = String(d.id || '');
     if (mine) {
-      if (d.siwar === 'portalReady') { hideSplash(); sendAlive(); portalOk = true; return; }
+      if (d.siwar === 'portalReady') { hideSplash(); sendAlive(); portalOk = true; toPortal({ siwar: 'inst', st: standalone ? 1 : 0 }); return; }
+      if (d.siwar === 'install') { instAsk(); return; }
       if (d.siwar === 'prep') { onPrep(id || '_', String(d.name || ''), ic, d.rect && typeof d.rect === 'object' ? d.rect : null, typeof d.go === 'string' ? d.go : ''); return; }
       if (d.siwar === 'open' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onOpen(id || '_', String(d.url), String(d.name || ''), ic, String(d.src || '')); return; }
       if (d.siwar === 'show' && frames[id]) { onShow(id); return; }
@@ -1109,9 +1114,48 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     }
   }
   function showInstall() { if (standalone) return; renderInstall(); $('install').hidden = false; }
+  /* زر التثبيت في سوار (v72): من المتصفح يفتح نافذة التثبيت دائماً، ومن التطبيق المثبّت يعرض رمز QR لتثبيته على الجوال */
+  var appLink = location.origin + location.pathname.replace(/index\.html$/, '');
+  function qrLib(cb) {
+    if (window.qrcode) return cb();
+    var sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js';
+    sc.onload = cb; sc.onerror = cb; document.head.appendChild(sc);
+  }
+  function showPhone() {
+    $('iT').textContent = T('phT');
+    var b = $('iBody');
+    b.innerHTML = '<p>' + T('phD') + '</p><div class="qr" id="iQr"></div><div class="qr-url" dir="ltr">' + appLink + '</div>';
+    var cp = document.createElement('button'); cp.className = 'btn'; cp.textContent = T('copy');
+    cp.onclick = function () {
+      var ok = function () { cp.textContent = T('copied'); setTimeout(function () { cp.textContent = T('copy'); }, 1600); };
+      try { navigator.clipboard.writeText(appLink).then(ok, function () {}); } catch (e) {}
+    };
+    b.appendChild(cp);
+    $('iLater').textContent = T('close'); $('iLater').dataset.ph = '1';
+    $('install').hidden = false;
+    qrLib(function () {
+      var box = $('iQr'); if (!box) return;
+      if (!window.qrcode) { box.hidden = true; return; }
+      try { var q = window.qrcode(0, 'M'); q.addData(appLink); q.make(); box.innerHTML = q.createSvgTag({ cellSize: 6, margin: 2, scalable: true }); } catch (e) { box.hidden = true; }
+    });
+  }
+  function instAsk() {
+    if (standalone) { showPhone(); return; }
+    $('iT').textContent = T('title'); $('iLater').textContent = T('later'); delete $('iLater').dataset.ph;
+    renderInstall(); $('install').hidden = false;
+  }
+  /* التحديثات: الإصدار الجديد يُجلب عند العودة للتطبيق، ويُطبَّق تلقائياً والتطبيق في الخلفية وليس فيه نظام مفتوح */
+  if ('serviceWorker' in navigator) {
+    var swNew = false, hadCtl = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', function () { if (!hadCtl) { hadCtl = true; return; } swNew = true; if (document.hidden && $('home').hidden) location.reload(); });
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { if (swNew && $('home').hidden) location.reload(); return; }
+      navigator.serviceWorker.getRegistration('./').then(function (r) { if (r) r.update().catch(function () {}); }).catch(function () {});
+    });
+  }
   var forced = /[?&]install=1/.test(location.search), snoozed = false;
   try { snoozed = Date.now() - Number(localStorage.getItem('inst_later') || 0) < 7 * 864e5; } catch (e) {}
-  $('iLater').onclick = function () { $('install').hidden = true; try { localStorage.setItem('inst_later', String(Date.now())); } catch (e) {} };
+  $('iLater').onclick = function () { $('install').hidden = true; if ($('iLater').dataset.ph) return; try { localStorage.setItem('inst_later', String(Date.now())); } catch (e) {} };
 
   window.addEventListener('beforeinstallprompt', function (e) {
     e.preventDefault(); deferred = e;
