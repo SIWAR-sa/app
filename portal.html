@@ -2364,6 +2364,7 @@ async function boot() {
       if (!d.session) { clearSession(); show('login'); if (d.sessionCode === 'ERR_SUSPENDED' || d.sessionCode === 'ERR_ROLE_CHANGED') loginNote(d.sessionCode); return; }
       snapSet(d.session); S.fromSnap = false;
       S.user = d.session.user; S.apps = d.session.apps || [];
+      langAdopt(S.user && S.user.lang);
       renderUserChrome(); if (S.screen === 'home') renderHome();
       if (S.user.mustChange) openChangePin(true); else { afterHome(); if (OPEN) openDeep(); }
     }).catch(c => { S.fromSnap = false; if (c !== '__handled') afterHome(); });
@@ -2376,7 +2377,7 @@ async function boot() {
     perfBoot('init', performance.now() - ti);
     applyConfig(d.config);
     if (d.tix && d.tix.urls) S.tix = { at: Date.now(), urls: d.tix.urls, src: 'init' };
-    if (d.session) { snapSet(d.session); enterSession(d.session, false); perfBoot('home'); }
+    if (d.session) { snapSet(d.session); langAdopt(d.session.user && d.session.user.lang); enterSession(d.session, false); perfBoot('home'); }
     else { clearSession(); show('login'); if (d.sessionCode === 'ERR_SUSPENDED' || d.sessionCode === 'ERR_ROLE_CHANGED') loginNote(d.sessionCode); }
   } catch (c) {
     show('login');
@@ -2446,8 +2447,28 @@ function toggleLang() {
   store.set('sp_lang', S.lang);
   if (!S.token) S.langPicked = true;
   applyLang();
-  if (S.token) langSync();
+  if (S.token) { langMark(true); langSync(); }
 }
+// (pv6) لغة واحدة لكل الأنظمة: سوار هي المرجع. التبديل داخل أي نظام يصل هنا من التطبيق ({siwar:'lang'})
+// فتُعرض به سوار وتحفظه بالطلب الهادئ نفسه، وكل نظام يُفتح بعدها يأخذه من رابط الفتح (ul) قبل لغته المحلية
+function langFromSys(l) {
+  if (l !== 'ar' && l !== 'en') return;
+  if (l === S.lang) return;
+  S.lang = l; store.set('sp_lang', l);
+  applyLang();
+  if (S.token) { langMark(true); langSync(); }
+}
+// تغيير لغة على هذا الجهاز لم يؤكده الخادم بعد: لا تستبدله لغة الخادم عند الفتح التالي، بل يُرسل هو
+function langMark(on) { try { if (on) localStorage.setItem('sp_lang_p', '1'); else localStorage.removeItem('sp_lang_p'); } catch (e) {} }
+function langPending() { try { return !!localStorage.getItem('sp_lang_p'); } catch (e) { return false; } }
+// عند الفتح: لغة الحساب في الخادم (آخر اختيار من أي جهاز أو نظام) تُعتمد هنا، إلا إن كان على هذا الجهاز تغيير لم يُحفظ بعد
+function langAdopt(l) {
+  if (l !== 'ar' && l !== 'en' || !S.token) return;
+  if (langPending() || LG.t || LG.busy) { if (l !== S.lang) langSync(); return; }
+  LG.sent = l;
+  if (l !== S.lang) { S.lang = l; store.set('sp_lang', l); applyLang(); }
+}
+function withUl(u) { return u && S.inApp ? u + (u.indexOf('?') >= 0 ? '&' : '?') + 'ul=' + (S.lang === 'en' ? 'en' : 'ar') : u; }
 // حفظ اللغة على الخادم بعد توقف التبديل، بطلب واحد هادئ وبالترتيب، فتبقى آخر لغة اختارها هي المحفوظة
 const LG = { t: 0, busy: false, sent: '' };
 function langSync() { clearTimeout(LG.t); LG.t = setTimeout(langFlush, 700); }
@@ -2455,7 +2476,7 @@ function langFlush() {
   clearTimeout(LG.t); LG.t = 0;
   if (!S.token || LG.busy || S.lang === LG.sent) return;
   const want = S.lang; LG.busy = true;
-  api('setLang', { lang: want }, { quiet: true }).then(() => { LG.sent = want; }, () => {}).then(() => { LG.busy = false; if (S.token && S.lang !== LG.sent && !LG.t) langSync(); });
+  api('setLang', { lang: want }, { quiet: true }).then(() => { LG.sent = want; if (S.lang === want) langMark(false); }, () => {}).then(() => { LG.busy = false; if (S.token && S.lang !== LG.sent && !LG.t) langSync(); });
 }
 document.addEventListener('visibilitychange', () => { if (document.hidden && LG.t) langFlush(); });
 
@@ -2494,7 +2515,7 @@ async function onLogin(e) {
     store.set('sp_token', d.token); sess.del('sp_token');
     $('#lgPin').value = '';
 
-    if (S.langPicked && d.user.lang !== S.lang) { d.user.lang = S.lang; api('setLang', { lang: S.lang }).catch(() => {}); }
+    if (S.langPicked && d.user.lang !== S.lang) { d.user.lang = S.lang; langMark(true); api('setLang', { lang: S.lang }).then(() => langMark(false), () => {}); }
     else if (d.user.lang && d.user.lang !== S.lang) { S.lang = d.user.lang; store.set('sp_lang', S.lang); applyLang(); }
     enterSession(d, true);
   } catch (c) { showErr(c); }
@@ -2608,7 +2629,7 @@ function clearSession() {
   try { localStorage.removeItem(SNAP_K); } catch (e) {}
   nbReset(true);
   S.token = null; S.user = null; S.apps = []; S.admin = null; S.draft = null; S.review = null; S.pending = null; S.pendingAt = 0;
-  try { S.adminP = null; S.adminPre = null; U.p = null; U.pre = null; U.d = null; U.at = 0; O.d = null; O.at = 0; LG.sent = ''; clearTimeout(LG.t); LG.t = 0; } catch (e) {}
+  try { S.adminP = null; S.adminPre = null; U.p = null; U.pre = null; U.d = null; U.at = 0; O.d = null; O.at = 0; LG.sent = ''; clearTimeout(LG.t); LG.t = 0; langMark(false); } catch (e) {}
   store.del('sp_token'); sess.del('sp_token');
   // أي نهاية للجلسة تغلق شاشات الأنظمة المفتوحة في التطبيق وتمسح ذاكرتها
   if (S.inApp) try { window.top.postMessage({ siwar: 'logout' }, '*'); } catch (e) {}
@@ -3257,7 +3278,7 @@ async function launchInApp(btn, app) {
       if (!d) throw err;
       url = d.url;
     } else postApi('opened', { appId: id }).catch(() => {});
-    window.top.postMessage({ siwar: 'open', id: id, url: url, name: name, icon: icon, src: src }, '*');
+    window.top.postMessage({ siwar: 'open', id: id, url: withUl(url), name: name, icon: icon, src: src }, '*');
   } catch (c) { try { window.top.postMessage({ siwar: 'close', id: id }, '*'); } catch (e) {} showErr(c); }
   finally { btn.classList.remove('is-launching'); setTimeout(() => prefetchTickets(true), 400); }
 }
@@ -3300,7 +3321,7 @@ function warmStep() {
     if (warmQ !== q) return;
     if (!url || S.sysOn) { warmQ = null; return; }
     q.id = app.id; q.t = setTimeout(warmStep, 15000);
-    try { window.top.postMessage({ siwar: 'warm', id: app.id, url: url, name: L(app, 'name'), icon: appIconMsg(app) }, '*'); } catch (e) {}
+    try { window.top.postMessage({ siwar: 'warm', id: app.id, url: withUl(url), name: L(app, 'name'), icon: appIconMsg(app) }, '*'); } catch (e) {}
   };
   const url = takeTicket(app.id);
   if (url) send(url); else prefetchTickets(true).then(() => send(takeTicket(app.id)));
@@ -3347,7 +3368,7 @@ function setupInApp() {
   if (!SHELL || setupInApp.done) return;
   setupInApp.done = true;
   const go = SIWAR_PTR(ptrRefresh);
-  window.addEventListener('message', e => { if (e.origin === SHELL && e.source === window.top && e.data) { if (e.data.siwar === 'relaunch') relaunchLast(String(e.data.id || ''), e.data.go); else if (e.data.siwar === 'refresh') go(); else if (e.data.siwar === 'alive') { S.alive = {}; (e.data.ids || []).forEach(x => { S.alive[x] = 1; }); S.navIds = {}; (e.data.nav || []).forEach(x => { S.navIds[x] = 1; }); } else if (e.data.siwar === 'navRes') { const f = NAVW[String(e.data.n || '')]; if (f) f(e.data.ok); } else if (e.data.siwar === 'home') { S.sysOn = false; prefetchTickets(false).then(() => { if (!isMobileDev()) setTimeout(warmLastApp, 1500); }); } else if (e.data.siwar === 'warmed') warmed(String(e.data.id || '')); else if (e.data.siwar === 'perf') perfSend(e.data.rows); else if (e.data.siwar === 'pushApi') pushRelay(e.data); } });
+  window.addEventListener('message', e => { if (e.origin === SHELL && e.source === window.top && e.data) { if (e.data.siwar === 'relaunch') relaunchLast(String(e.data.id || ''), e.data.go); else if (e.data.siwar === 'refresh') go(); else if (e.data.siwar === 'alive') { S.alive = {}; (e.data.ids || []).forEach(x => { S.alive[x] = 1; }); S.navIds = {}; (e.data.nav || []).forEach(x => { S.navIds[x] = 1; }); } else if (e.data.siwar === 'navRes') { const f = NAVW[String(e.data.n || '')]; if (f) f(e.data.ok); } else if (e.data.siwar === 'home') { S.sysOn = false; prefetchTickets(false).then(() => { if (!isMobileDev()) setTimeout(warmLastApp, 1500); }); } else if (e.data.siwar === 'warmed') warmed(String(e.data.id || '')); else if (e.data.siwar === 'perf') perfSend(e.data.rows); else if (e.data.siwar === 'pushApi') pushRelay(e.data); else if (e.data.siwar === 'lang') langFromSys(String(e.data.lang || '')); } });
 }
 
 // إشعارات الجوال: غلاف التطبيق يطلب عمليات الاشتراك عبر سوار، لأن الجلسة هنا

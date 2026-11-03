@@ -317,6 +317,20 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   }
 
   applyLang(LANG);
+  /* لغة واحدة لكل الأنظمة (v71): سوار هي المرجع. نظام يبدّل لغته يرسل {siwar:'lang'} فتُعرض بها واجهة التطبيق وتُبلَّغ سوار لتحفظها،
+     والنظام المفتوح في الخلفية بلغة أخرى يُبلَّغ حين يظهر فقط (إن أعلن دعمه بـ langok)، فلا تحميل ولا نداء في الخلفية */
+  function langSet(l, fid) {
+    l = l === 'en' ? 'en' : l === 'ar' ? 'ar' : ''; if (!l) return;
+    if (l !== LANG) applyLang(l);
+    if (fid) { if (frames[fid]) frames[fid].lang = l; toPortal({ siwar: 'lang', lang: l }); }
+    if ($('prog').className === 'on' && cur) langTo(cur);
+  }
+  function langTo(id) {
+    var o = frames[id];
+    if (!o || !o.lw || !o.lang || o.lang === LANG) return;
+    o.lang = LANG;
+    try { o.lw.postMessage({ siwar: 'lang', lang: LANG, v: 1 }, '*'); } catch (e) {}
+  }
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
 
   /* ── سوار ── */
@@ -511,7 +525,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     p.title = name || T('prog');
     p.allow = 'clipboard-read; clipboard-write; fullscreen; camera; microphone; geolocation; web-share';
     p.className = 'pf' + (cur === id ? ' cur' : '');
-    var o = { f: p, url: url, name: name, icon: icon, t: Date.now(), seen: warm ? 0 : Date.now(), tries: old ? old.tries : 0, n: ++seq, uf: uf, go: goOfUrl(url) };
+    var o = { f: p, url: url, name: name, icon: icon, t: Date.now(), seen: warm ? 0 : Date.now(), tries: old ? old.tries : 0, n: ++seq, uf: uf, go: goOfUrl(url), ul: (/[?&]ul=(en|ar)(?:&|$)/.exec(String(url)) || [])[1] || '' };
     if (warm) { o.seen = -o.n; o.warm = true; pStart(id, 'warm'); }
     else if (!PJ[id]) pStart(id, 'open');
     frames[id] = o;
@@ -586,7 +600,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     if (typeof d.html !== 'string' || d.html.length > 420000 || !(Number(d.w) > 0) || !(Number(d.at) > 0)) return;
     var max = Math.max(1, Math.min(1440, Number(d.max) || 30));
     var nm = {}; if (d.nums && typeof d.nums === 'object') Object.keys(d.nums).slice(0, 400).forEach(function (k) { if (typeof d.nums[k] === 'string' && k.length < 600) nm[k] = d.nums[k].slice(0, 30); });
-    kvRaw('set', ek, { html: d.html, w: Number(d.w), h: Number(d.h) || 0, at: Number(d.at), max: max, scope: sc, go: go, nums: nm });
+    kvRaw('set', ek, { html: d.html, w: Number(d.w), h: Number(d.h) || 0, at: Number(d.at), max: max, scope: sc, go: go, nums: nm, lang: d.lang === 'en' ? 'en' : d.lang === 'ar' ? 'ar' : '' });
     kvRaw('set', pk, sc);
     kvRaw('get', fid + '|__snapi').then(function (ix) {
       ix = Array.isArray(ix) ? ix.filter(function (x) { return x && x.e !== ek; }) : [];
@@ -609,7 +623,7 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
     if (!s || typeof s.html !== 'string' || !(s.w > 0)) return false;
     var age = Date.now() - Number(s.at), max = Math.max(1, Math.min(1440, Number(s.max) || 30)) * 60000;
     var w = $('pbody').clientWidth || window.innerWidth;
-    return age > -60000 && age <= max && Math.abs(s.w - w) <= w * 0.1;
+    return age > -60000 && age <= max && Math.abs(s.w - w) <= w * 0.1 && (!s.lang || s.lang === LANG);   // نسخة بلغة أخرى لا تُعرض
   }
   function snapPill(st) {
     var s = SN; if (!s) return;
@@ -698,12 +712,15 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   function onShow(id) {
     var o = frames[id];
     if (!o || Date.now() - o.t > FRAME_AGE) { if (o) dropFrame(id); toPortal({ siwar: 'relaunch', id: id }); return; }
+    // نظام فُتح بلغة أخرى ولم يعلن أنه يبدّلها في مكانه (langok): يُفتح من جديد بلغة سوار الحالية
+    if (!o.lw && o.ul && o.ul !== LANG) { dropFrame(id); toPortal({ siwar: 'relaunch', id: id }); return; }
     markCur(id); curSave(id, o.go);
     snapClear();
     if (o.ready) { $('pload').className = 'pload gone'; pStart(id, 'show'); pEnd(id, 'ok'); }
     else if (o.late) $('pload').className = 'pload gone';   // ظاهر للمستخدم منذ انتهاء الانتظار، والقياس ما زال ينتظر جاهزيته
     else { loaderShow(o.name, o.icon, null); stage(o.loaded ? .7 : .42, .9); }
     showLayer();
+    langTo(id);
   }
   function onWarm(id, url, name, icon) { if (!frames[id]) makeFrame(id, url, name, icon, true); }
   function hideLayer(fromHistory) {
@@ -785,11 +802,18 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
       try { if (d.siwar === 'storeSet') localStorage.setItem('pt_' + d.k, String(d.v).slice(0, 500)); else localStorage.removeItem('pt_' + d.k); } catch (x) {}
       return;
     }
-    if (d.siwar === 'lang') { applyLang(String(d.lang || '')); return; }
+    if (d.siwar === 'lang' && mine) { langSet(String(d.lang || ''), ''); return; }
     if (mine) return;
     // من النظام نفسه: نحدد أي إطار أرسل
     var fid = frameIdOf(e.source), o = frames[fid];
-    if (!o) return;
+    if (!o) { if (d.siwar === 'lang') applyLang(String(d.lang || '')); return; }   // سوار القديمة على عنوان Apps Script
+    if (d.siwar === 'lang' || d.siwar === 'langok') {
+      var lg = d.lang === 'en' ? 'en' : d.lang === 'ar' ? 'ar' : ''; if (!lg) return;
+      o.lw = e.source; o.lang = lg;
+      if (d.siwar === 'lang') langSet(lg, fid);
+      else if (cur === fid && $('prog').className === 'on') langTo(fid);
+      return;
+    }
     if (d.siwar === 'share') { shareIn(d, e.source, e.origin); return; }
     if (d.siwar === 'kv') { kvOp(fid, d, e.source, e.origin); return; }
     if (d.siwar === 'snap') { snapIn(fid, d); return; }
