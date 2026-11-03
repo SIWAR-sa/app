@@ -3197,6 +3197,19 @@ function iconRect(btn) {
     return r && r.width ? { x: r.left, y: r.top, w: r.width, h: r.height } : null;
   } catch (e) { return null; }
 }
+// (pv4) التنقل داخل نظام مفتوح: S.navIds من التطبيق (الأنظمة الجاهزة التي أعلنت دعمه)، والرد navRes خلال 1.2 ث وإلا الفتح العادي
+S.navIds = S.navIds || {};
+const NAVW = {}; let navN = 0;
+function cleanGoC(v) { const s = String(v == null ? '' : v).trim(); return /^[^\s<>"'`\\]{1,300}$/.test(s) ? s : ''; }
+function navLive(id, go) {
+  const g = cleanGoC(go); if (!g) return Promise.resolve(false);
+  const n = 'v' + (++navN) + '_' + Date.now();
+  return new Promise(res => {
+    NAVW[n] = ok => { clearTimeout(t); delete NAVW[n]; res(!!ok); };
+    const t = setTimeout(() => { if (NAVW[n]) NAVW[n](false); }, 1200);
+    try { window.top.postMessage({ siwar: 'nav', id: id, go: g, n: n }, SHELL || '*'); } catch (e) { NAVW[n](false); }
+  }).then(ok => { if (ok) postApi('opened', { appId: id }).catch(() => {}); return ok; });
+}
 let tixBusy = null;
 function prefetchTickets(force) {
   if (!S.inApp || !S.token || DEMO || !S.apps || !S.apps.length) return Promise.resolve();
@@ -3221,16 +3234,20 @@ async function launchInApp(btn, app) {
   const icon = appIconMsg(app), name = L(app, 'name');
 
   if (!go && S.alive[id] && !btn.fresh) { try { window.top.postMessage({ siwar: 'show', id: id }, '*'); } catch (e) {} return; }
+  // (pv4) رابط داخلي (الجرس، «بانتظارك»، زر المساحة) لنظام مفتوح يدعم التنقل: يُفتح المكان في النظام نفسه بلا إعادة تحميل ولا تذكرة جديدة
+  if (go && S.navIds[id] && !btn.fresh && await navLive(id, go)) return;
   btn.classList.add('is-launching');
   try { window.top.postMessage({ siwar: 'prep', id: id, name: name, icon: icon, rect: iconRect(btn), go: go }, '*'); } catch (e) {}
   try {
-    let url = go ? '' : takeTicket(id), src = url ? (S.tix.src || 'prefetch') : 'launch';
+    // (pv4) الرابط الداخلي يستعمل التذكرة المجلوبة مسبقاً مع المكان المطلوب (go غير موقّع، والنظام يتحقق منه كما كان) بدل طلب فتح جديد
+    const g = cleanGoC(go), withGo = u => u && g ? u + '&go=' + encodeURIComponent(g) : u;
+    let url = go && !g ? '' : withGo(takeTicket(id)), src = url ? (S.tix.src || 'prefetch') : 'launch';
     // ضغطة أثناء الإقلاع: تذكرة هذا النظام في طريقها مع init، فننتظرها بدل طلب جديد
-    if (!url && !go && S.initP && S.fromSnap) {
+    if (!url && (!go || g) && S.initP && S.fromSnap) {
       await Promise.race([S.initP.catch(() => null), new Promise(r => setTimeout(r, 9000))]);
-      url = takeTicket(id); if (url) src = 'init';
+      url = withGo(takeTicket(id)); if (url) src = 'init';
     }
-    if (!url && !go && tixBusy) { await Promise.race([tixBusy, new Promise(r => setTimeout(r, 6000))]); url = takeTicket(id); if (url) src = 'prefetch'; }
+    if (!url && (!go || g) && tixBusy) { await Promise.race([tixBusy, new Promise(r => setTimeout(r, 6000))]); url = withGo(takeTicket(id)); if (url) src = 'prefetch'; }
     if (!url) {
       let d = null, err = null;
       for (let k = 0; k < 3 && !d; k++) {
@@ -3330,7 +3347,7 @@ function setupInApp() {
   if (!SHELL || setupInApp.done) return;
   setupInApp.done = true;
   const go = SIWAR_PTR(ptrRefresh);
-  window.addEventListener('message', e => { if (e.origin === SHELL && e.source === window.top && e.data) { if (e.data.siwar === 'relaunch') relaunchLast(String(e.data.id || ''), e.data.go); else if (e.data.siwar === 'refresh') go(); else if (e.data.siwar === 'alive') { S.alive = {}; (e.data.ids || []).forEach(x => { S.alive[x] = 1; }); } else if (e.data.siwar === 'home') { S.sysOn = false; prefetchTickets(false).then(() => { if (!isMobileDev()) setTimeout(warmLastApp, 1500); }); } else if (e.data.siwar === 'warmed') warmed(String(e.data.id || '')); else if (e.data.siwar === 'perf') perfSend(e.data.rows); else if (e.data.siwar === 'pushApi') pushRelay(e.data); } });
+  window.addEventListener('message', e => { if (e.origin === SHELL && e.source === window.top && e.data) { if (e.data.siwar === 'relaunch') relaunchLast(String(e.data.id || ''), e.data.go); else if (e.data.siwar === 'refresh') go(); else if (e.data.siwar === 'alive') { S.alive = {}; (e.data.ids || []).forEach(x => { S.alive[x] = 1; }); S.navIds = {}; (e.data.nav || []).forEach(x => { S.navIds[x] = 1; }); } else if (e.data.siwar === 'navRes') { const f = NAVW[String(e.data.n || '')]; if (f) f(e.data.ok); } else if (e.data.siwar === 'home') { S.sysOn = false; prefetchTickets(false).then(() => { if (!isMobileDev()) setTimeout(warmLastApp, 1500); }); } else if (e.data.siwar === 'warmed') warmed(String(e.data.id || '')); else if (e.data.siwar === 'perf') perfSend(e.data.rows); else if (e.data.siwar === 'pushApi') pushRelay(e.data); } });
 }
 
 // إشعارات الجوال: غلاف التطبيق يطلب عمليات الاشتراك عبر سوار، لأن الجلسة هنا
