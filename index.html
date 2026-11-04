@@ -1141,6 +1141,14 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   }
   function instAsk() {
     if (standalone) { showPhone(); return; }
+    /* (v74) ضغطة واحدة: حيث يتيح المتصفح التثبيت (أندرويد وكمبيوتر بكروم أو إيدج) تُفتح نافذة التثبيت الأصلية مباشرة */
+    if (deferred) {
+      try {
+        var d0 = deferred; d0.prompt();
+        deferred = null; d0.userChoice.then(function () {}, function () {});
+        return;
+      } catch (e) {}
+    }
     $('iT').textContent = T('title'); $('iLater').textContent = T('later'); delete $('iLater').dataset.ph;
     renderInstall(); $('install').hidden = false;
   }
