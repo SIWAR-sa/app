@@ -226,8 +226,9 @@ input[dir="ltr"] { text-align: left; }
 .hr-opt .app-icon { width: 66% !important; height: auto !important; margin-top: -14%; }
 .hr-opt .app-icon:not(.is-sw) { aspect-ratio: 1 / 1; }
 .hr-pick .hr-opt .sw, .hr-pick .hr-opt .sw::before, .hr-pick .hr-opt .sw::after { background: none !important; box-shadow: none !important; border: 0 !important; }
-.hr-pick .hr-opt .sw-badge { background: none !important; }
-.hr-pick .hr-opt .app-icon.is-sw { width: 78% !important; height: auto !important; aspect-ratio: 7 / 5; margin-top: -16%; }
+.hr-pick .hr-opt .app-icon .sw svg.sw-cal { filter: brightness(0) invert(1) !important; }
+.hr-pick .hr-opt .sw-badge { display: none !important; }
+.hr-pick .hr-opt .app-icon.is-sw { width: 92% !important; height: auto !important; aspect-ratio: 7 / 5; margin-top: -16%; }
 .hr-jisr { position: absolute; inset: 0; display: block; background: #101014; }
 .hr-jisr img { width: 100%; height: 100%; object-fit: cover; display: block; transform: translateY(-7%); }
 .hr-alt { display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; margin-top: 14px; }
