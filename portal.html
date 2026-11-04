@@ -222,10 +222,11 @@ input[dir="ltr"] { text-align: left; }
 .hr-opt:hover { transform: translateY(-2px); filter: brightness(1.06); box-shadow: inset 0 1px 0 rgba(255,255,255,.18), inset 0 -3px 0 rgba(0,0,0,.55), 0 8px 0 #050506, 0 26px 34px -14px rgba(0,0,0,.6); }
 .hr-opt:active { transform: translateY(5px); box-shadow: inset 0 1px 0 rgba(255,255,255,.12), inset 0 -2px 0 rgba(0,0,0,.5), 0 1px 0 #050506, 0 8px 16px -10px rgba(0,0,0,.55); }
 .hr-opt:focus-visible { outline: 3px solid #E3BD5E; outline-offset: 3px; }
-.hr-opt b { position: absolute; inset: auto 0 0 0; z-index: 3; padding: 26px 8px 13px; font-size: 15.5px; font-weight: 700; letter-spacing: .01em; color: rgba(255,255,255,.94); background: linear-gradient(180deg, rgba(8,8,10,0), rgba(8,8,10,.72)); text-shadow: 0 1px 2px rgba(0,0,0,.6); }
+.hr-opt b { position: absolute; inset: auto 0 0 0; z-index: 3; padding: 26px 8px 14px; font-size: 18px; font-weight: 700; letter-spacing: -.2px; color: rgba(255,255,255,.94); background: linear-gradient(180deg, rgba(8,8,10,0), rgba(8,8,10,.72)); text-shadow: 0 1px 2px rgba(0,0,0,.6); }
 .hr-opt .app-icon { width: 66% !important; height: auto !important; margin-top: -14%; }
 .hr-opt .app-icon:not(.is-sw) { aspect-ratio: 1 / 1; }
 .hr-pick .hr-opt .sw, .hr-pick .hr-opt .sw::before, .hr-pick .hr-opt .sw::after { background: none !important; box-shadow: none !important; border: 0 !important; }
+.hr-pick .hr-opt .sw-badge { background: none !important; }
 .hr-pick .hr-opt .app-icon.is-sw { width: 78% !important; height: auto !important; aspect-ratio: 7 / 5; margin-top: -16%; }
 .hr-jisr { position: absolute; inset: 0; display: block; background: #101014; }
 .hr-jisr img { width: 100%; height: 100%; object-fit: cover; display: block; transform: translateY(-7%); }
@@ -2584,7 +2585,7 @@ function enterSession(d, fresh) {
   renderHome();
   show('home');
   // العدادات بعد ظهور الرئيسية بلحظات، فلا تزاحم الدخول ولا فتح أول نظام
-  if (!S.user.mustChange) setTimeout(() => { if (S.token && S.screen === 'home') loadPending(false); }, S.inApp ? 5000 : 1500);
+  if (!S.user.mustChange) setTimeout(() => { if (S.token && S.screen === 'home') loadPending(false); }, S.inApp ? 2500 : 1200);
   nbBoot();
   afterHome();
   navRestore();
@@ -2685,6 +2686,8 @@ function renderUserChrome() {
 
 function renderHome() {
   const u = S.user; if (!u) return;
+  // أعداد «بانتظارك» تظهر فوراً من آخر نسخة محفوظة (حتى 12 ساعة) ثم تتحدّث من الخادم
+  if (!S.pending) try { const v = JSON.parse(localStorage.getItem(pendKey()) || 'null'); if (v && v.d && Date.now() - v.at < 43200000) { S.pending = v.d; S.pendingAt = 0; } } catch (e) {}
   const h = Number(fmtr('h', () => new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: 'Asia/Riyadh' })).format(new Date())) % 24;
   $('#heroTitle').textContent = t(h < 12 ? 'morning' : 'evening') + t('sep') + (L(u, 'name') || u.username).split(' ')[0];
   $('#heroDate').textContent = fmtr('w' + locale(), () => new Intl.DateTimeFormat(locale(), { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Riyadh' })).format(new Date());
@@ -3153,7 +3156,7 @@ function openHr(btn, app) {
   openModal({
     title: esc(en ? 'Human Resources' : 'الموارد البشرية'),
     body: '<div class="hr-pick">' +
-      '<button class="hr-opt" data-hr="kawader" type="button">' + kIcon + '<b>' + esc(en ? (app.kNameEN || 'Kawader') : (app.kNameAR || 'كوادر')) + '</b></button>' +
+      '<button class="hr-opt" data-hr="kawader" type="button">' + kIcon + '<b>' + esc(en ? 'Kawader' : 'كوادر') + '</b></button>' +
       '<button class="hr-opt" data-hr="app" type="button">' + jIcon + '<b>' + esc(en ? 'Jisr' : 'جسر') + '</b></button>' +
       '</div>' + sub
   });
