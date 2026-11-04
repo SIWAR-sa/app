@@ -1515,6 +1515,27 @@ html.nb-lock, html.nb-lock body { overflow: hidden; }
   .vfab-orbit .vo-pulse { animation: none; opacity: 0; }
   .vfab-btn, .vfab-orbit, .vfab-x, .vfab-act, .vfab-veil, .vfab-tip, .vfab-chev, .vfab-ty i { transition: none; }
 }
+
+body { display: flow-root; }
+/* (pv17) الشاشات العريضة قليلة الارتفاع: تظهر الأنظمة كلها بلا تمرير، بتصغير متدرّج محدود لا يغيّر التصميم */
+@media (min-width: 721px) and (max-height: 1000px) {
+  #screen-home .hero { padding: 4px 2px 8px; }
+  .sv-list { gap: 12px; margin-top: 2px; }
+  .sv { --cy: 46px; }
+  .sv-main { padding: 10px 18px; }
+  #screen-home .sv .app-icon.is-sw, [data-theme] #screen-home .sv .app-icon.is-sw { width: calc((var(--sws, 72px) + 12px) * .86); height: calc((var(--sws, 72px) + 12px) * .86); }
+  #screen-home .sv .app-icon:not(.is-sw):not(.is-img) { width: 72px; height: 72px; }
+}
+@media (min-width: 900px) and (max-height: 1000px) { #screen-home > .wrap { padding-bottom: 16px !important; } }
+@media (min-width: 721px) and (max-height: 820px) {
+  #screen-home .hero { padding: 8px 2px 6px; }
+  .sv-list { gap: 10px; }
+  .sv { --cy: 40px; }
+  .sv-main { padding: 8px 16px; }
+  .sv-name { font-size: 17.5px; }
+  #screen-home .sv .app-icon.is-sw, [data-theme] #screen-home .sv .app-icon.is-sw { width: calc((var(--sws, 72px) + 12px) * .76); height: calc((var(--sws, 72px) + 12px) * .76); }
+  #screen-home .sv .app-icon:not(.is-sw):not(.is-img) { width: 62px; height: 62px; }
+}
 </style>
 <style id="sdfix">input[type=date],input[type=time],input[type=month],input[type=datetime-local]{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important;word-spacing:normal!important;text-align:start!important}input[type=date]::-webkit-datetime-edit,input[type=time]::-webkit-datetime-edit,input[type=month]::-webkit-datetime-edit,input[type=datetime-local]::-webkit-datetime-edit{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important}</style></head>
 <body>

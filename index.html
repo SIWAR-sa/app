@@ -160,8 +160,14 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
 .sheet p{margin:0;color:var(--muted);font-size:14px;line-height:1.8}
 .steps{width:100%;display:flex;flex-direction:column;gap:8px;text-align:start}
 .step{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:#FBF6EF;font-size:14px}
+.step strong{font-weight:700;color:#7A4E14}
+.i-done{margin:10px 0 0;font-size:13px;color:var(--muted)}
+.i-arrow{position:fixed;left:50%;bottom:calc(6px + var(--bottom));width:22px;height:22px;margin-left:-11px;border-right:3px solid var(--gold);border-bottom:3px solid var(--gold);transform:rotate(45deg);animation:iArr 1.2s ease-in-out infinite}
+@keyframes iArr{0%,100%{translate:0 0}50%{translate:0 7px}}
+@media (min-width:700px){.i-arrow{display:none}}
 .step b{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#FBF0DC;color:#8C6524;font-size:12.5px}
 .step svg{width:20px;height:20px;flex:none;stroke:var(--gold);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle}
+a.btn{display:grid;place-items:center;text-decoration:none}
 .btn{width:100%;height:50px;border:0;border-radius:999px;background:linear-gradient(180deg,#F0C3C1,#DE9C9A);color:var(--text);font:inherit;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 10px 22px -10px rgba(201,132,130,.8)}
 .link{border:0;background:none;color:#A65F5D;font:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:6px}
 .err{padding:24px;text-align:center;color:var(--muted)}
@@ -297,12 +303,12 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
   var TXT = {
     ar: { back: 'رجوع', ext: 'فتح في المتصفح', title: 'تثبيت تطبيق سوار', later: 'لاحقاً', prog: 'برنامج', noUrl: 'لم يُضبط رابط سوار في config.js',
       desc: 'أيقونة على الشاشة الرئيسية، وتفتح الأنظمة في نافذة مستقلة.', install: 'تثبيت التطبيق',
-      ios1: 'افتح هذه الصفحة في متصفح Safari', ios2: 'اضغط زر المشاركة ', ios3: 'اختر «إضافة إلى الشاشة الرئيسية» ',
+      ios1: 'افتح هذه الصفحة في متصفح Safari', ios2: 'اضغط زر المشاركة ', ios3: 'اختر «إضافة إلى الشاشة الرئيسية» ', ios2n: 'اضغط ••• بجانب العنوان، ثم «مشاركة» ', ios3m: 'مرّر القائمة لأسفل واختر «إضافة إلى الشاشة الرئيسية» ', ios4: 'اضغط «إضافة» في أعلى الشاشة؛ بدونها لا تُضاف الأيقونة', iosInApp: 'التثبيت على الآيفون يتم من Safari.', iosOld: 'على هذا الإصدار من iOS يتم التثبيت من Safari.', openSafari: 'فتح في Safari للتثبيت', iosDone: 'بعد الإضافة افتح سوار من أيقونته على الشاشة الرئيسية.',
       an1: 'افتح هذه الصفحة في Chrome أو Edge', an2a: 'من قائمة المتصفح ', an2b: ' اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية»',
       phT: 'سوار على جوالك', phD: 'امسح الرمز بكاميرا الجوال، ثم ثبّت التطبيق من الصفحة التي تفتح.', copy: 'نسخ الرابط', copied: 'تم النسخ', close: 'إغلاق' },
     en: { back: 'Back', ext: 'Open in browser', title: 'Install the SIWAR app', later: 'Later', prog: 'App', noUrl: 'The portal link is not set in config.js',
       desc: 'An icon on your home screen; systems open in their own window.', install: 'Install app',
-      ios1: 'Open this page in Safari', ios2: 'Tap the Share button ', ios3: 'Choose “Add to Home Screen” ',
+      ios1: 'Open this page in Safari', ios2: 'Tap the Share button ', ios3: 'Choose “Add to Home Screen” ', ios2n: 'Tap ••• next to the address, then “Share” ', ios3m: 'Scroll down and choose “Add to Home Screen” ', ios4: 'Tap “Add” at the top; without it the icon is not added', iosInApp: 'On iPhone, the app is installed from Safari.', iosOld: 'On this iOS version, the app is installed from Safari.', openSafari: 'Open in Safari to install', iosDone: 'After adding it, open SIWAR from its Home Screen icon.',
       an1: 'Open this page in Chrome or Edge', an2a: 'From the browser menu ', an2b: ' choose “Install app” or “Add to Home screen”',
       phT: 'SIWAR on your phone', phD: 'Scan the code with your phone camera, then install the app from the page that opens.', copy: 'Copy link', copied: 'Copied', close: 'Close' }
   };
@@ -1101,11 +1107,26 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
       };
       b.appendChild(btn);
     } else if (iOS) {
-      b.innerHTML = '<div class="steps">' +
-        step('1', T('ios1')) +
-        step('2', T('ios2') + svgShare) +
-        step('3', T('ios3') + svgPlus) +
-        '</div>';
+      /* (v82) الآيفون: Safari هو الأضمن؛ داخل تطبيق آخر (واتساب، جيميل...) لا تظهر الإضافة أصلاً، وكروم وإيدج تتيحها من iOS 16.4.
+         من iOS 26 زر المشاركة داخل قائمة ••• بجانب العنوان. وأكثر سبب لعدم ظهور الأيقونة: عدم الضغط على «إضافة» في أعلى الشاشة */
+      var osV = (/OS (\d+)[_.]/.exec(ua) || [])[1] | 0, safV = (/Version\/(\d+)/.exec(ua) || [])[1] | 0;
+      var inApp = /FBAN|FBAV|Instagram|WhatsApp|Line\/|GSA\/|Snapchat|Twitter|LinkedInApp|MicroMessenger|TikTok/i.test(ua) || (!/Safari\//.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua));
+      var other = /CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
+      var newUi = Math.max(osV, safV) >= 26;
+      if (inApp || (other && osV && osV < 16)) {
+        /* زر واحد يفتح سوار في Safari مباشرة (x-safari-https، يعمل من داخل التطبيقات الأخرى في iOS 17 فأحدث) */
+        b.innerHTML = '<p>' + T(inApp ? 'iosInApp' : 'iosOld') + '</p>';
+        var go = document.createElement('a'); go.className = 'btn'; go.textContent = T('openSafari');
+        go.href = 'x-safari-' + appLink + (appLink.indexOf('?') < 0 ? '?' : '&') + 'install=1';
+        b.appendChild(go);
+      } else {
+        b.innerHTML = '<div class="steps">' +
+          (other ? step('1', T('ios1')) : '') +
+          step(other ? '2' : '1', T(newUi ? 'ios2n' : 'ios2') + svgShare) +
+          step(other ? '3' : '2', T('ios3m') + svgPlus) +
+          step(other ? '4' : '3', '<strong>' + T('ios4') + '</strong>') +
+          '</div><p class="i-done">' + T('iosDone') + '</p>' + (newUi ? '' : '<div class="i-arrow" aria-hidden="true"></div>');
+      }
     } else {
       b.innerHTML = '<div class="steps">' +
         step('1', T('an1')) +
