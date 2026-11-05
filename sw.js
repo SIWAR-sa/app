@@ -1,7 +1,7 @@
 /* عامل الخدمة: يحفظ ملفات صفحة التطبيق وسوار الثابتة فقط (لا يحفظ أي بيانات من سوار أو البرامج).
    النسخة المحفوظة تُعرض فوراً، وأي تحديث على GitHub يصل في الفتح التالي.
    إشعارات الجوال: الإشعار يصل بلا محتوى، فيطلب العامل نصوصه من سوار برمز هذا الجهاز (المحفوظ في siwar-push) ثم يعرضها. */
-const CACHE = 'siwar-app-v83';
+const CACHE = 'siwar-app-v84';
 const PUSHC = 'siwar-push', PUSHK = './__push';
 const FILES = ['./', './index.html', './portal.html', './config.js', './manifest.webmanifest', './icons/logo.webp', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/favicon-32.png', './icons/favicon-64.png'];
 
@@ -20,12 +20,29 @@ self.addEventListener('fetch', e => {
   // مفتاح الحفظ بلا معاملات (?open=… لا تُنشئ نسخاً مكررة)
   const key = new Request(url.origin + url.pathname);
   // من ذاكرة الجهاز فوراً، والتحديث من GitHub يُحفظ في الخلفية ويظهر في الفتح التالي
+  // (v84) الجلب في الخلفية يتجاوز ذاكرة المتصفح (cache:'reload') فيصل أحدث ملف مباشرة لا نسخة وسيطة،
+  // وإن اختلف عن المحفوظ تُبلَّغ الصفحات بوجود نسخة أحدث (ليعرض التطبيق بطاقة التحديث، وضغطة واحدة تفتح الأحدث)
   e.respondWith(caches.open(CACHE).then(c => c.match(key).then(hit => {
-    const net = fetch(new Request(url.href, { cache: 'no-cache', credentials: 'same-origin' })).then(r => { if (r && r.ok) c.put(key, r.clone()).catch(() => {}); return r; });
+    const net = fetch(new Request(url.href, { cache: 'reload', credentials: 'same-origin' })).then(r => {
+      if (r && r.ok) {
+        const fresh = r.clone();
+        const put = (hit && /\/($|index\.html$|portal\.html$|config\.js$)/.test(url.pathname))
+          ? Promise.all([hit.clone().text(), fresh.clone().text()]).then(t => c.put(key, fresh).then(() => { if (t[0] !== t[1]) newer(url.pathname); }))
+          : c.put(key, fresh);
+        e.waitUntil(put.catch(() => {}));
+      }
+      return r;
+    });
     if (hit) { e.waitUntil(net.catch(() => {})); return hit; }
     return net.catch(() => c.match('./index.html'));
   })));
 });
+
+function newer(path) {
+  return self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => list.forEach(cl => { try { cl.postMessage({ siwar: 'newer', path: path }); } catch (x) {} }));
+}
+// «تحديث الآن»: الصفحة تطلب تفعيل العامل الجديد إن كان ينتظر
+self.addEventListener('message', e => { if (e.data && e.data.siwar === 'skip') self.skipWaiting(); });
 
 /* ── إشعارات الجوال ── */
 function pushCfg() { return caches.open(PUSHC).then(c => c.match(PUSHK)).then(r => r ? r.json() : null).catch(() => null); }

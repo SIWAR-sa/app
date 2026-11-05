@@ -1537,7 +1537,47 @@ body { display: flow-root; }
   #screen-home .sv .app-icon:not(.is-sw):not(.is-img) { width: 62px; height: 62px; }
 }
 </style>
-<style id="sdfix">input[type=date],input[type=time],input[type=month],input[type=datetime-local]{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important;word-spacing:normal!important;text-align:start!important}input[type=date]::-webkit-datetime-edit,input[type=time]::-webkit-datetime-edit,input[type=month]::-webkit-datetime-edit,input[type=datetime-local]::-webkit-datetime-edit{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important}</style></head>
+<style id="sdfix">input[type=date],input[type=time],input[type=month],input[type=datetime-local]{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important;word-spacing:normal!important;text-align:start!important}input[type=date]::-webkit-datetime-edit,input[type=time]::-webkit-datetime-edit,input[type=month]::-webkit-datetime-edit,input[type=datetime-local]::-webkit-datetime-edit{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important}</style>
+<style id="siwarUpdCss">
+/* (pv19) بطاقة «نسخة جديدة» — بطاقة زجاجية عائمة لا تمنع العمل */
+#siwarUpd{position:fixed;z-index:2147483000;box-sizing:border-box;display:flex;align-items:flex-start;gap:14px;padding:14px 16px 14px 14px;border-radius:24px;color:#3F3A37;font-family:inherit;text-align:start;
+ background:linear-gradient(135deg,rgba(255,252,247,.95),rgba(255,246,240,.90));-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%);
+ border:1px solid rgba(227,182,109,.45);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 18px 40px -14px rgba(110,98,90,.38),0 40px 70px -40px rgba(110,98,90,.30);overflow:hidden;
+ animation:sUin .5s cubic-bezier(.2,.9,.3,1.2) both}
+#siwarUpd.bye{animation:sUout .28s ease both}
+#siwarUpd *{box-sizing:border-box}
+#siwarUpd::after{content:"";position:absolute;inset:0;width:28%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.32),transparent);animation:sUshine 4.5s ease-in-out infinite;pointer-events:none}
+#siwarUpd .sU-o{position:relative;flex:none;display:block;width:50px;height:50px}
+#siwarUpd .sU-orb{position:absolute;inset:0;display:block;border-radius:50%;background:radial-gradient(circle at 35% 30%,#2B3A78 0%,#13224D 55%,#0A1433 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 6px 16px -6px rgba(19,34,77,.55)}
+#siwarUpd .sU-orb::before{content:"";position:absolute;inset:30%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFF1CF,#E3B66D 55%,#B9852F);box-shadow:0 0 10px rgba(227,182,109,.8)}
+#siwarUpd .sU-r{position:absolute;display:block;inset:12%;border-radius:50%;border:1.4px solid rgba(243,221,176,.55);animation:sUspin 2.6s linear infinite}
+#siwarUpd .sU-r::after{content:"";position:absolute;top:-3px;left:50%;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:#FFE3A8;box-shadow:0 0 8px #FFD27A}
+#siwarUpd .sU-r.b{inset:-4%;border-color:rgba(226,166,164,.45);animation-duration:4.2s;animation-direction:reverse}
+#siwarUpd .sU-r.b::after{background:#F5B7B4;box-shadow:0 0 8px #E2A6A4;width:5px;height:5px}
+#siwarUpd .sU-s{position:absolute;display:block;width:8px;height:8px;background:#FFE3A8;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);animation:sUtw 1.8s ease-in-out infinite}
+#siwarUpd .sU-tx{flex:1;min-width:0;position:relative;z-index:1}
+#siwarUpd .sU-t1{font-weight:800;font-size:15px;line-height:1.35}
+#siwarUpd .sU-t2{color:#6F6761;font-size:12.5px;line-height:1.5;margin-top:2px}
+#siwarUpd .sU-b{display:flex;gap:8px;align-items:center;margin-top:10px}
+#siwarUpd .sU-go{display:inline-flex;align-items:center;gap:7px;min-height:38px;padding:0 16px;border:0;border-radius:999px;cursor:pointer;font:inherit;font-size:13.5px;font-weight:700;white-space:nowrap;color:#3F3A37;
+ background:linear-gradient(180deg,#F0C3C1 0%,#E2A6A4 55%,#D89593 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.65),inset 0 -2px 0 rgba(150,90,88,.18),0 10px 22px -8px rgba(201,132,130,.65);transition:transform .15s,filter .15s}
+#siwarUpd .sU-go:hover{filter:brightness(1.03)}
+#siwarUpd .sU-go:active{transform:scale(.97)}
+#siwarUpd .sU-go svg{width:16px;height:16px;flex:none}
+#siwarUpd .sU-go.on svg{animation:sUspin .9s linear infinite}
+#siwarUpd .sU-no{background:transparent;border:0;color:#6F6761;font:inherit;font-size:13px;font-weight:600;padding:0 10px;min-height:38px;cursor:pointer;border-radius:999px}
+#siwarUpd .sU-no:hover{background:rgba(161,151,143,.10)}
+#siwarUpd button:focus-visible{outline:3px solid rgba(226,166,164,.45);outline-offset:2px}
+@keyframes sUspin{to{transform:rotate(360deg)}}
+@keyframes sUtw{0%,100%{transform:scale(.3) rotate(0);opacity:.2}50%{transform:scale(1) rotate(90deg);opacity:1}}
+@keyframes sUin{from{transform:translateY(18px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+@keyframes sUout{to{transform:translateY(14px) scale(.97);opacity:0}}
+@keyframes sUshine{0%{transform:translateX(120%)}60%,100%{transform:translateX(-220%)}}
+@media (max-width:640px){#siwarUpd{left:16px;right:16px;bottom:calc(92px + env(safe-area-inset-bottom));margin:0 auto;max-width:440px}}
+@media (min-width:641px){#siwarUpd{left:112px;bottom:28px;width:400px}}
+@media (prefers-reduced-motion:reduce){#siwarUpd,#siwarUpd *,#siwarUpd::after{animation:none!important}}
+</style>
+</head>
 <style id="pv18">
 /* (pv18) الجوال: زر «لوحة الإدارة» ينتقل إلى القائمة المنسدلة فلا يغطي الشعار؛ «طريقة العرض» داخل القائمة؛ مسافة سفلية تحت آخر نظام بقدر زر المساحة العائم */
 .tb-brand { flex-shrink: 0; }
@@ -1801,7 +1841,7 @@ body { display: flow-root; }
 
 <div class="progview" id="progView" aria-hidden="true">
   <div class="pv-bar"><button type="button" class="pv-back" data-act="closeProgView" aria-label="رجوع"><i data-ic="arrow"></i></button><span class="pv-ic"><span id="pvIcon" class="app-icon"></span></span><b id="pvName"></b></div>
-  <div class="pv-body"><div class="pv-load"><span></span></div><iframe id="pvFrame" title="" allow="clipboard-write; camera; microphone"></iframe></div>
+  <div class="pv-body"><div class="pv-load"><span></span></div><iframe id="pvFrame" title="" allow="clipboard-write; camera; microphone; publickey-credentials-get *; publickey-credentials-create *"></iframe></div>
 </div>
 <div class="modal" id="modal" aria-hidden="true">
   <div class="modal-backdrop" data-act="closeModal"></div>
@@ -2204,7 +2244,7 @@ let DIRECT_OK = /^https:\/\/script\.google\.com\/.+\/exec$/.test(EXEC_URL) && (S
 
 const IDEMP = new Proxy({}, { get: (o, k) => typeof k === 'string' && /^u_/.test(k) && k !== 'u_load' });
 let DATA_GEN = 0;   // يزيد مع كل حفظ في الإدارة؛ نسخة جُلبت قبله لا تُستعمل
-const READ_ONLY = { init: 1, pending: 1, notif_list: 1, admin_load: 1, u_load: 1, admin_review: 1, admin_invitePreview: 1 };
+const READ_ONLY = { init: 1, ver: 1, pending: 1, notif_list: 1, admin_load: 1, u_load: 1, admin_review: 1, admin_invitePreview: 1 };
 function postApi(action, payload) {
   const ro = !!READ_ONLY[action], idem = !!IDEMP[action];
   const ac = (ro || idem) && window.AbortController ? new AbortController() : null;
@@ -3262,6 +3302,7 @@ async function openDeep() {
   $('#pvIcon').className = 'app-icon' + imgCls(app.icon, app.shape) + ' tint-' + (app.tint || 'gold');
   $('#pvIcon').innerHTML = iconHtml(app.icon);
   $('#pvFrame').removeAttribute('src');
+  S.pvOpen = { app: app.id, go: o.go || '' };   // (pv19) التحديث يعيد فتح هذا المكان
   ov.classList.add('open', 'is-loading'); ov.setAttribute('aria-hidden', 'false');
   try {
     const d = await api('launch', { appId: app.id, go: o.go || '' });
@@ -6373,6 +6414,155 @@ function vaultFabSync() {
   box.hidden = !on;
   if (on && !box.dataset.shown) { box.dataset.shown = '1'; box.classList.add('in'); setTimeout(() => box.classList.remove('in'), 1400); }
 }
+</script>
+<script>
+/* (pv19) بطاقة «نسخة جديدة»: تظهر مرة واحدة حين يُكتشف تحديث، لا أثناء الكتابة، و«لاحقًا» تؤجلها ساعتين */
+(function () {
+  if (window.SiwarUpd) return;
+  var SNK = 'siwar_upd_snooze', RTK = 'siwar_upd_rot', SNOOZE = 2 * 3600000, IDLE = 5000;
+  var MSG = {
+    ar: [['وصلت نسخة جديدة ✨', 'حدّث الآن لتستمتع بها، وستعود إلى نفس مكانك.'],
+         ['تحسينات جديدة وصلت للتو ✨', 'ضغطة واحدة وتصلك كلها.'],
+         ['سوار تجدّد قليلًا ✨', 'حدّث الآن لترى الجديد، وستعود إلى نفس مكانك.'],
+         ['لمسات جديدة جاهزة لك ✨', 'لن يستغرق التحديث إلا لحظات.'],
+         ['نسخة جديدة جاهزة ✨', 'حدّث الآن لتحصل على آخر التحسينات.']],
+    en: [['A new version has arrived ✨', 'Refresh now to enjoy it — you’ll return right where you were.'],
+         ['Fresh improvements just landed ✨', 'One tap brings them all in.'],
+         ['SIWAR got a little refresh ✨', 'Refresh to see what’s new — you’ll stay right where you were.'],
+         ['New touches are ready for you ✨', 'It only takes a moment.'],
+         ['A new version is ready ✨', 'Refresh now to get the latest improvements.']]
+  };
+  var BTN = { ar: ['تحديث الآن', 'لاحقًا'], en: ['Refresh now', 'Later'] };
+  var REF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.5-4.5L4 8M4 4v4h4M4 13a8 8 0 0 0 14.5 4.5L20 16M20 20v-4h-4"/></svg>';
+  var memSnooze = 0, lastKey = 0, backAt = 0, tm = 0, rot = -1;
+  var U = window.SiwarUpd = { avail: false, src: '', lang: function () { return 'ar'; }, onGo: null, el: null };
+
+  function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, String(v)); } catch (e) {} return null; }
+  function snoozeLeft() { var s = Math.max(Number(ls(SNK)) || 0, memSnooze); return s - Date.now(); }
+  function editable(el) {
+    if (!el) return false;
+    if (el.isContentEditable) return true;
+    if (el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') return true;
+    return el.tagName === 'INPUT' && !/^(button|submit|reset|checkbox|radio|range|color|file|image|hidden)$/i.test(el.type || '');
+  }
+  // مكان التركيز: داخل الإطارات من نفس الموقع يُتتبَّع، وإطار من موقع آخر (نظام) = غير معروف
+  function focusState() {
+    var a = document.activeElement, hops = 0;
+    while (a && a.tagName === 'IFRAME' && hops++ < 4) {
+      var d = null; try { d = a.contentDocument; } catch (e) { d = null; }
+      if (!d) return 'x';
+      a = d.activeElement;
+    }
+    return editable(a) ? 'type' : 'free';
+  }
+  function idleOk() {
+    if (Date.now() - lastKey < IDLE) return false;
+    var f = focusState();
+    if (f === 'type') return false;
+    // التركيز داخل نظام (موقع آخر) لا نرى ما يُكتب فيه: تظهر البطاقة حين يعود الموظف للنافذة أو للرئيسية فقط
+    if (f === 'x') return Date.now() - backAt < 4000;
+    return true;
+  }
+  function onKey() { lastKey = Date.now(); }
+  U.watchDoc = function (doc) {
+    try {
+      if (!doc || doc.__sUw) return; doc.__sUw = 1;
+      ['keydown', 'input', 'compositionupdate'].forEach(function (ev) { doc.addEventListener(ev, onKey, true); });
+    } catch (e) {}
+  };
+  function back() { backAt = Date.now(); if (U.avail && !U.el) { clearTimeout(tm); tm = setTimeout(tryShow, 300); } }
+  window.addEventListener('focus', back);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) back(); });
+  U.watchDoc(document);
+
+  function tryShow() {
+    clearTimeout(tm); tm = 0;
+    if (!U.avail || U.el || document.getElementById('siwarUpd')) return;
+    var left = snoozeLeft();
+    if (left > 0) { tm = setTimeout(tryShow, Math.min(left + 500, 2147483000)); return; }
+    if (document.hidden || !idleOk()) { tm = setTimeout(tryShow, 2000); return; }
+    render();
+  }
+  function texts() {
+    var l = U.lang() === 'en' ? 'en' : 'ar';
+    if (rot < 0) { rot = ((Number(ls(RTK)) || 0) + 1) % MSG.ar.length; ls(RTK, rot); }
+    return { l: l, m: MSG[l][rot], b: BTN[l] };
+  }
+  function fill() {
+    var el = U.el; if (!el) return;
+    var x = texts();
+    el.dir = x.l === 'en' ? 'ltr' : 'rtl'; el.lang = x.l;
+    el.querySelector('.sU-t1').textContent = x.m[0];
+    el.querySelector('.sU-t2').textContent = x.m[1];
+    el.querySelector('.sU-go span').textContent = x.b[0];
+    el.querySelector('.sU-no').textContent = x.b[1];
+  }
+  function render() {
+    var el = document.createElement('div');
+    el.id = 'siwarUpd'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
+    el.innerHTML = '<span class="sU-o"><span class="sU-orb"></span><span class="sU-r"></span><span class="sU-r b"></span>' +
+      '<span class="sU-s" style="top:-4px;right:-2px"></span><span class="sU-s" style="bottom:2px;left:-4px;animation-delay:.7s"></span></span>' +
+      '<div class="sU-tx"><div class="sU-t1"></div><div class="sU-t2"></div><div class="sU-b"><button type="button" class="sU-go">' + REF + '<span></span></button><button type="button" class="sU-no"></button></div></div>';
+    el.querySelector('.sU-go').onclick = function () { go(this); };
+    el.querySelector('.sU-no').onclick = later;
+    document.body.appendChild(el);
+    U.el = el; fill();
+  }
+  function hide() {
+    var el = U.el; U.el = null; if (!el) return;
+    el.classList.add('bye'); setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 300);
+  }
+  function later() {
+    memSnooze = Date.now() + SNOOZE; ls(SNK, memSnooze);
+    hide(); clearTimeout(tm); tm = setTimeout(tryShow, SNOOZE + 500);
+  }
+  function go(b) {
+    if (b.classList.contains('on')) return;
+    b.classList.add('on'); b.disabled = true;
+    try { ls(SNK, 0); } catch (e) {}
+    try { if (U.onGo) U.onGo(); else location.reload(); } catch (e) { location.reload(); }
+  }
+  // مصدر الإشارة: sw (عامل الخدمة) أو portal (بصمة الواجهة) — إشارات متكررة لا تُكرر البطاقة
+  U.signal = function (src) { U.src = U.src || String(src || ''); U.avail = true; if (!U.el) tryShow(); };
+  U.relang = fill;
+  U.hide = hide;
+})();
+
+/* (pv19) ربط البطاقة بسوار: البصمة (BUILD) يضعها الخادم عند الفتح (MD5 لملف Index المنشور)، وتُقارن بـ«ver» كل 30 دقيقة وعند العودة للنافذة.
+   داخل تطبيق سوار (SHELL) يُبلَّغ التطبيق فيعرض هو البطاقة ويحدّث كل شيء؛ وفي المتصفح تعرضها سوار وتعيد فتح الصفحة على نفس المكان. */
+(function () {
+  const BUILD = '__BUILD__';
+  const U = window.SiwarUpd; if (!U) return;
+  const RX = /^[a-f0-9]{16}$/, ON = !STATIC && !DEMO && RX.test(BUILD);
+  U.lang = () => (S.lang === 'en' ? 'en' : 'ar');
+  try { const al = applyLang; applyLang = function () { const r = al.apply(this, arguments); try { U.relang(); } catch (e) {} return r; }; } catch (e) {}
+  function found(src) {
+    if (SHELL) { try { window.top.postMessage({ siwar: 'upd', src: src }, SHELL); } catch (e) {} return; }
+    U.signal(src);
+  }
+  window.siwarUpdFound = found;
+  let at = Date.now();
+  function check(force) {
+    if (!ON || document.hidden || U.avail) return;
+    if (!force && Date.now() - at < 5 * 60000) return;
+    at = Date.now();
+    api('ver', {}, { quiet: true }).then(d => { const b = String(d && d.b || ''); if (RX.test(b) && b !== BUILD) found('portal'); }).catch(() => {});
+  }
+  setInterval(() => check(true), 30 * 60000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) check(false); });
+  window.addEventListener('focus', () => check(false));
+  U.onGo = () => {
+    const ov = $('#progView'), pv = S.pvOpen && ov && ov.classList.contains('open') ? S.pvOpen : null;
+    const url = EXEC_URL + (pv ? '?open=' + encodeURIComponent(pv.app) + (pv.go ? '&go=' + encodeURIComponent(pv.go) : '') : '');
+    const sp = $('#splash'), tx = $('#splashTxt');
+    if (sp) { sp.classList.remove('out'); if (tx) tx.textContent = S.lang === 'en' ? 'Updating' : 'جارٍ التحديث'; }
+    U.hide();
+    if (!/^https:\/\//.test(url)) { location.reload(); return; }
+    let w = null; try { w = window.open(url, '_top'); } catch (e) { w = null; }
+    if (!w) { try { window.top.location.href = url; } catch (e) { location.reload(); return; } }
+    setTimeout(() => location.reload(), 9000);
+  };
+})();
 </script>
 </body>
 </html>
