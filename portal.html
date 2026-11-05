@@ -1538,6 +1538,24 @@ body { display: flow-root; }
 }
 </style>
 <style id="sdfix">input[type=date],input[type=time],input[type=month],input[type=datetime-local]{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important;word-spacing:normal!important;text-align:start!important}input[type=date]::-webkit-datetime-edit,input[type=time]::-webkit-datetime-edit,input[type=month]::-webkit-datetime-edit,input[type=datetime-local]::-webkit-datetime-edit{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important}</style></head>
+<style id="pv18">
+/* (pv18) الجوال: زر «لوحة الإدارة» ينتقل إلى القائمة المنسدلة فلا يغطي الشعار؛ «طريقة العرض» داخل القائمة؛ مسافة سفلية تحت آخر نظام بقدر زر المساحة العائم */
+.tb-brand { flex-shrink: 0; }
+#hvBar { display: none !important; }
+.menu-hv { display: flex; flex-direction: column; gap: 8px; padding: 8px 8px 12px; margin-bottom: 6px; border-bottom: 1px solid var(--border-strong); }
+.menu-hv[hidden] { display: none; }
+.menu-hv-l { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); padding: 0 2px; }
+.menu-hv-l .ic { width: 18px; height: 18px; }
+.menu-hv .hv-seg { display: grid; grid-template-columns: 1fr 1fr; padding: 4px; border-radius: 14px; background: var(--surface-2, rgba(43,39,35,.05)); box-shadow: inset 0 0 0 1px rgba(110,80,40,.08); }
+.menu-hv .hv-seg button { justify-content: center; padding: 8px 6px; font-size: 13px; white-space: nowrap; }
+@media (max-width: 600px) {
+  #navBtn { display: none !important; }
+  .tb-actions { min-width: 0; gap: 2px; }
+}
+@media (max-width: 1099px) {
+  #screen-home.vfab-room .wrap, #screen-home.vfab-room > .wrap { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 120px) !important; }
+}
+</style>
 <body>
 
 <div id="bg"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
@@ -1556,10 +1574,11 @@ body { display: flow-root; }
       <button class="avatar-btn" data-act="toggleMenu"><span class="avatar" id="avatar"></span><i data-ic="chevronDown"></i></button>
       <div class="menu-pop">
         <div class="menu-head"><span class="avatar" id="avatar2"></span><div><b id="menuName"></b><small class="ltr" id="menuUser"></small></div></div>
+        <div class="menu-hv" id="hvMenu" hidden></div>
         <button class="menu-item" data-act="openChangePin"><i data-ic="key"></i><span data-i18n="changePin"></span></button>
         <button class="menu-item" data-act="installApp" data-install hidden><i data-ic="phone"></i><span data-i18n="installApp"></span></button>
         <button class="menu-item" data-act="pushOpen" data-pushmenu hidden><i data-ic="bell"></i><span data-i18n="pushMenu"></span></button>
-        <button class="menu-item admin-only" data-act="openAdmin"><i data-ic="shield"></i><span data-i18n="adminPanel"></span></button>
+        <button class="menu-item admin-only" id="menuAdmin" data-act="toggleArea"><i data-ic="shield"></i><span data-i18n="adminPanel"></span></button>
         <button class="menu-item" data-act="logout"><i data-ic="logout" class="flip"></i><span data-i18n="signOut"></span></button>
       </div>
     </div>
@@ -2537,6 +2556,8 @@ function show(screen) {
   const isAdmin = myRank() >= RANK.supervisor;
   nav.hidden = !isAdmin;
   if (isAdmin) nav.innerHTML = screen === 'admin' ? ic('grid') + '<span>' + esc(t('programs')) + '</span>' : ic('shield') + '<span>' + esc(t('adminPanel')) + '</span>';
+  // (pv18) القائمة المنسدلة: «لوحة الإدارة» في الرئيسية و«البرامج» داخل الإدارة (زر الشريط العلوي مخفي في الجوال)
+  const ma = $('#menuAdmin'); if (ma && isAdmin) ma.innerHTML = screen === 'admin' ? ic('grid') + '<span>' + esc(t('programs')) + '</span>' : ic('shield') + '<span>' + esc(t('adminPanel')) + '</span>';
   window.scrollTo(0, 0);
   vaultFabSync();
 }
@@ -2997,10 +3018,12 @@ function hvSet(v) {
   hvRender(); renderAppsGrid();
 }
 function hvRender() {
-  const bar = $('#hvBar'), m = hvMode(), float = m === 'float';
-  if (bar) {
-    bar.hidden = !S.apps.length;
-    bar.innerHTML = '<span class="hv-l">' + esc(t('hvLabel')) + '</span><div class="hv-seg" role="group" aria-label="' + esc(t('hvLabel')) + '">' +
+  // (pv18) «طريقة العرض» داخل القائمة المنسدلة (بجانب الصورة الشخصية) في كل المقاسات، ولا شريط فوق التحية
+  const bar = $('#hvBar'), box = $('#hvMenu'), m = hvMode(), float = m === 'float';
+  if (bar) { bar.hidden = true; bar.innerHTML = ''; }
+  if (box) {
+    box.hidden = !S.apps.length;
+    box.innerHTML = '<span class="menu-hv-l">' + ic('grid') + '<span>' + esc(t('hvLabel')) + '</span></span><div class="hv-seg" role="group" aria-label="' + esc(t('hvLabel')) + '">' +
       '<button type="button" data-act="hvSet" data-v="list" class="' + (float ? '' : 'on') + '" aria-pressed="' + !float + '">' + ic('list') + '<span>' + esc(t('hvList')) + '</span></button>' +
       '<button type="button" data-act="hvSet" data-v="float" class="' + (float ? 'on' : '') + '" aria-pressed="' + float + '"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="7" rx="2.5"/><path d="M5 15h14M7.5 18.5h9"/></svg><span>' + esc(t('hvFloat')) + '</span></button></div>';
   }
@@ -6080,7 +6103,7 @@ const ACTIONS = {
   nbFilter: el => { NB.filter = el.dataset.f === 'unread' ? 'unread' : 'all'; nbRender(); },
   nbGroup: el => { const k = el.dataset.app || ''; NB.grp[k] = !NB.grp[k]; nbRender(); },
   nbRetry: () => { NB.err = ''; nbRefresh(); },
-  hvSet: el => hvSet(el.dataset.v),
+  hvSet: el => { const inMenu = !!el.closest('#userMenu'); hvSet(el.dataset.v); if (inMenu) closeMenu(); },
   installApp: () => { closeMenu(); if (SHELL) { try { window.top.postMessage({ siwar: 'install' }, SHELL); } catch (e) {} } else openInstall(); },
   pushOpen: () => { closeMenu(); try { window.top.postMessage({ siwar: 'pushOpen', lang: S.lang }, SHELL); } catch (e) {} },
   pzToggle: el => pzToggle(el),
