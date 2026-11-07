@@ -1,9 +1,9 @@
 /* عامل الخدمة: يحفظ ملفات صفحة التطبيق وسوار الثابتة فقط (لا يحفظ أي بيانات من سوار أو البرامج).
    النسخة المحفوظة تُعرض فوراً، وأي تحديث على GitHub يصل في الفتح التالي.
    إشعارات الجوال: الإشعار يصل بلا محتوى، فيطلب العامل نصوصه من سوار برمز هذا الجهاز (المحفوظ في siwar-push) ثم يعرضها. */
-const CACHE = 'siwar-app-v84';
+const CACHE = 'siwar-app-v85';
 const PUSHC = 'siwar-push', PUSHK = './__push';
-const FILES = ['./', './index.html', './portal.html', './config.js', './manifest.webmanifest', './icons/logo.webp', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/favicon-32.png', './icons/favicon-64.png'];
+const FILES = ['./', './index.html', './portal.html', './config.js', './manifest.webmanifest?v=85', './icons/logo.webp'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES.map(f => new Request(f, { cache: 'reload' })))).then(() => self.skipWaiting()));
