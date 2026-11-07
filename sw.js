@@ -1,7 +1,7 @@
 /* عامل الخدمة: يحفظ ملفات صفحة التطبيق وسوار الثابتة فقط (لا يحفظ أي بيانات من سوار أو البرامج).
    النسخة المحفوظة تُعرض فوراً، وأي تحديث على GitHub يصل في الفتح التالي.
    إشعارات الجوال: الإشعار يصل بلا محتوى، فيطلب العامل نصوصه من سوار برمز هذا الجهاز (المحفوظ في siwar-push) ثم يعرضها. */
-const CACHE = 'siwar-app-v86';
+const CACHE = 'siwar-app-v87';
 const PUSHC = 'siwar-push', PUSHK = './__push';
 const FILES = ['./', './index.html', './portal.html', './config.js', './manifest.webmanifest?v=86', './icons/logo.webp'];
 
@@ -50,8 +50,8 @@ function portalPost(cfg, body) {
   return fetch(cfg.url, { method: 'POST', credentials: 'omit', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) }).then(r => r.json());
 }
 const FALLBACK = {
-  ar: { title: 'سوار', body: 'لديك إشعار جديد في سوار.' },
-  en: { title: 'SIWAR', body: 'You have a new notification in SIWAR.' }
+  ar: { title: 'سوار | SIWAR', body: 'لديك إشعار جديد في سوار | SIWAR.' },
+  en: { title: 'سوار | SIWAR', body: 'You have a new notification in SIWAR.' }
 };
 async function onPush() {
   const cfg = await pushCfg();
@@ -63,9 +63,10 @@ async function onPush() {
   if (!items.length) { const f = FALLBACK[cfg && cfg.lang === 'en' ? 'en' : 'ar']; items = [{ id: 'g', title: f.title, body: f.body, url: self.registration.scope, lang: cfg && cfg.lang }]; }
   await Promise.all(items.map(it => {
     const en = it.lang === 'en';
-    return self.registration.showNotification(String(it.title || 'سوار'), {
-      body: String(it.body || ''), tag: 'siwar-' + it.id, renotify: false, lang: en ? 'en' : 'ar', dir: en ? 'ltr' : 'rtl',
-      icon: 'icons/icon-192.png', data: { url: String(it.url || self.registration.scope) }
+    return self.registration.showNotification(String(it.title || 'سوار | SIWAR'), {
+      // (v87) tag من سوار: إشعارات الطلب نفسه تحل محل السابق بدل أن تتراكم، ويُنبَّه الموظف للجديد منها
+      body: String(it.body || ''), tag: 'siwar-' + String(it.tag || it.id), renotify: !!it.tag && it.tag !== it.id, lang: en ? 'en' : 'ar', dir: en ? 'ltr' : 'rtl',
+      icon: 'icons/icon-192.png?v=85', data: { url: String(it.url || self.registration.scope) }
     });
   }));
 }

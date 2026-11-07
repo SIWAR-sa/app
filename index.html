@@ -215,6 +215,44 @@ a.btn{display:grid;place-items:center;text-decoration:none}
 .pz-note{margin-top:12px!important;padding:10px 14px;border-radius:14px;background:#FBF0DC;color:#8C6524!important;font-size:13px!important}
 .pz-note.bad{background:#FBE6E3;color:#9A5A57!important}
 .pz-note.good{background:#E7F1E9;color:#3E6B4A!important}
+/* (v85) إعدادات الإشعارات: مفتاح الجهاز، ما يصلني، ساعات الهدوء */
+#pzCard .pz-med{width:66px;height:66px;margin-bottom:10px}#pzCard .pz-med svg{width:30px;height:30px}#pzCard .pz-med i{top:10px;inset-inline-end:10px;width:12px;height:12px}
+#pzCard{max-height:calc(100dvh - 20px - var(--bottom));overflow-y:auto;overscroll-behavior:contain;padding-bottom:22px}
+.pz-dev,.pz-sec{position:relative;margin-top:16px;padding:14px 16px;border-radius:20px;text-align:start;background:rgba(255,255,255,.72);box-shadow:inset 0 0 0 1px rgba(194,146,63,.22),0 10px 24px -20px rgba(140,101,36,.7)}
+.pz-dev{display:flex;align-items:center;gap:14px}
+.pz-dev>div{flex:1;min-width:0}
+.pz-dev b{display:block;font-size:16px}
+.pz-dev small{display:block;margin-top:3px;color:var(--muted);font-size:13px;line-height:1.7}
+.pz-sec p{margin:0}
+.pz-sec h2{margin:0;font-size:15px;font-weight:700}
+.pz-sw{flex:none;position:relative;width:54px;height:32px;border:0;border-radius:999px;background:#E4DDD5;cursor:pointer;box-shadow:inset 0 1px 3px rgba(43,37,34,.18);transition:background .2s}
+.pz-sw i{position:absolute;top:3px;inset-inline-start:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(43,37,34,.28);transition:inset-inline-start .2s}
+.pz-sw.on{background:linear-gradient(180deg,#E3B66D,#C2923F)}
+.pz-sw.on i{inset-inline-start:25px}
+.pz-sw[disabled]{opacity:.55;cursor:default}
+.pz-sw.busy i{animation:pzp .9s ease-in-out infinite}
+@keyframes pzp{50%{transform:scale(.8)}}
+.pz-chips,.pz-days,.pz-pre{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.pz-cat,.pz-pill{min-height:38px;padding:0 15px;border:0;border-radius:999px;background:#F3EEE8;color:var(--muted);font:inherit;font-size:14px;font-weight:600;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(63,58,55,.08);transition:background .15s,color .15s}
+.pz-cat.on,.pz-pill.on{background:linear-gradient(180deg,#FFF6E2,#F3DDB0);color:#7A561C;box-shadow:inset 0 0 0 1.5px #D7A657,0 6px 14px -10px rgba(140,101,36,.8)}
+.pz-cat.on::before{content:"✓";margin-inline-end:6px;font-weight:700}
+.pz-cat.sm,.pz-pill{min-height:34px;font-size:13px}
+.pz-pre .pz-cat.sm{margin-inline-start:auto}
+.pz-qh{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.pz-times{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.pz-times label{display:grid;gap:5px;font-size:13px;color:var(--muted)}
+.pz-times input{height:44px;padding:0 12px;border:0;border-radius:14px;background:#fff;color:var(--text);font:inherit;font-size:16px;font-weight:600;box-shadow:inset 0 0 0 1px rgba(194,146,63,.35);text-align:center}
+.pz-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.pz-day{width:100%;max-width:42px;aspect-ratio:1;justify-self:center;border:0;border-radius:50%;background:#F3EEE8;color:var(--muted);font:inherit;font-size:14px;font-weight:700;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(63,58,55,.08)}
+.pz-day.on{background:linear-gradient(180deg,#E9C47E,#C2923F);color:#fff;box-shadow:0 6px 14px -8px rgba(140,101,36,.9)}
+.pz-hint{display:block;margin-top:12px;color:var(--muted);font-size:12.5px;line-height:1.7}
+.pz-foot{display:grid;gap:4px;margin-top:4px}
+.pz-foot .link{display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.pz-foot .link svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pz-foot .link .spin{width:15px;height:15px;border-radius:50%;border:2px solid rgba(166,95,93,.25);border-top-color:#A65F5D;animation:spin .8s linear infinite}
+.pz-sk{display:grid;gap:12px;margin-top:16px}
+.pz-sk i{height:64px;border-radius:20px;background:linear-gradient(90deg,#F4EEE6,#FBF7F1,#F4EEE6);background-size:200% 100%;animation:pzs 1.2s linear infinite}
+@keyframes pzs{to{background-position:-200% 0}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 /* (pv19) بطاقة «نسخة جديدة» — بطاقة زجاجية عائمة لا تمنع العمل */
 #siwarUpd{position:fixed;z-index:2147483000;box-sizing:border-box;display:flex;align-items:flex-start;gap:14px;padding:14px 16px 14px 14px;border-radius:24px;color:#3F3A37;font-family:inherit;text-align:start;
@@ -259,7 +297,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
 
 <div id="net" role="status" aria-live="polite"><i></i><span id="netTxt"></span></div>
 
-<div id="splash"><div class="sp"><img src="icons/logo.webp" alt="سوار"><div class="bar"><i></i></div></div></div>
+<div id="splash"><div class="sp"><img src="icons/logo.webp" alt="سوار | SIWAR"><div class="bar"><i></i></div></div></div>
 
 <div id="portal"></div>
 
@@ -277,12 +315,12 @@ a.btn{display:grid;place-items:center;text-decoration:none}
       <div class="pl-err"><span id="plErrTxt"></span><button id="plRetry"></button></div></div></div></div>
 </div>
 
-<button id="home" hidden aria-label="العودة إلى سوار"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+<button id="home" hidden aria-label="العودة إلى سوار | SIWAR"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
 
 <div id="install" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="iT">
     <img src="icons/apple-touch-icon.png" alt="">
-    <h1 id="iT">تثبيت تطبيق سوار</h1>
+    <h1 id="iT">تثبيت تطبيق سوار | SIWAR</h1>
     <div id="iBody"></div>
     <button class="link" id="iLater">لاحقاً</button>
   </div>
@@ -451,11 +489,11 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   function curClear() { try { sessionStorage.removeItem(CURK); } catch (e) {} }
   /* النصوص بلغة سوار: تصل اللغة من سوار وتُحفظ على الجهاز */
   var TXT = {
-    ar: { back: 'رجوع', ext: 'فتح في المتصفح', title: 'تثبيت تطبيق سوار', later: 'لاحقاً', prog: 'برنامج', noUrl: 'لم يُضبط رابط سوار في config.js',
+    ar: { back: 'رجوع', ext: 'فتح في المتصفح', title: 'تثبيت تطبيق سوار | SIWAR', later: 'لاحقاً', prog: 'برنامج', noUrl: 'لم يُضبط رابط سوار في config.js',
       desc: 'أيقونة على الشاشة الرئيسية، وتفتح الأنظمة في نافذة مستقلة.', install: 'تثبيت التطبيق',
-      ios1: 'افتح هذه الصفحة في متصفح Safari', ios2: 'اضغط زر المشاركة ', ios3: 'اختر «إضافة إلى الشاشة الرئيسية» ', ios2n: 'اضغط ••• بجانب العنوان، ثم «مشاركة» ', ios3m: 'مرّر القائمة لأسفل واختر «إضافة إلى الشاشة الرئيسية» ', ios4: 'اضغط «إضافة» في أعلى الشاشة؛ بدونها لا تُضاف الأيقونة', iosInApp: 'التثبيت على الآيفون يتم من Safari.', iosOld: 'على هذا الإصدار من iOS يتم التثبيت من Safari.', openSafari: 'فتح في Safari للتثبيت', iosDone: 'بعد الإضافة افتح سوار من أيقونته على الشاشة الرئيسية.',
+      ios1: 'افتح هذه الصفحة في متصفح Safari', ios2: 'اضغط زر المشاركة ', ios3: 'اختر «إضافة إلى الشاشة الرئيسية» ', ios2n: 'اضغط ••• بجانب العنوان، ثم «مشاركة» ', ios3m: 'مرّر القائمة لأسفل واختر «إضافة إلى الشاشة الرئيسية» ', ios4: 'اضغط «إضافة» في أعلى الشاشة؛ بدونها لا تُضاف الأيقونة', iosInApp: 'التثبيت على الآيفون يتم من Safari.', iosOld: 'على هذا الإصدار من iOS يتم التثبيت من Safari.', openSafari: 'فتح في Safari للتثبيت', iosDone: 'بعد الإضافة افتح سوار | SIWAR من أيقونته على الشاشة الرئيسية.',
       an1: 'افتح هذه الصفحة في Chrome أو Edge', an2a: 'من قائمة المتصفح ', an2b: ' اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية»',
-      phT: 'سوار على جوالك', phD: 'امسح الرمز بكاميرا الجوال، ثم ثبّت التطبيق من الصفحة التي تفتح.', copy: 'نسخ الرابط', copied: 'تم النسخ', close: 'إغلاق' },
+      phT: 'سوار | SIWAR على جوالك', phD: 'امسح الرمز بكاميرا الجوال، ثم ثبّت التطبيق من الصفحة التي تفتح.', copy: 'نسخ الرابط', copied: 'تم النسخ', close: 'إغلاق' },
     en: { back: 'Back', ext: 'Open in browser', title: 'Install the SIWAR app', later: 'Later', prog: 'App', noUrl: 'The portal link is not set in config.js',
       desc: 'An icon on your home screen; systems open in their own window.', install: 'Install app',
       ios1: 'Open this page in Safari', ios2: 'Tap the Share button ', ios3: 'Choose “Add to Home Screen” ', ios2n: 'Tap ••• next to the address, then “Share” ', ios3m: 'Scroll down and choose “Add to Home Screen” ', ios4: 'Tap “Add” at the top; without it the icon is not added', iosInApp: 'On iPhone, the app is installed from Safari.', iosOld: 'On this iOS version, the app is installed from Safari.', openSafari: 'Open in Safari to install', iosDone: 'After adding it, open SIWAR from its Home Screen icon.',
@@ -535,7 +573,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     $('splash').className = 'out';
   } else {
     var f = document.createElement('iframe');
-    f.title = 'سوار';
+    f.title = 'سوار | SIWAR';
     f.allow = 'clipboard-read; clipboard-write; fullscreen; web-share; camera; microphone; publickey-credentials-get *; publickey-credentials-create *';
     // سوار صفحة ثابتة من نفس موقع التطبيق (portal.html): تُفتح فوراً من ذاكرة الجهاز، وتكلّم الخادم مباشرة،
     // فلا صفحة جوجل وسيطة ولا تعارض حسابات جوجل
@@ -982,7 +1020,8 @@ a.btn{display:grid;place-items:center;text-decoration:none}
       if (d.siwar === 'show') { toPortal({ siwar: 'relaunch', id: id }); return; }
       if (d.siwar === 'warm' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onWarm(id, String(d.url), String(d.name || ''), ic); return; }
       if (d.siwar === 'close') { if (id && frames[id] && !frames[id].ready) dropFrame(id); hideLayer(false); return; }
-      if (d.siwar === 'logout') { hideLayer(false); snapClear(); Object.keys(frames).forEach(dropFrame); kvClear(); curClear(); pushDropDevice(); return; }
+      if (d.siwar === 'logout') { hideLayer(false); snapClear(); Object.keys(frames).forEach(dropFrame); kvClear(); curClear(); if (d.why !== 'expired') pushDropDevice(); $('push').hidden = true; return; }
+      if (d.siwar === 'pushWho') { pushWho(String(d.uid || '').slice(0, 40), String(d.lang || '')); return; }
       if (d.siwar === 'dropFrames') { hideLayer(false); Object.keys(frames).forEach(dropFrame); return; }   // بعد تغيير كلمة المرور: جلسات الأنظمة انتهت فتُغلق شاشاتها وتُفتح من جديد بتذاكر جديدة
       if (d.siwar === 'pushOpen') { if (d.lang) applyLang(String(d.lang)); pushOpen(); return; }
       if (d.siwar === 'pushRes') { pushGot(d); return; }
@@ -1129,22 +1168,34 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     else toPortal({ siwar: 'refresh' });
   });
 
-  /* ── إشعارات الجوال ──
+  /* ── إشعارات الجوال: «إعدادات الإشعارات» لكل موظف ──
      الاشتراك هنا في غلاف التطبيق (الصفحة التي يتحكم بها عامل الخدمة)، وطلبات الحفظ تمر عبر سوار لأن الجلسة فيها.
-     رمز الجهاز وعنوان سوار يُحفظان في ذاكرة عامل الخدمة (siwar-push) ليطلب نصوص الإشعار عند وصوله. */
-  var portalOk = false, PUSHC = 'siwar-push', PUSHK = './__push', pzWait = {}, pzSeq = 0, pzInfo = null;
+     رمز الجهاز وعنوان سوار يُحفظان في ذاكرة عامل الخدمة (siwar-push) ليطلب نصوص الإشعار عند وصوله.
+     (v85) مفتاح «هذا الجهاز» يشغّل الإشعارات ويطلب إذن المتصفح في اللمسة نفسها، أو يوقفها. وما يصلني وساعات الهدوء تُحفظ بزر «حفظ».
+     انتهاء الجلسة لا يوقف إشعارات الجهاز؛ يوقفها «تسجيل الخروج» أو دخول حساب آخر على الجهاز نفسه. */
+  var portalOk = false, PUSHC = 'siwar-push', PUSHK = './__push', pzWait = {}, pzSeq = 0;
+  var PZ = { st: 'off', info: null, saved: null, draft: null, uid: '', warned: false };
+  var PZ_CATS = ['wait', 'chat', 'status', 'tasks', 'remind'];
   var PZT = {
-    ar: { title: 'إشعارات الجوال', on: 'مفعّلة على هذا الجهاز', off: 'غير مفعّلة على هذا الجهاز', blocked: 'محجوبة من المتصفح', unsup: 'غير متاحة في هذا المتصفح', ios: 'تحتاج تثبيت التطبيق',
-      offTxt: 'يصلك إشعار على هذا الجهاز حين يُطلب منك إجراء في أنظمة سوار، ويفتح الإشعار الطلب نفسه مباشرة.', enable: 'تفعيل الإشعارات',
-      onTxt: 'تصلك على هذا الجهاز الإشعارات التي تخصك وحدك.', test: 'إرسال إشعار تجريبي', disable: 'إيقاف على هذا الجهاز',
+    ar: { title: 'إعدادات الإشعارات', on: 'مفعّلة على هذا الجهاز', off: 'غير مفعّلة على هذا الجهاز', blocked: 'محجوبة من المتصفح', unsup: 'غير متاحة في هذا المتصفح', ios: 'تحتاج تثبيت التطبيق',
+      dev: 'هذا الجهاز', devOn: 'تصل إلى هذا الجهاز الإشعارات التي تخصك وحدك.', devOff: 'شغّله ليصلك إشعار حين يُطلب منك إجراء، ويفتح الإشعار الطلب نفسه.',
+      cats: 'ما يصلني', wait: 'طلبات بانتظاري', chat: 'محادثات أنا فيها', status: 'تغيّر الحالة', tasks: 'المهام', remind: 'التذكيرات',
+      quiet: 'ساعات الهدوء', from: 'من', to: 'إلى', all: 'كل الأيام', work: 'أيام العمل', urg: 'إلا العاجل', quietHint: 'ما يصل أثناء الهدوء يصلك في إشعار واحد عند نهايته.',
+      days: ['ح', 'ن', 'ث', 'ر', 'خ', 'ج', 'س'], dayNames: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
+      save: 'حفظ', saved: 'حُفظت إعداداتك.', unsaved: 'لديك تعديلات لم تُحفظ. اضغط «حفظ»، أو أغلق مرة أخرى للخروج دونها.', noDays: 'اختر يوماً واحداً على الأقل لساعات الهدوء.', sameTime: 'وقت البداية ووقت النهاية متساويان.',
+      testMe: 'إرسال إشعار تجريبي لي', nodev: 'لم يُرسل: لا يوجد جهاز مفعّل لحسابك. شغّل «هذا الجهاز» أولاً.', enabled: 'فُعّلت الإشعارات على هذا الجهاز.',
       blockedTxt: 'سبق رفض الإشعارات لهذا التطبيق. افتح إعدادات الموقع في المتصفح (رمز القفل بجانب العنوان، أو إعدادات التطبيق على الجوال)، واسمح بالإشعارات، ثم ارجع هنا.', retry: 'تحقق مرة أخرى',
-      iosTxt: 'على الآيفون والآيباد تعمل الإشعارات بعد تثبيت تطبيق سوار على الشاشة الرئيسية (iOS 16.4 أو أحدث)، ثم فتحه من أيقونته.', ios1: 'افتح سوار في Safari', ios2: 'اضغط زر المشاركة ', ios3: 'اختر «إضافة إلى الشاشة الرئيسية» ثم افتح التطبيق من أيقونته',
+      iosTxt: 'على الآيفون والآيباد تعمل الإشعارات بعد تثبيت تطبيق سوار | SIWAR على الشاشة الرئيسية (iOS 16.4 أو أحدث)، ثم فتحه من أيقونته.', ios1: 'افتح سوار | SIWAR في Safari', ios2: 'اضغط زر المشاركة ', ios3: 'اختر «إضافة إلى الشاشة الرئيسية» ثم افتح التطبيق من أيقونته',
       unsupTxt: 'هذا المتصفح لا يدعم الإشعارات. استخدم Chrome أو Edge أو Safari بإصدار حديث.',
       sent: 'أُرسل إشعار تجريبي، ويصل خلال ثوانٍ.', masterOff: 'إرسال الإشعارات متوقف الآن من إدارة سوار.', personOff: 'الإشعارات متوقفة لحسابك من إدارة سوار.', limited: 'وصلت للحد المسموح من الإشعارات في هذه الساعة.',
       nokey: 'إرسال الإشعارات لم يُهيأ بعد في سوار.', nosess: 'سجّل الدخول إلى سوار أولاً.', fail: 'تعذّر إكمال العملية. تحقق من الاتصال ثم أعد المحاولة.', denied: 'لم يُسمح بالإشعارات.', close: 'إغلاق' },
-    en: { title: 'Phone notifications', on: 'On for this device', off: 'Off on this device', blocked: 'Blocked by the browser', unsup: 'Not available in this browser', ios: 'Needs the installed app',
-      offTxt: 'Get a notification on this device when an action is needed from you in SIWAR systems; tapping it opens the item directly.', enable: 'Turn on notifications',
-      onTxt: 'This device receives the notifications meant for you only.', test: 'Send a test notification', disable: 'Turn off on this device',
+    en: { title: 'Notification settings', on: 'On for this device', off: 'Off on this device', blocked: 'Blocked by the browser', unsup: 'Not available in this browser', ios: 'Needs the installed app',
+      dev: 'This device', devOn: 'This device receives the notifications meant for you only.', devOff: 'Turn it on to get a notification when an action is needed from you; tapping it opens the item.',
+      cats: 'What I receive', wait: 'Requests awaiting me', chat: 'Conversations I am in', status: 'Status changes', tasks: 'Tasks', remind: 'Reminders',
+      quiet: 'Quiet hours', from: 'From', to: 'To', all: 'Every day', work: 'Work days', urg: 'Except urgent', quietHint: 'What arrives during quiet hours reaches you as one notification when they end.',
+      days: ['S', 'M', 'T', 'W', 'T', 'F', 'S'], dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      save: 'Save', saved: 'Your settings were saved.', unsaved: 'You have unsaved changes. Tap «Save», or close again to leave without them.', noDays: 'Choose at least one day for quiet hours.', sameTime: 'The start and end times are the same.',
+      testMe: 'Send me a test notification', nodev: 'Not sent: no device is on for your account. Turn on «This device» first.', enabled: 'Notifications are on for this device.',
       blockedTxt: 'Notifications were refused for this app. Open the site settings in your browser (the lock icon next to the address, or the app settings on your phone), allow notifications, then come back.', retry: 'Check again',
       iosTxt: 'On iPhone and iPad, notifications work after you add the SIWAR app to the Home Screen (iOS 16.4 or later) and open it from its icon.', ios1: 'Open SIWAR in Safari', ios2: 'Tap the Share button ', ios3: 'Choose “Add to Home Screen”, then open the app from its icon',
       unsupTxt: 'This browser does not support notifications. Use a recent Chrome, Edge or Safari.',
@@ -1152,6 +1203,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
       nokey: 'Notifications are not set up in SIWAR yet.', nosess: 'Sign in to SIWAR first.', fail: 'Could not complete. Check the connection, then try again.', denied: 'Notifications were not allowed.', close: 'Close' }
   };
   function PT(k) { return (PZT[LANG] || PZT.ar)[k]; }
+  function pzEsc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function pushApi(op, data) {
     return new Promise(function (res) {
       var rid = 'p' + (++pzSeq) + '_' + Date.now();
@@ -1167,7 +1219,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   function swReg() { return navigator.serviceWorker.getRegistration('./').then(function (r) { return r || navigator.serviceWorker.register('sw.js').then(function () { return navigator.serviceWorker.ready; }); }); }
   function b64u(s) { s = String(s || '').replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; var b = atob(s), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; }
   function sameKey(sub, key) { try { var a = new Uint8Array(sub.options.applicationServerKey), b = b64u(key); if (a.length !== b.length) return false; for (var i = 0; i < a.length; i++) if (a[i] !== b[i]) return false; return true; } catch (e) { return true; } }
-  // الحالة: ios (يحتاج التثبيت) · unsup · blocked · on · off
+  // حالة الجهاز: ios (يحتاج التثبيت) · unsup · blocked · on · off
   function pushState() {
     if (iOS && !standalone) return Promise.resolve('ios');
     if (!pushSupported()) return Promise.resolve('unsup');
@@ -1176,93 +1228,175 @@ a.btn{display:grid;place-items:center;text-decoration:none}
       return a[0] && a[1] && a[1].id && Notification.permission === 'granted' ? 'on' : 'off';
     });
   }
-  var svgBell = '<svg viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.6 2H4.4z"/><path d="M10 21a2.2 2.2 0 0 0 4 0"/></svg>';
   var svgSend = '<svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2.5-6.5z"/><path d="M11.5 13.5L20 4"/></svg>';
-  function pzBtn(id, txt, svg, cls) { return '<button class="' + (cls || 'btn') + '" id="' + id + '">' + (svg || '') + '<span>' + txt + '</span></button>'; }
-  function pzRender(st, note, noteCls) {
+  function pzCode(c) { return c === 'NO_SESSION' ? PT('nosess') : c === 'PUSH_NOT_READY' ? PT('nokey') : PT('fail'); }
+  function pzClone(p) { return JSON.parse(JSON.stringify(p)); }
+  function pzDirty() { return !!(PZ.saved && PZ.draft) && JSON.stringify(PZ.saved) !== JSON.stringify(PZ.draft); }
+  function pzSw(id, on, label, dis) { return '<button type="button" class="pz-sw' + (on ? ' on' : '') + '" id="' + id + '" role="switch" aria-checked="' + (on ? 'true' : 'false') + '" aria-label="' + pzEsc(label) + '"' + (dis ? ' disabled' : '') + '><i></i></button>'; }
+  function pzNote(note, cls) { return note ? '<p class="pz-note' + (cls ? ' ' + cls : '') + '" role="status">' + note + '</p>' : ''; }
+  // الشاشة كلها: الجهاز، ثم «ما يصلني» و«ساعات الهدوء» (إن عُرفت إعدادات الموظف من سوار)، ثم «حفظ»
+  function pzRender(note, noteCls) {
+    var st = PZ.st;
     $('pzCard').setAttribute('data-st', st);
     $('pzT').textContent = PT('title'); $('pzX').setAttribute('aria-label', PT('close'));
-    $('pzChip').textContent = PT({ on: 'on', off: 'off', blocked: 'blocked', unsup: 'unsup', ios: 'ios', err: 'off' }[st]);
-    var b = $('pzBody'), n = note ? '<p class="pz-note' + (noteCls ? ' ' + noteCls : '') + '" role="status">' + note + '</p>' : '';
-    if (st === 'off' || st === 'err') b.innerHTML = '<p>' + PT('offTxt') + '</p>' + n + pzBtn('pzOn', PT('enable'), svgBell);
-    else if (st === 'on') b.innerHTML = '<p>' + PT('onTxt') + '</p>' + n + pzBtn('pzTest', PT('test'), svgSend) + '<div class="pz-row"><button class="link" id="pzOff">' + PT('disable') + '</button></div>';
-    else if (st === 'blocked') b.innerHTML = '<p>' + PT('blockedTxt') + '</p>' + n + pzBtn('pzRe', PT('retry'));
-    else if (st === 'ios') b.innerHTML = '<p>' + PT('iosTxt') + '</p><div class="steps">' + step('1', PT('ios1')) + step('2', PT('ios2') + svgShare) + step('3', PT('ios3')) + '</div>';
-    else b.innerHTML = '<p>' + PT('unsupTxt') + '</p>';
-    if ($('pzOn')) $('pzOn').onclick = pushEnable;
+    $('pzChip').textContent = PT({ on: 'on', off: 'off', blocked: 'blocked', unsup: 'unsup', ios: 'ios', err: 'off', wait: 'off' }[st] || 'off');
+    var h = '';
+    if (st === 'blocked') h += '<div class="pz-sec"><p>' + PT('blockedTxt') + '</p><button class="link" id="pzRe">' + PT('retry') + '</button></div>';
+    else if (st === 'ios') h += '<div class="pz-sec"><p>' + PT('iosTxt') + '</p><div class="steps">' + step('1', PT('ios1')) + step('2', PT('ios2') + svgShare) + step('3', PT('ios3')) + '</div></div>';
+    else if (st === 'unsup') h += '<div class="pz-sec"><p>' + PT('unsupTxt') + '</p></div>';
+    else h += '<div class="pz-dev"><div><b>' + PT('dev') + '</b><small>' + PT(st === 'on' ? 'devOn' : 'devOff') + '</small></div>' + pzSw('pzDev', st === 'on', PT('dev'), st === 'wait') + '</div>';
+    h += pzNote(note, noteCls);
+    var d = PZ.draft;
+    if (d) {
+      h += '<div class="pz-sec"><h2>' + PT('cats') + '</h2><div class="pz-chips">' + PZ_CATS.map(function (k) {
+        return '<button type="button" class="pz-cat' + (d.cats[k] ? ' on' : '') + '" data-cat="' + k + '" aria-pressed="' + (d.cats[k] ? 'true' : 'false') + '">' + PT(k) + '</button>'; }).join('') + '</div></div>';
+      var q = d.q, wk = [0, 1, 2, 3, 4], same = function (a) { return a.length === q.days.length && a.every(function (x) { return q.days.indexOf(x) >= 0; }); };
+      h += '<div class="pz-sec"><div class="pz-qh"><h2>' + PT('quiet') + '</h2>' + pzSw('pzQ', !!q.on, PT('quiet')) + '</div>';
+      if (q.on) {
+        h += '<div class="pz-times"><label><span>' + PT('from') + '</span><input type="time" step="300" id="pzFrom" value="' + pzEsc(q.from) + '" dir="ltr"></label><label><span>' + PT('to') + '</span><input type="time" step="300" id="pzTo" value="' + pzEsc(q.to) + '" dir="ltr"></label></div>' +
+          '<div class="pz-days">' + [0, 1, 2, 3, 4, 5, 6].map(function (i) { var on = q.days.indexOf(i) >= 0; return '<button type="button" class="pz-day' + (on ? ' on' : '') + '" data-day="' + i + '" aria-pressed="' + (on ? 'true' : 'false') + '" aria-label="' + PT('dayNames')[i] + '" title="' + PT('dayNames')[i] + '">' + PT('days')[i] + '</button>'; }).join('') + '</div>' +
+          '<div class="pz-pre"><button type="button" class="pz-pill' + (same([0, 1, 2, 3, 4, 5, 6]) ? ' on' : '') + '" data-pre="all">' + PT('all') + '</button><button type="button" class="pz-pill' + (same(wk) ? ' on' : '') + '" data-pre="work">' + PT('work') + '</button>' +
+          '<button type="button" class="pz-cat sm' + (q.urg ? ' on' : '') + '" id="pzUrg" aria-pressed="' + (q.urg ? 'true' : 'false') + '">' + PT('urg') + '</button></div>' +
+          '<small class="pz-hint">' + PT('quietHint') + '</small>';
+      }
+      h += '</div><div class="pz-foot"><button class="btn" id="pzSave"' + (pzDirty() ? '' : ' disabled') + '><span>' + PT('save') + '</span></button>' +
+        (PZ.info && PZ.info.admin ? '<button class="link" id="pzTest">' + svgSend + '<span>' + PT('testMe') + '</span></button>' : '') + '</div>';
+    } else if (PZ.loading) h += '<div class="pz-sk"><i></i><i></i><i></i></div>';
+    $('pzBody').innerHTML = h;
+    pzBind();
+  }
+  function pzBind() {
+    var b = $('pzBody');
+    if ($('pzDev')) $('pzDev').onclick = function () { if (PZ.st === 'on') pushDisable(); else pushEnable(); };
+    if ($('pzRe')) $('pzRe').onclick = function () { pushState().then(function (s2) { PZ.st = s2; pzRender(); }); };
+    if ($('pzSave')) $('pzSave').onclick = pzSave;
     if ($('pzTest')) $('pzTest').onclick = pushTest;
-    if ($('pzOff')) $('pzOff').onclick = pushDisable;
-    if ($('pzRe')) $('pzRe').onclick = function () { pushState().then(function (s2) { pzRender(s2); }); };
+    if ($('pzQ')) $('pzQ').onclick = function () { PZ.draft.q.on = PZ.draft.q.on ? 0 : 1; pzRender(); };
+    if ($('pzUrg')) $('pzUrg').onclick = function () { PZ.draft.q.urg = PZ.draft.q.urg ? 0 : 1; pzRender(); };
+    if ($('pzFrom')) $('pzFrom').onchange = function () { if (this.value) PZ.draft.q.from = this.value.slice(0, 5); pzRender(); };
+    if ($('pzTo')) $('pzTo').onchange = function () { if (this.value) PZ.draft.q.to = this.value.slice(0, 5); pzRender(); };
+    Array.prototype.forEach.call(b.querySelectorAll('[data-cat]'), function (el) { el.onclick = function () { var k = el.getAttribute('data-cat'); PZ.draft.cats[k] = PZ.draft.cats[k] ? 0 : 1; pzRender(); }; });
+    Array.prototype.forEach.call(b.querySelectorAll('[data-day]'), function (el) { el.onclick = function () { var i = Number(el.getAttribute('data-day')), a = PZ.draft.q.days, p = a.indexOf(i); if (p >= 0) a.splice(p, 1); else a.push(i); a.sort(); pzRender(); }; });
+    Array.prototype.forEach.call(b.querySelectorAll('[data-pre]'), function (el) { el.onclick = function () { PZ.draft.q.days = el.getAttribute('data-pre') === 'work' ? [0, 1, 2, 3, 4] : [0, 1, 2, 3, 4, 5, 6]; pzRender(); }; });
   }
-  function pzBusy(id, on) { var b = $(id); if (!b) return; b.disabled = on; var sp = b.querySelector('.spin'); if (on && !sp) { var i = document.createElement('i'); i.className = 'spin'; b.insertBefore(i, b.firstChild); } else if (!on && sp) sp.remove(); }
-  function pzCode(c) { return c === 'NO_SESSION' ? PT('nosess') : c === 'PUSH_NOT_READY' ? PT('nokey') : PT('fail'); }
+  function pzBusy(id, on) { var b = $(id); if (!b) return; b.disabled = on; b.classList.toggle('busy', !!on); var sp = b.querySelector('.spin'); if (on && !sp) { var i = document.createElement('i'); i.className = 'spin'; b.insertBefore(i, b.firstChild); } else if (!on && sp) sp.remove(); }
+  function pzLoadInfo() {
+    return pushCfg().then(function (cfg) { return pushApi('info', { id: cfg && cfg.id || '' }); }).then(function (r) {
+      PZ.loading = false;
+      if (r.ok) { PZ.info = r.data; PZ.saved = pzClone(r.data.prefs); PZ.draft = pzClone(r.data.prefs); }
+      return r;
+    });
+  }
   function pushOpen() {
-    $('push').hidden = false; pzRender('off'); $('pzBody').innerHTML = '<p>&nbsp;</p>';
-    pushState().then(function (st) { pzRender(st); });
-    pzInfo = null; pushApi('info').then(function (r) { if (r.ok) pzInfo = r.data; });   // المفتاح العام جاهز قبل الضغط، فيبقى الطلب داخل لمسة المستخدم
+    $('push').hidden = false; PZ.warned = false; PZ.info = null; PZ.saved = null; PZ.draft = null; PZ.loading = true; PZ.st = 'wait'; pzRender();
+    // المفتاح العام وإعداداتي يُطلبان فور الفتح، فيبقى طلب الإذن داخل لمسة المستخدم عند تشغيل المفتاح
+    Promise.all([pushState(), pzLoadInfo()]).then(function (a) {
+      PZ.st = a[0]; var r = a[1];
+      pzRender(r.ok ? (a[0] === 'on' && r.data.on === false ? PT('masterOff') : a[0] === 'on' && r.data.allowed === false ? PT('personOff') : '') : pzCode(r.code), r.ok ? '' : 'bad');
+    });
   }
-  $('pzX').onclick = function () { $('push').hidden = true; };
-  $('push').addEventListener('click', function (e) { if (e.target === $('push')) $('push').hidden = true; });
-  function pushEnable() {
-    pzBusy('pzOn', true);
-    var infoP = pzInfo ? Promise.resolve({ ok: true, data: pzInfo }) : pushApi('info');
-    var permP = Notification.permission === 'granted' ? Promise.resolve('granted') : Notification.requestPermission();
-    Promise.all([permP, infoP]).then(function (a) {
-      var perm = a[0], info = a[1];
-      if (perm === 'denied') { pzRender('blocked'); return; }
-      if (perm !== 'granted') { pzRender('off', PT('denied'), 'bad'); return; }
-      if (!info.ok) { pzRender('err', pzCode(info.code), 'bad'); return; }
-      if (!info.data.key) { pzRender('err', PT('nokey'), 'bad'); return; }
-      return swReg().then(function (reg) {
-        return reg.pushManager.getSubscription().then(function (old) {
-          if (old && !sameKey(old, info.data.key)) return old.unsubscribe().then(function () { return null; });
-          return old;
-        }).then(function (sub) { return sub || reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u(info.data.key) }); });
-      }).then(function (sub) {
-        return pushCfg().then(function (old) {
-          var j = sub.toJSON(), dev = (iOS ? 'iPhone' : /Android/.test(ua) ? 'Android' : 'Desktop') + ' · ' + (/Edg\//.test(ua) ? 'Edge' : /Chrome\//.test(ua) ? 'Chrome' : /Firefox\//.test(ua) ? 'Firefox' : /Safari\//.test(ua) ? 'Safari' : 'Browser');
-          return pushApi('sub', { sub: { endpoint: j.endpoint, keys: j.keys }, device: dev }).then(function (r) {
-            if (!r.ok) { pzRender('err', pzCode(r.code), 'bad'); return; }
-            return pushCfgSet({ url: PORTAL, id: r.data.id, tok: r.data.tok, lang: LANG }).then(function () {
-              if (old && old.id && old.id !== r.data.id) pushApi('unsub', { id: old.id });
-              pzRender('on', info.data.on === false ? PT('masterOff') : info.data.allowed === false ? PT('personOff') : '', info.data.on === false || info.data.allowed === false ? '' : 'good');
-            });
+  function pzClose() {
+    if (pzDirty() && !PZ.warned) { PZ.warned = true; pzRender(PT('unsaved'), 'bad'); return; }
+    $('push').hidden = true;
+  }
+  $('pzX').onclick = pzClose;
+  $('push').addEventListener('click', function (e) { if (e.target === $('push')) pzClose(); });
+  function pzSave() {
+    var q = PZ.draft.q;
+    if (q.on && !q.days.length) { pzRender(PT('noDays'), 'bad'); return; }
+    if (q.on && q.from === q.to) { pzRender(PT('sameTime'), 'bad'); return; }
+    pzBusy('pzSave', true);
+    pushApi('prefs', { prefs: PZ.draft }).then(function (r) {
+      if (!r.ok) { pzRender(pzCode(r.code), 'bad'); return; }
+      PZ.saved = pzClone(r.data.prefs); PZ.draft = pzClone(r.data.prefs); PZ.warned = false;
+      pzRender(PT('saved'), 'good');
+    });
+  }
+  // الاشتراك نفسه (بعد الإذن): اشتراك المتصفح، ثم حفظه في سوار برمز خاص بهذا الجهاز
+  function pushSubscribeCore(info) {
+    return swReg().then(function (reg) {
+      return reg.pushManager.getSubscription().then(function (old) {
+        if (old && !sameKey(old, info.key)) return old.unsubscribe().then(function () { return null; });
+        return old;
+      }).then(function (sub) { return sub || reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u(info.key) }); });
+    }).then(function (sub) {
+      return pushCfg().then(function (old) {
+        var j = sub.toJSON(), dev = (iOS ? 'iPhone' : /Android/.test(ua) ? 'Android' : 'Desktop') + ' · ' + (/Edg\//.test(ua) ? 'Edge' : /Chrome\//.test(ua) ? 'Chrome' : /Firefox\//.test(ua) ? 'Firefox' : /Safari\//.test(ua) ? 'Safari' : 'Browser');
+        return pushApi('sub', { sub: { endpoint: j.endpoint, keys: j.keys }, device: dev }).then(function (r) {
+          if (!r.ok) return { ok: false, code: r.code };
+          return pushCfgSet({ url: PORTAL, id: r.data.id, tok: r.data.tok, lang: LANG, uid: PZ.uid || (old && old.uid) || '' }).then(function () {
+            if (old && old.id && old.id !== r.data.id) pushApi('unsub', { id: old.id });
+            return { ok: true };
           });
         });
       });
-    }).catch(function () { pzRender('err', PT('fail'), 'bad'); });
+    });
+  }
+  function pushEnable() {
+    // الإذن يُطلب أولاً وفي اللمسة نفسها (يشترطه Chrome على Android)
+    var permP = Notification.permission === 'granted' ? Promise.resolve('granted') : Notification.requestPermission();
+    pzBusy('pzDev', true);
+    var infoP = PZ.info ? Promise.resolve({ ok: true, data: PZ.info }) : pzLoadInfo();
+    Promise.all([permP, infoP]).then(function (a) {
+      var perm = a[0], info = a[1];
+      if (perm === 'denied') { PZ.st = 'blocked'; pzRender(); return; }
+      if (perm !== 'granted') { PZ.st = 'off'; pzRender(PT('denied'), 'bad'); return; }
+      if (!info.ok) { PZ.st = 'off'; pzRender(pzCode(info.code), 'bad'); return; }
+      if (!info.data.key) { PZ.st = 'off'; pzRender(PT('nokey'), 'bad'); return; }
+      return pushSubscribeCore(info.data).then(function (r) {
+        if (!r.ok) { PZ.st = 'off'; pzRender(pzCode(r.code), 'bad'); return; }
+        PZ.st = 'on';
+        pzRender(info.data.on === false ? PT('masterOff') : info.data.allowed === false ? PT('personOff') : PT('enabled'), info.data.on === false || info.data.allowed === false ? '' : 'good');
+      });
+    }).catch(function () { PZ.st = 'off'; pzRender(PT('fail'), 'bad'); });
   }
   function pushTest() {
     pzBusy('pzTest', true);
     pushApi('test').then(function (r) {
       var d = r.data || {};
-      if (!r.ok) pzRender('on', pzCode(r.code), 'bad');
-      else if (d.off) pzRender('on', PT('masterOff'));
-      else if (d.person) pzRender('on', PT('personOff'));
-      else if (d.limited) pzRender('on', PT('limited'));
-      else if (d.sent) pzRender('on', PT('sent'), 'good');
-      else pushState().then(function (s2) { pzRender(s2, s2 === 'on' ? PT('fail') : '', 'bad'); });
+      if (!r.ok) pzRender(pzCode(r.code), 'bad');
+      else if (d.off) pzRender(PT('masterOff'));
+      else if (d.person) pzRender(PT('personOff'));
+      else if (d.limited) pzRender(PT('limited'));
+      else if (d.nodev) pzRender(PT('nodev'), 'bad');
+      else if (d.devices) pzRender(PT('sent'), 'good');
+      else pzRender(PT('fail'), 'bad');
     });
   }
   function pushDisable() {
-    pzBusy('pzOff', true);
+    pzBusy('pzDev', true);
     pushCfg().then(function (cfg) {
       var srv = cfg && cfg.id ? pushApi('unsub', { id: cfg.id }) : Promise.resolve({ ok: true });
       return srv.then(function (r) {
         if (!r.ok && cfg) dropDirect(cfg);
         return swReg().then(function (reg) { return reg.pushManager.getSubscription(); }).then(function (s2) { return s2 && s2.unsubscribe(); }).catch(function () {}).then(function () { return pushCfgSet(null); });
       });
-    }).then(function () { pzRender('off'); }, function () { pzRender('off'); });
+    }).then(function () { PZ.st = 'off'; pzRender(); }, function () { PZ.st = 'off'; pzRender(); });
   }
-  // الخروج من سوار: يُحذف اشتراك هذا الجهاز برمزه (الجلسة انتهت)، فلا تصل إشعارات الحساب السابق لمن يستخدم الجهاز بعده
+  // «تسجيل الخروج» أو حساب آخر: يُحذف اشتراك هذا الجهاز برمزه، فلا تصل إشعارات الحساب السابق لمن يستخدم الجهاز بعده
   function dropDirect(cfg) { try { return fetch(cfg.url || PORTAL, { method: 'POST', credentials: 'omit', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'push_drop', id: cfg.id, tok: cfg.tok }) }).catch(function () {}); } catch (e) { return Promise.resolve(); } }
   function pushDropDevice() {
-    pushCfg().then(function (cfg) {
+    return pushCfg().then(function (cfg) {
       if (!cfg || !cfg.id) return;
       dropDirect(cfg);
-      pushCfgSet(null);
-      if (pushSupported()) swReg().then(function (reg) { return reg.pushManager.getSubscription(); }).then(function (s2) { return s2 && s2.unsubscribe(); }).catch(function () {});
+      return pushCfgSet(null).then(function () {
+        if (pushSupported()) return swReg().then(function (reg) { return reg.pushManager.getSubscription(); }).then(function (s2) { return s2 && s2.unsubscribe(); }).catch(function () {});
+      });
     });
+  }
+  // (v85) سوار تخبر التطبيق بمن دخل: حساب آخر على الجهاز نفسه يوقف اشتراك السابق، والحساب نفسه يُصلَح اشتراكه بصمت إن حذفه سوار
+  // (مثلاً بعد رد 410 من خدمة الإشعارات) والإذن ما زال ممنوحاً — بلا أي سؤال للموظف.
+  function pushWho(uid, lang) {
+    PZ.uid = uid;
+    pushCfg().then(function (cfg) {
+      if (!cfg || !cfg.id) return;
+      if (cfg.uid && uid && cfg.uid !== uid) return pushDropDevice();
+      if ((!cfg.uid && uid) || (lang && cfg.lang !== lang)) { cfg.uid = cfg.uid || uid; if (lang) cfg.lang = lang === 'en' ? 'en' : 'ar'; pushCfgSet(cfg); }
+      if (!pushSupported() || Notification.permission !== 'granted') return;
+      return pushApi('info', { id: cfg.id }).then(function (r) {
+        if (r.ok && r.data.key && !r.data.dev) return pushSubscribeCore(r.data);
+      });
+    }).catch(function () {});
   }
   // الضغط على الإشعار والتطبيق مفتوح: يُفتح النظام والصفحة فوراً بلا إعادة تحميل
   if ('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', function (e) {
