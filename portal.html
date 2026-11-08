@@ -2272,7 +2272,7 @@ const I18N = {
     hvLabel: 'طريقة العرض', hvList: 'قائمة', hvFloat: 'بطاقات عائمة', fcTitle: 'كل أنظمتك في <em>مكان واحد</em>', fcWait: '{n} أمور بانتظارك', fcWait1: 'أمر واحد بانتظارك', fcNone: 'لا شيء بانتظارك', fcDone: 'مكتمل',
     morning: 'صباح الخير', evening: 'مساء الخير', sep: '، ', searchApps: 'ابحث عن برنامج', search: 'بحث',
     noApps: 'لا توجد برامج متاحة لحسابك حالياً.', noResults: 'لا توجد نتائج مطابقة.', opening: 'جارٍ فتح البرنامج…',
-    adminPanel: 'لوحة الإدارة', programs: 'البرامج', changePin: 'تغيير كلمة المرور', signOut: 'تسجيل الخروج', myTheme: 'شكل الواجهة', appearance: 'المظهر', thAuto: 'تلقائي', thLight: 'فاتح', thDark: 'داكن', dkTone: 'درجة الداكن', dkCur: 'الحالي', dkGrey: 'رمادي', dkBlack: 'أسود',
+    adminPanel: 'لوحة الإدارة', programs: 'البرامج', changePin: 'تغيير كلمة المرور', signOut: 'تسجيل الخروج', myTheme: 'شكل الواجهة', appearance: 'المظهر', thAuto: 'تلقائي', thLight: 'فاتح', thDark: 'داكن', dkTone: 'درجة الداكن', dkCur: 'كحلي', dkGrey: 'رمادي', dkBlack: 'أسود',
     tabUnified: 'الموظفون والأنظمة', tabApps: 'البرامج', tabUsers: 'المستخدمون', tabAccess: 'الصلاحيات', tabSettings: 'الإعدادات', tabLogs: 'السجل', tabReview: 'المراجعة',
     sharedDevice: 'جهاز مشترك — لا تحفظ الدخول',
     shape: 'شكل الأيقونة', shape_circle: 'دائري', shape_free: 'مربع / كما هي',
@@ -2354,7 +2354,7 @@ const I18N = {
     hvLabel: 'View', hvList: 'List', hvFloat: 'Floating cards', fcTitle: 'All your systems in <em>one place</em>', fcWait: '{n} items waiting for you', fcWait1: 'One item waiting for you', fcNone: 'Nothing waiting for you', fcDone: 'Done',
     morning: 'Good morning', evening: 'Good evening', sep: ', ', searchApps: 'Search apps', search: 'Search',
     noApps: 'No apps are available for your account yet.', noResults: 'No matching results.', opening: 'Opening app…',
-    adminPanel: 'Admin panel', programs: 'Apps', changePin: 'Change password', signOut: 'Sign out', myTheme: 'Interface style', appearance: 'Appearance', thAuto: 'Auto', thLight: 'Light', thDark: 'Dark', dkTone: 'Dark tone', dkCur: 'Current', dkGrey: 'Grey', dkBlack: 'Black',
+    adminPanel: 'Admin panel', programs: 'Apps', changePin: 'Change password', signOut: 'Sign out', myTheme: 'Interface style', appearance: 'Appearance', thAuto: 'Auto', thLight: 'Light', thDark: 'Dark', dkTone: 'Dark tone', dkCur: 'Navy', dkGrey: 'Grey', dkBlack: 'Black',
     tabUnified: 'People & systems', tabApps: 'Apps', tabUsers: 'Users', tabAccess: 'Access', tabSettings: 'Settings', tabLogs: 'Log', tabReview: 'Review',
     sharedDevice: 'Shared device — don’t keep me signed in',
     shape: 'Icon shape', shape_circle: 'Circle', shape_free: 'Square / as is',
@@ -2970,7 +2970,7 @@ function brandLogo() {
   return BRAND_LOGO;
 }
 
-// (DK3) المظهر في قائمة الحساب: فاتح/داكن/تلقائي لهذا الجهاز، ودرجة الداكن (الحالي/رمادي/أسود) تُوحَّد بين كل الأنظمة عبر تطبيق سوار
+// (DK3) المظهر في قائمة الحساب: فاتح/داكن/تلقائي لهذا الجهاز، ودرجة الداكن (كحلي/رمادي/أسود) تُوحَّد بين كل الأنظمة عبر تطبيق سوار
 function lookSync() {
   const m = window.snThemeGet ? snThemeGet() : 'light', k = window.snToneGet ? snToneGet() : 'cur';
   $$('.ml-seg [data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
