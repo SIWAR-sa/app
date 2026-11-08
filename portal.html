@@ -1640,6 +1640,10 @@ body { display: flow-root; }
 @media (prefers-reduced-motion:reduce){#siwarUpd,#siwarUpd *,#siwarUpd::after{animation:none!important}}
 </style>
 <style id="rlcss">
+.og-dep{margin:6px auto 0;display:inline-flex;gap:6px;align-items:center;padding:4px 12px;border-radius:var(--pill);background:#FBF0DC;color:#7A5519;font-size:12.5px;cursor:default}
+.og-dep[role="button"]{cursor:pointer}.og-dep .og-none{color:#A0804A}
+@media (max-width:760px){.og-dep{font-size:11.5px;padding:3px 10px}}
+
 .rl-intro{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
 .rl-intro h2{margin:0;font-size:20px}
 .rl-intro p{margin:4px 0 0;color:var(--muted);font-size:13px}
@@ -4919,6 +4923,7 @@ const rlDesc = r => r ? (S.lang === 'en' ? (r.descEN || r.desc) : r.desc) : '';
 const rlPName = p => S.lang === 'en' && p.nameEN ? p.nameEN : ogN2(p.name);
 const RL_TIER = { pos: ['أدوار المنصب', 'Position roles', 'تُعطى تلقائياً من مكان الشخص في الهيكل', 'Given automatically from the person\'s place in the structure'], fn: ['أدوار الوحدات', 'Unit roles', 'تُعطى تلقائياً لكل من في الوحدة، وتُضاف إلى دور المنصب', 'Given automatically to everyone in the unit, on top of the position role'], sp: ['أدوار تُعيَّن بالاسم', 'Roles assigned by name', 'لا تُعطى من الهيكل، بل لأشخاص بأسمائهم', 'Not given by the structure; assigned to named people'], '': ['أدوار سابقة', 'Earlier roles', 'من قبل التوزيع حسب الهيكل؛ لا تعمل بعد حفظ التوزيع', 'From before the structure-based distribution; inactive once it is saved'] };
 const RL_POS = { gm: ['المدير العام', 'General manager'], dir: ['رئيس إدارة', 'Department head'], head: ['رئيس قسم', 'Section head'], row1: ['الصف الأول', 'First row'], emp: ['موظف', 'Employee'] };
+const RL_HD = g => g.dep ? RX('نائب', 'deputy') : RX('رئيس الوحدة', 'unit head');
 const RL_SRC = { pos: ['من الهيكل', 'From structure'], unit: ['من الهيكل', 'From structure'], manual: ['بالاسم', 'By name'], bundle: ['دور سابق', 'Earlier role'], profile: ['من الوظيفة', 'From job'] };
 U.rl = { drafts: {}, ops: [], plan: null, keep: {}, place: {}, nw: null };
 const rlRole = id => (U.rl.drafts[id]) || uRoleById(id);
@@ -4928,8 +4933,8 @@ function rlWide(a, b) { const R = { own: 1, self: 1, dept: 2, company: 3, all: 9
 // الأدوار العامة لكل موظف — نفس حساب الخادم (Roles.js: uRoleGenFor_)
 function uRoleGens(p, forceAuto) {
   const auto = forceAuto || !!U.d.rolesAuto, rs = p.roles || {}, out = [], seen = {};
-  const add = (id, head, src) => { const r = uRoleById(id); if (!r || r.kind !== 'general' || seen[id]) return; seen[id] = 1; out.push({ r: r, head: !!head, src: src }); };
-  if (auto) (p.ar || []).forEach(x => add(x.id, x.head, x.src));
+  const add = (id, head, src, x) => { const r = uRoleById(id); if (!r || r.kind !== 'general' || seen[id]) return; seen[id] = 1; out.push({ r: r, head: !!head, src: src, row1: !!(x && x.row1), dep: !!(x && x.dep) }); };
+  if (auto) (p.ar || []).forEach(x => add(x.id, x.head, x.src, x));
   Object.keys(rs).forEach(k => { if (k.charAt(0) === '+' && rs[k] === k.slice(1)) add(rs[k], false, 'manual'); });
   if (!auto) { add(rs['*'], false, 'bundle'); add(p.pb, false, 'profile'); }
   return out;
@@ -4946,8 +4951,8 @@ function uRoleResolve(p, a) {
     return null;
   }
   const parts = [];
-  const d0 = uReg(a), gated = !!(d0 && (d0.caps || []).some(c => c.key === 'task.assign') && (d0.caps || []).some(c => c.key === 'self.requests' || c.key === 'req.create')), posHas = gens.some(g => g.src !== 'unit' && (g.r.apps[a] || (g.head && (g.r.head || {})[a])));
-  gens.forEach(g => { if (gated && g.src === 'unit' && !g.head && !posHas) return; const id = (g.head && (g.r.head || {})[a]) || g.r.apps[a], x = id && uRoleById(id); if (x && x.kind === 'app' && x.app === a && parts.indexOf(x) < 0) parts.push(x); });
+  const d0 = uReg(a), gated = !!(d0 && (d0.caps || []).some(c => c.key === 'task.assign') && (d0.caps || []).some(c => c.key === 'self.requests' || c.key === 'req.create')), off = g => gated && g.src === 'pos' && g.r.pos === 'emp' && g.r.r1 && !g.row1, posHas = gens.some(g => g.src !== 'unit' && !off(g) && (g.r.apps[a] || (g.head && (g.r.head || {})[a])));
+  gens.forEach(g => { if (off(g) || (gated && g.src === 'unit' && !g.head && !posHas)) return; const id = (g.head && (g.r.head || {})[a]) || g.r.apps[a], x = id && uRoleById(id); if (x && x.kind === 'app' && x.app === a && parts.indexOf(x) < 0) parts.push(x); });
   if (!parts.length) return null;
   if (parts.length === 1) return Object.assign({}, parts[0], { _via: 'bundle' });
   const caps = []; let scope = '';
@@ -4959,7 +4964,7 @@ function rlHolders(r) {
   const auto = [], man = [], old = [];
   U.d.people.filter(p => !uLeftP(p) && !p.owner).forEach(p => {
     const rs = p.roles || {}, a = (p.ar || []).find(x => x.id === r.id);
-    if (a) auto.push({ p: p, head: a.head });
+    if (a) auto.push({ p: p, head: a.head && !a.dep, dep: !!a.dep });
     if (rs['+' + r.id] === r.id) man.push({ p: p });
     else if (rs['*'] === r.id || (!a && p.pb === r.id)) old.push({ p: p });
   });
@@ -5037,7 +5042,7 @@ function uRoleGen(r, isNew) {
     '<label class="field"><span>' + RX('وصف قصير', 'Short description') + '</span><input class="inp" data-uc="rlF" data-f="desc" maxlength="300" value="' + esc(r.desc || '') + '"></label>' +
     '<label class="field"><span>' + RX('الوصف بالإنجليزية', 'Description in English') + '</span><input class="inp" dir="ltr" data-uc="rlF" data-f="descEN" maxlength="300" value="' + esc(r.descEN || '') + '"></label></div>' +
     '<div class="rl-row"><span class="rl-lab">' + RX('يُعطى', 'Given') + '</span><div class="rl-opts">' + ['pos', 'fn', 'sp'].map(t => chip((r.tier || '') === t, 'rlTier', 'data-v="' + t + '"', RX({ pos: 'حسب المنصب', fn: 'لمن في وحدات', sp: 'بالاسم' }[t], { pos: 'By position', fn: 'To unit members', sp: 'By name' }[t]))).join('') + '</div></div>' +
-    (r.tier === 'pos' ? '<div class="rl-row"><span class="rl-lab">' + RX('المنصب', 'Position') + '</span><div class="rl-opts">' + ['gm', 'dir', 'head', 'row1', 'emp'].map(k => chip(r.pos === k, 'rlPos', 'data-v="' + k + '"', RX(RL_POS[k][0], RL_POS[k][1]))).join('') + '</div></div>' : '') +
+    (r.tier === 'pos' ? '<div class="rl-row"><span class="rl-lab">' + RX('المنصب', 'Position') + '</span><div class="rl-opts">' + ['gm', 'dir', 'head', 'emp'].concat(r.pos === 'row1' ? ['row1'] : []).map(k => chip(r.pos === k, 'rlPos', 'data-v="' + k + '"', RX(RL_POS[k][0], RL_POS[k][1]))).join('') + '</div></div>' : '') +
     (r.tier === 'fn' ? '<div class="rl-row"><span class="rl-lab">' + RX('الوحدات', 'Units') + '</span><div class="rl-opts">' + (r.units || []).map(u => { const x = (D.orgUnits || []).find(z => z.id === u); return '<span class="rl-unit">' + esc(x ? x.name : u) + '<button class="u-x" data-u="rlUnitDel" data-v="' + esc(u) + '" aria-label="' + RX('إزالة', 'Remove') + '">' + ic('x') + '</button></span>'; }).join('') +
       '<button class="rl-opt none" data-u="rlUnitAdd">+ ' + RX('إضافة وحدة', 'Add unit') + '</button></div><p class="rl-note">' + RX('القسم يرث دور إدارته ما لم يُربط بدور آخر.', 'A section inherits its department\'s role unless linked to another role.') + '</p></div>' : '') +
     '</section>';
@@ -5050,7 +5055,7 @@ function uRoleGen(r, isNew) {
       (r.tier === 'fn' ? '<div class="rl-hdrow">' + (lh ? ic('user') + '<span>' + RX('رئيس الوحدة', 'Unit head') + ':</span><button class="rl-opt on" data-u="rlCell" data-id="' + esc(r.id || '__new') + '" data-app="' + esc(a.id) + '" data-mode="head">' + esc(rlName(lh)) + '</button>' : '<button class="link-btn" data-u="rlCell" data-id="' + esc(r.id || '__new') + '" data-app="' + esc(a.id) + '" data-mode="head">' + RX('مستوى مختلف لرئيس الوحدة', 'Different level for the unit head') + '</button>') + '</div>' : '') + '</div>';
   }).join('') + '</section>';
   if (!isNew) {
-    const pr = (x, man) => '<div class="rl-p"><span class="av">' + esc(String(rlPName(x.p) || '?').charAt(0)) + '</span><div><b>' + esc(rlPName(x.p)) + '</b><small>' + esc([(x.p.org && (x.p.org.sn || x.p.org.dn)) || x.p.dept, x.head ? RX('رئيس الوحدة', 'Unit head') : ''].filter(Boolean).join(' · ')) + '</small></div><div class="end">' +
+    const pr = (x, man) => '<div class="rl-p"><span class="av">' + esc(String(rlPName(x.p) || '?').charAt(0)) + '</span><div><b>' + esc(rlPName(x.p)) + '</b><small>' + esc([(x.p.org && (x.p.org.sn || x.p.org.dn)) || x.p.dept, x.dep ? RX('نائب', 'Deputy') : x.head ? RX('رئيس الوحدة', 'Unit head') : ''].filter(Boolean).join(' · ')) + '</small></div><div class="end">' +
       (man ? '<button class="u-x" data-u="rlManDel" data-id="' + esc(x.p.id) + '" aria-label="' + RX('إزالة', 'Remove') + '">' + ic('x') + '</button>' : '<span class="u-tag u-tag-grey">' + RX('من الهيكل', 'From structure') + '</span>') + '</div></div>';
     const pend = U.rl.ops.filter(o => o.appId === '+' + r.id);
     const man = H.man.filter(x => !pend.some(o => o.personIds[0] === x.p.id && !o.roleId)).concat(pend.filter(o => o.roleId).map(o => ({ p: D.people.find(p => p.id === o.personIds[0]) })).filter(x => x.p));
@@ -5076,7 +5081,7 @@ function uRolesDist() {
   h += '<div class="rl-sum"><div class="k"><b>' + P.total + '</b><span>' + RX('موظفاً في الهيكل', 'employees') + '</span></div><div class="k"><b>' + P.same + '</b><span>' + RX('بلا تغيير', 'unchanged') + '</span></div><div class="k"><b>' + up.length + '</b><span>' + RX('يُضاف لهم', 'gain access') + '</span></div><div class="k warn"><b>' + down.length + '</b><span>' + RX('تقل صلاحياتهم — قرارك', 'lose access — your call') + '</span></div></div>';
   if (P.auto && !P.people.length) h += '<section class="panel-box"><p class="rl-state on">' + ic('checkCircle') + '<span>' + RX('التوزيع مفعّل', 'Distribution is on') + (P.at ? ' · ' + esc(String(P.at).slice(0, 16).replace('T', ' ')) : '') + (P.by ? ' · ' + esc(P.by) : '') + '. ' + RX('أي تعديل في الهيكل أو الأدوار يطبَّق تلقائياً.', 'Any change to the structure or roles applies automatically.') + '</span></p></section>';
   const app = id => uApp(id);
-  const gens = x => x.gens.map(g => (S.lang === 'en' ? g.nameEN || g.nameAR : g.nameAR) + (g.head ? ' (' + RX('رئيس', 'head') + ')' : '')).join(' + ');
+  const gens = x => x.gens.map(g => (S.lang === 'en' ? g.nameEN || g.nameAR : g.nameAR) + (g.dep ? ' (' + RX('نائب', 'deputy') + ')' : g.head ? ' (' + RX('رئيس', 'head') + ')' : '')).join(' + ');
   const ln = c => { const a = app(c.app), lab = (c.lostOn ? RX('يتوقف دخوله', 'loses access') : c.lostN ? RX('يفقد ', 'loses ') + c.lostN + ' ' + RX('خاصية', 'features') : '') + (c.narrow ? ' · ' + RX('نطاق أضيق', 'narrower scope') : '') + (c.gainN ? (c.lostN || c.lostOn ? ' · ' : '') + RX('يُضاف ', 'gains ') + c.gainN : '');
     return '<span class="ln" title="' + esc(c.lost.join('، ')) + '">' + uIcon(a) + '<b>' + esc(L(a, 'name')) + ':</b> ' + (c.from ? '<span class="' + (c.down ? 'rl-old' : '') + '">' + esc(c.from) + '</span> <span class="rl-arrow">' + (S.lang === 'en' ? '→' : '←') + '</span> ' : '') + '<span class="' + (c.down ? 'rl-dn' : 'rl-ok') + '">' + esc(c.to || RX('بلا دخول', 'no access')) + '</span> <small class="u-muted">' + esc(lab) + '</small></span>'; };
   const who = x => '<div class="who"><b>' + esc(S.lang === 'en' && x.nameEN ? x.nameEN : ogN2(x.name)) + '</b><small>' + esc([x.unit, gens(x)].filter(Boolean).join(' · ')) + '</small></div>';
@@ -5100,19 +5105,19 @@ function uNoOrg() {
   const n = Object.keys(U.rl.place).length;
   let h = '<div class="rl-intro"><div><h2>' + RX('غير مسكّنين في الهيكل', 'Not placed in the structure') + '</h2><p>' + RX('حدّد وحدة كل شخص؛ يأخذ دور منصبه ودور وحدته منها.', 'Pick each person\'s unit; their position and unit roles come from it.') + '</p></div></div>';
   h += '<section class="panel-box">' + (list.length ? list.map(p => { const c = U.rl.place[p.id];
-    return '<div class="rl-ch"><div class="who"><b>' + esc(rlPName(p)) + '</b><small>' + esc([p.title, p.dept].filter(Boolean).join(' · ')) + '</small></div><div class="what">' + (c ? '<span class="ln"><span class="rl-chip">' + esc(un(c.unit)) + '</span><span class="u-tag' + (c.head ? ' u-tag-gold' : '') + '">' + (c.head ? RX('رئيس الوحدة', 'Unit head') : RX('عضو', 'Member')) + '</span></span>' : '<span class="u-muted">' + RX('لم تُحدَّد وحدته', 'No unit yet') + '</span>') + '</div>' +
+    return '<div class="rl-ch"><div class="who"><b>' + esc(rlPName(p)) + '</b><small>' + esc([p.title, p.dept].filter(Boolean).join(' · ')) + '</small></div><div class="what">' + (c ? '<span class="ln"><span class="rl-chip">' + esc(un(c.unit)) + '</span><span class="u-tag' + (c.head || c.dep ? ' u-tag-gold' : '') + '">' + (c.head ? RX('رئيس الوحدة', 'Unit head') : c.dep ? RX('نائب', 'Deputy') : RX('عضو', 'Member')) + '</span></span>' : '<span class="u-muted">' + RX('لم تُحدَّد وحدته', 'No unit yet') + '</span>') + '</div>' +
       '<button class="btn btn-ghost btn-sm" data-u="rlPlace" data-id="' + esc(p.id) + '">' + ic('org') + '<span>' + (c ? RX('تغيير', 'Change') : RX('اختيار الوحدة', 'Pick unit')) + '</span></button></div>'; }).join('') : '<p class="u-muted">' + RX('كل الموظفين مسكّنون في الهيكل.', 'Everyone is placed in the structure.') + '</p>') + '</section>';
   if (n) h += '<div class="savebar u-savebar rl-bar"><b>' + (S.lang === 'en' ? n + ' to place' : n === 1 ? 'تسكين واحد لم يُحفظ' : n + ' تسكينات لم تُحفظ') + '</b><div class="savebar-actions"><button class="btn btn-ghost" data-u="rlPlaceUndo">' + ic('undo') + '<span>' + RX('تراجع', 'Undo') + '</span></button><button class="btn btn-primary" data-u="rlPlaceSave">' + ic('save') + '<span>' + RX('حفظ', 'Save') + '</span></button></div></div>';
   return h;
 }
 function rlPlacePick(pid) {
-  const D = U.d, p = D.people.find(x => x.id === pid), units = D.orgUnits || [], c = U.rl.place[pid] || { unit: '', head: false };
-  U.rl.pp = { pid: pid, unit: c.unit, head: c.head };
+  const D = U.d, p = D.people.find(x => x.id === pid), units = D.orgUnits || [], c = U.rl.place[pid] || { unit: '', head: false, dep: false };
+  U.rl.pp = { pid: pid, unit: c.unit, head: c.head, dep: !!c.dep };
   const tops = units.filter(u => u.kind === 'top'), depts = units.filter(u => u.kind === 'dept');
   const b = u => '<button class="rl-opt' + (U.rl.pp.unit === u.id ? ' on' : '') + '" data-u="rlPpU" data-v="' + esc(u.id) + '">' + esc(u.name) + '</button>';
   openModal({ title: esc(RX('وحدة ', 'Unit for ') + rlPName(p)), wide: true,
     body: '<div class="rl-pp">' + tops.map(b).join('') + depts.map(d => '<div class="rl-ppd"><div class="rl-opts">' + b(d) + units.filter(s => s.parent === d.id).map(b).join('') + '</div></div>').join('') + '</div>' +
-      '<div class="rl-row"><span class="rl-lab">' + RX('مكانه', 'Role in unit') + '</span><div class="rl-seg"><button class="' + (U.rl.pp.head ? '' : 'on') + '" data-u="rlPpH" data-v="0">' + RX('عضو', 'Member') + '</button><button class="' + (U.rl.pp.head ? 'on' : '') + '" data-u="rlPpH" data-v="1">' + RX('رئيس الوحدة', 'Unit head') + '</button></div></div>',
+      '<div class="rl-row"><span class="rl-lab">' + RX('مكانه', 'Role in unit') + '</span><div class="rl-seg"><button class="' + (U.rl.pp.head || U.rl.pp.dep ? '' : 'on') + '" data-u="rlPpH" data-v="0">' + RX('عضو', 'Member') + '</button><button class="' + (U.rl.pp.dep ? 'on' : '') + '" data-u="rlPpH" data-v="2">' + RX('نائب', 'Deputy') + '</button><button class="' + (U.rl.pp.head ? 'on' : '') + '" data-u="rlPpH" data-v="1">' + RX('رئيس الوحدة', 'Unit head') + '</button></div></div>',
     foot: '<button class="btn btn-ghost" data-act="closeModal">' + RX('إلغاء', 'Cancel') + '</button><button class="btn btn-primary" data-u="rlPpOk"' + (U.rl.pp.unit ? '' : ' disabled') + ' id="rlPpOk">' + ic('check') + '<span>' + RX('اختيار', 'Choose') + '</span></button>' });
 }
 // صفحة الموظف: أدواره (التلقائية والتي بالاسم) بدل «دوره العام»
@@ -5122,7 +5127,7 @@ function uBundleSel(p, me) {
   const opts = uRolesAll().filter(r => r.kind === 'general' && !r.archived && (r.tier === 'sp' || r.tier === 'fn') && rs['+' + r.id] !== r.id);
   const n = uDiffN(p);
   let h = '<div class="u-q rl-pq"><span class="u-q-t">' + RX('أدواره', 'Roles') + '<small class="u-cdesc">' + (auto ? RX('من مكانه في الهيكل', 'From his place in the structure') : RX('من مكانه في الهيكل — تعمل بعد حفظ «توزيع حسب الهيكل»', 'From the structure — active once “Distribute by structure” is saved')) + '</small></span><span class="u-q-v rl-pr">' +
-    (der.length ? '<b class="rl-der">' + esc(der.map(g => rlName(g.r) + (g.head ? ' (' + RX('رئيس الوحدة', 'unit head') + ')' : '')).join(' · ')) + '</b>' : '<span class="u-muted">' + RX('غير مسكّن في الهيكل', 'Not placed in the structure') + '</span>') +
+    (der.length ? '<b class="rl-der">' + esc(der.map(g => rlName(g.r) + (g.head || g.dep ? ' (' + RL_HD(g) + ')' : '')).join(' · ')) + '</b>' : '<span class="u-muted">' + RX('غير مسكّن في الهيكل', 'Not placed in the structure') + '</span>') +
     '<button class="link-btn" data-unav="roles">' + RX('الأدوار', 'Roles') + '</button></span></div>';
   h += '<div class="u-q rl-pq"><span class="u-q-t">' + RX('أدوار إضافية / استثناء', 'Extra roles / exceptions') + '<small class="u-cdesc">' + RX('أدوار بالاسم فوق أدوار الهيكل', 'Roles by name on top of the structure roles') + (n ? ' · ' + (S.lang === 'en' ? n + (n === 1 ? ' exception below' : ' exceptions below') : n === 1 ? 'استثناء واحد في الأنظمة أدناه' : n + ' استثناءات في الأنظمة أدناه') : '') + '</small></span><span class="u-q-v rl-pr">' +
     man.map(g => '<span class="rl-pchip man">' + esc(rlName(g.r)) + (!me ? '<button class="u-x" data-u="pRoleDel" data-id="' + esc(g.r.id) + '" aria-label="' + RX('إزالة', 'Remove') + '">' + ic('x') + '</button>' : '') + '</span>').join('') +
@@ -5212,11 +5217,11 @@ function rlClick(el) {
   if (k === 'pRoleDel') { const p = D.people.find(x => x.id === U.id), rid = el.dataset.id; if (!p) return true; if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); delete p.roles['+' + rid]; D.apps.forEach(a => uRecalc(p, a.id)); uMark('pr:' + p.id + ':+' + rid, { t: 'personRole', personId: p.id, appId: '+' + rid, roleId: '' }); rlRerender(); return true; }
   if (k === 'rlPlace') { rlPlacePick(el.dataset.id); return true; }
   if (k === 'rlPpU') { U.rl.pp.unit = el.dataset.v; $$('.rl-pp .rl-opt').forEach(b => b.classList.toggle('on', b === el)); const ok = $('#rlPpOk'); if (ok) ok.disabled = false; return true; }
-  if (k === 'rlPpH') { U.rl.pp.head = el.dataset.v === '1'; $$('#modal .rl-seg button').forEach(b => b.classList.toggle('on', b === el)); return true; }
-  if (k === 'rlPpOk') { const pp = U.rl.pp; if (!pp || !pp.unit) return true; U.rl.place[pp.pid] = { unit: pp.unit, head: pp.head }; closeModal(true); rlRerender(); return true; }
+  if (k === 'rlPpH') { U.rl.pp.head = el.dataset.v === '1'; U.rl.pp.dep = el.dataset.v === '2'; $$('#modal .rl-seg button').forEach(b => b.classList.toggle('on', b === el)); return true; }
+  if (k === 'rlPpOk') { const pp = U.rl.pp; if (!pp || !pp.unit) return true; U.rl.place[pp.pid] = { unit: pp.unit, head: pp.head, dep: pp.dep }; closeModal(true); rlRerender(); return true; }
   if (k === 'rlPlaceUndo') { U.rl.place = {}; rlRerender(); return true; }
   if (k === 'rlPlaceSave') {
-    const ops = []; Object.keys(U.rl.place).forEach(pid => { const c = U.rl.place[pid]; ops.push({ t: 'place', pid: pid, unit: c.unit }); if (c.head) ops.push({ t: 'unitHead', id: c.unit, pid: pid }); });
+    const ops = []; Object.keys(U.rl.place).forEach(pid => { const c = U.rl.place[pid]; ops.push({ t: 'place', pid: pid, unit: c.unit }); if (c.head) ops.push({ t: 'unitHead', id: c.unit, pid: pid }); else if (c.dep) ops.push({ t: 'unitDeputy', id: c.unit, pid: pid, on: true }); });
     if (!ops.length) return true; el.disabled = true;
     api('u_orgSave', { was: D.orgVer, ops: ops }).then(async r => { el.disabled = false;
       if (!r.ok) { if (r.code === 'ERR_STALE') openModal({ title: ic('info') + '<span>' + RX('لم يُحفظ التسكين', 'Not saved') + '</span>', body: '<p>' + RX('عدّل غيرك الهيكل بعد فتح الصفحة. لم يُحفظ شيء، واختياراتك ما زالت في الصفحة.', 'Someone changed the structure after this page opened. Nothing was saved; your choices are still here.') + '</p>', foot: '<button class="btn btn-primary" data-act="closeModal">' + ic('check') + '<span>' + RX('حسناً', 'OK') + '</span></button>' }); else uSaveFail(r.code, -1, null, r.detail); return; }
@@ -5245,6 +5250,7 @@ const ogSecs = d => O.w.units.filter(u => u.kind === 'section' && u.parent === d
 function ogPlace(p) {
   let id = p.org && ogU(p.org) ? p.org : '';
   if (!id) { const h = O.w.units.filter(u => u.head === p.id); id = (h.find(u => u.kind === 'section') || h.find(u => u.kind === 'top') || h[0] || {}).id || ''; }
+  if (!id) { const dp = O.w.units.filter(u => (u.deps || []).indexOf(p.id) >= 0); id = (dp.find(u => u.kind === 'section') || dp[0] || {}).id || ''; }
   if (!id) { const k = ogKey(p.jdept); if (k) { const u = O.w.units.find(x => ogKey(x.name) === k) || O.w.units.find(x => (x.jisr || []).some(n => ogKey(n) === k)); id = u ? u.id : ''; } }
   const u = id ? ogU(id) : null;
   return !u ? { d: '', s: '' } : u.kind === 'section' ? { d: u.parent, s: u.id } : { d: u.id, s: '' };
@@ -5301,8 +5307,16 @@ function ogEmpty() {
 function ogCoSeg() {
   return '<div class="seg og-co">' + [{ code: '', nameAR: 'الشركتان' }].concat(O.w.companies || []).map(c => '<button class="seg-btn' + (O.co === c.code ? ' on' : '') + '" data-og="co" data-co="' + esc(c.code) + '">' + esc(c.nameAR) + '</button>').join('') + '</div>';
 }
+function ogDepLine(u) {
+  const ds = (u.deps || []).map(ogP).filter(Boolean);
+  if (!ds.length && !O.d.edit) return '';
+  return '<div class="og-dep"' + (O.d.edit ? ' data-og="pickDep" data-id="' + esc(u.id) + '" role="button" tabindex="0"' : '') + '><span>' + RX('النائب', 'Deputy') + ':</span> <b>' + (ds.length ? esc(ds.map(p => ogN2(p.name)).join('، ')) : '<span class="og-none">' + RX('لا يوجد', 'None') + '</span>') + '</b></div>';
+}
 function ogHeadBox(u, kind) {
   const h = u.head ? ogP(u.head) : null;
+  return ogHeadBox0(u, kind, h) + (kind === 'top' ? '' : ogDepLine(u));
+}
+function ogHeadBox0(u, kind, h) {
   return '<div class="og-head' + (kind !== 'section' ? ' is-dept' : '') + '"' + (O.d.edit ? ' data-og="pickHead" data-id="' + esc(u.id) + '" role="button" tabindex="0"' : '') + '><div class="t">' + (kind === 'top' ? OG_GM : kind === 'dept' ? 'رئيس الإدارة' : 'رئيس القسم') + '</div><div class="nm">' + (h ? esc(ogN2(h.name)) : '<span class="og-none">لم يُحدَّد</span>') + '</div>' + (h && h.title ? '<div class="rl">' + esc(h.title) + '</div>' : '') + '</div>';
 }
 // بطاقة قسم (أو إدارة في عرض الإدارة العامة): act = open يفتح قائمة الأعضاء، sel ينتقل إلى الإدارة
@@ -5787,6 +5801,11 @@ function ogClick(el, e) {
     if (gone.indexOf(O.sel) >= 0) O.sel = ogFirst(); if (gone.indexOf(O.open) >= 0) O.open = '';
     closeModal(true); return ogOp({ t: 'unitDel', id: u.id });
   }
+  if (k === 'pickDep') { const u = ogU(id), cur = (u.deps || [])[0] || ''; return ogPick(RX('نائب «', 'Deputy of “') + u.name + RX('»', '”'), cur, RX('بلا نائب', 'No deputy'), pid => {
+    if (pid && pid === u.head) { toast(RX('رئيس الوحدة لا يكون نائبها', 'The unit head cannot be its deputy'), 'err'); return; }
+    (u.deps || []).filter(x => x !== pid).forEach(x => O.ops.push({ t: 'unitDeputy', id: u.id, pid: x, on: false }));
+    if (pid && (u.deps || []).indexOf(pid) < 0) O.ops.push({ t: 'unitDeputy', id: u.id, pid: pid, on: true });
+    u.deps = pid ? [pid] : []; uRender(); }); }
   if (k === 'pickHead') { const u = ogU(id), isS = u.kind === 'section', isT = u.kind === 'top'; return ogPick(isT ? OG_GM : isS ? 'رئيس قسم «' + u.name + '»' : 'رئيس «' + u.name + '»', u.head, isT ? 'بلا مدير عام' : isS ? 'بلا رئيس خاص (' + OG_XL_FOLLOW + ')' : 'بلا رئيس', pid => ogSetHead(u, pid)); }
   if (k === 'pickMgr') { const p = ogP(id); return ogPick('المدير المباشر لـ«' + p.name + '»', p.mgrPid, 'حسب الهيكل (رئيس قسمه أو إدارته)', pid => { if (pid === p.id) return toast('لا يكون الموظف مديراً لنفسه', 'err'); if (pid === (p.mgrPid || '')) return; p.mgrPid = pid; ogOp({ t: 'mgr', pid: p.id, mgr: pid }); }); }
   if (k === 'addMem') { const u = ogU(id); return ogPick('إضافة موظف إلى «' + (u.kind === 'dept' ? u.name : u.name) + '»', '', '', pid => ogMoveTo(pid, id)); }
