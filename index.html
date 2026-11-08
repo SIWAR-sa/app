@@ -554,7 +554,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   var swr = null, swAt = Date.now(), updGoing = false;
   /* (v94) رقم نسخة هذه الصفحة، ويساوي دائماً رقم CACHE في sw.js (يُرفعان معاً). عامل خدمة جديد بالرقم نفسه ليس تحديثاً:
      الصفحة الظاهرة هي هذه النسخة أصلاً (أول فتح، أو إعادة التحميل بعد «تحديث الآن») فلا تظهر البطاقة */
-  var APPV = 102;
+  var APPV = 103;
   function updFound(src) { if (!updGoing && window.SiwarUpd) SiwarUpd.signal(src); }
   // رقم نسخة عامل الخدمة (العامل القديم قبل v94 لا يرد → 0 = غير معروف)
   function swVer(w) {
@@ -1154,11 +1154,24 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   window.addEventListener('popstate', function () { hideLayer(true); });   // زر الرجوع في الجوال
 
   // الرسائل تُقبل من سوار (نفس الموقع) ومن صفحات Apps Script فقط
+  var DKW = [];
+  function dkGet() { try { var v = localStorage.getItem('SIWAR_DKT'); return v === 'grey' || v === 'black' || v === 'cur' ? v : ''; } catch (x) { return ''; } }
+  function dkMsg(src, d) {
+    if (!src) return;
+    DKW = DKW.filter(function (w) { try { return !w.closed; } catch (x) { return false; } });
+    if (DKW.indexOf(src) < 0) DKW.push(src);
+    if (d.siwar === 'dkhi') { var t0 = dkGet(); if (t0) try { src.postMessage({ siwar: 'dkt', t: t0 }, '*'); } catch (x) {} return; }
+    var t = d.t === 'grey' || d.t === 'black' ? d.t : d.t === 'cur' ? 'cur' : ''; if (!t) return;
+    try { localStorage.setItem('SIWAR_DKT', t); } catch (x) {}
+    DKW.forEach(function (w) { if (w !== src) try { w.postMessage({ siwar: 'dkt', t: t }, '*'); } catch (x) {} });
+  }
   window.addEventListener('message', function (e) {
     var mine = e.origin === location.origin;
     if (!mine && !/\.googleusercontent\.com$|^https:\/\/script\.google\.com$/.test(e.origin)) return;
     if (e.data && e.data.siwar === 'upd') { updFound(String(e.data.src || 'portal')); return; }   // (v84) سوار أو نظام يبلّغ بنسخة أحدث
     var d = e.data || {}, ic = d.icon && typeof d.icon === 'object' ? d.icon : null, id = String(d.id || '');
+    // (DK3) درجة الداكن الواحدة لكل الأنظمة: كل صفحة (سوار أو نظام) تعلن نفسها بـ dkhi فتأخذ الدرجة المحفوظة، واختيارها في أي صفحة (dkt) يُحفظ ويصل للبقية فورًا
+    if (d.siwar === 'dkhi' || d.siwar === 'dkt') { dkMsg(e.source, d); return; }
     if (mine) {
       if (d.siwar === 'portalReady') { hideSplash(); sendAlive(); portalOk = true; relReady.then(function () { toPortal({ siwar: 'inst', st: instSt() }); }); try { if (window.SiwarUpd) SiwarUpd.watchDoc(portalWin().document); } catch (x) {} return; }
       if (d.siwar === 'install') { instAsk(); return; }
