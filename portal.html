@@ -2232,9 +2232,9 @@ let pending = 0;
 let busyT = 0;
 function busy(d) {
   pending = Math.max(0, pending + d);
-  $('#busy').classList.toggle('on', pending > 0);
-  if (pending > 0 && !busyT && !$('#busyPill').classList.contains('on')) busyT = setTimeout(() => { busyT = 0; if (pending > 0 && S.ready) $('#busyPill').classList.add('on'); }, 250);
-  if (!pending) { clearTimeout(busyT); busyT = 0; $('#busyPill').classList.remove('on'); }
+  // (pv25) لا مؤشر انتظار لما يستغرق أقل من ثانية: الشريط والبطاقة يظهران معاً بعد ثانية فقط
+  if (pending > 0 && !busyT && !$('#busyPill').classList.contains('on')) busyT = setTimeout(() => { busyT = 0; if (pending > 0 && S.ready) { $('#busy').classList.add('on'); $('#busyPill').classList.add('on'); } }, 1000);
+  if (!pending) { clearTimeout(busyT); busyT = 0; $('#busy').classList.remove('on'); $('#busyPill').classList.remove('on'); }
 }
 
 const EXEC_URL = STATIC ? String(window.SIWAR_PORTAL) : '__EXEC_URL__';
@@ -3486,7 +3486,7 @@ async function ptrRefresh(done) {
   if (S.inApp && SHELL) { try { window.top.postMessage({ siwar: 'chkUpd' }, SHELL); } catch (e) {} }   // (v90) السحب للتحديث يفحص نسخة التطبيق أيضاً
   const pend = loadPending(true);
   try {
-    const d = await api('init', {});
+    const d = await api('init', {}, { quiet: true });   // (pv25) مؤشر السحب للتحديث ظاهر أصلاً
     if (d && d.session) { S.user = d.session.user; S.apps = d.session.apps || []; renderUserChrome(); renderHome(); }
   } catch (c) { if (c !== '__handled') console.warn('refresh', c); }
   done();

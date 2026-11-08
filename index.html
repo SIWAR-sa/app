@@ -1198,13 +1198,22 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     if (SiwarUpd.avail || (swr && swr.waiting)) { updGo(); return; }
     if (!swr) return;
     swAt = Date.now();
-    swr.update().then(function () { if (!updGoing && (swr.waiting || swr.installing)) updGo(); }).catch(function () {});
+    swr.update().then(function () {
+      if (updGoing) return;
+      if (swr.waiting) { updGo(); return; }
+      // (v91) الملفات الجديدة ما زالت تُحفظ على الجهاز: تُنتظر حتى تكتمل ثم إعادة التحميل الواحدة، فيفتح التطبيق على العامل الجديد
+      // ولا تعود بطاقة «نسخة جديدة» بعد التحديث تطلب ضغطة ثانية (كان يعيد التحميل والعامل الجديد لم يكتمل)
+      var w = swr.installing; if (!w) return;
+      var t = 0, go = function () { if (t < 0) return; clearTimeout(t); t = -1; if (!updGoing) updGo(); };
+      t = setTimeout(go, 10000);
+      w.addEventListener('statechange', function () { if (w.state !== 'installing') go(); });
+    }).catch(function () {});
   }
   (function () {
     var at = 0; try { at = Number(localStorage.getItem('siwar_upd_done') || 0); localStorage.removeItem('siwar_upd_done'); } catch (e) {}
     if (!at || Date.now() - at > 180000 || !window.caches) return;
     caches.keys().then(function (ks) {
-      var v = ''; ks.forEach(function (k) { var m = /^siwar-app-(v\d+)$/.exec(k); if (m) v = m[1]; });
+      var v = ''; ks.forEach(function (k) { var m = /^siwar-app-(v\d+)$/.exec(k); if (m && (!v || +m[1].slice(1) > +v.slice(1))) v = m[1]; });
       var t = document.createElement('div'); t.className = 'sntoast'; t.setAttribute('role', 'status');
       t.style.cssText = 'position:fixed;z-index:2147483000;top:calc(env(safe-area-inset-top,0px) + 12px);bottom:auto';
       t.textContent = LANG === 'en' ? 'Updated to the latest version' + (v ? ' (' + v + ')' : '') + '.' : 'تم التحديث إلى أحدث إصدار' + (v ? ' (' + v + ')' : '') + '.';
