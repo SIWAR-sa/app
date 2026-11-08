@@ -1,7 +1,7 @@
 /* عامل الخدمة: يحفظ ملفات صفحة التطبيق وسوار الثابتة فقط (لا يحفظ أي بيانات من سوار أو البرامج).
    النسخة المحفوظة تُعرض فوراً، وأي تحديث على GitHub يصل في الفتح التالي.
    إشعارات الجوال: الإشعار يصل بلا محتوى، فيطلب العامل نصوصه من سوار برمز هذا الجهاز (المحفوظ في siwar-push) ثم يعرضها. */
-const CACHE = 'siwar-app-v101';   // يساوي دائماً APPV في index.html (يُرفعان معاً)
+const CACHE = 'siwar-app-v102';   // يساوي دائماً APPV في index.html (يُرفعان معاً)
 const PUSHC = 'siwar-push', PUSHK = './__push';
 const FILES = ['./', './index.html', './portal.html', './config.js', './manifest.webmanifest?v=89', './icons/logo.webp'];
 
@@ -68,30 +68,43 @@ const FALLBACK = {
 async function onPush() {
   const cfg = await pushCfg();
   let items = [];
+  let bell = [];
   if (cfg && cfg.url && cfg.id) {
-    try { const j = await portalPost(cfg, { action: 'push_pull', id: cfg.id, tok: cfg.tok }); if (j && j.ok && Array.isArray(j.items)) items = j.items; } catch (e) { items = []; }
+    try { const j = await portalPost(cfg, { action: 'push_pull', id: cfg.id, tok: cfg.tok }); if (j && j.ok && Array.isArray(j.items)) { items = j.items; bell = Array.isArray(j.bell) ? j.bell : []; } } catch (e) { items = []; }
   }
+
   // لا يُترك وصول الإشعار بلا عرض (المتصفح يشترط ذلك)، فإن تعذّر جلب النص يظهر إشعار عام يفتح التطبيق
   if (!items.length) { const f = FALLBACK[cfg && cfg.lang === 'en' ? 'en' : 'ar']; items = [{ id: 'g', title: f.title, body: f.body, url: self.registration.scope, lang: cfg && cfg.lang }]; }
+  // (NT) الجرس الحي: التطبيق المفتوح يستلم صفوف الإشعار فوراً (جرس سوار وجرس النظام) بلا انتظار التحديث الدوري؛ وإن تعذّر السحب تصله رسالة بلا صفوف فيحدّث جرسه بنفسه
+  liveBell(bell, items);
   await Promise.all(items.map(it => {
     const en = it.lang === 'en';
     return self.registration.showNotification(String(it.title || 'سوار | SIWAR'), {
       // (v87) tag من سوار: إشعارات الطلب نفسه تحل محل السابق بدل أن تتراكم، ويُنبَّه الموظف للجديد منها
-      body: String(it.body || ''), tag: 'siwar-' + String(it.tag || it.id), renotify: !!it.tag && it.tag !== it.id, lang: en ? 'en' : 'ar', dir: en ? 'ltr' : 'rtl',
-      icon: 'icons/icon-192.png?v=85', data: { url: String(it.url || self.registration.scope) }
+      // (NT) quiet: تحديث متقارب على الطلب نفسه يحل محل السابق بلا صوت ولا اهتزاز
+      body: String(it.body || ''), tag: 'siwar-' + String(it.tag || it.id), renotify: !!it.tag && it.tag !== it.id && !it.quiet, silent: !!it.quiet, lang: en ? 'en' : 'ar', dir: en ? 'ltr' : 'rtl',
+      icon: 'icons/icon-192.png?v=85', data: { url: String(it.url || self.registration.scope), nid: String(it.id || '') }
     });
   }));
 }
 self.addEventListener('push', e => { e.waitUntil(onPush()); });
+function liveBell(bell, items) {
+  const msg = { siwar: 'push', bell: bell.slice(0, 20), ids: items.map(it => String(it.id || '')) };
+  return self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => list.forEach(cl => {
+    if (cl.frameType === 'nested' || cl.url.indexOf(self.registration.scope) !== 0 || /portal\.html/.test(cl.url)) return;
+    try { cl.postMessage(msg); } catch (x) {}
+  })).catch(() => {});
+}
 
 self.addEventListener('notificationclick', e => {
   e.notification.close();
-  const url = new URL((e.notification.data && e.notification.data.url) || self.registration.scope, self.registration.scope).href;
+  const url = new URL((e.notification.data && e.notification.data.url) || self.registration.scope, self.registration.scope).href, nid = String((e.notification.data && e.notification.data.nid) || '');
   e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
     const app = list.find(c => c.frameType !== 'nested' && c.url.indexOf(self.registration.scope) === 0 && !/portal\.html/.test(c.url));
     if (app) {
       // التطبيق مفتوح: يُرسل له الرابط ليفتح النظام فوراً، ويُنقل للأمام
-      app.postMessage({ siwar: 'deep', url: url });
+      // (NT) فتح دافئ: النظام المفتوح يفتح المرجع في مكانه بلا إعادة تحميل (index.html: deepWarm)
+      app.postMessage({ siwar: 'deep', url: url, nid: nid, t: Date.now() });
       return app.focus ? app.focus().catch(() => {}) : null;
     }
     return self.clients.openWindow(url);

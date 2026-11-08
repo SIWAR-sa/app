@@ -3357,8 +3357,9 @@ async function nbRefresh() {
   try {
     await nbFlush();
     const d = await qApi('notif_list', {});
+    const prevIds = NB.items ? NB.items.map(x => String(x.id)) : null;
     NB.items = Array.isArray(d.items) ? d.items : []; NB.poll = Number(d.poll) || NB.poll; NB.at = Date.now(); NB.err = '';
-    nbApplyQ(); nbSave();
+    nbApplyQ(); nbSave(); nbFwdNew(prevIds);
   } catch (c) {
     if (c === 'ERR_SESSION' || c === 'ERR_SUSPENDED' || c === 'ERR_ROLE_CHANGED') { NB.loading = false; return; }
     NB.err = c === 'ERR_NETWORK' ? 'net' : 'srv';
@@ -3469,6 +3470,41 @@ function nbItem(el) {
   nbClose(true);
   launchApp(el);
 }
+// (NT) الجرس الحي: إشعار وصل للجهاز والتطبيق مفتوح → عامل الخدمة يرسل صفوفه (نص الحدث نفسه كما في notif_list) فتظهر في الجرس فوراً بلا نداء.
+// الصفوف من سوار نفسها (push_pull برمز الجهاز)، ولا تحمل إلا ما يحمله الإشعار. القراءة من الإشعار (nbRead) تعلّم الصف مقروءاً كما تفعل الضغطة في الجرس.
+function nbLive(rows) {
+  if (!S.token || !NB.key || !Array.isArray(rows) || !rows.length) return;
+  const items = NB.items || [], have = {};
+  items.forEach(x => { have[String(x.id)] = 1; });
+  let n = 0;
+  rows.slice(0, 20).forEach(x => {
+    const id = String(x && x.id || '');
+    if (!/^\d{6,30}$/.test(id) || have[id]) return;
+    have[id] = 1; n++;
+    items.push({ id: id, at: String(x.at || new Date().toISOString()), app: x.app && x.app !== 'portal' ? String(x.app) : '', t: String(x.t || ''), b: String(x.b || ''), g: String(x.g || ''), r: 0 });
+  });
+  if (!n) return;
+  items.sort((a, b) => Number(b.id) - Number(a.id));
+  NB.items = items.slice(0, 100);
+  nbApplyQ(); nbSave(); nbPaint();
+}
+function nbReadIds(ids) {
+  const set = [].concat(ids || []).map(String).filter(x => /^\d{6,30}$/.test(x)); if (!set.length) return;
+  const hit = (NB.items || []).filter(x => !x.r && set.indexOf(String(x.id)) >= 0);
+  hit.forEach(x => { x.r = 1; });
+  nbQueue({ ids: set.slice(0, 20) }); nbPaint();
+}
+// إشعارات جديدة وجدها التحديث الدوري (لمن لم يفعّل إشعارات الجهاز): الأنظمة الحية في التطبيق تجهّز مراجعها في الخلفية
+function nbFwdNew(prevIds) {
+  if (!prevIds || !S.inApp || !SHELL) return;
+  const rows = (NB.items || []).filter(x => !x.r && prevIds.indexOf(String(x.id)) < 0 && x.g).slice(0, 5).map(x => ({ id: String(x.id), app: x.app || '', g: String(x.g) }));
+  if (rows.length) try { window.top.postMessage({ siwar: 'nbNew', rows: rows }, SHELL); } catch (e) {}
+}
+window.addEventListener('message', e => {
+  if (!SHELL || e.origin !== SHELL || e.source !== window.top || !e.data) return;
+  if (e.data.siwar === 'push') { if (Array.isArray(e.data.bell) && e.data.bell.length) nbLive(e.data.bell); else if (S.token && NB.key) nbRefresh(); }
+  else if (e.data.siwar === 'nbRead') nbReadIds(e.data.ids);
+});
 function nbMarkAll() {
   const items = NB.items || []; if (!items.length) return;
   const upto = items.reduce((m, x) => Math.max(m, Number(x.id) || 0), 0);

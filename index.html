@@ -554,7 +554,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   var swr = null, swAt = Date.now(), updGoing = false;
   /* (v94) رقم نسخة هذه الصفحة، ويساوي دائماً رقم CACHE في sw.js (يُرفعان معاً). عامل خدمة جديد بالرقم نفسه ليس تحديثاً:
      الصفحة الظاهرة هي هذه النسخة أصلاً (أول فتح، أو إعادة التحميل بعد «تحديث الآن») فلا تظهر البطاقة */
-  var APPV = 101;
+  var APPV = 102;
   function updFound(src) { if (!updGoing && window.SiwarUpd) SiwarUpd.signal(src); }
   // رقم نسخة عامل الخدمة (العامل القديم قبل v94 لا يرد → 0 = غير معروف)
   function swVer(w) {
@@ -711,8 +711,39 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   function navAck(fid, d) {
     var k = String(d.n || ''), p = NAVP[k]; if (!p || p.id !== fid || frames[fid] !== p.o) return;
     clearTimeout(p.t); delete NAVP[k];
-    if (d.ok) { p.o.go = p.go; snapClear(); SNQ = null; onShow(fid); }
+    if (d.ok) { p.o.go = p.go; snapClear(); SNQ = null; onShow(fid); if (p.deep) pEnd(fid, 'ok'); }
+    if (p.deep) { if (!d.ok) deepCold(fid, p.go); return; }
     toPortal({ siwar: 'navRes', n: p.pn, ok: !!d.ok });
+  }
+  /* (NT) الضغط على إشعار والتطبيق مفتوح والنظام حي: المكان يُرسل للنظام نفسه فيفتح المرجع في مكانه (بلا إعادة تحميل ولا تذكرة ولا مرور بسوار).
+     إن لم يكن النظام حياً أو لم يؤكد خلال ثانية: الفتح المعتاد (deepCold) */
+  function deepWarm(id, go) {
+    var o = frames[id];
+    if (!o || !o.ready || o.sil || Date.now() - o.t > FRAME_AGE || offline()) return false;
+    if (!go) { onShow(id); return true; }
+    if (!o.nav) return false;
+    var k = 'g' + (++navSeq);
+    pStart(id, 'push', 'warm');
+    NAVP[k] = { id: id, go: go, pn: '', o: o, deep: 1, t: setTimeout(function () { if (NAVP[k]) { delete NAVP[k]; deepCold(id, go); } }, 1000) };
+    try { o.nav.postMessage({ siwar: 'go', go: go, n: k }, '*'); } catch (e) { clearTimeout(NAVP[k].t); delete NAVP[k]; return false; }
+    return true;
+  }
+  function deepCold(id, go) {
+    if (frames[id]) dropFrame(id);
+    pStart(id, 'push'); ldAt = Date.now(); markCur(id); curSave(id, go);
+    loaderShow('', null, null); showLayer();
+    toPortal({ siwar: 'relaunch', id: id, go: go });
+  }
+  /* (NT) إشعار وصل والتطبيق مفتوح: صفوف الجرس لسوار (يتحدّث جرسها فوراً)، ولكل نظام حي أماكن إشعاراته (يحدّث جرسه ويجهّز المرجع في الخلفية) */
+  function pushLive(d) {
+    var bell = Array.isArray(d.bell) ? d.bell.slice(0, 20) : [];
+    toPortal({ siwar: 'push', bell: bell });
+    pushToFrames(bell.map(function (x) { return { id: String(x.id || ''), app: String(x.app || ''), g: String(x.g || '') }; }));
+  }
+  function pushToFrames(rows) {
+    var by = {};
+    rows.forEach(function (x) { var m = /^([A-Za-z0-9_-]{1,40})\|(.*)$/.exec(String(x.g || '')), id = m ? m[1] : String(x.app || ''); if (!id) return; (by[id] = by[id] || []).push({ id: String(x.id || ''), go: cleanGo(m ? m[2] : '') }); });
+    for (var id in by) { var o = frames[id]; if (o && o.win && o.ready) try { o.win.postMessage({ siwar: 'push', items: by[id].slice(0, 10) }, '*'); } catch (e) {} }
   }
   function frameIdOf(src) {
     for (var id in frames) {
@@ -1145,6 +1176,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
       if (d.siwar === 'reloadCur') { if ($('prog').className === 'on' && cur) { if (updPend()) updGo(); else refreshCur(cur); } return; }
       if (d.siwar === 'chkUpd') { updNow(); return; }
       if (d.siwar === 'nav') { navLive(id, String(d.go || ''), String(d.n || '').slice(0, 40)); return; }
+      if (d.siwar === 'nbNew' && Array.isArray(d.rows)) { pushToFrames(d.rows.slice(0, 20)); return; }   // (NT) جرس سوار وجد إشعارات جديدة: الأنظمة الحية تجهّز مراجعها
     }
     // حفظ دخول سوار ولغتها في صفحة التطبيق (للإصدار السابق من سوار)
     if (d.siwar === 'storeGet') {
@@ -1555,15 +1587,15 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   // الضغط على الإشعار والتطبيق مفتوح: يُفتح النظام والصفحة فوراً بلا إعادة تحميل
   if ('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', function (e) {
     var d = e.data || {};
+    if (d.siwar === 'push') { pushLive(d); return; }
     if (d.siwar !== 'deep') return;
     var u; try { u = new URL(String(d.url || ''), location.href); } catch (x) { return; }
     var id = u.searchParams.get('open') || '', go = cleanGo(u.searchParams.get('go') || '');
     if (!portalOk || !/^[A-Za-z0-9_-]{1,40}$/.test(id)) { location.href = u.href; return; }
     $('push').hidden = true;
-    if (frames[id]) dropFrame(id);
-    pStart(id, 'push'); ldAt = Date.now(); markCur(id); curSave(id, go);
-    loaderShow('', null, null); showLayer();
-    toPortal({ siwar: 'relaunch', id: id, go: go });
+    if (d.nid) toPortal({ siwar: 'nbRead', ids: [String(d.nid).slice(0, 30)] });
+    if (deepWarm(id, go)) return;
+    deepCold(id, go);
   });
 
   /* ── التثبيت ── */
