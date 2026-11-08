@@ -9,7 +9,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="سوار | SIWAR">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="manifest" href="manifest.webmanifest?v=86">
+<link rel="manifest" href="manifest.webmanifest?v=89">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png?v=85">
 <link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png?v=85">
 <link rel="shortcut icon" href="icons/favicon.ico">
@@ -468,6 +468,19 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   var ua = navigator.userAgent || '';
   var iOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   var deferred = null, progUrl = '';
+  /* (v89) هل التطبيق مثبّت على هذا الجهاز؟ ثلاثة مصادر: getInstalledRelatedApps، وعلامة تُحفظ عند التشغيل داخل التطبيق، وحدث appinstalled */
+  var IK = 'siwar_installed', relFound = false;
+  function flagGet() { try { return localStorage.getItem(IK) === '1'; } catch (e) { return false; } }
+  function flagSet(v) { try { if (v) localStorage.setItem(IK, '1'); else localStorage.removeItem(IK); } catch (e) {} }
+  function isInstalled() { return !standalone && !iOS && (relFound || flagGet()); }
+  if (standalone) flagSet(true);
+  var relReady = (function () {
+    if (!navigator.getInstalledRelatedApps) return Promise.resolve();
+    return Promise.race([
+      navigator.getInstalledRelatedApps().then(function (a) { if (a && a.length) { relFound = true; flagSet(true); } }),
+      new Promise(function (r) { setTimeout(r, 800); })
+    ]).catch(function () {});
+  })();
   /* النظام المعروض الآن ومكانه داخله: يُحفظ في ذاكرة هذه النافذة، فإعادة التحميل تفتحه هو لا الرئيسية */
   var CURK = 'siwar_cur';
   function cleanGo(g) { g = String(g == null ? '' : g); return g.length <= 300 && !/[\s<>"'`\\]/.test(g) ? g : ''; }
@@ -492,12 +505,12 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     ar: { back: 'رجوع', ext: 'فتح في المتصفح', title: 'تثبيت تطبيق سوار | SIWAR', later: 'لاحقاً', prog: 'برنامج', noUrl: 'لم يُضبط رابط سوار في config.js',
       desc: 'أيقونة على الشاشة الرئيسية، وتفتح الأنظمة في نافذة مستقلة.', install: 'تثبيت التطبيق',
       ios1: 'افتح هذه الصفحة في متصفح Safari', ios2: 'اضغط زر المشاركة ', ios3: 'اختر «إضافة إلى الشاشة الرئيسية» ', ios2n: 'اضغط ••• بجانب العنوان، ثم «مشاركة» ', ios3m: 'مرّر القائمة لأسفل واختر «إضافة إلى الشاشة الرئيسية» ', ios4: 'اضغط «إضافة» في أعلى الشاشة؛ بدونها لا تُضاف الأيقونة', iosInApp: 'التثبيت على الآيفون يتم من Safari.', iosOld: 'على هذا الإصدار من iOS يتم التثبيت من Safari.', openSafari: 'فتح في Safari للتثبيت', iosDone: 'بعد الإضافة افتح سوار | SIWAR من أيقونته على الشاشة الرئيسية.',
-      an1: 'افتح هذه الصفحة في Chrome أو Edge', an2a: 'من قائمة المتصفح ', an2b: ' اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية»',
+      an1: 'إذا كان التطبيق مثبتًا، افتحه من أيقونته. وإلا: افتح هذه الصفحة في Chrome أو Edge', doneT: 'التطبيق مثبت', doneD: 'التطبيق مثبت بالفعل على جهازك — افتحه من أيقونته على الشاشة الرئيسية.', ok: 'حسنًا', an2a: 'من قائمة المتصفح ', an2b: ' اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية»',
       phT: 'سوار | SIWAR على جوالك', phD: 'امسح الرمز بكاميرا الجوال، ثم ثبّت التطبيق من الصفحة التي تفتح.', copy: 'نسخ الرابط', copied: 'تم النسخ', close: 'إغلاق' },
     en: { back: 'Back', ext: 'Open in browser', title: 'Install the SIWAR app', later: 'Later', prog: 'App', noUrl: 'The portal link is not set in config.js',
       desc: 'An icon on your home screen; systems open in their own window.', install: 'Install app',
       ios1: 'Open this page in Safari', ios2: 'Tap the Share button ', ios3: 'Choose “Add to Home Screen” ', ios2n: 'Tap ••• next to the address, then “Share” ', ios3m: 'Scroll down and choose “Add to Home Screen” ', ios4: 'Tap “Add” at the top; without it the icon is not added', iosInApp: 'On iPhone, the app is installed from Safari.', iosOld: 'On this iOS version, the app is installed from Safari.', openSafari: 'Open in Safari to install', iosDone: 'After adding it, open SIWAR from its Home Screen icon.',
-      an1: 'Open this page in Chrome or Edge', an2a: 'From the browser menu ', an2b: ' choose “Install app” or “Add to Home screen”',
+      an1: 'If the app is already installed, open it from its icon. Otherwise: open this page in Chrome or Edge', doneT: 'App installed', doneD: 'The app is already installed on this device — open it from its icon.', ok: 'OK', an2a: 'From the browser menu ', an2b: ' choose “Install app” or “Add to Home screen”',
       phT: 'SIWAR on your phone', phD: 'Scan the code with your phone camera, then install the app from the page that opens.', copy: 'Copy link', copied: 'Copied', close: 'Close' }
   };
   var LANG = 'ar';
@@ -1012,7 +1025,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     if (e.data && e.data.siwar === 'upd') { updFound(String(e.data.src || 'portal')); return; }   // (v84) سوار أو نظام يبلّغ بنسخة أحدث
     var d = e.data || {}, ic = d.icon && typeof d.icon === 'object' ? d.icon : null, id = String(d.id || '');
     if (mine) {
-      if (d.siwar === 'portalReady') { hideSplash(); sendAlive(); portalOk = true; toPortal({ siwar: 'inst', st: standalone ? 1 : 0 }); try { if (window.SiwarUpd) SiwarUpd.watchDoc(portalWin().document); } catch (x) {} return; }
+      if (d.siwar === 'portalReady') { hideSplash(); sendAlive(); portalOk = true; relReady.then(function () { toPortal({ siwar: 'inst', st: instSt() }); }); try { if (window.SiwarUpd) SiwarUpd.watchDoc(portalWin().document); } catch (x) {} return; }
       if (d.siwar === 'install') { instAsk(); return; }
       if (d.siwar === 'prep') { onPrep(id || '_', String(d.name || ''), ic, d.rect && typeof d.rect === 'object' ? d.rect : null, typeof d.go === 'string' ? d.go : ''); return; }
       if (d.siwar === 'open' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onOpen(id || '_', String(d.url), String(d.name || ''), ic, String(d.src || '')); return; }
@@ -1419,7 +1432,10 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   function step(n, html) { return '<div class="step"><b>' + n + '</b><span>' + html + '</span></div>'; }
   function renderInstall() {
     var b = $('iBody');
-    if (deferred) {
+    if (!deferred && isInstalled()) {
+      $('iT').textContent = T('doneT'); $('iLater').textContent = T('ok'); $('iLater').dataset.ph = '1';
+      b.innerHTML = '<p>' + T('doneD') + '</p>';
+    } else if (deferred) {
       b.innerHTML = '<p>' + T('desc') + '</p>';
       var btn = document.createElement('button'); btn.className = 'btn'; btn.textContent = T('install');
       btn.onclick = function () {
@@ -1508,13 +1524,17 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   $('iLater').onclick = function () { $('install').hidden = true; if ($('iLater').dataset.ph) return; try { localStorage.setItem('inst_later', String(Date.now())); } catch (e) {} };
 
   window.addEventListener('beforeinstallprompt', function (e) {
-    e.preventDefault(); deferred = e;
+    e.preventDefault(); deferred = e; relFound = false; flagSet(false);
     if (!$('install').hidden) renderInstall(); else if (!forced && !snoozed && !standalone) showInstall();
   });
-  window.addEventListener('appinstalled', function () { $('install').hidden = true; });
+  window.addEventListener('appinstalled', function () { flagSet(true); deferred = null; $('install').hidden = true; instNote(); });
 
   // تظهر نافذة التثبيت عند فتح الصفحة من المتصفح (لا داخل التطبيق المثبّت)
-  if (!standalone) setTimeout(function () { if (forced || (!snoozed && (deferred || iOS))) showInstall(); }, forced ? 300 : 1800);
+  if (!standalone) setTimeout(function () { relReady.then(function () { if (forced || (!snoozed && (deferred || iOS))) showInstall(); }); }, forced ? 300 : 1800);
+  /* يبلّغ سوار بحالة التثبيت: 1 داخل التطبيق، 2 مثبّت ويعمل في المتصفح، 0 غير مثبّت */
+  function instSt() { return standalone ? 1 : (isInstalled() ? 2 : 0); }
+  function instNote() { try { toPortal({ siwar: 'inst', st: instSt() }); } catch (e) {} }
+  relReady.then(function () { if (portalOk && !standalone) instNote(); });
 })();
 </script>
 </body>

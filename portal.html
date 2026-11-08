@@ -1491,20 +1491,21 @@ html.nb-lock, html.nb-lock body { overflow: hidden; }
 .vfab-chev { width: 16px; height: 16px; color: #A57A33; margin-inline-start: 2px; transition: transform .25s; }
 .vfab.types .vfab-chev { transform: rotate(180deg); }
 .vfab.types .vfab-act.v-new { background: linear-gradient(180deg, #FFFFFF, #FBF1DF) padding-box, linear-gradient(135deg, #E9C67F, #B8862E) border-box; box-shadow: 0 16px 30px -16px rgba(30,24,16,.55), 0 0 0 4px rgba(227,182,109,.18); }
-.vfab-types { display: grid; grid-template-columns: repeat(4, 64px); gap: 4px; padding: 12px 10px 10px; border-radius: 24px; border: 1px solid transparent;
-  background: linear-gradient(180deg, rgba(255,254,251,.98), rgba(248,240,227,.98)) padding-box, var(--gold-rim, linear-gradient(135deg, #F6E2BA, #E3B66D, #D7A657)) border-box;
-  box-shadow: 0 22px 40px -20px rgba(30,24,16,.6), inset 0 1px 0 #fff; transform-origin: left bottom; }
+.vfab-types { display: grid; grid-template-columns: repeat(3, 84px); gap: 14px 8px; padding: 16px 12px 14px; border-radius: 26px; border: 1px solid rgba(255,255,255,.7);
+  background: linear-gradient(180deg, rgba(255,255,255,.86), rgba(250,246,239,.8)); -webkit-backdrop-filter: blur(22px) saturate(1.5); backdrop-filter: blur(22px) saturate(1.5);
+  box-shadow: 0 1px 0 rgba(255,255,255,.9) inset, 0 0 0 1px rgba(196,160,98,.22), 0 2px 6px -2px rgba(30,24,16,.12), 0 28px 50px -24px rgba(30,24,16,.45); transform-origin: left bottom; }
 [dir="ltr"] .vfab-types { transform-origin: right bottom; }
 .vfab-types[hidden] { display: none; }
-.vfab.types .vfab-types { animation: vfabPop .3s cubic-bezier(.2,.9,.3,1.25) both; }
-@keyframes vfabPop { from { opacity: 0; transform: translateY(10px) scale(.92); } to { opacity: 1; transform: none; } }
-.vfab-ty { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 4px 0 2px; border: 0; background: none; cursor: pointer; font: inherit; font-size: 12.5px; font-weight: 600; color: #2A2A3E; border-radius: 14px; -webkit-tap-highlight-color: transparent; }
-.vfab-ty i { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; color: #fff;
-  background: radial-gradient(circle at 34% 28%, rgba(255,255,255,.75), var(--c) 46%, color-mix(in srgb, var(--c) 62%, #000) 100%);
-  box-shadow: 0 8px 16px -8px color-mix(in srgb, var(--c) 80%, transparent), 0 0 0 3px color-mix(in srgb, var(--c) 16%, transparent), inset 0 1px 1px rgba(255,255,255,.6); transition: transform .2s cubic-bezier(.3,1.4,.5,1); }
-.vfab-ty i svg { width: 20px; height: 20px; filter: drop-shadow(0 1px 1px rgba(0,0,0,.25)); }
-.vfab-ty:hover i { transform: translateY(-2px) scale(1.05); }
-.vfab-ty:active i { transform: scale(.94); }
+.vfab.types .vfab-types { animation: vfabPop .3s cubic-bezier(.2,.9,.3,1.15) both; }
+@keyframes vfabPop { from { opacity: 0; transform: translateY(10px) scale(.94); } to { opacity: 1; transform: none; } }
+.vfab-ty { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 2px 0; border: 0; background: none; cursor: pointer; font: inherit; font-size: 12.5px; font-weight: 700; line-height: 1.25; color: #2A2A3E; border-radius: 16px; -webkit-tap-highlight-color: transparent; transition: transform .16s cubic-bezier(.3,1.3,.5,1); }
+.vfab-ty i { position: relative; width: 56px; height: 56px; border-radius: 18px; display: grid; place-items: center; color: color-mix(in srgb, var(--c) 78%, #10131f);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--c) 9%, #fff) 0%, color-mix(in srgb, var(--c) 17%, #fff) 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.95), inset 0 0 0 1px color-mix(in srgb, var(--c) 20%, transparent), 0 1px 2px color-mix(in srgb, var(--c) 18%, transparent), 0 10px 18px -12px color-mix(in srgb, var(--c) 70%, transparent);
+  transition: transform .18s cubic-bezier(.3,1.3,.5,1), box-shadow .18s; }
+.vfab-ty i svg { width: 24px; height: 24px; }
+@media (hover: hover) and (pointer: fine) { .vfab-ty:hover i { transform: translateY(-2px); box-shadow: inset 0 1px 0 rgba(255,255,255,.95), inset 0 0 0 1px color-mix(in srgb, var(--c) 30%, transparent), 0 2px 4px color-mix(in srgb, var(--c) 18%, transparent), 0 16px 24px -14px color-mix(in srgb, var(--c) 80%, transparent); } }
+.vfab-ty:active { transform: scale(.96); }
 .vfab-veil { position: fixed; inset: 0; z-index: 69; background: rgba(22,22,40,.16); opacity: 0; transition: opacity .22s; }
 .vfab-veil[hidden] { display: none; }
 .vfab-veil.on { opacity: 1; }
@@ -1515,13 +1516,12 @@ html.nb-lock, html.nb-lock body { overflow: hidden; }
   .vfab { --vf: 64px; bottom: 30px; left: 30px; gap: 12px; } [dir="ltr"] .vfab { left: auto; right: 30px; }
   .vfab-menu { gap: 12px; margin-bottom: 4px; }
   .vfab-act { height: 50px; font-size: 15px; }
-  .vfab-types { grid-template-columns: repeat(4, 72px); padding: 14px 12px 12px; }
-  .vfab-ty i { width: 48px; height: 48px; }
+  .vfab-types { grid-template-columns: repeat(3, 88px); padding: 18px 14px 16px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .vfab-orbit .vo-sp, .vfab-orbit .vo-core, .vfab-btn::after, .vfab.in .vfab-btn, .vfab.types .vfab-types { animation: none; }
   .vfab-orbit .vo-pulse { animation: none; opacity: 0; }
-  .vfab-btn, .vfab-orbit, .vfab-x, .vfab-act, .vfab-veil, .vfab-tip, .vfab-chev, .vfab-ty i { transition: none; }
+  .vfab-btn, .vfab-orbit, .vfab-x, .vfab-act, .vfab-veil, .vfab-tip, .vfab-chev, .vfab-ty, .vfab-ty i { transition: none; }
 }
 
 body { display: flow-root; }
@@ -1706,11 +1706,13 @@ body { display: flow-root; }
 <div class="vfab" id="vaultFab" hidden>
   <div class="vfab-menu" id="vaultFabMenu" role="menu">
     <button type="button" class="vfab-act v-open" role="menuitem" data-act="launch" data-id="APP-003" data-go="page=vault"><span class="vfab-ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5" opacity=".55"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/><circle cx="18" cy="6.8" r="1.5" fill="currentColor" stroke="none"/></svg></span><span data-vf="open"></span></button>
-  <div class="vfab-types" id="vaultFabTypes" hidden>
-    <button type="button" class="vfab-ty" style="--c:#F2B544" data-act="launch" data-id="APP-003" data-go="page=vault&amp;new=1&amp;type=note"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h9l3 3v13H6z"/><path d="M9 11h6M9 15h4"/></svg></i><span data-vf="note"></span></button>
-    <button type="button" class="vfab-ty" style="--c:#2EC4B6" data-act="launch" data-id="APP-003" data-go="page=vault&amp;new=1&amp;type=task"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M8.5 12.2l2.4 2.4 4.8-5"/></svg></i><span data-vf="task"></span></button>
-    <button type="button" class="vfab-ty" style="--c:#8B6CF6" data-act="launch" data-id="APP-003" data-go="page=vault&amp;new=1&amp;type=list"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 7h9M10 12h9M10 17h9"/><circle cx="5.5" cy="7" r="1" fill="currentColor"/><circle cx="5.5" cy="12" r="1" fill="currentColor"/><circle cx="5.5" cy="17" r="1" fill="currentColor"/></svg></i><span data-vf="list"></span></button>
-    <button type="button" class="vfab-ty" style="--c:#FF6B6B" data-act="launch" data-id="APP-003" data-go="page=vault&amp;new=1&amp;type=voice"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M6 11.5a6 6 0 0 0 12 0M12 17.5v3"/></svg></i><span data-vf="voice"></span></button>
+  <div class="vfab-types" id="vaultFabTypes" role="group" hidden>
+    <button type="button" class="vfab-ty" style="--c:#F2B544" data-act="launch" data-id="APP-003" data-go="page=vault&amp;new=1&amp;type=note"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h9l4 4v12H6z"/><path d="M14 4v5h5M9 13h7M9 16.5h5"/></svg></i><span data-vf="note"></span></button>
+    <button type="button" class="vfab-ty" style="--c:#2EC4B6" data-act="launch" data-id="APP-003" data-go="page=vault&amp;new=1&amp;type=task"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M8.5 12.3l2.4 2.4 4.8-5"/></svg></i><span data-vf="task"></span></button>
+    <button type="button" class="vfab-ty" style="--c:#E07A5F" data-act="launch" data-id="APP-003" data-go="page=vault&amp;new=1&amp;type=appt"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="7.5"/><path d="M12 9.5V13l2.3 1.6"/></svg></i><span data-vf="appt"></span></button>
+    <button type="button" class="vfab-ty" style="--c:#3B82F6" data-act="launch" data-id="APP-003" data-go="page=vault&amp;new=1&amp;type=rem"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg></i><span data-vf="rem"></span></button>
+    <button type="button" class="vfab-ty" style="--c:#8B6CF6" data-act="launch" data-id="APP-003" data-go="page=vault&amp;new=1&amp;type=list"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 7h11M9 12h11M9 17h11"/><path d="M4 7l1 1 2-2M4 12l1 1 2-2M4 17l1 1 2-2"/></svg></i><span data-vf="list"></span></button>
+    <button type="button" class="vfab-ty" style="--c:#FF6B6B" data-act="launch" data-id="APP-003" data-go="page=vault&amp;new=1&amp;type=voice"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></i><span data-vf="voice"></span></button>
   </div>
     <button type="button" class="vfab-act v-new" role="menuitem" id="vaultFabNew" aria-expanded="false" aria-controls="vaultFabTypes"><span class="vfab-ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6v12M6 12h12"/></svg></span><span data-vf="new"></span><svg class="vfab-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
   </div>
@@ -2537,9 +2539,15 @@ function applyBrand() {
   // (pv20) عنوان الصفحة باسم المنتج بلغتيه «سوار | SIWAR»؛ اسم الواجهة في الشريط يبقى كما في الإعدادات
   document.title = S.config.nameAR && S.config.nameEN ? S.config.nameAR + ' | ' + S.config.nameEN : (name || 'Portal');
   $$('[data-portal-name]').forEach(el => { el.textContent = name; });
-  const logo = S.config.logo ? '<img src="' + esc(S.config.logo) + '" alt="">' : '<span class="mark">' + glyph('portal') + '</span>';
+  // (pv23) الشعار الرسمي دائمًا: شعار الإعدادات، وإن لم يتوفر فالشعار المضمَّن في الصفحة — لا أيقونة بديلة
+  const logo = '<img src="' + esc(S.config.logo || brandLogo()) + '" alt="' + esc(name || '') + '">';
   $('#loginLogo').innerHTML = logo;
-  $('#tbBrand').innerHTML = logo + (S.config.logo ? '' : '<span>' + esc(name) + '</span>');
+  $('#tbBrand').innerHTML = logo;
+}
+var BRAND_LOGO = null;
+function brandLogo() {
+  if (BRAND_LOGO === null) { const sp = document.getElementById('splash'), m = /url\((data:image\/[^)]+)\)/.exec((sp && sp.getAttribute('style')) || ''); BRAND_LOGO = m ? m[1] : ''; }
+  return BRAND_LOGO;
 }
 
 function applyLang() {
@@ -3496,7 +3504,7 @@ function setupInApp() {
   if (!SHELL || setupInApp.done) return;
   setupInApp.done = true;
   const go = SIWAR_PTR(ptrRefresh);
-  window.addEventListener('message', e => { if (e.origin === SHELL && e.source === window.top && e.data) { if (e.data.siwar === 'relaunch') relaunchLast(String(e.data.id || ''), e.data.go); else if (e.data.siwar === 'refresh') go(); else if (e.data.siwar === 'alive') { S.alive = {}; (e.data.ids || []).forEach(x => { S.alive[x] = 1; }); S.navIds = {}; (e.data.nav || []).forEach(x => { S.navIds[x] = 1; }); } else if (e.data.siwar === 'navRes') { const f = NAVW[String(e.data.n || '')]; if (f) f(e.data.ok); } else if (e.data.siwar === 'home') { S.sysOn = false; prefetchTickets(false).then(() => { if (!isMobileDev()) setTimeout(warmLastApp, 1500); }); } else if (e.data.siwar === 'warmed') warmed(String(e.data.id || '')); else if (e.data.siwar === 'perf') perfSend(e.data.rows); else if (e.data.siwar === 'pushApi') pushRelay(e.data); else if (e.data.siwar === 'lang') langFromSys(String(e.data.lang || '')); else if (e.data.siwar === 'inst') { S.instSt = e.data.st ? 1 : 0; instSync(); } } });
+  window.addEventListener('message', e => { if (e.origin === SHELL && e.source === window.top && e.data) { if (e.data.siwar === 'relaunch') relaunchLast(String(e.data.id || ''), e.data.go); else if (e.data.siwar === 'refresh') go(); else if (e.data.siwar === 'alive') { S.alive = {}; (e.data.ids || []).forEach(x => { S.alive[x] = 1; }); S.navIds = {}; (e.data.nav || []).forEach(x => { S.navIds[x] = 1; }); } else if (e.data.siwar === 'navRes') { const f = NAVW[String(e.data.n || '')]; if (f) f(e.data.ok); } else if (e.data.siwar === 'home') { S.sysOn = false; prefetchTickets(false).then(() => { if (!isMobileDev()) setTimeout(warmLastApp, 1500); }); } else if (e.data.siwar === 'warmed') warmed(String(e.data.id || '')); else if (e.data.siwar === 'perf') perfSend(e.data.rows); else if (e.data.siwar === 'pushApi') pushRelay(e.data); else if (e.data.siwar === 'lang') langFromSys(String(e.data.lang || '')); else if (e.data.siwar === 'inst') { S.instSt = e.data.st ? Number(e.data.st) : 0; instSync(); } } });
 }
 
 // إشعارات الجوال: غلاف التطبيق يطلب عمليات الاشتراك عبر سوار، لأن الجلسة هنا
@@ -3514,9 +3522,9 @@ async function pushRelay(d) {
 const INST_TXT = { ar: { app: 'تثبيت التطبيق', phone: 'التطبيق على الجوال' }, en: { app: 'Install app', phone: 'App on your phone' } };
 function instSync() {
   const can = SHELL ? true : !!(S.config.appUrl && !S.inApp);
-  const tx = INST_TXT[S.lang === 'en' ? 'en' : 'ar'][SHELL && S.instSt ? 'phone' : 'app'];
+  const tx = INST_TXT[S.lang === 'en' ? 'en' : 'ar'][SHELL && S.instSt === 1 ? 'phone' : 'app'];
   $$('[data-install]').forEach(el => {
-    el.hidden = !can;
+    el.hidden = !can || (el.id === 'instBtn' && SHELL && S.instSt === 2);
     if (el.id === 'instBtn') { el.title = tx; el.setAttribute('aria-label', tx); }
     else { const sp = el.querySelector('span'); if (sp) sp.textContent = tx; }
   });
@@ -6363,7 +6371,7 @@ function bindEvents() {
   document.addEventListener('error', e => {
     const img = e.target;
     if (img && img.tagName === 'IMG' && img.closest('.app-icon')) img.outerHTML = glyph('grid');
-    else if (img && img.tagName === 'IMG' && img.closest('#loginLogo, #tbBrand')) img.outerHTML = '<span class="mark">' + glyph('portal') + '</span>';
+    else if (img && img.tagName === 'IMG' && img.closest('#loginLogo, #tbBrand') && brandLogo() && img.getAttribute('src') !== brandLogo()) img.src = brandLogo();
   }, true);
   $('#vLogin').addEventListener('submit', onLogin);
   $('#vForgot').addEventListener('submit', onForgot);
@@ -6394,10 +6402,10 @@ function bindEvents() {
 // ══ مساحتي الخاصة: زر عائم يفتح «مساحتي» في مهام وإجراءات (APP-003) لكل مستخدم داخل البوابة ══
 // يظهر في الرئيسية فقط (لا داخل نظام مفتوح ولا في لوحة الإدارة). الفتح بالمسار نفسه الذي تستعمله صفوف الرئيسية:
 // data-act="launch" ← launchApp ← api('launch', { appId: 'APP-003', go }). أماكن go المسموحة هي VAULT_GO فقط (ومثلها في الخادم).
-const VAULT_APP = 'APP-003', VAULT_GO = ['page=vault', 'page=vault&new=1', 'page=vault&new=1&type=note', 'page=vault&new=1&type=task', 'page=vault&new=1&type=list', 'page=vault&new=1&type=voice'];
+const VAULT_APP = 'APP-003', VAULT_GO = ['page=vault', 'page=vault&new=1', 'page=vault&new=1&type=note', 'page=vault&new=1&type=task', 'page=vault&new=1&type=appt', 'page=vault&new=1&type=rem', 'page=vault&new=1&type=list', 'page=vault&new=1&type=voice'];
 const VAULT_TXT = {
-  ar: { name: 'مساحتي الخاصة', open: 'فتح مساحتي', new: 'ملاحظة سريعة', note: 'ملاحظة', task: 'مهمة', list: 'قائمة', voice: 'تسجيل' },
-  en: { name: 'My private space', open: 'Open my space', new: 'Quick capture', note: 'Note', task: 'Task', list: 'List', voice: 'Voice' }
+  ar: { name: 'مساحتي الخاصة', open: 'فتح مساحتي', new: 'إضافة سريعة', note: 'ملاحظة', task: 'مهمة', appt: 'موعد', rem: 'تذكير', list: 'قائمة', voice: 'تسجيل' },
+  en: { name: 'My private space', open: 'Open my space', new: 'Quick add', note: 'Note', task: 'Task', appt: 'Appointment', rem: 'Reminder', list: 'List', voice: 'Voice' }
 };
 // لمن ليس له دخول لمهام وإجراءات: بطاقة الفتح تحمل اسم «مساحتي الخاصة» بدل اسم فارغ
 function vaultFabApp(btn) {
