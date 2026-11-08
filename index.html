@@ -73,6 +73,8 @@ iframe{border:0;display:block;width:100%;height:100%;background:var(--bg)}
 .pload.enter{clip-path:circle(0 at var(--ox) var(--oy))}
 .pload.opening{transition:clip-path .48s cubic-bezier(.3,.7,.2,1),opacity .38s ease}
 .pload.out{opacity:0;pointer-events:none}
+.pload.fin{animation:plFin .38s ease both}
+@keyframes plFin{from{opacity:0}}
 .pload.gone{display:none}
 .pl-glow{position:absolute;left:50%;top:44%;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;
   background:radial-gradient(circle,rgba(243,213,142,.30),rgba(243,213,142,.08) 38%,transparent 66%);animation:plBreath 3.2s ease-in-out infinite;pointer-events:none}
@@ -693,32 +695,34 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     clearTimeout(creepT); ring(p);
     if (next) creepT = setTimeout(function () { $('plRing').style.transition = 'stroke-dashoffset 9s cubic-bezier(.1,.6,.3,1)'; ring(next); }, 1200);
   }
+  // (v93) شاشة الفتح لا تظهر إن جهز النظام خلال ثانية من الضغطة؛ إن تأخر تظهر الشاشة نفسها بعد الثانية بظهور تدريجي
+  var LDR_WAIT = 1000, ldT = 0, ldAt = 0;
+  function ldGone() { clearTimeout(ldT); ldT = 0; $('pload').className = 'pload gone'; }
   function loaderShow(name, icon, rect) {
     var L = $('pload');
+    clearTimeout(ldT); ldT = 0;
     if (snapActive()) { L.className = 'pload gone'; return; }
     $('pname').textContent = name || '';
     setIcon(icon);
-    $('plRing').style.transition = 'none'; ring(0); void $('plRing').offsetWidth; $('plRing').style.transition = '';
-    var ox = '50%', oy = '50%', em = $('plEm');
+    var w = LDR_WAIT - (Date.now() - ldAt), id = cur;
+    if (!(w > 0 && w <= LDR_WAIT)) w = LDR_WAIT;
+    if (/shown/.test(L.className) && !/done/.test(L.className)) { L.className = 'pload shown'; stage(.16, .4); return; }   // ظاهرة أصلاً (إعادة المحاولة): تبقى
+    L.className = 'pload gone';
+    $('plRing').style.transition = 'none'; ring(0); void $('plRing').offsetWidth; $('plRing').style.transition = ''; stage(.16, .4);
+    ldT = setTimeout(function () {
+      ldT = 0; var o = frames[id];
+      if (cur !== id || $('prog').className !== 'on' || snapActive() || SIL[id] || (o && (o.ready || o.late || o.painted))) return;
+      loaderLate();
+    }, w);
+  }
+  function loaderLate() {
+    var L = $('pload'), em = $('plEm');
     em.className = 'pl-em'; em.style.transform = '';
-    var pf = $('portal').querySelector('iframe'), off = pf ? pf.getBoundingClientRect().top : 0;
-    if (rect && rect.w) {
-      var cx = rect.x + rect.w / 2, cy = rect.y + off + rect.h / 2;
-      ox = cx + 'px'; oy = cy + 'px';
-    }
-    L.style.setProperty('--ox', ox); L.style.setProperty('--oy', oy);
-    L.className = 'pload enter';
-    if (rect && rect.w) {
-      // الشعار يبدأ من مكان أيقونة النظام في سوار ثم ينتقل للمنتصف
-      var r = em.getBoundingClientRect(), s = Math.max(.25, rect.w / r.width);
-      em.style.transform = 'translate(' + (cx - (r.left + r.width / 2)) + 'px,' + (cy - (r.top + r.height / 2)) + 'px) scale(' + s + ')';
-    }
-    void L.offsetWidth;
-    L.className = 'pload opening shown';
-    requestAnimationFrame(function () { em.className = 'pl-em fly'; em.style.transform = ''; });
-    stage(.16, .4);
+    L.style.setProperty('--ox', '50%'); L.style.setProperty('--oy', '50%');
+    L.className = 'pload shown fin';
   }
   function loaderDone() {
+    clearTimeout(ldT); ldT = 0;
     var L = $('pload'); if (/gone|out/.test(L.className)) return;
     clearTimeout(creepT); $('plRing').style.transition = 'stroke-dashoffset .28s ease'; ring(1);
     L.className = 'pload shown done';
@@ -727,7 +731,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   }
   function loaderErr() {
     var L = $('pload'), t = ERRT[LANG] || ERRT.ar;
-    clearTimeout(creepT);
+    clearTimeout(creepT); clearTimeout(ldT); ldT = 0;
     if (cur) pEnd(cur, offline() ? 'offline' : 'fail');
     if (snapActive()) { L.className = 'pload gone'; snapFail(); return; }
     $('plErrTxt').textContent = offline() ? t.off : t.msg; $('plRetry').textContent = t.retry;
@@ -921,7 +925,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   }
   function snapShow(id, s) {
     snapClear();
-    $('pload').className = 'pload gone';
+    ldGone();
     var el = document.createElement('div');
     el.className = 'snap' + (window.innerWidth < 700 ? ' ph' : '') + (RM ? ' rm' : '');
     el.innerHTML = '<div class="snap-sc"><iframe sandbox="" referrerpolicy="no-referrer" tabindex="-1" aria-hidden="true" title=""></iframe><div class="snap-cv"></div></div>' +
@@ -970,12 +974,13 @@ a.btn{display:grid;place-items:center;text-decoration:none}
 
   /* أوامر سوار */
   function onPrep(id, name, icon, rect, go) {
-    if (SIL[id]) { markCur(id); curSave(id, SIL[id].go); snapClear(); $('pload').className = 'pload gone'; showLayer(); return; }
+    if (SIL[id]) { markCur(id); curSave(id, SIL[id].go); snapClear(); ldGone(); showLayer(); return; }
     if (frames[id]) dropFrame(id);
+    ldAt = Date.now();
     pStart(id, 'open');
     markCur(id); curSave(id);
     snapClear();
-    $('pload').className = 'pload gone';
+    ldGone();
     showLayer();
     var tok = SNQ = {}, done = false;
     var normal = function () { if (done || SNQ !== tok || cur !== id) return; done = true; loaderShow(name, icon, rect); if (offline()) loaderErr(); };
@@ -999,15 +1004,15 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   }
   function onShow(id) {
     var o = frames[id];
-    if (SIL[id] && (!o || o.sil)) { markCur(id); curSave(id, SIL[id].go); snapClear(); $('pload').className = 'pload gone'; showLayer(); return; }
+    if (SIL[id] && (!o || o.sil)) { markCur(id); curSave(id, SIL[id].go); snapClear(); ldGone(); showLayer(); return; }
     if (!o) { toPortal({ siwar: 'relaunch', id: id }); return; }
     var aged = Date.now() - o.t > FRAME_AGE && !o.sil && !SIL[id];   // (v92) نظام مضى على فتحه وقت طويل: يظهر فوراً ويُجدَّد خلفه بصمت
     // نظام فُتح بلغة أخرى ولم يعلن أنه يبدّلها في مكانه (langok): يُفتح من جديد بلغة سوار الحالية
     if (!o.lw && o.ul && o.ul !== LANG) { dropFrame(id); toPortal({ siwar: 'relaunch', id: id }); return; }
     markCur(id); curSave(id, o.go);
-    snapClear();
-    if (o.ready) { $('pload').className = 'pload gone'; pStart(id, 'show'); pEnd(id, 'ok'); }
-    else if (o.late) $('pload').className = 'pload gone';   // ظاهر للمستخدم منذ انتهاء الانتظار، والقياس ما زال ينتظر جاهزيته
+    snapClear(); ldAt = Date.now();
+    if (o.ready) { ldGone(); pStart(id, 'show'); pEnd(id, 'ok'); }
+    else if (o.late) ldGone();   // ظاهر للمستخدم منذ انتهاء الانتظار، والقياس ما زال ينتظر جاهزيته
     else { loaderShow(o.name, o.icon, null); stage(o.loaded ? .7 : .42, .9); }
     showLayer();
     langTo(id);
@@ -1020,7 +1025,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     clearTimeout(creepT); snapClear(); SNQ = null;
     var o = frames[cur];
     if (o && !o.ready && !o.loaded && !o.sil) dropFrame(cur);   // نظام لم يكتمل فتحه لا يبقى في الخلفية
-    $('pload').className = 'pload gone';
+    ldGone();
     cur = ''; curClear();
     for (var k in frames) frames[k].f.className = 'pf';
     for (var q in SIL) SIL[q].f.className = 'pf';
@@ -1035,7 +1040,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     var o = frames[id];
     var name = o ? o.name : $('pname').textContent, icon = o ? o.icon : null, at = o ? o.go : (curLoad() || {}).go;
     if (o) dropFrame(id);
-    pStart(id, 'relaunch');
+    pStart(id, 'relaunch'); ldAt = Date.now();
     markCur(id); curSave(id, at || '');
     loaderShow(name, icon, null);
     showLayer();
@@ -1121,7 +1126,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     if (/^(hold|alive|ready)$/.test(d.siwar) && o.win !== e.source) { o.win = e.source; o.ps = ''; if (!o.netSent) { o.netSent = 1; if (!navigator.onLine) try { e.source.postMessage({ siwar: 'net', on: false }, '*'); } catch (x) {} } setTimeout(syncPause, 0); }
     if (d.siwar === 'hold') { o.held = true; pMark(fid, 'hold'); if (d.g && PJ[fid]) PJ[fid].g = String(d.g).slice(0, 8); if (cur === fid && !o.ready) stage(.82, .95); }
     else if (d.siwar === 'alive') { o.alive = true; pMark(fid, 'alive'); }
-    else if (d.siwar === 'paint') { pMark(fid, 'paint'); if (o.sil) silSwap(fid); if (cur === fid && !o.ready) loaderDone(); }   // الشاشة المحفوظة ظهرت: تُعرض فوراً والبيانات الجديدة تصل خلفها
+    else if (d.siwar === 'paint') { pMark(fid, 'paint'); o.painted = true; if (o.sil) silSwap(fid); if (cur === fid && !o.ready) loaderDone(); }   // الشاشة المحفوظة ظهرت: تُعرض فوراً والبيانات الجديدة تصل خلفها
     else if (d.siwar === 'mark' && /^[\w:.-]{1,40}$/.test(String(d.n || ''))) pMark(fid, String(d.n), typeof d.ms === 'number' ? d.ms : null);
     else if (d.siwar === 'ready') markReady(fid);
     else if (d.siwar === 'close' || d.siwar === 'logout') { if (cur === fid) hideLayer(false); dropFrame(fid); }
@@ -1505,7 +1510,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     if (!portalOk || !/^[A-Za-z0-9_-]{1,40}$/.test(id)) { location.href = u.href; return; }
     $('push').hidden = true;
     if (frames[id]) dropFrame(id);
-    pStart(id, 'push'); markCur(id); curSave(id, go);
+    pStart(id, 'push'); ldAt = Date.now(); markCur(id); curSave(id, go);
     loaderShow('', null, null); showLayer();
     toPortal({ siwar: 'relaunch', id: id, go: go });
   });
