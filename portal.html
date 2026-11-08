@@ -1125,6 +1125,12 @@ tr.is-off .mx-user { opacity: .5; }
 .u-steps { margin: 0 0 12px; padding-inline-start: 20px; line-height: 2; color: var(--muted); }
 .u-paste { width: 100%; font-size: 12.5px; }
 .u-file { display: inline-block; margin-top: 8px; cursor: pointer; }
+.u-imbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 4px 0 8px; }
+.u-imbar .u-file { margin-top: 0; display: inline-flex; }
+.u-alt { margin: 4px 0 8px; }
+.u-alt summary { list-style: none; display: inline-flex; }
+.u-alt summary::-webkit-details-marker { display: none; }
+.u-alt .u-paste { margin-top: 6px; }
 .u-prev { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 8px; }
 .u-prev span { padding: 10px 14px; border-radius: var(--radius-sm); background: var(--surface-2); border: 1px solid var(--border); }
 .u-prev b { font-size: 18px; margin-inline-end: 4px; }
@@ -1288,6 +1294,23 @@ body.og-dragging .og-sec, body.og-dragging .og-di { transition: none; }
 .og-dot.sec { background: linear-gradient(145deg, #F3D49A, #D9A650); border-radius: 50%; } .og-dot.none { background: #EFEBE7; }
 .og-seed { max-height: 40vh; overflow: auto; margin: 12px 0; padding: 12px 14px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--border); font-size: 14px; line-height: 1.8; }
 .og-seed ul { margin: 0 18px 6px 0; padding: 0; }
+/* رأس الهيكل «الإدارة العامة» وحفظ مكان المستخدم */
+.og-di.og-topi { border-color: rgba(201,151,63,.55); }
+.og-di.og-topnew { justify-content: center; gap: 6px; border-style: dashed; border-color: var(--gold-deep); color: #8C6524; background: transparent; box-shadow: none; }
+.og-di.og-topnew .ic { width: 16px; height: 16px; }
+.og-gm { min-width: 190px; padding: 8px 18px; border-radius: 14px; text-align: center; cursor: pointer; background: linear-gradient(145deg, #3A332E, #211D1A); color: #fff; box-shadow: 0 10px 22px rgba(33,29,26,.24), inset 0 1px 0 rgba(255,255,255,.1); transition: transform .15s; }
+.og-gm:hover { transform: translateY(-1px); }
+.og-gm .t { font-size: 12px; color: var(--gold); }
+.og-gm .nm { font-size: 15px; font-weight: 700; margin-top: 1px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.og-gm .og-none { color: #CDBFB2; font-weight: 400; }
+.og-gm.og-gm-new { background: transparent; color: #8C6524; border: 1.5px dashed var(--gold-deep); box-shadow: none; }
+.og-gm.og-gm-new .t { color: var(--faint); }
+.og-gm.og-gm-new .ic { width: 15px; height: 15px; }
+.og-vl.og-vl-s { height: 16px; }
+.og-row.many { scroll-snap-type: x proximity; }
+.og-row.many .og-col { scroll-snap-align: start; }
+.og-r.og-hi { background: #FFF4E0; box-shadow: inset 3px 0 0 var(--gold); }
+.og-mh .og-clr { margin-inline-start: 0; }
 @media (max-width: 720px) {
   .og { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .og-side { position: static; padding: 10px; min-width: 0; }
@@ -1304,6 +1327,37 @@ body.og-dragging .og-sec, body.og-dragging .og-di { transition: none; }
   .og-sec { width: 100%; }
   .og-r { flex-wrap: wrap; }
   .og-ra { width: 100%; justify-content: flex-end; }
+  .og-gm { width: 100%; min-width: 0; }
+  .og-list-in { margin-top: 8px; text-align: start; }
+}
+/* الجوال: كثافة مضغوطة كما اعتمدها المالك — نص وبطاقات أصغر، ولمس لا يقل عن 36px */
+@media (max-width: 600px) {
+  .og-main { padding: 12px 10px; }
+  .og-top { margin-bottom: 12px; gap: 6px; }
+  .og-top h2 { font-size: 17px; }
+  .og-di { padding: 7px 10px; font-size: 13px; min-height: 36px; border-radius: 12px; }
+  .og-di b { font-size: 12px; }
+  .og-head { padding: 9px 12px; border-radius: 14px; }
+  .og-head .t, .og-gm .t { font-size: 11.5px; }
+  .og-head .nm { font-size: 15px; } .og-head .rl { font-size: 12.5px; }
+  .og-gm { padding: 7px 12px; } .og-gm .nm { font-size: 14px; }
+  .og-vl { height: 14px; } .og-vl.og-vl-s { height: 10px; }
+  .og-row { gap: 8px; padding-top: 12px; }
+  .og-sec { padding: 9px 12px; border-radius: 14px; text-align: start; }
+  .og-sec .t { font-size: 11.5px; } .og-sec .nm { font-size: 15px; } .og-sec .rl { font-size: 12.5px; }
+  .og-cnt { top: 8px; inset-inline-end: 8px; min-width: 24px; height: 24px; padding: 0 6px; font-size: 12px; }
+  .og-mem { margin-top: 6px; gap: 4px; justify-content: flex-start; min-height: 28px; }
+  .og-av { width: 28px; height: 28px; font-size: 12px; }
+  .og-list { margin-top: 12px; border-radius: 14px; }
+  .og-list-in { margin-top: 8px; }
+  .og-mh { padding: 8px 12px; gap: 6px; flex-wrap: wrap; } .og-mh b { font-size: 14px; }
+  .og-r { padding: 8px 12px; gap: 8px; }
+  .og-rn { font-size: 13.5px; } .og-rs { font-size: 12px; }
+  .og-ra .btn, .og-mh .btn, .og-acts .btn { min-height: 36px; font-size: 13px; }
+  .og-ra .btn { flex: 1 1 0; justify-content: center; }
+  .og-acts { gap: 6px; margin-top: 12px; }
+  .og-acts .btn { flex: 1 1 auto; justify-content: center; padding-inline: 10px; }
+  .og-ib { width: 36px; height: 36px; }
 }
 .pz-sub { display: flex; flex-direction: column; gap: 2px; margin: 18px 2px 4px; }
 .pz-sub b { font-size: 14.5px; }
@@ -3716,7 +3770,9 @@ function uRender() {
   const root = $('#uRoot'); if (!root || !U.d) return;
   const v = U.view;
   const html = ({ home: uHome, people: uPeople, org: uOrg, person: uPerson, profiles: uProfiles, profile: uProfile, roles: uRoles, role: uRole, systems: uSystems, system: uSystem, shared: uSharedV })[v] || uHome;
+  const keep = v === 'org' ? ogKeepGet() : null;
   root.innerHTML = (['person', 'profile', 'role', 'system', 'shared'].indexOf(v) >= 0 ? '<button class="u-back" data-u="back">' + ic('arrow') + '<span>رجوع</span></button>' : '') + html();
+  if (keep) ogKeepSet(keep);
   uAfter(); uNavMark(); uBar();
   const n = (U.d.todo || []).reduce((a, x) => a + (x.kind === 'nomail' ? 0 : x.n), 0), b = $('#uTodoN');
   if (b) { b.hidden = !n; b.textContent = n; }
@@ -4015,14 +4071,138 @@ function uCollectRows(key) {
   }).filter(o => f.some(c => c.t !== 'co' && (Array.isArray(o[c.k]) ? o[c.k].length : o[c.k])));
 }
 
+// ===== استيراد الموظفين من جسر — المسار الأساسي: ملف Excel المصدَّر من جسر؛ اللصق وCSV إضافة =====
+// U_JISR_DEF هو التعريف الوحيد للأعمدة: منه تُقرأ العناوين ومنه يُبنى النموذج. «syn» مطابق حرفاً بحرف لـ U_JISR_COLS في الخادم (Unified.js).
+// صفوف الأمثلة: الرقم الوظيفي فيها يبدأ بـ «مثال» (أو Example) — تُحذف هنا قبل الإرسال فلا تصل الخادم أبداً.
+const uL = (ar, en) => S.lang === 'en' ? en : ar;
+const U_JISR_DEF = [
+  { k: 'JisrNo', req: 1, txt: 1, w: 14, h: ['الرقم الوظيفي', 'Employee ID'], syn: ['الرقم الوظيفي', 'رقم الموظف', 'Employee ID', 'Employee Number'], n: ['رقم الموظف في جسر — مفتاح المطابقة. أرقام أو حروف كما في جسر.', 'The employee number in Jisr — the matching key. Digits or letters as in Jisr.'] },
+  { k: 'NameAR', req: 1, w: 30, h: ['الاسم كاملاً باللغة العربية', 'Arabic Name'], syn: ['الاسم كاملاً باللغة العربية', 'الاسم', 'الاسم بالعربي', 'اسم الموظف', 'الاسم الكامل', 'Name (AR)', 'Arabic Name'], n: ['الاسم بالعربية كما في جسر.', 'The Arabic name as in Jisr.'] },
+  { k: 'NameEN', w: 26, h: ['الاسم كاملاً باللغة الانجليزية', 'English Name'], syn: ['الاسم كاملاً باللغة الانجليزية', 'الاسم كاملاً باللغة الإنجليزية', 'الاسم بالإنجليزي', 'الاسم بالانجليزي', 'English Name', 'Name (EN)', 'Name'], n: ['الاسم بالإنجليزية — اختياري.', 'The English name — optional.'] },
+  { k: 'Email', w: 28, h: ['البريد الإلكتروني', 'Email'], syn: ['البريد الإلكتروني', 'البريد', 'الإيميل', 'Email', 'Work Email'], n: ['بريد العمل — اختياري. الفارغ يُبقي البريد المسجَّل في سوار.', 'Work email — optional. Empty keeps the email saved in Siwar.'] },
+  { k: 'Title', w: 22, h: ['المسمى الوظيفي', 'Job Title'], syn: ['المسمى الوظيفي', 'Job Title', 'Position'], n: ['المسمى كما في جسر — منه تُعرف وظيفة الموظف وصلاحياته.', 'The title as in Jisr — it sets the employee\'s role and permissions.'] },
+  { k: 'Dept', w: 20, h: ['القسم', 'Department'], syn: ['القسم', 'الإدارة', 'Department'], n: ['القسم أو الإدارة كما في جسر.', 'The department as in Jisr.'] },
+  { k: 'Section', w: 18, h: ['وحدة عمل', 'Business Unit'], syn: ['وحدة عمل', 'وحدة العمل', 'Business Unit'], n: ['وحدة العمل كما في جسر — اختياري.', 'The business unit as in Jisr — optional.'] },
+  { k: 'Location', w: 16, h: ['الموقع', 'Location'], syn: ['الموقع', 'Location', 'Branch'], n: ['موقع العمل — اختياري.', 'Work location — optional.'] },
+  { k: 'ManagerNo', w: 22, h: ['المدير المباشر', 'Manager'], syn: ['المدير المباشر', 'Manager', 'Line Manager'], n: ['المدير المباشر كما يكتبه جسر (الاسم أو الرقم).', 'The direct manager as Jisr writes it (name or number).'] },
+  { k: 'Mobile', txt: 1, w: 16, h: ['الجوال', 'Mobile'], syn: ['الجوال', 'رقم الجوال', 'Mobile', 'Phone'], n: ['أرقام فقط، مثل 0551234567. يُكتب نصاً حتى لا يضيع الصفر الأول.', 'Digits only, e.g. 0551234567. Kept as text so the leading zero stays.'] },
+  { k: 'HireDate', w: 16, h: ['تاريخ التعيين', 'Hire Date'], syn: ['تاريخ التعيين', 'تاريخ الالتحاق', 'Joining Date', 'Hire Date'], n: ['سنة-شهر-يوم، مثل 2024-03-10.', 'Year-month-day, e.g. 2024-03-10.'] },
+  { k: 'JisrStatus', w: 16, h: ['حالة الموظف', 'Status'], syn: ['حالة الموظف', 'الحالة', 'Status'], n: ['كما في جسر: نشط، مستقيل، إنهاء خدمات… — من حالته «مستقيل» أو «إنهاء» أو «غير نشط» يُوقف دخوله بعد «اعتماد».', 'As in Jisr: Active, Resigned, Terminated… — «Resigned», «Terminated» or «Inactive» stops the account after «Approve».'] },
+  { k: 'Company', w: 16, h: ['الشركة', 'Company'], syn: ['الشركة', 'المنشأة', 'Company'], n: ['اسم الشركة كما في جسر — اختياري. الفارغ يُستنتج من وحدة العمل.', 'The company name as in Jisr — optional. Empty is taken from the business unit.'] }
+];
+const U_JISR_EX = [
+  [['مثال 1', 'Example 1'], 'سارة خالد', 'Sara Khalid', 'sara.khalid@example.com', ['أخصائية موارد بشرية', 'HR Specialist'], ['الموارد البشرية', 'Human Resources'], '', ['الرياض', 'Riyadh'], '1004', '0551234567', '2024-03-10', ['نشط', 'Active'], ''],
+  [['مثال 2', 'Example 2'], 'راجيش كومار', 'Rajesh Kumar', '', ['شيف حلويات', 'Pastry Chef'], ['المطبخ', 'Kitchen'], '', ['الرياض', 'Riyadh'], '1012', '0559876543', '2022-11-01', ['نشط', 'Active'], ''],
+  [['مثال 3', 'Example 3'], 'فهد ناصر', 'Fahad Nasser', 'fahad.nasser@example.com', ['بائع', 'Salesperson'], ['المعرض', 'Showroom'], '', ['الرياض', 'Riyadh'], '1004', '0501112223', '2019-06-01', ['مستقيل', 'Resigned'], '']
+];
+const U_JISR_EXN = [['موظفة جديدة ببياناتها كاملة.', 'A new employee with full data.'], ['موظف جديد والبريد فارغ (عمود اختياري).', 'A new employee; the email is empty (optional column).'], ['تحديث موظف مسجَّل: حالته «مستقيل» فيُوقف دخوله.', 'An update of a saved employee: status «Resigned» stops the account.']];
+const uXlTxt = v => {
+  if (v == null) return '';
+  if (v instanceof Date) { const p = n => String(n).padStart(2, '0'); return isNaN(v) ? '' : v.getUTCFullYear() + '-' + p(v.getUTCMonth() + 1) + '-' + p(v.getUTCDate()); }
+  if (typeof v === 'object') { if (v.result != null) return uXlTxt(v.result); if (v.richText) return v.richText.map(x => x.text).join(''); if (v.text != null) return uXlTxt(v.text); if (v.error) return ''; return ''; }
+  return String(v).replace(/\s+/g, ' ').trim();
+};
+const uHdrTxt = h => String(h == null ? '' : h).replace(/[✱*]/g, '').replace(/\s+/g, ' ').trim();
+// تحويل أي جدول (ملف Excel أو لصق أو CSV) إلى صفوف الخادم: صف العناوين أولاً ثم البيانات، بلا صفوف أمثلة ولا صفوف فارغة
+function uJisrRows(grid) {
+  grid = (grid || []).filter(r => (r || []).some(c => String(c == null ? '' : c).trim() !== ''));
+  if (!grid.length) return { err: 'empty' };
+  const fieldOf = h => { const t = uHdrTxt(h); const f = U_JISR_DEF.find(d => d.syn.indexOf(t) >= 0); return f ? f.k : ''; };
+  let hi = -1;
+  for (let i = 0; i < Math.min(grid.length, 15) && hi < 0; i++) { const ks = grid[i].map(fieldOf); if (ks.indexOf('JisrNo') >= 0 && ks.indexOf('NameAR') >= 0) hi = i; }
+  if (hi < 0) {
+    let best = 0; for (let i = 0; i < Math.min(grid.length, 15); i++) if (grid[i].map(fieldOf).filter(Boolean).length > grid[best].map(fieldOf).filter(Boolean).length) best = i;
+    const ks = grid[best].map(fieldOf);
+    return { err: 'missing', missing: U_JISR_DEF.filter(d => d.req && ks.indexOf(d.k) < 0).map(d => d.syn[0]), header: grid[best].map(uHdrTxt).filter(Boolean) };
+  }
+  const head = grid[hi].map(uHdrTxt), ks = head.map(fieldOf), iNo = ks.indexOf('JisrNo'), iMob = ks.indexOf('Mobile');
+  const unknown = head.filter((h, j) => h && !ks[j]);
+  let ex = 0; const rows = [head];
+  grid.slice(hi + 1).forEach(r => {
+    const no = String(r[iNo] == null ? '' : r[iNo]).trim();
+    if (/^(مثال|example)/i.test(no)) { ex++; return; }
+    const o = head.map((h, j) => String(r[j] == null ? '' : r[j]).trim());
+    if (iMob >= 0 && /^5\d{8}$/.test(o[iMob])) o[iMob] = '0' + o[iMob];
+    rows.push(o);
+  });
+  return { rows: rows, ex: ex, unknown: unknown };
+}
+async function uJisrReadFile(file) {
+  const nm = String(file.name || '');
+  if (/\.(csv|tsv|txt)$/i.test(nm)) { const tx = String(await file.text()).replace(/^﻿/, ''); return uJisrRows(uParse(tx)); }
+  if (/\.xls$/i.test(nm)) return { err: 'xls' };
+  const X = await uXlLib(), wb = new X.Workbook(); await wb.xlsx.load(await file.arrayBuffer());
+  const skip = /^(تعليمات|instructions|اقرأني)$/i;
+  const sheets = wb.worksheets.filter(w => w.state !== 'hidden' && w.state !== 'veryHidden' && !skip.test(String(w.name).trim()));
+  let last = { err: 'empty' };
+  for (const ws of sheets) {
+    const grid = []; const nc = Math.min(Math.max(ws.columnCount, 1), 80);
+    ws.eachRow({ includeEmpty: true }, (row, i) => { const a = []; for (let j = 1; j <= nc; j++) a.push(uXlTxt(row.getCell(j).value)); grid[i - 1] = a; });
+    const r = uJisrRows(grid.map(x => x || []));
+    if (!r.err) return r;
+    if (last.err === 'empty') last = r;
+  }
+  return last;
+}
+// نموذج Excel يُبنى في المتصفح من U_JISR_DEF نفسه: الصف 1 العناوين (الإلزامي ذهبي)، ثم ثلاثة أمثلة، وورقة «تعليمات»
+async function uJisrTpl(btn) {
+  if (btn) btn.disabled = true;
+  try {
+    const X = await uXlLib(), wb = new X.Workbook(), en = S.lang === 'en', rtl = !en, L = a => Array.isArray(a) ? (en ? a[1] : a[0]) : a;
+    wb.views = [{ rightToLeft: rtl }];
+    const ws = wb.addWorksheet(uL('الموظفون', 'Employees'), { views: [{ rightToLeft: rtl, state: 'frozen', ySplit: 1 }] });
+    const fill = a => ({ type: 'pattern', pattern: 'solid', fgColor: { argb: a } }), bd = { style: 'thin', color: { argb: 'FFE3D9C9' } }, box = { top: bd, bottom: bd, left: bd, right: bd };
+    U_JISR_DEF.forEach((d, j) => { const col = ws.getColumn(j + 1); col.width = d.w || 18; if (d.txt) col.numFmt = '@';
+      const c = ws.getCell(1, j + 1); c.value = L(d.h); c.font = { bold: true, color: { argb: 'FF3F3A37' } }; c.fill = fill(d.req ? 'FFE8C77E' : 'FFFBF0DC'); c.border = box; c.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true }; });
+    ws.getRow(1).height = 30;
+    U_JISR_EX.forEach((ex, i) => { const r = ws.getRow(i + 2); ex.forEach((v, j) => { const c = r.getCell(j + 1); c.value = L(v); c.font = { italic: true, color: { argb: 'FF8A817A' } }; c.fill = fill('FFF4F1EC'); c.border = box; c.alignment = { horizontal: rtl ? 'right' : 'left' }; }); });
+    const I = wb.addWorksheet(uL('تعليمات', 'Instructions'), { views: [{ rightToLeft: rtl, showGridLines: false }] });
+    I.getColumn(1).width = 30; I.getColumn(2).width = 12; I.getColumn(3).width = 70;
+    const top = [uL('نموذج استيراد الموظفين من جسر', 'Jisr employee import template'),
+      uL('الأفضل: صدّر الموظفين من جسر بصيغة Excel واختر الملف كما هو — العناوين نفسها.', 'Best: export the employees from Jisr as Excel and choose the file as it is — the headers are the same.'),
+      uL('العمود الذهبي إلزامي، والباقي اختياري. الخلية الفارغة لا تمسح قيمة مسجَّلة.', 'Gold columns are required; the rest are optional. An empty cell does not clear a saved value.'),
+      uL('الصفوف الرمادية التي يبدأ رقمها بـ «مثال» للتوضيح فقط ولا تُستورد — احذفها أو اتركها.', 'The grey rows whose number starts with «Example» are only a guide and are never imported — delete or keep them.')];
+    top.forEach((t, i) => { const c = I.getCell(i + 1, 1); c.value = t; c.font = i ? { color: { argb: 'FF3F3A37' } } : { bold: true, size: 14, color: { argb: 'FF3F3A37' } }; I.mergeCells(i + 1, 1, i + 1, 3); c.alignment = { wrapText: true, horizontal: rtl ? 'right' : 'left' }; });
+    const h0 = top.length + 2, hr = I.getRow(h0);
+    [uL('العمود', 'Column'), uL('إلزامي', 'Required'), uL('ما هو وصيغته', 'What it is and its format')].forEach((x, j) => { const c = hr.getCell(j + 1); c.value = x; c.font = { bold: true }; c.fill = fill('FFFBF0DC'); c.border = box; });
+    U_JISR_DEF.forEach((d, i) => { const r = I.getRow(h0 + 1 + i); [L(d.h), d.req ? uL('نعم', 'Yes') : uL('لا', 'No'), L(d.n)].forEach((v, j) => { const c = r.getCell(j + 1); c.value = v; c.border = box; c.alignment = { wrapText: true, vertical: 'top', horizontal: rtl ? 'right' : 'left' }; if (j === 0 && d.req) c.fill = fill('FFE8C77E'); }); });
+    const e0 = h0 + U_JISR_DEF.length + 2; I.getCell(e0, 1).value = uL('الأمثلة', 'The examples'); I.getCell(e0, 1).font = { bold: true };
+    U_JISR_EXN.forEach((x, i) => { I.getCell(e0 + 1 + i, 1).value = L(U_JISR_EX[i][0]); I.getCell(e0 + 1 + i, 3).value = L(x); I.getCell(e0 + 1 + i, 3).alignment = { wrapText: true, horizontal: rtl ? 'right' : 'left' }; });
+    const buf = await wb.xlsx.writeBuffer();
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+    a.download = uL('نموذج_استيراد_الموظفين_من_جسر', 'Jisr_employees_import_template') + '.xlsx'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+    toast(uL('نُزّل النموذج', 'Template downloaded'), 'ok');
+  } catch (c) { const o = $('#uImpOut'); if (o) o.innerHTML = '<p class="u-err">' + esc(c === 'ERR_NETWORK' ? uL('تعذّر تحميل أداة Excel. تأكد من الاتصال ثم أعد المحاولة.', 'The Excel tool could not load. Check the connection and try again.') : uL('تعذّر إنشاء النموذج.', 'The template could not be created.')) + '</p>'; console.error(c); }
+  finally { if (btn) btn.disabled = false; }
+}
+function uImpMsg(r) {
+  if (r.err === 'xls') return uL('هذا الملف بصيغة xls القديمة. افتحه في Excel واحفظه بصيغة xlsx، ثم اختره هنا.', 'This file is in the old xls format. Open it in Excel, save it as xlsx, then choose it here.');
+  if (r.err === 'missing') return uL('لم أجد العمود الإلزامي: ', 'Required column not found: ') + r.missing.map(x => '«' + x + '»').join(uL(' و', ' and ')) + '. ' + (r.header && r.header.length ? uL('العناوين الموجودة في الملف: ', 'Headers in the file: ') + r.header.slice(0, 30).join(uL('، ', ', ')) : uL('لا صف عناوين في الملف.', 'The file has no header row.'));
+  if (r.err === 'empty') return uL('الملف فارغ — لا صفوف فيه.', 'The file is empty — it has no rows.');
+  if (r.err === 'read') return uL('تعذّرت قراءة الملف. تأكد أنه ملف Excel بصيغة xlsx.', 'The file could not be read. Make sure it is an Excel file in xlsx format.');
+  if (r.err === 'net') return uL('تعذّر تحميل أداة Excel. تأكد من الاتصال ثم أعد المحاولة.', 'The Excel tool could not load. Check the connection and try again.');
+  return '';
+}
 function uOpenImport() {
-  U.imp = null;
-  openModal({ wide: true, title: 'استيراد الموظفين من جسر', body:
-    '<ol class="u-steps"><li>في جسر: الموظفون ← تصدير ← Excel.</li><li>افتح الملف، حدّد الجدول كله (Ctrl+A) وانسخه.</li><li>الصقه هنا ثم «معاينة». لا يتغير شيء قبل «اعتماد».</li></ol>' +
-    '<textarea class="inp u-paste" id="uPaste" dir="auto" rows="8" placeholder="الصق الجدول هنا (أول سطر: عناوين الأعمدة)"></textarea>' +
-    '<label class="link-btn u-file">أو اختر ملف CSV<input type="file" id="uFile" accept=".csv,.tsv,.txt" hidden></label><div id="uImpOut"></div>',
-    foot: '<button class="btn btn-ghost" data-u="impPreview">' + ic('eye') + '<span>معاينة</span></button><button class="btn btn-primary" data-u="impApply" id="uImpApply" disabled>' + ic('check') + '<span>اعتماد</span></button>' });
-  const f = $('#uFile'); if (f) f.onchange = () => { const file = f.files && f.files[0]; if (!file) return; const r = new FileReader(); r.onload = () => { $('#uPaste').value = String(r.result || ''); }; r.readAsText(file, 'utf-8'); };
+  U.imp = null; U.impFile = null;
+  openModal({ wide: true, title: uL('استيراد الموظفين من جسر', 'Import employees from Jisr'), body:
+    '<ol class="u-steps"><li>' + esc(uL('في جسر: الموظفون ← تصدير ← Excel.', 'In Jisr: Employees ← Export ← Excel.')) + '</li><li>' + esc(uL('اختر الملف هنا ثم «معاينة». لا يتغير شيء قبل «اعتماد».', 'Choose the file here, then «Preview». Nothing changes before «Approve».')) + '</li></ol>' +
+    '<div class="u-imbar"><label class="btn btn-ghost u-file">' + ic('upload') + '<span>' + esc(uL('اختيار ملف Excel', 'Choose the Excel file')) + '</span><input type="file" id="uFile" accept=".xlsx,.csv,.tsv,.txt" hidden></label><button class="btn btn-ghost" type="button" data-u="impTpl">' + ic('download') + '<span>' + esc(uL('تحميل النموذج', 'Download template')) + '</span></button><span class="u-muted" id="uFileInfo"></span></div>' +
+    '<details class="u-alt"><summary class="link-btn">' + esc(uL('أو الصق الجدول', 'Or paste the table')) + '</summary><textarea class="inp u-paste" id="uPaste" dir="auto" rows="7" placeholder="' + esc(uL('الصق الجدول هنا (أول سطر: عناوين الأعمدة)', 'Paste the table here (first line: the column headers)')) + '"></textarea></details><div id="uImpOut"></div>',
+    foot: '<button class="btn btn-ghost" data-u="impPreview">' + ic('eye') + '<span>' + esc(uL('معاينة', 'Preview')) + '</span></button><button class="btn btn-primary" data-u="impApply" id="uImpApply" disabled>' + ic('check') + '<span>' + esc(uL('اعتماد', 'Approve')) + '</span></button>' });
+  const f = $('#uFile'), pa = $('#uPaste');
+  if (pa) pa.oninput = () => { U.impFile = null; $('#uFileInfo').textContent = ''; $('#uImpApply').disabled = true; };
+  if (f) f.onchange = async () => {
+    const file = f.files && f.files[0]; if (!file) return;
+    const out = $('#uImpOut'), info = $('#uFileInfo'); U.impFile = null; $('#uImpApply').disabled = true; info.textContent = file.name; if (pa) pa.value = '';
+    out.innerHTML = '<div class="u-wait"><span class="u-spin"></span><span>' + esc(uL('قراءة الملف…', 'Reading the file…')) + '</span></div>';
+    let r; try { r = await uJisrReadFile(file); } catch (c) { r = { err: c === 'ERR_NETWORK' ? 'net' : 'read' }; console.error(c); }
+    f.value = '';
+    if (r.err) { out.innerHTML = '<p class="u-err">' + esc(uImpMsg(r)) + '</p>'; return; }
+    U.impFile = r; r.name = file.name;
+    info.textContent = file.name + ' · ' + (r.rows.length - 1) + uL(' صفاً', ' rows');
+    uImport(false);
+  };
 }
 function uParse(text) {
   const lines = String(text || '').replace(/\r/g, '').split('\n').filter(l => l.trim());
@@ -4032,15 +4212,23 @@ function uParse(text) {
   return lines.map(l => (tab ? l.split('\t') : csv(l)).map(x => x.trim()));
 }
 async function uImport(apply) {
-  const rows = uParse($('#uPaste').value);
-  if (rows.length < 2) { toast('الصق الجدول أولاً', 'err'); return; }
   const out = $('#uImpOut');
+  let src = U.impFile;
+  if (!src) {
+    const tx = $('#uPaste') ? $('#uPaste').value : '';
+    if (!String(tx).trim()) { out.innerHTML = '<p class="u-err">' + esc(uL('اختر ملف Excel المصدَّر من جسر أولاً.', 'Choose the Excel file exported from Jisr first.')) + '</p>'; return; }
+    src = uJisrRows(uParse(tx));
+  }
+  if (src.err) { out.innerHTML = '<p class="u-err">' + esc(uImpMsg(src)) + '</p>'; return; }
+  const note = (src.ex ? '<p class="u-muted">' + esc(uL('صفوف الأمثلة لا تُستورد: ', 'Example rows are not imported: ') + src.ex) + '</p>' : '') +
+    (src.unknown && src.unknown.length ? '<p class="u-muted">' + esc(uL('أعمدة لا يستخدمها الاستيراد فتُترك: ', 'Columns the import does not use are left out: ') + src.unknown.slice(0, 20).join(uL('، ', ', ')) + (src.unknown.length > 20 ? '…' : '')) + '</p>' : '');
+  if (src.rows.length < 2) { out.innerHTML = '<p class="u-err">' + esc(src.ex ? uL('الملف فيه صفوف الأمثلة فقط (' + src.ex + ') — لم يُستورد شيء. احذفها وأضف الموظفين تحتها، أو اختر الملف المصدَّر من جسر.', 'The file has only the example rows (' + src.ex + ') — nothing was imported. Delete them and add the employees below, or choose the file exported from Jisr.') : uL('لا صفوف بيانات تحت صف العناوين.', 'There are no data rows under the header row.')) + '</p>'; $('#uImpApply').disabled = true; return; }
   try {
-    const r = await api('u_importJisr', { rows: rows, apply: apply });
+    const r = await api('u_importJisr', { rows: src.rows, apply: apply });
     if (!r.ok) { out.innerHTML = '<p class="u-err">لم أجد عمودي «الرقم الوظيفي» و«الاسم». العناوين الموجودة: ' + esc((r.header || []).join('، ')) + '</p>'; return; }
     if (r.applied) { uFlushSoon(); closeModal(true); toast('تم: ' + r.counts.fresh + ' جديد · ' + r.counts.changed + ' تغيّر · ' + r.counts.left + ' غادر' + (r.counts.stopped ? ' (أُوقف ' + r.counts.stopped + ' حساباً)' : ''), 'ok'); uLoad(); return; }
     const c = r.counts, sm = r.sample;
-    out.innerHTML = '<div class="u-prev"><span><b>' + c.fresh + '</b> جديد</span><span><b>' + c.changed + '</b> تغيّرت بياناتهم</span><span><b>' + c.left + '</b> غادروا</span><span><b>' + c.same + '</b> بلا تغيير</span></div>' +
+    out.innerHTML = note + '<div class="u-prev"><span><b>' + c.fresh + '</b> جديد</span><span><b>' + c.changed + '</b> تغيّرت بياناتهم</span><span><b>' + c.left + '</b> غادروا</span><span><b>' + c.same + '</b> بلا تغيير</span></div>' +
       (sm.left.length ? '<p class="u-err">سيُوقف دخول من غادر فوراً في كل الأنظمة: ' + esc(sm.left.join('، ')) + '</p>' : '') +
       (sm.fresh.length ? '<p class="u-muted">جدد: ' + esc(sm.fresh.join('، ')) + (c.fresh > sm.fresh.length ? '…' : '') + '</p>' : '') +
       (sm.changed.length ? '<p class="u-muted">تغييرات: ' + esc(sm.changed.join(' | ')) + '</p>' : '');
@@ -4125,7 +4313,7 @@ async function uXlDownload(btn) {
      '• «الوظائف»: كل صف = وظيفة + صلاحية في نظام. الوظيفة المذكورة تُعاد صلاحياتها في الأنظمة المذكورة لها كما في الملف.',
      '• «مسميات جسر»: أي مسمى من جسر يأخذ أي وظيفة.', '• «الموظفون»: وظيفة محددة لموظف (أو حسب مسماه)، ودخوله لكل نظام، وما يراه.',
      '• «مستخدمون جدد»: أضف موظفاً جديداً بالاسم والبريد، واختر مسماه ووظيفته ودخوله لكل نظام من القوائم. بعد «اعتماد» أرسل لكل واحد دعوته من صفحته.', '• «صلاحيات خاصة»: منح أو منع صلاحية لموظف بعينه زيادة على وظيفته.', '• «الإعدادات»: غيّر عمود القيمة فقط.',
-     '• المالك له كل الصلاحيات دائماً ولا يظهر في الملف.', '• بعد الرفع تظهر معاينة وأي أخطاء؛ لا يتغير شيء قبل «اعتماد».']
+     '• المالك له كل الصلاحيات دائماً ولا يظهر في الملف.', '• الصفوف الرمادية التي يبدأ اسمها بـ «مثال» للتوضيح فقط ولا تُستورد — احذفها أو اتركها.', '• بعد الرفع تظهر معاينة وأي أخطاء؛ لا يتغير شيء قبل «اعتماد».']
       .forEach((t, i) => { const c = R.getCell('A' + (i + 1)); c.value = t; if (!i) c.font = { bold: true, size: 15 }; c.alignment = { wrapText: true }; });
 
     const F = wb.addWorksheet('الوظائف'); head(F, [['الوظيفة', 'p', 26], ['النظام — الصلاحية', 'c', 46], ['النظام — يرى', 's', 34]]);
@@ -4157,6 +4345,10 @@ async function uXlDownload(btn) {
     const Nw = wb.addWorksheet('مستخدمون جدد'); const Ncols = [['الاسم', 'name', 26], ['البريد الإلكتروني', 'email', 30], ['المسمى الوظيفي', 'title', 24], ['الشركة', 'co', 18], ['الوظيفة', 'prof', 26], ['يوم الراحة', 'rest', 14]];
     D.apps.forEach(a => { Ncols.push([a.nameAR + ' — الدخول', 'en_' + a.id, 18]); if (((uReg(a.id) || {}).scopes || []).length) Ncols.push([a.nameAR + ' — يرى', 'sc_' + a.id, 22]); });
     head(Nw, Ncols);
+    // صفوف أمثلة رمادية — الاسم يبدأ بـ «مثال» فلا تُقرأ عند الرفع
+    [['مثال — سارة خالد', 'sara.khalid@example.com', '', '', U_BYTITLE, 'الجمعة'], ['مثال — راجيش كومار', 'rajesh.kumar@example.com', '', '', U_BYTITLE, '']].forEach(x => {
+      const o = { name: x[0], email: x[1], title: x[2], co: x[3], prof: x[4], rest: x[5] }; D.apps.forEach((a, i) => { o['en_' + a.id] = i ? '' : 'نعم'; });
+      const r = Nw.addRow(o); r.eachCell({ includeEmpty: true }, c => { c.font = { italic: true, color: { argb: 'FF8A817A' } }; c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF4F1EC' } }; }); });
     dv(Nw, 'title', 'ttl', 2, 200); dv(Nw, 'co', 'co', 2, 200); dv(Nw, 'prof', lists.prof ? lists.prof.replace(/\$\d+$/, '$' + (D.profiles.length + 1)) : null, 2, 200); dv(Nw, 'rest', lists.days, 2, 200);
     D.apps.forEach(a => { dv(Nw, 'en_' + a.id, 'en', 2, 200); if (lists['sc_' + a.id]) dv(Nw, 'sc_' + a.id, lists['sc_' + a.id], 2, 200); });
     const Sx = wb.addWorksheet('صلاحيات خاصة'); head(Sx, [['الموظف', 'p', 36], ['النظام — الصلاحية', 'c', 46], ['منح أو منع', 'g', 14]]);
@@ -4190,7 +4382,7 @@ async function uXlDownload(btn) {
 function uXlOpenUpload() {
   U.bulk = null;
   openModal({ wide: true, title: 'رفع نموذج الصلاحيات والإعدادات', body:
-    '<p class="u-muted">اختر الملف الذي عبّأته (النموذج المنزّل من هنا). لا يتغير شيء قبل «اعتماد».</p><label class="btn btn-ghost u-file">' + ic('upload') + '<span>اختيار الملف</span><input type="file" id="uXlFile" accept=".xlsx" hidden></label><div id="uXlOut"></div>',
+    '<p class="u-muted">اختر الملف الذي عبّأته (النموذج المنزّل من هنا). لا يتغير شيء قبل «اعتماد».</p><div class="u-imbar"><label class="btn btn-ghost u-file">' + ic('upload') + '<span>اختيار الملف</span><input type="file" id="uXlFile" accept=".xlsx" hidden></label><button class="btn btn-ghost" type="button" data-u="xlDown">' + ic('download') + '<span>' + esc(uL('تحميل النموذج', 'Download template')) + '</span></button></div><div id="uXlOut"></div>',
     foot: '<button class="btn btn-primary" data-u="xlApply" id="uXlApply" disabled>' + ic('check') + '<span>اعتماد</span></button>' });
   $('#uXlFile').onchange = e => { const f = e.target.files && e.target.files[0]; if (f) uXlRead(f); };
 }
@@ -4202,6 +4394,7 @@ async function uXlRead(file) {
     const val = c => { let v = c && c.value; if (v && typeof v === 'object') v = v.result != null ? v.result : v.richText ? v.richText.map(x => x.text).join('') : v.text != null ? v.text : v instanceof Date ? v.toISOString().slice(0, 10) : ''; return v == null ? '' : (typeof v === 'string' ? v.trim() : v); };
     const rows = (name, fn) => { const ws = wb.getWorksheet(name); if (!ws) return; const hdr = {}; ws.getRow(1).eachCell((c, i) => { hdr[String(val(c))] = i; }); ws.eachRow((r, i) => { if (i > 1) fn(k => val(r.getCell(hdr[k] || 999)), i, hdr, r); }); };
     const payload = { profiles: [], titles: [], people: [], special: [], settings: [] };
+    let uXlEx = 0;
     const bad = (sheet, r, msg) => local.push({ sheet: sheet, row: r, msg: msg });
     rows('الوظائف', (g, r) => { const p = String(g('الوظيفة')), c = g('النظام — الصلاحية'), s = g('النظام — يرى'); if (!p && !c) return;
       if (c && !M.caps[c]) return bad('الوظائف', r, 'صلاحية ليست من القائمة'); if (s && !M.scopes[s]) return bad('الوظائف', r, 'نطاق ليس من القائمة');
@@ -4224,7 +4417,7 @@ async function uXlRead(file) {
       const profile = pr && pr !== curProf ? (pr === U_BYTITLE ? '' : pr) : null;
       if (changed || profile !== null || restDays) payload.people.push({ r: r, personId: id, profile: profile, access: access, restDays: restDays }); });
     payload.newPeople = [];
-    rows('مستخدمون جدد', (g, r, hdr) => { const nm = String(g('الاسم')).trim(), em = String(g('البريد الإلكتروني')).trim().toLowerCase(); if (!nm && !em) return;
+    rows('مستخدمون جدد', (g, r, hdr) => { const nm = String(g('الاسم')).trim(), em = String(g('البريد الإلكتروني')).trim().toLowerCase(); if (!nm && !em) return; if (/^(مثال|example)/i.test(nm)) { uXlEx++; return; }
       if (!nm) return bad('مستخدمون جدد', r, 'بلا اسم'); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) return bad('مستخدمون جدد', r, 'بريد غير صحيح');
       if (D.people.some(p => String(p.email || '').toLowerCase() === em) || payload.newPeople.some(x => x.email === em)) return bad('مستخدمون جدد', r, 'البريد موجود من قبل');
       const co = String(g('الشركة')), cc = (D.shared.companies || []).find(o => o.nameAR === co);
@@ -4255,6 +4448,7 @@ async function uXlRead(file) {
       (errs.length ? '<p class="u-err">صحّح هذه في الملف ثم ارفعه من جديد:</p><ul class="u-errs">' + errs.slice(0, 40).map(e => '<li>' + esc(e.sheet) + ' · صف ' + esc(e.row) + ': ' + esc(e.msg) + '</li>').join('') + '</ul>' : '<p class="u-muted">لا أخطاء. اضغط «اعتماد» للتطبيق.</p>');
     $('#uXlApply').disabled = !!errs.length || !(c.profiles + c.titles + c.people + c.special + c.settings + payload.newPeople.length);
     if (payload.newPeople.length) out.insertAdjacentHTML('afterbegin', '<p class="u-muted"><b>' + payload.newPeople.length + '</b> مستخدم جديد سيُضاف</p>');
+    if (uXlEx) out.insertAdjacentHTML('afterbegin', '<p class="u-muted">' + esc(uL('صفوف الأمثلة لا تُستورد: ', 'Example rows are not imported: ') + uXlEx) + '</p>');
   } catch (c) { out.innerHTML = '<p class="u-err">تعذّرت قراءة الملف. تأكد أنه النموذج المنزّل من سوار وبصيغة xlsx.</p>'; console.error(c); }
 }
 async function uXlApply() {
@@ -4553,21 +4747,30 @@ const ogN = s => String(s || '').replace(/[ً-ْـ]/g, '').replace(/[أإآ]/g, 
 const ogKey = s => ogN(s).replace(/^(قسم|اداره|الاداره)\s+(?=\S)/, '').trim();
 const ogU = id => (O.w.units || []).find(u => u.id === id) || null;
 const ogP = id => (O.w.people || []).find(p => p.id === id) || null;
+const ogTop = () => (O.w.units || []).find(u => u.kind === 'top') || null;
+const ogFirst = () => (ogTop() || ogDepts()[0] || {}).id || '';
+// الاسم الأول والثاني فقط (قاعدة المالك): «عبد» و«أبو» مع ما بعدهما اسم واحد، و«بن/بنت» ليست اسماً
+const ogN2 = s => { const w = String(s || '').trim().split(/\s+/).filter(Boolean), out = []; for (let i = 0; i < w.length && out.length < 2; i++) { if (/^(بن|بنت|ابن)$/.test(w[i])) continue; if (/^(عبد|أبو|ابو)$/.test(w[i]) && w[i + 1]) { out.push(w[i] + ' ' + w[++i]); continue; } out.push(w[i]); } return out.join(' '); };
+const OG_TOP = 'الإدارة العامة', OG_GM = 'المدير العام';
 const ogDepts = () => O.w.units.filter(u => u.kind === 'dept').sort((a, b) => (a.order - b.order) || a.name.localeCompare(b.name, 'ar'));
 const ogSecs = d => O.w.units.filter(u => u.kind === 'section' && u.parent === d).sort((a, b) => (a.order - b.order) || a.name.localeCompare(b.name, 'ar'));
 // مكان الموظف ومديره المباشر — الحساب نفسه في الخادم (Org.js)
 function ogPlace(p) {
   let id = p.org && ogU(p.org) ? p.org : '';
-  if (!id) { const h = O.w.units.filter(u => u.head === p.id); id = (h.find(u => u.kind === 'section') || h[0] || {}).id || ''; }
+  if (!id) { const h = O.w.units.filter(u => u.head === p.id); id = (h.find(u => u.kind === 'section') || h.find(u => u.kind === 'top') || h[0] || {}).id || ''; }
   if (!id) { const k = ogKey(p.jdept); if (k) { const u = O.w.units.find(x => ogKey(x.name) === k) || O.w.units.find(x => (x.jisr || []).some(n => ogKey(n) === k)); id = u ? u.id : ''; } }
   const u = id ? ogU(id) : null;
   return !u ? { d: '', s: '' } : u.kind === 'section' ? { d: u.parent, s: u.id } : { d: u.id, s: '' };
 }
 function ogMgr(p) {
   if (p.mgrPid && ogP(p.mgrPid) && p.mgrPid !== p.id) return { id: p.mgrPid, src: 'siwar' };
-  const pl = ogPlace(p), sh = pl.s && (ogU(pl.s) || {}).head, dh = pl.d && (ogU(pl.d) || {}).head;
+  const T = ogTop(), gm = T && T.head && ogP(T.head) ? T.head : '';
+  if (gm && gm === p.id) return { id: '', src: '' };
+  const pl = ogPlace(p), du = pl.d ? ogU(pl.d) : null, isDH = !!(du && du.kind !== 'top' && du.head === p.id);
+  const sh = !isDH && pl.s && (ogU(pl.s) || {}).head, dh = du && du.head;
   if (sh && sh !== p.id && ogP(sh)) return { id: sh, src: 'org' };
   if (dh && dh !== p.id && ogP(dh)) return { id: dh, src: 'org' };
+  if (isDH && gm) return { id: gm, src: 'org' };
   if (p.jm && p.jm !== p.id) return { id: p.jm, src: 'jisr' };
   return { id: '', src: '' };
 }
@@ -4583,7 +4786,7 @@ async function ogLoad(keepSel, quiet) {
   O.busy = false;
   if (!d) { if (U.view === 'org') $('#uRoot').innerHTML = '<div class="empty">' + ic('alert') + '<span>تعذّر تحميل الهيكل التنظيمي. ' + esc(t(I18N.ar[fail] ? fail : 'ERR_NETWORK')) + '</span><button class="btn btn-ghost" data-og="reload">' + ic('refresh') + '<span>إعادة المحاولة</span></button></div>'; return; }
   O.d = d; O.w = JSON.parse(JSON.stringify(d)); O.ops = []; O.at = Date.now();
-  if (!keepSel || (O.sel !== '__un' && !ogU(O.sel))) O.sel = (ogDepts()[0] || {}).id || '';
+  if (!keepSel || (O.sel !== '__un' && !ogU(O.sel))) O.sel = ogFirst();
   if (U.view === 'org') uRender();
 }
 function uOrg() {
@@ -4593,12 +4796,15 @@ function uOrg() {
   if (!D.units.length) return ogEmpty();
   const depts = ogDepts(), counts = {}, un = [];
   D.people.forEach(p => { const pl = ogPlace(p); if (pl.d) counts[pl.d] = (counts[pl.d] || 0) + 1; else un.push(p); });
-  if (O.sel !== '__un' && !ogU(O.sel)) O.sel = (depts[0] || {}).id || '';
-  const side = '<aside class="og-side"><h3>الإدارات</h3><div class="og-dl">' + depts.map(d => '<button class="og-di' + (O.sel === d.id ? ' on' : '') + '" data-og="sel" data-id="' + esc(d.id) + '" data-drop="' + esc(d.id) + '"><span>' + esc(d.name) + '</span><b class="n">' + (counts[d.id] || 0) + '</b></button>').join('') +
+  if (O.sel !== '__un' && !ogU(O.sel)) O.sel = ogFirst();
+  const T = ogTop();
+  const topI = T ? '<button class="og-di og-topi' + (O.sel === T.id ? ' on' : '') + '" data-og="sel" data-id="' + esc(T.id) + '" data-drop="' + esc(T.id) + '"><span>' + esc(T.name) + '</span><b class="n">' + (counts[T.id] || 0) + '</b></button>'
+    : D.edit ? '<button class="og-di og-topnew" data-og="addTop">' + ic('plus') + '<span>' + OG_TOP + '</span></button>' : '';
+  const side = '<aside class="og-side"><h3>الإدارات</h3><div class="og-dl" data-ogk="dl">' + topI + depts.map(d => '<button class="og-di' + (O.sel === d.id ? ' on' : '') + '" data-og="sel" data-id="' + esc(d.id) + '" data-drop="' + esc(d.id) + '"><span>' + esc(d.name) + '</span><b class="n">' + (counts[d.id] || 0) + '</b></button>').join('') +
     (un.length ? '<button class="og-di og-un' + (O.sel === '__un' ? ' on' : '') + '" data-og="sel" data-id="__un"><span>غير موزّعين</span><b class="n">' + un.length + '</b></button>' : '') + '</div>' +
     (D.edit ? '<button class="btn btn-ghost og-add" data-og="addDept">' + ic('plus') + '<span>إدارة جديدة</span></button>' : '') +
     '<div class="og-xl"><button class="btn btn-ghost btn-sm" data-og="xlDown">' + ic('download') + '<span>تنزيل Excel</span></button>' + (D.edit ? '<button class="btn btn-ghost btn-sm" data-og="xlUp">' + ic('upload') + '<span>رفع Excel</span></button>' : '') + '</div></aside>';
-  const main = O.sel === '__un' ? ogUnplaced(un) : ogDept(ogU(O.sel));
+  const main = O.sel === '__un' ? ogUnplaced(un) : T && O.sel === T.id ? ogTopView(T) : ogDept(ogU(O.sel));
   return '<div class="og">' + side + '<section class="og-main">' + main + ogFoot() + '</section></div>';
 }
 function ogEmpty() {
@@ -4610,35 +4816,62 @@ function ogCoSeg() {
 }
 function ogHeadBox(u, kind) {
   const h = u.head ? ogP(u.head) : null;
-  return '<div class="og-head' + (kind === 'dept' ? ' is-dept' : '') + '"' + (O.d.edit ? ' data-og="pickHead" data-id="' + esc(u.id) + '" role="button" tabindex="0"' : '') + '><div class="t">' + (kind === 'dept' ? 'رئيس الإدارة' : 'رئيس القسم') + '</div><div class="nm">' + (h ? esc(h.name) : '<span class="og-none">لم يُحدَّد</span>') + '</div>' + (h && h.title ? '<div class="rl">' + esc(h.title) + '</div>' : '') + '</div>';
+  return '<div class="og-head' + (kind !== 'section' ? ' is-dept' : '') + '"' + (O.d.edit ? ' data-og="pickHead" data-id="' + esc(u.id) + '" role="button" tabindex="0"' : '') + '><div class="t">' + (kind === 'top' ? OG_GM : kind === 'dept' ? 'رئيس الإدارة' : 'رئيس القسم') + '</div><div class="nm">' + (h ? esc(h.name) : '<span class="og-none">لم يُحدَّد</span>') + '</div>' + (h && h.title ? '<div class="rl">' + esc(h.title) + '</div>' : '') + '</div>';
+}
+// بطاقة قسم (أو إدارة في عرض الإدارة العامة): act = open يفتح قائمة الأعضاء، sel ينتقل إلى الإدارة
+function ogCard(id, title, sub, head, list, act) {
+  const n = list.length, shown = list.slice(0, 7);
+  return '<div class="og-sec' + (O.open === id ? ' on' : '') + '" data-og="' + (act || 'open') + '" data-id="' + esc(id) + '" data-drop="' + esc(id) + '" role="button" tabindex="0"><span class="og-cnt n">' + n + '</span><div class="t">' + sub + '</div><div class="nm">' + esc(title) + '</div>' +
+    '<div class="rl">' + head + '</div><div class="og-mem">' + shown.map(p => ogAv(p, true)).join('') + (n > shown.length ? '<span class="og-av og-more n" dir="ltr">+' + (n - shown.length) + '</span>' : '') + (!n ? '<span class="og-none">لا أحد</span>' : '') + '</div></div>';
+}
+// رأس الهرم فوق رئيس الإدارة: المدير العام (أو زر إنشاء الإدارة العامة)
+function ogGmBox() {
+  const T = ogTop();
+  if (!T) return O.d.edit ? '<div class="og-gm og-gm-new" data-og="addTop" role="button" tabindex="0"><div class="t">' + OG_GM + '</div><div class="nm">' + ic('plus') + '<span>إنشاء ' + OG_TOP + '</span></div></div><div class="og-vl og-vl-s"></div>' : '';
+  const h = T.head ? ogP(T.head) : null;
+  return '<div class="og-gm" data-og="' + (O.d.edit ? 'pickHead' : 'sel') + '" data-id="' + esc(T.id) + '" role="button" tabindex="0"><div class="t">' + OG_GM + '</div><div class="nm">' + (h ? esc(ogN2(h.name)) : '<span class="og-none">لم يُحدَّد</span>') + '</div></div><div class="og-vl og-vl-s"></div>';
 }
 function ogDept(d) {
   if (!d) return '';
   const secs = ogSecs(d.id), all = O.w.people.filter(p => ogPlace(p).d === d.id), vis = all.filter(ogCoOk);
-  const card = (id, title, sub, head, list) => {
-    const n = list.length, shown = list.slice(0, 7);
-    return '<div class="og-sec' + (O.open === id ? ' on' : '') + '" data-og="open" data-id="' + esc(id) + '" data-drop="' + esc(id) + '" role="button" tabindex="0"><span class="og-cnt n">' + n + '</span><div class="t">' + sub + '</div><div class="nm">' + esc(title) + '</div>' +
-      '<div class="rl">' + head + '</div><div class="og-mem">' + shown.map(p => ogAv(p, true)).join('') + (n > shown.length ? '<span class="og-av og-more n" dir="ltr">+' + (n - shown.length) + '</span>' : '') + (!n ? '<span class="og-none">لا أحد</span>' : '') + '</div></div>';
-  };
+  const card = ogCard;
   const direct = vis.filter(p => !ogPlace(p).s && p.id !== d.head);
-  const cards = secs.map(s => card(s.id, s.name, 'قسم', 'رئيس القسم: ' + (s.head ? esc(ogNm(s.head)) : '<span class="og-none">' + OG_XL_FOLLOW + '</span>'), vis.filter(p => ogPlace(p).s === s.id)))
-    .concat(direct.length || !secs.length ? [card(d.id, 'مباشرة تحت الإدارة', 'بلا قسم', 'المدير المباشر: رئيس الإدارة', direct)] : []);
+  const cards = secs.map(s => ({ id: s.id, h: card(s.id, s.name, 'قسم', 'رئيس القسم: ' + (s.head ? esc(ogNm(s.head)) : '<span class="og-none">' + OG_XL_FOLLOW + '</span>'), vis.filter(p => ogPlace(p).s === s.id)) }))
+    .concat(direct.length || !secs.length ? [{ id: d.id, h: card(d.id, 'مباشرة تحت الإدارة', 'بلا قسم', 'المدير المباشر: رئيس الإدارة', direct) }] : []);
   const openU = O.open && (O.open === d.id || secs.some(s => s.id === O.open)) ? O.open : '';
+  const mem = openU ? ogMembers(openU, openU === d.id ? direct : vis.filter(p => ogPlace(p).s === openU)) : '';
   const tools = O.d.edit ? '<span class="og-tools"><button class="og-ib" data-og="editUnit" data-id="' + esc(d.id) + '" title="تعديل الاسم">' + ic('edit') + '</button><button class="og-ib" data-og="delUnit" data-id="' + esc(d.id) + '" title="حذف الإدارة">' + ic('trash') + '</button></span>' : '';
   return '<div class="og-top"><h2>' + esc(d.name) + '</h2>' + tools + (d.nameEN ? '<span class="u-muted og-en" dir="ltr">' + esc(d.nameEN) + '</span>' : '') + ogCoSeg() + '</div>' +
-    '<div class="og-tree">' + ogHeadBox(d, 'dept') + '<div class="og-vl"></div><div class="og-row' + (cards.length === 1 ? ' one' : '') + (cards.length > 4 ? ' many' : '') + '">' + cards.map(c => '<div class="og-col">' + c + '</div>').join('') + '</div></div>' +
-    (openU ? ogMembers(openU, openU === d.id ? direct : vis.filter(p => ogPlace(p).s === openU)) : '') +
-    (O.d.edit ? '<div class="og-acts"><button class="btn btn-ghost" data-og="addSec" data-id="' + esc(d.id) + '">' + ic('plus') + '<span>إضافة قسم</span></button><button class="btn btn-ghost" data-og="pickHead" data-id="' + esc(d.id) + '">' + ic('user') + '<span>تغيير رئيس الإدارة</span></button><button class="btn btn-ghost" data-og="addMem" data-id="' + esc(openU || d.id) + '">' + ic('userPlus') + '<span>إضافة موظف هنا</span></button></div>' : '');
+    '<div class="og-tree">' + ogGmBox() + ogHeadBox(d, 'dept') + '<div class="og-vl"></div>' + ogRowHtml(d.id, cards, openU, mem) + '</div>' + ogMemOut(mem) +
+    (O.d.edit ? '<div class="og-acts"><button class="btn btn-ghost" data-og="addSec" data-id="' + esc(d.id) + '">' + ic('plus') + '<span>إضافة قسم</span></button><button class="btn btn-ghost" data-og="pickHead" data-id="' + esc(d.id) + '">' + ic('user') + '<span>تغيير رئيس الإدارة</span></button>' + (d.head ? '<button class="btn btn-ghost" data-og="clrHead" data-id="' + esc(d.id) + '"><span>إزالة الرئيس</span></button>' : '') + '<button class="btn btn-ghost" data-og="addMem" data-id="' + esc(openU || d.id) + '">' + ic('userPlus') + '<span>إضافة موظف هنا</span></button></div>' : '');
+}
+// صف البطاقات. على الجوال تظهر قائمة الأعضاء تحت البطاقة المفتوحة مباشرة، وعلى الشاشة الواسعة تحت الصف كله.
+const ogNarrow = () => window.matchMedia('(max-width: 720px)').matches;
+function ogRowHtml(key, cards, openId, mem) {
+  if (!ogNarrow()) openId = '';
+  return '<div class="og-row' + (cards.length === 1 ? ' one' : '') + (cards.length > 4 ? ' many' : '') + '" data-ogk="row:' + esc(key) + '">' + cards.map(c => '<div class="og-col">' + c.h + (mem && c.id === openId ? mem.replace('class="og-list"', 'class="og-list og-list-in"') : '') + '</div>').join('') + '</div>';
+}
+function ogMemOut(mem) { return mem && !ogNarrow() ? mem : ''; }
+// الإدارة العامة: المدير العام في الأعلى، وتحته الإدارات (الضغط على إدارة يفتحها)، ومن يعمل تحته مباشرة
+function ogTopView(T) {
+  const vis = O.w.people.filter(ogCoOk), direct = vis.filter(p => ogPlace(p).d === T.id && p.id !== T.head);
+  const cards = ogDepts().map(d => ({ id: d.id, h: ogCard(d.id, d.name, 'إدارة', 'رئيس الإدارة: ' + (d.head ? esc(ogN2(ogNm(d.head))) : '<span class="og-none">لم يُحدَّد</span>'), vis.filter(p => ogPlace(p).d === d.id), 'sel') }))
+    .concat([{ id: T.id, h: ogCard(T.id, 'مباشرة تحت ' + OG_TOP, 'مكتب ' + OG_GM, 'المدير المباشر: ' + OG_GM, direct) }]);
+  const mem = O.open === T.id ? ogMembers(T.id, direct) : '';
+  const tools = O.d.edit ? '<span class="og-tools"><button class="og-ib" data-og="editUnit" data-id="' + esc(T.id) + '" title="تعديل الاسم">' + ic('edit') + '</button><button class="og-ib" data-og="delUnit" data-id="' + esc(T.id) + '" title="حذف">' + ic('trash') + '</button></span>' : '';
+  return '<div class="og-top"><h2>' + esc(T.name) + '</h2>' + tools + (T.nameEN ? '<span class="u-muted og-en" dir="ltr">' + esc(T.nameEN) + '</span>' : '') + ogCoSeg() + '</div>' +
+    '<div class="og-tree">' + ogHeadBox(T, 'top') + '<div class="og-vl"></div>' + ogRowHtml(T.id, cards, O.open === T.id ? T.id : '', mem) + '</div>' + ogMemOut(mem) +
+    (O.d.edit ? '<div class="og-acts"><button class="btn btn-ghost" data-og="pickHead" data-id="' + esc(T.id) + '">' + ic('user') + '<span>' + (T.head ? 'تغيير ' : 'اختيار ') + OG_GM + '</span></button>' + (T.head ? '<button class="btn btn-ghost" data-og="clrHead" data-id="' + esc(T.id) + '"><span>إزالة الرئيس</span></button>' : '') + '<button class="btn btn-ghost" data-og="addMem" data-id="' + esc(T.id) + '">' + ic('userPlus') + '<span>إضافة موظف هنا</span></button></div>' : '');
 }
 function ogMembers(uid, list) {
   const u = ogU(uid), isSec = u && u.kind === 'section';
-  const head = isSec ? '<div class="og-mh"><b>' + esc(u.name) + '</b>' + (O.d.edit ? '<span class="og-tools"><button class="og-ib" data-og="pickHead" data-id="' + esc(u.id) + '" title="رئيس القسم">' + ic('user') + '</button><button class="og-ib" data-og="editUnit" data-id="' + esc(u.id) + '" title="تعديل الاسم">' + ic('edit') + '</button><button class="og-ib" data-og="delUnit" data-id="' + esc(u.id) + '" title="حذف القسم">' + ic('trash') + '</button></span>' : '') + '</div>'
-    : '<div class="og-mh"><b>مباشرة تحت الإدارة</b></div>';
+  const head = isSec ? '<div class="og-mh"><b>' + esc(u.name) + '</b>' + (O.d.edit ? '<span class="og-tools"><button class="og-ib" data-og="pickHead" data-id="' + esc(u.id) + '" title="رئيس القسم">' + ic('user') + '</button>' + (u.head ? '<button class="btn btn-ghost btn-sm og-clr" data-og="clrHead" data-id="' + esc(u.id) + '">إزالة الرئيس</button>' : '') + '<button class="og-ib" data-og="editUnit" data-id="' + esc(u.id) + '" title="تعديل الاسم">' + ic('edit') + '</button><button class="og-ib" data-og="delUnit" data-id="' + esc(u.id) + '" title="حذف القسم">' + ic('trash') + '</button></span>' : '') + '</div>'
+    : '<div class="og-mh"><b>' + (u && u.kind === 'top' ? 'مباشرة تحت ' + OG_TOP : 'مباشرة تحت الإدارة') + '</b></div>';
   return '<div class="og-list">' + head + (list.length ? list.map(p => ogRow(p)).join('') : '<p class="u-muted og-pad">لا أحد هنا. اسحب موظفاً إلى البطاقة أو استخدم «إضافة موظف هنا».</p>') + '</div>';
 }
 function ogRow(p) {
   const m = ogMgr(p), mp = m.id ? ogP(m.id) : null;
-  return '<div class="og-r">' + ogAv(p, true) + '<div class="og-ri"><div class="og-rn">' + esc(p.name) + (p.title ? '<span class="u-muted"> · ' + esc(p.title) + '</span>' : '') + '</div>' +
+  return '<div class="og-r' + (O.hi === p.id ? ' og-hi' : '') + '" data-row="' + esc(p.id) + '">' + ogAv(p, true) + '<div class="og-ri"><div class="og-rn">' + esc(p.name) + (p.title ? '<span class="u-muted"> · ' + esc(p.title) + '</span>' : '') + '</div>' +
     '<div class="og-rs">المدير المباشر: ' + (mp ? '<b>' + esc(mp.name) + '</b> <span class="og-src og-src-' + m.src + '">' + OG_SRC[m.src] + '</span>' : '<span class="og-none">لا يوجد</span>') + '</div></div>' +
     (O.d.edit ? '<div class="og-ra"><button class="btn btn-ghost btn-sm" data-og="pickMgr" data-id="' + esc(p.id) + '">المدير المباشر</button><button class="btn btn-ghost btn-sm" data-og="move" data-id="' + esc(p.id) + '">نقل</button></div>' : '') + '</div>';
 }
@@ -4652,6 +4885,26 @@ function ogFoot() {
   const n = O.ops.length, rd = (O.w.readers || []).map(a => '<span class="og-chip">' + esc(a.nameAR) + '</span>').join('');
   return (rd ? '<div class="og-used"><b>تقرأ منه:</b>' + rd + '</div>' : '') +
     (O.d.edit ? '<div class="og-save"><button class="btn btn-primary" data-og="save" id="ogSave"' + (n ? '' : ' disabled') + '>' + ic('save') + '<span>حفظ</span></button>' + (n ? '<button class="btn btn-ghost" data-og="undo">' + ic('undo') + '<span>تراجع</span></button><span class="og-dirty">' + (n === 1 ? 'تعديل واحد لم يُحفظ' : n === 2 ? 'تعديلان لم يُحفظا' : n + ' تعديلات لم تُحفظ') + '</span>' : '') + '</div>' : '');
+}
+
+// ===== حفظ مكان المستخدم عند إعادة الرسم =====
+// كل ضغطة في الهيكل تعيد رسم الشاشة؛ نحفظ تمرير الصفحة والتمرير الأفقي لصف الأقسام وقائمة الإدارات، ونُبقي العنصر المضغوط في موضعه نفسه على الشاشة.
+function ogKeepGet() {
+  if (!$('#uRoot .og, #uRoot .og-empty')) { O.anc = ''; return null; }
+  const x = {}; $$('#uRoot [data-ogk]').forEach(e => { x[e.dataset.ogk] = e.scrollLeft; });
+  let a = null; if (O.anc) { const e = $('#uRoot ' + O.anc); if (e) a = { sel: O.anc, top: e.getBoundingClientRect().top, left: e.getBoundingClientRect().left }; }
+  O.anc = '';
+  return { y: window.scrollY, x: x, a: a };
+}
+function ogKeepSet(k) {
+  $$('#uRoot [data-ogk]').forEach(e => { if (e.dataset.ogk in k.x) e.scrollLeft = k.x[e.dataset.ogk]; });
+  window.scrollTo(0, k.y);
+  if (k.a) { const e = $('#uRoot ' + k.a.sel); if (e) { const r = e.getBoundingClientRect(), dy = r.top - k.a.top; if (Math.abs(dy) > 1) window.scrollTo(0, window.scrollY + dy); } }
+  const sel = $('#uRoot .og-dl .og-di.on'); if (sel) { const dl = sel.parentElement, r = sel.getBoundingClientRect(), b = dl.getBoundingClientRect(); if (dl.scrollWidth > dl.clientWidth + 2 && (r.left < b.left || r.right > b.right)) dl.scrollLeft += r.left < b.left ? r.left - b.left - 8 : r.right - b.right + 8; }
+  if (O.reveal) {
+    const s = O.reveal; O.reveal = '';
+    requestAnimationFrame(() => { const e = $$('#uRoot ' + s).find(x => x.offsetParent !== null); if (!e) return; const r = e.getBoundingClientRect(), vh = window.innerHeight; if (r.top < 64 || r.top > vh - 90) e.scrollIntoView({ behavior: 'smooth', block: s === '.og-list' ? 'nearest' : 'center' }); });
+  }
 }
 
 // ===== التعديل (محلي حتى «حفظ») =====
@@ -4676,6 +4929,35 @@ function ogFormOk() {
   if (f.kind === 'dept') O.sel = tmp; else O.open = tmp;
   closeModal(true); ogOp({ t: 'unitAdd', tmp: tmp, kind: f.kind, parent: f.parent, name: name, nameEN: en, co: f.co, order: order });
 }
+// تعيين رئيس وحدة. المدير العام: يُرفع من أي رئاسة أخرى ومن مكانه السابق (مثل قسم في إدارة الجودة) تلقائياً، ولا مدير مباشر له.
+function ogSetHead(u, pid) {
+  if (u.kind === 'section' && pid && pid === (ogU(u.parent) || {}).head) { toast('رئيس الإدارة يرأس أقسامها تلقائياً', 'ok'); pid = ''; }
+  if (pid !== (u.head || '')) { u.head = pid; O.ops.push({ t: 'unitHead', id: u.id, pid: pid }); }
+  else if (!(u.kind === 'top' && pid)) return;
+  if (u.kind === 'top' && pid) {
+    const p = ogP(pid), from = [];
+    O.w.units.forEach(x => { if (x !== u && x.head === pid) { from.push(x.name); x.head = ''; O.ops.push({ t: 'unitHead', id: x.id, pid: '' }); } });
+    if (p && p.org && p.org !== u.id) { const x = ogU(p.org); if (x && from.indexOf(x.name) < 0) from.push(x.name); p.org = ''; O.ops.push({ t: 'place', pid: pid, unit: '' }); }
+    if (p && p.mgrPid) { p.mgrPid = ''; O.ops.push({ t: 'mgr', pid: pid, mgr: '' }); }
+    if (p && from.length) toast('نُقل «' + ogN2(p.name) + '» من «' + from.join('، ') + '» إلى ' + OG_TOP, 'ok');
+  }
+  uRender();
+}
+// إنشاء الإدارة العامة. إن وُجدت إدارة بالاسم نفسه بلا أقسام (من التعبئة الأولى) تُحوَّل هي إلى رأس الهيكل بدل إنشاء وحدة ثانية.
+function ogAddTop() {
+  if (ogTop()) return;
+  const same = ogDepts().find(d => ogKey(d.name) === ogKey(OG_TOP) && !ogSecs(d.id).length);
+  let T;
+  if (same) { T = same; T.kind = 'top'; T.parent = ''; O.ops.push({ t: 'unitEdit', id: T.id, kind: 'top' }); }
+  else {
+    const tmp = 'n' + (++O.tmp); T = { id: tmp, kind: 'top', parent: '', name: OG_TOP, nameEN: 'General Management', co: '', head: '', jisr: [], order: 0 };
+    O.w.units.push(T); O.ops.push({ t: 'unitAdd', tmp: tmp, kind: 'top', name: T.name, nameEN: T.nameEN, co: '', order: 0 });
+  }
+  O.sel = T.id; O.open = ''; uRender();
+  if (T.head) return ogSetHead(T, T.head);
+  const gr = O.w.gmRole && ogP(O.w.gmRole) ? O.w.gmRole : '';
+  ogPick(OG_GM, gr, '', pid => ogSetHead(T, pid));
+}
 // اختيار موظف (رئيس أو مدير مباشر أو موظف يُضاف)
 function ogPick(title, cur, none, cb) {
   O.pk = { cb: cb, q: '', cur: cur || '', none: none };
@@ -4697,8 +4979,8 @@ function ogMoveTo(pid, uid) {
   p.org = uid; ogOp({ t: 'place', pid: pid, unit: uid });
 }
 function ogMovePick(pid) {
-  const p = ogP(pid); O.mv = pid;
-  const opts = ogDepts().map(d => '<button class="og-pi" data-og="mvTo" data-id="' + esc(d.id) + '"><span class="og-dot"></span><span><b>' + esc(d.name) + '</b><small>مباشرة تحت الإدارة</small></span></button>' +
+  const p = ogP(pid); O.mv = pid; const T = ogTop();
+  const opts = (T ? '<button class="og-pi" data-og="mvTo" data-id="' + esc(T.id) + '"><span class="og-dot"></span><span><b>' + esc(T.name) + '</b><small>مباشرة تحت ' + OG_GM + '</small></span></button>' : '') + ogDepts().map(d => '<button class="og-pi" data-og="mvTo" data-id="' + esc(d.id) + '"><span class="og-dot"></span><span><b>' + esc(d.name) + '</b><small>مباشرة تحت الإدارة</small></span></button>' +
     ogSecs(d.id).map(s => '<button class="og-pi og-pi-sec" data-og="mvTo" data-id="' + esc(s.id) + '"><span class="og-dot sec"></span><span><b>' + esc(s.name) + '</b><small>' + esc(d.name) + '</small></span></button>').join('')).join('');
   openModal({ title: '<span>نقل «' + esc(p.name) + '»</span>', body: '<div class="og-pk">' + opts + '<button class="og-pi" data-og="mvTo" data-id=""><span class="og-dot none"></span><span><b>بلا مكان</b><small>يعود حسب قسمه في جسر</small></span></button></div>', foot: '<button class="btn btn-ghost" data-act="closeModal"><span>إلغاء</span></button>' });
 }
@@ -4768,6 +5050,7 @@ async function ogXlDown(btn) {
     const count = (d, s) => O.w.people.filter(p => place[p.id].d === d && (!s || place[p.id].s === s)).length;
     const W = wb.addWorksheet(OG_XL_U);
     head(W, [['الإدارة', 'd', 26], ['القسم', 's', 22], ['كود الرئيس', 'hc', 12], ['الرئيس', 'h', 34], ['العدد', 'n', 9], ['الشركة', 'co', 12], ['الاسم بالإنجليزية', 'en', 26]]);
+    const T0 = ogTop(); if (T0) { const tp = T0.head ? ogP(T0.head) : null; W.addRow({ d: T0.name, s: '', hc: tp ? tp.no : '', h: tp ? tp.name : '', n: count(T0.id), co: '', en: T0.nameEN || '' }); }
     ogDepts().forEach(d => {
       const hp = d.head ? ogP(d.head) : null;
       W.addRow({ d: d.name, s: '', hc: hp ? hp.no : '', h: hp ? hp.name : '', n: count(d.id), co: ogCoName(d.co), en: d.nameEN || '' });
@@ -4775,7 +5058,7 @@ async function ogXlDown(btn) {
     });
     const E = wb.addWorksheet(OG_XL_P);
     head(E, [['الكود', 'c', 10], ['الاسم', 'n', 34], ['المسمى', 't', 24], ['كود المدير المباشر', 'mc', 12], ['المدير المباشر', 'm', 34], ['الإدارة', 'd', 24], ['القسم', 's', 20], ['الشركة', 'co', 11], ['في النظام', 'in', 10], ['ملاحظة', 'note', 30]]);
-    const ord = {}; ogDepts().forEach((d, i) => { ord[d.id] = i; });
+    const ord = {}; ogDepts().forEach((d, i) => { ord[d.id] = i; }); if (ogTop()) ord[ogTop().id] = -1;
     O.w.people.slice().sort((a, b) => ((ord[place[a.id].d] != null ? ord[place[a.id].d] : 99) - (ord[place[b.id].d] != null ? ord[place[b.id].d] : 99)) || String(a.no || '~').localeCompare(String(b.no || '~'), 'en', { numeric: true }))
       .forEach(p => {
         const pl = place[p.id], m = ogMgr(p), mp = m.id ? ogP(m.id) : null;
@@ -4797,7 +5080,7 @@ function ogXlOpen() {
   if (O.ops.length) return openModal({ title: ic('info') + '<span>احفظ تعديلاتك أولاً</span>', body: '<p>عندك ' + O.ops.length + (O.ops.length === 1 ? ' تعديل' : ' تعديلات') + ' في الهيكل لم تُحفظ. احفظها أو تراجع عنها، ثم ارفع الملف.</p>', foot: '<button class="btn btn-primary" data-act="closeModal">' + ic('check') + '<span>حسناً</span></button>' });
   O.xl = null;
   openModal({ wide: true, title: '<span>رفع الهيكل من Excel</span>', body:
-    '<p class="u-muted">الملف المنزّل من هنا بعد تعديله، أو ملف بالأعمدة نفسها. لا يتغير شيء قبل «اعتماد».</p><label class="btn btn-ghost u-file">' + ic('upload') + '<span>اختيار الملف</span><input type="file" id="ogXlFile" accept=".xlsx" hidden></label><div id="ogXlOut"></div>',
+    '<p class="u-muted">الملف المنزّل من هنا بعد تعديله، أو ملف بالأعمدة نفسها. لا يتغير شيء قبل «اعتماد».</p><div class="u-imbar"><label class="btn btn-ghost u-file">' + ic('upload') + '<span>اختيار الملف</span><input type="file" id="ogXlFile" accept=".xlsx" hidden></label><button class="btn btn-ghost" type="button" data-og="xlDown">' + ic('download') + '<span>' + esc(uL('تحميل النموذج', 'Download template')) + '</span></button></div><div id="ogXlOut"></div>',
     foot: '<button class="btn btn-ghost" data-act="closeModal"><span>إلغاء</span></button><button class="btn btn-primary" data-og="xlApply" id="ogXlApply" disabled>' + ic('check') + '<span>اعتماد</span></button>' });
   $('#ogXlFile').onchange = e => { const f = e.target.files && e.target.files[0]; if (f) ogXlRead(f); };
 }
@@ -4850,7 +5133,7 @@ function ogXlPlan(wb) {
     return hits.length === 1 ? { p: hits[0], how: 'name' } : { p: null, many: hits.length > 1 };
   };
   const dKey = name => ogN(name), sKey = (did, name) => did + '|' + ogN(name);
-  const findD = name => live.find(u => u.kind === 'dept' && dKey(u.name) === dKey(name));
+  const findD = name => live.find(u => (u.kind === 'dept' || u.kind === 'top') && dKey(u.name) === dKey(name));
   const findS = (did, name) => live.find(u => u.kind === 'section' && u.parent === did && ogN(u.name) === ogN(name));
   let tmpN = 0; const newTmp = () => 'x' + (++tmpN);
   // 1) الإدارات والأقسام
@@ -4860,7 +5143,8 @@ function ogXlPlan(wb) {
       let d = findD(dName);
       if (!d) { d = { id: newTmp(), kind: 'dept', parent: '', name: dName, nameEN: '', co: co || '', head: '', jisr: [], order: live.filter(u => u.kind === 'dept').length + 1 }; live.push(d); ops.push({ t: 'unitAdd', tmp: d.id, kind: 'dept', name: dName, co: co || '', order: d.order }); ch.add.push(dName); }
       seen[d.id] = 1;
-      if (!sName) return d;
+      if (d.kind === 'top' && sName) bad(OG_XL_U, row, OG_TOP + ' لا تكون فيها أقسام: ' + sName);
+      if (!sName || d.kind === 'top') return d;
       let s = findS(d.id, sName);
       if (!s) { s = { id: newTmp(), kind: 'section', parent: d.id, name: sName, nameEN: '', co: co || '', head: '', jisr: [], order: live.filter(u => u.kind === 'section' && u.parent === d.id).length + 1 }; live.push(s); ops.push({ t: 'unitAdd', tmp: s.id, kind: 'section', parent: d.id, name: sName, co: co || '', order: s.order }); ch.add.push(sName + ' (' + dName + ')'); }
       seen[s.id] = 1; return s;
@@ -4883,7 +5167,7 @@ function ogXlPlan(wb) {
       if (h.u.kind === 'section' && pid && pid === (uById(h.u.parent) || {}).head) pid = '';
       if (pid !== (h.u.head || '')) { const was = h.u.head ? ogNm(h.u.head) : ''; h.u.head = pid; ops.push({ t: 'unitHead', id: h.u.id, pid: pid }); ch.head.push(h.u.name + ': ' + (was || '—') + ' ← ' + (pid ? ogNm(pid) : (h.u.kind === 'section' ? OG_XL_FOLLOW : '—'))); }
     });
-    live.slice().forEach(u => { if (seen[u.id]) return; if (u.kind === 'section' && !seen[u.parent]) return; ops.push({ t: 'unitDel', id: u.id }); ch.del.push(u.kind === 'dept' ? u.name : u.name + ' (' + (uById(u.parent) || {}).name + ')');
+    live.slice().forEach(u => { if (seen[u.id] || u.kind === 'top') return; if (u.kind === 'section' && !seen[u.parent]) return; ops.push({ t: 'unitDel', id: u.id }); ch.del.push(u.kind === 'dept' ? u.name : u.name + ' (' + (uById(u.parent) || {}).name + ')');
       const gone = [u.id].concat(u.kind === 'dept' ? live.filter(z => z.parent === u.id).map(z => z.id) : []);
       W.people.forEach(p => { if (gone.indexOf(p.org) >= 0) p.org = u.kind === 'dept' ? '' : u.parent; });
       for (let i = live.length - 1; i >= 0; i--) if (gone.indexOf(live[i].id) >= 0) live.splice(i, 1); });
@@ -4904,7 +5188,7 @@ function ogXlPlan(wb) {
       if (S.P.cols.dept || S.P.cols.sec) {
         let to = '';
         if (S.P.cols.dept) {
-          if (x.dept) { const d = live.find(u => u.kind === 'dept' && dKey(u.name) === dKey(x.dept)); if (!d) return bad(OG_XL_P, x.r, 'إدارة غير موجودة: ' + x.dept);
+          if (x.dept) { const d = findD(x.dept); if (!d) return bad(OG_XL_P, x.r, 'إدارة غير موجودة: ' + x.dept);
             to = d.id; if (x.sec) { const s = findS(d.id, x.sec); if (!s) return bad(OG_XL_P, x.r, 'قسم غير موجود في «' + x.dept + '»: ' + x.sec); to = s.id; } }
           else if (x.sec) return bad(OG_XL_P, x.r, 'القسم بلا إدارة: ' + x.sec);
         } else if (x.sec) {
@@ -4975,12 +5259,21 @@ async function ogXlApply() {
 
 function ogClick(el, e) {
   const k = el.dataset.og, id = el.dataset.id;
+  if (el.closest('#uRoot')) O.anc = '[data-og="' + k + '"]' + (id != null ? '[data-id="' + CSS.escape(id) + '"]' : '');
   if (k === 'reload') return ogLoad(true);
-  if (k === 'sel') { O.sel = id; O.open = ''; return uRender(); }
+  if (k === 'sel') { O.sel = id; O.open = ''; O.hi = ''; return uRender(); }
   if (k === 'co') { O.co = el.dataset.co; return uRender(); }
-  if (k === 'open') { if (e.target.closest('[data-ogp]') && e.type !== 'click') return; O.open = O.open === id ? '' : id; return uRender(); }
+  if (k === 'open') {
+    if (e.target.closest('[data-ogp]') && e.type !== 'click') return;
+    // الضغط على صورة موظف داخل البطاقة يفتح القائمة ويُظهر صفه (ومنه «نقل»)؛ الضغط على البطاقة يفتحها أو يغلقها
+    const av = e.target.closest && e.target.closest('.og-av[data-ogp]');
+    if (av) { O.open = id; O.hi = av.dataset.ogp; O.reveal = '[data-row="' + CSS.escape(O.hi) + '"]'; return uRender(); }
+    O.open = O.open === id ? '' : id; O.hi = ''; if (O.open) O.reveal = '.og-list'; return uRender();
+  }
+  if (k === 'addTop') return ogAddTop();
+  if (k === 'clrHead') { const u = ogU(id); return u && ogSetHead(u, ''); }
   if (k === 'save') return ogSave();
-  if (k === 'undo') { O.w = JSON.parse(JSON.stringify(O.d)); O.ops = []; if (O.sel !== '__un' && !ogU(O.sel)) O.sel = (ogDepts()[0] || {}).id || ''; return uRender(); }
+  if (k === 'undo') { O.w = JSON.parse(JSON.stringify(O.d)); O.ops = []; if (O.sel !== '__un' && !ogU(O.sel)) O.sel = ogFirst(); return uRender(); }
   if (k === 'staleFix') { closeModal(true); O.ops = []; return ogLoad(true); }
   if (k === 'seed') return ogSeed();
   if (k === 'seedApply') return ogSeedApply();
@@ -4989,12 +5282,14 @@ function ogClick(el, e) {
   if (k === 'xlApply') return ogXlApply();
   if (k === 'addDept') return ogUnitForm('إدارة جديدة', null, 'dept', '');
   if (k === 'addSec') return ogUnitForm('قسم جديد في «' + ogU(id).name + '»', null, 'section', id);
-  if (k === 'editUnit') { const u = ogU(id); return ogUnitForm(u.kind === 'dept' ? 'تعديل الإدارة' : 'تعديل القسم', u, u.kind, u.parent); }
+  if (k === 'editUnit') { const u = ogU(id); return ogUnitForm(u.kind === 'top' ? 'تعديل ' + OG_TOP : u.kind === 'dept' ? 'تعديل الإدارة' : 'تعديل القسم', u, u.kind, u.parent); }
   if (k === 'fco') { O.form.co = el.dataset.co; $$('#ogFCo .seg-btn').forEach(b => b.classList.toggle('on', b === el)); return; }
   if (k === 'formOk') return ogFormOk();
   if (k === 'delUnit') {
-    const u = ogU(id), isD = u.kind === 'dept', n = O.w.people.filter(p => { const pl = ogPlace(p); return isD ? pl.d === id : pl.s === id; }).length;
+    const u = ogU(id), isD = u.kind === 'dept', n = O.w.people.filter(p => { const pl = ogPlace(p); return isD || u.kind === 'top' ? pl.d === id : pl.s === id; }).length;
     O.del = id;
+    if (u.kind === 'top') return openModal({ title: '<span>حذف «' + esc(u.name) + '»؟</span>', body: '<p>يُحذف رأس الهيكل، ويعود رؤساء الإدارات إلى مديرهم في جسر' + (n ? '، و' + n + ' موظفاً تحته مباشرة يصبحون غير موزّعين.' : '.') + '</p><p class="u-muted">يتم الحذف عند «حفظ»، ويبقى في السجل.</p>',
+      foot: '<button class="btn btn-ghost" data-act="closeModal"><span>إلغاء</span></button><button class="btn btn-danger" data-og="delOk">' + ic('trash') + '<span>حذف</span></button>' });
     return openModal({ title: '<span>حذف ' + (isD ? 'الإدارة' : 'القسم') + ' «' + esc(u.name) + '»؟</span>', body: '<p>' + (isD ? 'تُحذف الإدارة وأقسامها (' + ogSecs(id).length + ')، ' : 'يُحذف القسم، ') + (n ? 'و' + n + ' موظفاً فيها ' + (isD ? 'يصبحون غير موزّعين.' : 'ينتقلون مباشرة تحت الإدارة.') : 'ولا أحد فيها.') + '</p><p class="u-muted">يتم الحذف عند «حفظ»، وتبقى في السجل.</p>',
       foot: '<button class="btn btn-ghost" data-act="closeModal"><span>إلغاء</span></button><button class="btn btn-danger" data-og="delOk">' + ic('trash') + '<span>حذف</span></button>' });
   }
@@ -5002,10 +5297,10 @@ function ogClick(el, e) {
     const u = ogU(O.del), gone = [u.id].concat(u.kind === 'dept' ? ogSecs(u.id).map(s => s.id) : []);
     O.w.people.forEach(p => { if (gone.indexOf(p.org) >= 0) p.org = u.kind === 'dept' ? '' : u.parent; });
     O.w.units = O.w.units.filter(x => gone.indexOf(x.id) < 0);
-    if (gone.indexOf(O.sel) >= 0) O.sel = (ogDepts()[0] || {}).id || ''; if (gone.indexOf(O.open) >= 0) O.open = '';
+    if (gone.indexOf(O.sel) >= 0) O.sel = ogFirst(); if (gone.indexOf(O.open) >= 0) O.open = '';
     closeModal(true); return ogOp({ t: 'unitDel', id: u.id });
   }
-  if (k === 'pickHead') { const u = ogU(id), isS = u.kind === 'section'; return ogPick(isS ? 'رئيس قسم «' + u.name + '»' : 'رئيس «' + u.name + '»', u.head, isS ? 'بلا رئيس خاص (' + OG_XL_FOLLOW + ')' : 'بلا رئيس', pid => { if (isS && pid && pid === (ogU(u.parent) || {}).head) { toast('رئيس الإدارة يرأس أقسامها تلقائياً', 'ok'); pid = ''; } if (pid === (u.head || '')) return; u.head = pid; ogOp({ t: 'unitHead', id: u.id, pid: pid }); }); }
+  if (k === 'pickHead') { const u = ogU(id), isS = u.kind === 'section', isT = u.kind === 'top'; return ogPick(isT ? OG_GM : isS ? 'رئيس قسم «' + u.name + '»' : 'رئيس «' + u.name + '»', u.head, isT ? 'بلا مدير عام' : isS ? 'بلا رئيس خاص (' + OG_XL_FOLLOW + ')' : 'بلا رئيس', pid => ogSetHead(u, pid)); }
   if (k === 'pickMgr') { const p = ogP(id); return ogPick('المدير المباشر لـ«' + p.name + '»', p.mgrPid, 'حسب الهيكل (رئيس قسمه أو إدارته)', pid => { if (pid === p.id) return toast('لا يكون الموظف مديراً لنفسه', 'err'); if (pid === (p.mgrPid || '')) return; p.mgrPid = pid; ogOp({ t: 'mgr', pid: p.id, mgr: pid }); }); }
   if (k === 'addMem') { const u = ogU(id); return ogPick('إضافة موظف إلى «' + (u.kind === 'dept' ? u.name : u.name) + '»', '', '', pid => ogMoveTo(pid, id)); }
   if (k === 'pk') { const cb = O.pk.cb; closeModal(true); return cb(el.dataset.id); }
@@ -5222,6 +5517,7 @@ function uOnClick(el, e) {
   if (k === 'xlDown') return uXlDownload(el);
   if (k === 'xlUp') return uXlOpenUpload();
   if (k === 'xlApply') return uXlApply();
+  if (k === 'impTpl') return uJisrTpl(el);
   if (k === 'impPreview') return uImport(false);
   if (k === 'impApply') return uImport(true);
   if (k === 'manual') return uOpenManual();
