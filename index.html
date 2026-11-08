@@ -489,17 +489,21 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     if (!/^[A-Za-z0-9_-]{1,40}$/.test(String(id || ''))) return;
     try {
       if (go == null) { var old = curLoad(); go = old && old.id === id ? old.go : ''; }
-      sessionStorage.setItem(CURK, JSON.stringify({ id: id, go: cleanGo(go), at: Date.now() }));
+      var v = JSON.stringify({ id: id, go: cleanGo(go), at: Date.now() });
+      sessionStorage.setItem(CURK, v);
+      try { localStorage.setItem(CURK, v); } catch (x) {}
     } catch (e) {}
   }
   function curLoad() {
     try {
       var v = JSON.parse(sessionStorage.getItem(CURK) || 'null');
+      // (v92) التطبيق المثبّت الذي أغلقه نظام الجوال يفقد ذاكرة نافذته: يُفتح آخر نظام إن كان ظاهراً قبل أقل من 15 دقيقة
+      if (!v && standalone) { var w = JSON.parse(localStorage.getItem(CURK) || 'null'); if (w && Date.now() - Number(w.at) < 15 * 60000) v = w; }
       if (!v || !/^[A-Za-z0-9_-]{1,40}$/.test(String(v.id || '')) || !(Date.now() - Number(v.at) < 6 * 3600000)) return null;
       return { id: String(v.id), go: cleanGo(v.go) };
     } catch (e) { return null; }
   }
-  function curClear() { try { sessionStorage.removeItem(CURK); } catch (e) {} }
+  function curClear() { try { sessionStorage.removeItem(CURK); } catch (e) {} try { localStorage.removeItem(CURK); } catch (e) {} }
   /* النصوص بلغة سوار: تصل اللغة من سوار وتُحفظ على الجهاز */
   var TXT = {
     ar: { back: 'رجوع', ext: 'فتح في المتصفح', title: 'تثبيت تطبيق سوار | SIWAR', later: 'لاحقاً', prog: 'برنامج', noUrl: 'لم يُضبط رابط سوار في config.js',
@@ -616,6 +620,8 @@ a.btn{display:grid;place-items:center;text-decoration:none}
      شاشة الفتح تظهر مع الضغطة وتتقدّم مع مراحل الفتح الفعلية، وتختفي حين يقول النظام إنه جاهز. */
   var MAXF = iOS || /Android/.test(ua) ? 3 : 5, FRAME_AGE = 6 * 3600000;   // كل الأنظمة الخمسة تبقى مفتوحة على الكمبيوتر، وثلاثة على الجوال: الرجوع لنظام فُتح فوري بلا تحميل
   var frames = {}, cur = '', seq = 0, rt = {};
+  // (v92) إعادة الفتح الصامتة: الشاشة القديمة تبقى ظاهرة وقابلة للاستعمال، والنسخة الجديدة تُفتح خلفها وتحل محلها حين تجهز
+  var SIL = {};
   // صيغة رابط النظام: العام /macros/s/ أو رابط النطاق /a/macros/النطاق/s/. تعدد حسابات جوجل في المتصفح يجعل جوجل يحوّل العام إلى /u/N/ فيفشل،
   // وحساب Gmail الشخصي لا يفتح رابط النطاق. فنبدأ بآخر صيغة نجحت على هذا الجهاز، وعند فشل الفتح نجرّب الأخرى ونحفظ ما نجح
   var UFK = 'siwar_uf', uf = 'p', DOM = String(window.SIWAR_DOMAIN || 'siwar.com.sa');
@@ -645,7 +651,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   function portalWin() { var pf = $('portal').querySelector('iframe'); return pf && pf.contentWindow; }
   function toPortal(m) { var w = portalWin(); if (w) try { w.postMessage(m, location.origin); } catch (e) {} }
   // nav: الأنظمة الجاهزة التي أعلنت أنها تفتح الرابط الداخلي في مكانها (navok)، فلا تنتظر سوار رداً من نظام لا يدعمه
-  function sendAlive() { toPortal({ siwar: 'alive', ids: Object.keys(frames), nav: Object.keys(frames).filter(function (k) { var o = frames[k]; return o.ready && o.nav && Date.now() - o.t <= FRAME_AGE; }) }); }
+  function sendAlive() { toPortal({ siwar: 'alive', ids: Object.keys(frames).concat(Object.keys(SIL).filter(function (k) { return !frames[k]; })), nav: Object.keys(frames).filter(function (k) { var o = frames[k]; return o.ready && o.nav && Date.now() - o.t <= FRAME_AGE; }) }); }
   /* ── التنقل داخل نظام مفتوح (رابط الجرس و«بانتظارك» وزر المساحة): يُرسل المكان للنظام الحي، وعند تأكيده تظهر شاشته بلا إعادة تحميل ── */
   var NAVP = {}, navSeq = 0;
   function navLive(id, go, pn) {
@@ -736,6 +742,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   function markCur(id) {
     cur = id;
     for (var k in frames) frames[k].f.className = 'pf' + (k === id ? ' cur' : '');
+    for (var q in SIL) SIL[q].f.className = 'pf' + (q === id ? ' cur' : '');
     if (frames[id]) frames[id].seen = Date.now();
     syncPause();
   }
@@ -743,8 +750,36 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   function syncPause() {
     var on = $('prog').className === 'on';
     for (var k in frames) { var o = frames[k]; if (!o.win) continue; var st = on && k === cur ? 'resume' : 'pause'; if (o.ps === st) continue; o.ps = st; try { o.win.postMessage({ siwar: st }, '*'); } catch (e) {} }
+    for (var q in SIL) { var so = SIL[q]; if (!so.win) continue; var sst = on && q === cur ? 'resume' : 'pause'; if (so.ps === sst) continue; so.ps = sst; try { so.win.postMessage({ siwar: sst }, '*'); } catch (e) {} }
   }
-  function dropFrame(id) {
+  function silGone(id) { var s = SIL[id]; if (!s) return; delete SIL[id]; try { s.f.src = 'about:blank'; } catch (e) {} s.f.remove(); }
+  function silSwap(id) {
+    var o = frames[id]; if (!o || !o.sil) return;
+    o.sil = false; o.f.style.visibility = '';
+    silGone(id);
+    o.f.className = 'pf' + (cur === id && $('prog').className === 'on' ? ' cur' : '');
+    syncPause();
+  }
+  // الفتح الجديد لم ينجح: تبقى الشاشة القديمة كما هي
+  function silRestore(id) {
+    var s = SIL[id]; if (!s) return; delete SIL[id];
+    var o = frames[id];
+    if (o && o !== s) { delete frames[id]; if (!o.ready) pEnd(id, 'drop'); clearTimeout(o.wd); clearTimeout(o.wd2); clearTimeout(o.wd3); try { o.f.src = 'about:blank'; } catch (e) {} o.f.remove(); }
+    frames[id] = s; s.t = Date.now();
+    s.f.className = 'pf' + (cur === id && $('prog').className === 'on' ? ' cur' : '');
+    sendAlive(); syncPause();
+  }
+  function relaunchSoft(id) {
+    var o = frames[id];
+    if (SIL[id]) return;
+    if (!o || !o.ready || o.sil || offline()) { relaunch(id, false); return; }
+    if (Date.now() - relT < 1500) return; relT = Date.now();
+    SIL[id] = o; delete frames[id];
+    pStart(id, 'silent');
+    toPortal({ siwar: 'relaunch', id: id, go: o.go || '' });
+  }
+  function dropFrame(id, keepSil) {
+    if (SIL[id] && !keepSil) silGone(id);
     var o = frames[id]; if (!o) return;
     if (!o.ready) pEnd(id, 'drop');
     warmedSay(o, id);
@@ -766,13 +801,14 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   // التسخين في سوار يبدأ النظام التالي حين يرسل هذا أول إشارة (أو يُغلق)، فلا تُفتح الأنظمة كلها معاً
   function warmedSay(o, id) { if (o.warm && !o.wsaid) { o.wsaid = 1; toPortal({ siwar: 'warmed', id: id }); } }
   function makeFrame(id, url, name, icon, warm) {
-    var old = frames[id]; if (old) dropFrame(id);
+    var old = frames[id]; if (old) dropFrame(id, true);
     var p = document.createElement('iframe');
     p.setAttribute('credentialless', '');
     p.title = name || T('prog');
     p.allow = 'clipboard-read; clipboard-write; fullscreen; camera; microphone; geolocation; web-share; publickey-credentials-get *; publickey-credentials-create *';
     p.className = 'pf' + (cur === id ? ' cur' : '');
     var o = { f: p, url: url, name: name, icon: icon, t: Date.now(), seen: warm ? 0 : Date.now(), tries: old ? old.tries : 0, n: ++seq, uf: uf, go: goOfUrl(url), ul: (/[?&]ul=(en|ar)(?:&|$)/.exec(String(url)) || [])[1] || '' };
+    if (SIL[id]) { o.sil = true; p.style.visibility = 'hidden'; p.className = 'pf'; o.go = o.go || SIL[id].go; }
     if (warm) { o.seen = -o.n; o.warm = true; pStart(id, 'warm'); }
     else if (!PJ[id]) pStart(id, 'open');
     frames[id] = o;
@@ -783,6 +819,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
       // بعد اكتمال الصفحة: إن لم تصل أي إشارة خلال لحظات فهي صفحة خطأ من جوجل، فيُعاد الفتح تلقائياً مرة
       o.wd2 = setTimeout(function () {
         if (frames[id] !== o || healthy(o)) return;
+        if (o.sil) { silRestore(id); return; }
         if ((rt[id] || 0) < 2) { rt[id] = (rt[id] || 0) + 1; ufFlip(); if (cur === id) relaunch(id, false); else dropFrame(id); }
         else markReady(id, 'nosig');   // صفحة بلا إشارة (نادر): تُعرض كما هي
       }, 1200);
@@ -790,6 +827,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     // حد أقصى للانتظار
     o.wd = setTimeout(function () {
       if (frames[id] !== o || o.ready) return;
+      if (o.sil) { silRestore(id); return; }
       if (!o.loaded) {
         if (offline()) { rt[id] = 0; if (cur === id) loaderErr(); else dropFrame(id); }
         else if ((rt[id] || 0) < 2) { rt[id] = (rt[id] || 0) + 1; ufFlip(); if (cur === id) relaunch(id, true); else dropFrame(id); }
@@ -810,6 +848,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     var o = frames[id]; if (!o) return;
     if (!o.ready) { pMark(id, 'ready'); pEnd(id, how || (o.late ? 'late' : 'ok')); }
     o.ready = true; rt[id] = 0; clearTimeout(o.wd); clearTimeout(o.wd3); if (o.uf === uf) { try { localStorage.setItem(UFK, uf); } catch (e) {} }
+    if (o.sil) silSwap(id);
     if (cur === id) loaderDone();
     if (SN && SN.id === id) snapDone(id);
     if (o.nav) sendAlive();
@@ -931,6 +970,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
 
   /* أوامر سوار */
   function onPrep(id, name, icon, rect, go) {
+    if (SIL[id]) { markCur(id); curSave(id, SIL[id].go); snapClear(); $('pload').className = 'pload gone'; showLayer(); return; }
     if (frames[id]) dropFrame(id);
     pStart(id, 'open');
     markCur(id); curSave(id);
@@ -948,6 +988,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     }, function () { clearTimeout(fb); normal(); });
   }
   function onOpen(id, url, name, icon, src) {
+    if (SIL[id]) { var jj = PJ[id]; if (jj) { jj.s = src || ''; pMark(id, 'tix'); } var so = makeFrame(id, url, name, icon, false); if (cur === id) curSave(id, so.go); return so; }
     if (cur !== id || $('prog').className !== 'on') { markCur(id); loaderShow(name, icon, null); showLayer(); }
     progUrl = url;
     var j = PJ[id]; if (j) { j.s = src || ''; pMark(id, 'tix'); }
@@ -958,7 +999,9 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   }
   function onShow(id) {
     var o = frames[id];
-    if (!o || Date.now() - o.t > FRAME_AGE) { if (o) dropFrame(id); toPortal({ siwar: 'relaunch', id: id }); return; }
+    if (SIL[id] && (!o || o.sil)) { markCur(id); curSave(id, SIL[id].go); snapClear(); $('pload').className = 'pload gone'; showLayer(); return; }
+    if (!o) { toPortal({ siwar: 'relaunch', id: id }); return; }
+    var aged = Date.now() - o.t > FRAME_AGE && !o.sil && !SIL[id];   // (v92) نظام مضى على فتحه وقت طويل: يظهر فوراً ويُجدَّد خلفه بصمت
     // نظام فُتح بلغة أخرى ولم يعلن أنه يبدّلها في مكانه (langok): يُفتح من جديد بلغة سوار الحالية
     if (!o.lw && o.ul && o.ul !== LANG) { dropFrame(id); toPortal({ siwar: 'relaunch', id: id }); return; }
     markCur(id); curSave(id, o.go);
@@ -968,6 +1011,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     else { loaderShow(o.name, o.icon, null); stage(o.loaded ? .7 : .42, .9); }
     showLayer();
     langTo(id);
+    if (aged) { if (o.ready && !offline()) relaunchSoft(id); else { dropFrame(id); relaunch(id, true); } }
   }
   function onWarm(id, url, name, icon) { if (!frames[id]) makeFrame(id, url, name, icon, true); }
   function hideLayer(fromHistory) {
@@ -975,10 +1019,11 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     $('prog').className = ''; $('prog').setAttribute('aria-hidden', 'true'); $('home').hidden = true;
     clearTimeout(creepT); snapClear(); SNQ = null;
     var o = frames[cur];
-    if (o && !o.ready && !o.loaded) dropFrame(cur);   // نظام لم يكتمل فتحه لا يبقى في الخلفية
+    if (o && !o.ready && !o.loaded && !o.sil) dropFrame(cur);   // نظام لم يكتمل فتحه لا يبقى في الخلفية
     $('pload').className = 'pload gone';
     cur = ''; curClear();
     for (var k in frames) frames[k].f.className = 'pf';
+    for (var q in SIL) SIL[q].f.className = 'pf';
     syncPause();
     toPortal({ siwar: 'home' });   // سوار تجدد تذاكر الأنظمة الآن، فالانتقال لنظام آخر لا ينتظر طلباً جديداً
     if (!fromHistory && history.state && history.state.prog) history.back();
@@ -1029,10 +1074,10 @@ a.btn{display:grid;place-items:center;text-decoration:none}
       if (d.siwar === 'install') { instAsk(); return; }
       if (d.siwar === 'prep') { onPrep(id || '_', String(d.name || ''), ic, d.rect && typeof d.rect === 'object' ? d.rect : null, typeof d.go === 'string' ? d.go : ''); return; }
       if (d.siwar === 'open' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onOpen(id || '_', String(d.url), String(d.name || ''), ic, String(d.src || '')); return; }
-      if (d.siwar === 'show' && frames[id]) { onShow(id); return; }
+      if (d.siwar === 'show' && (frames[id] || SIL[id])) { onShow(id); return; }
       if (d.siwar === 'show') { toPortal({ siwar: 'relaunch', id: id }); return; }
       if (d.siwar === 'warm' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onWarm(id, String(d.url), String(d.name || ''), ic); return; }
-      if (d.siwar === 'close') { if (id && frames[id] && !frames[id].ready) dropFrame(id); hideLayer(false); return; }
+      if (d.siwar === 'close') { if (id && SIL[id] && (!frames[id] || frames[id].sil)) { silRestore(id); return; } if (id && frames[id] && !frames[id].ready) dropFrame(id); hideLayer(false); return; }
       if (d.siwar === 'logout') { hideLayer(false); snapClear(); Object.keys(frames).forEach(dropFrame); kvClear(); curClear(); if (d.why !== 'expired') pushDropDevice(); $('push').hidden = true; return; }
       if (d.siwar === 'pushWho') { pushWho(String(d.uid || '').slice(0, 40), String(d.lang || '')); return; }
       if (d.siwar === 'dropFrames') { hideLayer(false); Object.keys(frames).forEach(dropFrame); return; }   // بعد تغيير كلمة المرور: جلسات الأنظمة انتهت فتُغلق شاشاتها وتُفتح من جديد بتذاكر جديدة
@@ -1076,11 +1121,11 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     if (/^(hold|alive|ready)$/.test(d.siwar) && o.win !== e.source) { o.win = e.source; o.ps = ''; if (!o.netSent) { o.netSent = 1; if (!navigator.onLine) try { e.source.postMessage({ siwar: 'net', on: false }, '*'); } catch (x) {} } setTimeout(syncPause, 0); }
     if (d.siwar === 'hold') { o.held = true; pMark(fid, 'hold'); if (d.g && PJ[fid]) PJ[fid].g = String(d.g).slice(0, 8); if (cur === fid && !o.ready) stage(.82, .95); }
     else if (d.siwar === 'alive') { o.alive = true; pMark(fid, 'alive'); }
-    else if (d.siwar === 'paint') { pMark(fid, 'paint'); if (cur === fid && !o.ready) loaderDone(); }   // الشاشة المحفوظة ظهرت: تُعرض فوراً والبيانات الجديدة تصل خلفها
+    else if (d.siwar === 'paint') { pMark(fid, 'paint'); if (o.sil) silSwap(fid); if (cur === fid && !o.ready) loaderDone(); }   // الشاشة المحفوظة ظهرت: تُعرض فوراً والبيانات الجديدة تصل خلفها
     else if (d.siwar === 'mark' && /^[\w:.-]{1,40}$/.test(String(d.n || ''))) pMark(fid, String(d.n), typeof d.ms === 'number' ? d.ms : null);
     else if (d.siwar === 'ready') markReady(fid);
     else if (d.siwar === 'close' || d.siwar === 'logout') { if (cur === fid) hideLayer(false); dropFrame(fid); }
-    else if (d.siwar === 'reload' && cur === fid) relaunch(fid, false);
+    else if (d.siwar === 'reload' && cur === fid) relaunchSoft(fid);
     else if (d.siwar === 'at') { o.go = cleanGo(d.go); if (cur === fid && $('prog').className === 'on') curSave(fid, o.go); }
   });
   /* ذاكرة دائمة للأنظمة: كل نظام يحفظ نسخة شاشاته وكوده هنا (ذاكرة التطبيق تبقى بعد إغلاقه)،
@@ -1187,10 +1232,10 @@ a.btn{display:grid;place-items:center;text-decoration:none}
      نسخة التطبيق؛ إن وُجدت أحدث تُطبَّق في الضغطة نفسها (مسح ملفات التطبيق المحفوظة وإعادة تحميل واحدة) بلا بطاقة ثانية */
   function refreshCur(id) {
     var o = frames[id];
-    if (!o || !o.lw || !o.ready || offline()) { relaunch(id, false); return; }
+    if (!o || !o.lw || !o.ready || offline()) { if (o && o.ready && !offline()) relaunchSoft(id); else relaunch(id, false); return; }
     if (o.rfT) return;
-    try { o.lw.postMessage({ siwar: 'refresh', v: 1 }, '*'); } catch (e) { relaunch(id, false); return; }
-    o.rfT = setTimeout(function () { o.rfT = 0; if (cur === id && frames[id] === o) relaunch(id, false); }, 800);
+    try { o.lw.postMessage({ siwar: 'refresh', v: 1 }, '*'); } catch (e) { relaunchSoft(id); return; }
+    o.rfT = setTimeout(function () { o.rfT = 0; if (cur === id && frames[id] === o) relaunchSoft(id); }, 800);
   }
   function updGo() { try { localStorage.setItem('siwar_upd_done', String(Date.now())); } catch (e) {} SiwarUpd.onGo(); }
   function updNow() {
@@ -1550,12 +1595,11 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     $('iT').textContent = T('title'); $('iLater').textContent = T('later'); delete $('iLater').dataset.ph;
     renderInstall(); $('install').hidden = false;
   }
-  /* التحديثات: الإصدار الجديد يُجلب عند العودة للتطبيق، ويُطبَّق تلقائياً والتطبيق في الخلفية وليس فيه نظام مفتوح */
+  /* التحديثات: الإصدار الجديد يُجلب عند العودة للتطبيق، وتعرضه بطاقة التحديث (ضغطة واحدة).
+     (v92) لا إعادة تحميل تلقائية والتطبيق في الخلفية: كانت تغلق الأنظمة المفتوحة وتُظهر شاشة التحميل عند العودة */
   if ('serviceWorker' in navigator) {
-    var swNew = false, hadCtl = !!navigator.serviceWorker.controller;
-    navigator.serviceWorker.addEventListener('controllerchange', function () { if (!hadCtl) { hadCtl = true; return; } swNew = true; if (document.hidden && $('home').hidden) location.reload(); });
     document.addEventListener('visibilitychange', function () {
-      if (document.hidden) { if (swNew && $('home').hidden) location.reload(); return; }
+      if (document.hidden) return;
       navigator.serviceWorker.getRegistration('./').then(function (r) { if (r) r.update().catch(function () {}); }).catch(function () {});
     });
   }
