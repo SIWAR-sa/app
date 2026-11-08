@@ -1814,6 +1814,172 @@ body { display: flow-root; }
   .og-row::before { top: 0; inset-inline: 6%; height: 14px; background: none; border: 2px solid #E9D7B5; border-bottom: 0; border-radius: 14px 14px 0 0; }
 }
 </style>
+<style id="loginLux">
+/* (pv34) شاشات الدخول لأول مرة: لوحة الشعار بجانب النموذج على الحاسوب، أسطح متراكبة، حركة هادئة، ونسخة جوال مضغوطة */
+#screen-login { position: relative; min-height: 100vh; overflow: hidden; isolation: isolate; }
+.login-wrap { position: relative; z-index: 1; }
+.login-side { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.brand-logo { display: block; width: fit-content; min-height: 0; margin-inline: auto; position: relative; line-height: 0; transition: transform .5s cubic-bezier(.2,.9,.3,1.25); }
+.brand-logo:hover { transform: scale(1.04); }
+.brand-logo img:hover { transform: none; }
+.brand-logo::after { content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(105deg, transparent 38%, rgba(255,250,236,.95) 50%, transparent 62%) 0 0 / 300% 100% no-repeat;
+  -webkit-mask: var(--lg) center / contain no-repeat; mask: var(--lg) center / contain no-repeat; background-position: 100% 0; animation: spShine 3s ease-in-out .7s 1; }
+.login-card .view.on > * { animation: lxUp .5s cubic-bezier(.2,.8,.2,1) both; }
+.login-card .view.on > :nth-child(2) { animation-delay: .05s; } .login-card .view.on > :nth-child(3) { animation-delay: .1s; } .login-card .view.on > :nth-child(4) { animation-delay: .15s; } .login-card .view.on > :nth-child(5) { animation-delay: .2s; }
+@keyframes lxUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.code-inp { text-align: center !important; font-size: 22px; font-weight: 600; letter-spacing: .5em; padding-inline-start: calc(14px + .5em) !important; font-variant-numeric: tabular-nums; }
+.pw-meter { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 2px; }
+.pw-meter i { height: 3px; border-radius: 3px; background: rgba(161,151,143,.2); transition: background .35s ease, box-shadow .35s ease; }
+.pw-meter[data-lv="1"] i:nth-child(1), .pw-meter[data-lv="2"] i:nth-child(-n+2), .pw-meter[data-lv="3"] i { background: linear-gradient(90deg, #D7A657, #F1D49C); }
+.pw-meter[data-lv="3"] i { box-shadow: 0 0 8px rgba(227,182,109,.55); }
+.login-card .install-link { margin-top: 2px; font-size: 12.5px; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+.login-card .install-link .ic { width: 15px; height: 15px; }
+
+/* سطح فاخر (الثيم الافتراضي) */
+[data-theme="luxe"] #screen-login::after { content: ''; position: absolute; z-index: -1; inset: -20%; pointer-events: none;
+  background: radial-gradient(34% 30% at 78% 18%, rgba(244,214,160,.42), transparent 70%), radial-gradient(30% 28% at 20% 84%, rgba(246,201,196,.34), transparent 70%); animation: lxDrift 26s ease-in-out infinite alternate; }
+@keyframes lxDrift { to { transform: translate3d(-3%, 2%, 0) scale(1.04); } }
+[data-theme="luxe"] .login-card { position: relative; border-radius: 28px;
+  background: linear-gradient(180deg, #FFFEFB 0%, #FBF6EE 100%) padding-box, var(--gold-rim) border-box;
+  box-shadow: inset 0 1px 0 #fff, 0 14px 0 -7px #F7EFE3, 0 14px 0 -6px rgba(227,182,109,.32), 0 2px 4px rgba(110,98,90,.06), 0 30px 60px -22px rgba(110,98,90,.34), 0 70px 120px -50px rgba(110,98,90,.34); }
+[data-theme="luxe"] .brand-logo img { filter: drop-shadow(0 1px 0 rgba(255,255,255,.9)) drop-shadow(0 10px 16px rgba(176,128,52,.24)); }
+[data-theme="luxe"] .gold-rule { width: 96px; height: 1px; background: linear-gradient(90deg, transparent, #D7A657 30%, #F1D49C 50%, #D7A657 70%, transparent); }
+[data-theme="luxe"] .login-card .field > span { font-size: 12.5px; letter-spacing: .1px; color: #7A6E64; }
+[data-theme="luxe"] .login-card .input-wrap input, [data-theme="luxe"] .login-card .inp { height: 50px; border-radius: 15px; border-color: #E9DCC8;
+  background: linear-gradient(180deg, #F8F2E9, #FFFDF9); box-shadow: inset 0 2px 4px rgba(110,98,90,.08), inset 0 -1px 0 #fff, 0 1px 0 rgba(255,255,255,.9); transition: border-color .25s, box-shadow .25s, background .25s; }
+[data-theme="luxe"] .login-card .input-wrap input:focus, [data-theme="luxe"] .login-card .inp:focus { border-color: #DDB46F; background: #FFFEFB; box-shadow: inset 0 1px 2px rgba(110,98,90,.06), 0 0 0 4px rgba(227,182,109,.20), 0 8px 18px -10px rgba(176,128,52,.45); }
+[data-theme="luxe"] .login-card .input-wrap > .ic { color: #B9996A; }
+[data-theme="luxe"] .login-card .btn-primary { position: relative; overflow: hidden; height: 50px; border-radius: 15px; font-size: 14.5px; letter-spacing: .2px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7), inset 0 -2px 0 rgba(150,90,88,.18), 0 1px 0 rgba(194,146,63,.35), 0 12px 24px -10px rgba(201,132,130,.7); }
+[data-theme="luxe"] .login-card .btn-primary::before { content: ''; position: absolute; top: 0; bottom: 0; width: 45%; inset-inline-start: -60%; background: linear-gradient(105deg, transparent, rgba(255,255,255,.5), transparent); transform: skewX(-18deg); transition: inset-inline-start .8s ease; pointer-events: none; }
+[data-theme="luxe"] .login-card .btn-primary:hover::before { inset-inline-start: 120%; }
+[data-theme="luxe"] .login-card .link-btn:not(.install-link) { color: #9C6B52; font-weight: 600; }
+[data-theme="luxe"] .login-note { color: #857970; font-size: 13px; line-height: 1.85; }
+[data-theme="luxe"] .login-top .chip { height: 34px; background: linear-gradient(180deg, #FFFEFB, #FAF4EC) padding-box, var(--gold-rim) border-box; border: 1px solid transparent; box-shadow: inset 0 1px 0 #fff, 0 6px 14px -8px rgba(110,98,90,.4); }
+
+/* الحاسوب: لوحة الشعار والنموذج جنباً إلى جنب */
+@media (min-width: 960px) {
+  .login-wrap { padding: 56px 32px; }
+  .login-card { max-width: 960px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px); padding: 14px; }
+  .login-card .brand-block { margin: 0; min-height: 520px; justify-content: center; gap: 22px; border-radius: 18px; position: relative; overflow: hidden; }
+  .login-card .brand-logo img { max-height: 168px; max-width: 360px; }
+  .login-side { justify-content: center; padding: 40px 44px; gap: 18px; }
+  .login-side .view.on { gap: 18px; }
+  [data-theme="luxe"] .login-card .brand-block { background: radial-gradient(70% 55% at 50% 44%, rgba(255,253,247,.95) 0%, rgba(255,253,247,0) 70%), linear-gradient(160deg, #FBF4E8 0%, #F3E6D2 55%, #EBDABF 100%);
+    box-shadow: inset 0 1px 0 #fff, inset 0 0 0 1px rgba(194,146,63,.16), inset 0 -40px 70px -40px rgba(176,128,52,.28), 0 1px 2px rgba(110,98,90,.08); }
+  [data-theme="luxe"] .login-card .brand-block::before { content: ''; position: absolute; left: 50%; top: 46%; width: 420px; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none;
+    border: 1px solid rgba(194,146,63,.14); box-shadow: 0 0 0 34px rgba(255,255,255,.16), 0 0 0 35px rgba(194,146,63,.07); }
+  [data-theme="luxe"] .login-card .brand-block::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,.45) 50%, transparent 60%) 0 0 / 260% 100% no-repeat; background-position: 120% 0; animation: lxSweep 9s ease-in-out 2s infinite; }
+  .login-card .brand-block > * { position: relative; z-index: 1; }
+}
+@keyframes lxSweep { 0%, 70% { background-position: 120% 0; } 100% { background-position: -20% 0; } }
+
+/* الجوال: مضغوط ليبقى النموذج ظاهراً مع لوحة المفاتيح */
+@media (max-width: 600px) {
+  .login-top { top: calc(env(safe-area-inset-top, 0px) + 10px); inset-inline-end: 12px; }
+  .login-top .chip { height: 30px !important; padding: 0 11px; font-size: 12px; }
+  .login-wrap { padding: 52px 14px 20px; }
+  .login-card { padding: 20px 18px 16px; border-radius: 22px !important; }
+  .brand-block { gap: 6px; margin-bottom: 14px; }
+  .login-card .brand-logo img { max-height: 84px; max-width: 200px; }
+  .login-side, .login-side .view.on { gap: 11px; }
+  .login-card .field { gap: 4px; }
+  .login-card .field > span { font-size: 12px !important; }
+  .login-card .input-wrap input, .login-card .inp { height: 42px !important; border-radius: 12px !important; font-size: 15px; }
+  .login-card .input-wrap > .icon-btn { width: 34px; height: 34px; }
+  .login-card .btn-primary { height: 42px !important; border-radius: 12px !important; font-size: 13.5px !important; }
+  .login-card .link-btn { font-size: 12px; padding: 2px 6px; }
+  .login-note { font-size: 12px !important; line-height: 1.7 !important; }
+  .code-inp { font-size: 19px; }
+}
+
+/* تغيير كلمة المرور المؤقتة: نافذة مستقلة في المنتصف بشعار سوار */
+.modal.m-first { place-items: center !important; padding: 16px !important; }
+.modal.m-first .modal-backdrop { background: radial-gradient(ellipse 80% 60% at 50% 42%, rgba(255,252,246,.78), rgba(239,229,215,.95)); backdrop-filter: blur(16px) saturate(115%); -webkit-backdrop-filter: blur(16px) saturate(115%); }
+.modal.m-first .modal-dialog { max-width: 430px !important; max-height: calc(100vh - 32px) !important; border-radius: 26px !important; transform: translateY(14px) scale(.97); }
+.modal.m-first.open .modal-dialog { transform: none; }
+.modal.m-first .modal-dialog::before { content: ''; display: block; flex: none; width: 170px; height: 62px; margin: 26px auto 2px; background: var(--lg) center / contain no-repeat; filter: drop-shadow(0 8px 12px rgba(176,128,52,.22)); }
+.modal.m-first .modal-head { justify-content: center; padding: 10px 26px 4px !important; }
+.modal.m-first .modal-head h3 { font-size: 18px; }
+.modal.m-first .modal-head h3 .ic { width: 30px; height: 30px; padding: 6px; border-radius: 50%; background: linear-gradient(180deg, #FFF6E4, #F2DDB6); box-shadow: inset 0 1px 0 #fff, 0 4px 10px -4px rgba(176,128,52,.5); }
+.modal.m-first .modal-body { padding: 4px 26px 6px; }
+.modal.m-first .note { background: none; padding: 0; margin: 0 0 16px; text-align: center; color: #857970; font-size: 13px; line-height: 1.8; }
+.modal.m-first .field > span { font-size: 12.5px; }
+.modal.m-first .input-wrap input { height: 48px; border-radius: 14px; }
+.modal.m-first .input-wrap input:focus { border-color: #DDB46F; box-shadow: 0 0 0 4px rgba(227,182,109,.2); }
+.modal.m-first .modal-foot { border-top: 0; display: grid; grid-template-columns: 1fr 1.35fr; gap: 10px; padding: 14px 26px 24px; }
+.modal.m-first .modal-foot .btn { height: 46px; border-radius: 14px; }
+[data-theme="luxe"] .modal.m-first .modal-dialog { box-shadow: inset 0 1px 0 #fff, 0 14px 0 -7px #F7EFE3, 0 14px 0 -6px rgba(227,182,109,.32), 0 30px 60px -22px rgba(110,98,90,.38), 0 70px 120px -50px rgba(110,98,90,.36); }
+@media (max-width: 600px) {
+  .modal.m-first .modal-dialog { border-radius: 22px !important; }
+  .modal.m-first .modal-dialog::before { width: 130px; height: 46px; margin-top: 18px; }
+  .modal.m-first .modal-head h3 { font-size: 16px; }
+  .modal.m-first .modal-head h3 .ic { width: 26px; height: 26px; padding: 5px; }
+  .modal.m-first .modal-body { padding: 2px 18px 4px; }
+  .modal.m-first .note { font-size: 12px; margin-bottom: 12px; line-height: 1.7; }
+  .modal.m-first .input-wrap input { height: 42px; border-radius: 12px; }
+  .modal.m-first .modal-foot { padding: 12px 18px 18px; gap: 8px; }
+  .modal.m-first .modal-foot .btn { height: 42px; border-radius: 12px; font-size: 13.5px; }
+}
+/* الخط الرفيع تحت الشعار ليس جزءاً منه */
+.login-card .gold-rule { display: none !important; }
+.lg-hi { text-align: center; margin-bottom: 2px; }
+.lg-hi h2 { margin: 0; font-size: 21px; font-weight: 700; letter-spacing: -.2px; color: var(--text); }
+.lg-hi p { margin: 3px 0 0; font-size: 13px; color: var(--muted); }
+[data-theme="luxe"] .lg-hi h2 { color: #4A3F38; text-shadow: 0 1px 0 #fff; }
+[data-theme="luxe"] .lg-hi p { color: #8E7F72; }
+@media (min-width: 960px) { .lg-hi { text-align: start; margin-bottom: 6px; } .lg-hi h2 { font-size: 26px; } .lg-hi p { font-size: 14px; } }
+/* «من SIWAR»: بطاقة صغيرة متغيرة تحت النموذج (الجوال) وأسفل لوحة الشعار (الحاسوب) */
+.lg-tips { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 16px; min-height: 60px; transition: opacity .45s ease, transform .45s ease; }
+.lg-tips.fade { opacity: 0; transform: translateY(4px); }
+.lg-tips .tp-ic { flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(180deg, #FFF6E4, #F0D9AE); color: #A9792E; box-shadow: inset 0 1px 0 #fff, 0 4px 10px -4px rgba(176,128,52,.55); }
+.lg-tips .tp-ic .ic { width: 16px; height: 16px; }
+.lg-tips .tp-tx { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.lg-tips b { font-size: 13px; line-height: 1.5; color: #4A3F38; }
+.lg-tips .d { font-size: 11.5px; line-height: 1.55; color: #857970; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+[data-theme="luxe"] .lg-tips { background: rgba(255,253,248,.58); border: 1px solid rgba(227,182,109,.38); backdrop-filter: blur(10px) saturate(130%); -webkit-backdrop-filter: blur(10px) saturate(130%); box-shadow: inset 0 1px 0 rgba(255,255,255,.85), 0 10px 22px -16px rgba(110,98,90,.5); }
+@media (min-width: 960px) {
+  .login-card .brand-block { grid-area: 1 / 1; }
+  .login-side { grid-area: 1 / 2; }
+  .login-card .lg-tips { grid-area: 1 / 1; align-self: end; justify-self: center; width: calc(100% - 64px); max-width: 420px; margin-bottom: 30px; z-index: 2; }
+}
+/* الجوال: صفحة كاملة بخلفية ذهبية متدرجة، والمحتوى في المنتصف */
+@media (max-width: 600px) {
+  .login-wrap { display: block; min-height: 100vh; min-height: 100dvh; padding: 0; }
+  .login-card, [data-theme] .login-card { max-width: none; width: 100%; min-height: 100vh; min-height: 100dvh; margin: 0; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; background: transparent !important; animation: none;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: calc(env(safe-area-inset-top, 0px) + 50px) calc(env(safe-area-inset-right, 0px) + 16px) calc(env(safe-area-inset-bottom, 0px) + 16px) calc(env(safe-area-inset-left, 0px) + 16px); }
+  .brand-block { position: relative; margin: 8px 0 26px; animation: lxUp .7s cubic-bezier(.2,.8,.2,1) both; }
+  .login-card .brand-logo img { max-height: 78px; max-width: 190px; }
+  .login-side { flex: none; padding: 18px 16px 14px; border-radius: 22px; animation: rise .6s cubic-bezier(.2,.8,.2,1) .05s both; }
+  .lg-hi h2 { font-size: 18px; } .lg-hi p { font-size: 12px; margin-top: 1px; }
+  .login-card .lg-tips { margin-top: 14px; animation: lxUp .6s cubic-bezier(.2,.8,.2,1) .2s both; }
+  [data-theme="luxe"] #screen-login { background: radial-gradient(95% 36% at 50% 16%, rgba(255,252,244,.96), rgba(255,252,244,0) 70%), radial-gradient(70% 40% at 100% 100%, rgba(240,195,190,.38), transparent 70%), radial-gradient(75% 45% at 0% 72%, rgba(227,182,109,.30), transparent 70%), linear-gradient(170deg, #FBF4E8 0%, #F3E3C8 50%, #E8D1AA 100%); }
+  [data-theme="luxe"] #screen-login::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .2; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .4 0 0 0 0 .15 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  [data-theme="luxe"] .brand-block::before { content: ''; position: absolute; left: 50%; top: 50%; width: 220px; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%); z-index: -1; pointer-events: none;
+    background: radial-gradient(circle, rgba(255,250,236,1) 0%, rgba(246,224,182,.5) 40%, rgba(241,212,156,0) 68%); animation: spGlow 4.2s ease-in-out infinite; }
+  [data-theme="luxe"] .brand-block::after { content: ''; position: absolute; left: 50%; top: 50%; width: 146px; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%); z-index: -1; pointer-events: none;
+    border: 1px solid rgba(194,146,63,.22); box-shadow: 0 0 0 12px rgba(255,255,255,.18), 0 0 0 17px rgba(194,146,63,.10); }
+  [data-theme="luxe"] .login-side { border: 1px solid transparent; background: linear-gradient(180deg, rgba(255,254,250,.9), rgba(251,245,236,.84)) padding-box, var(--gold-rim) border-box;
+    backdrop-filter: blur(14px) saturate(130%); -webkit-backdrop-filter: blur(14px) saturate(130%);
+    box-shadow: inset 0 1px 0 #fff, 0 12px 0 -7px rgba(248,240,228,.92), 0 12px 0 -6px rgba(227,182,109,.34), 0 2px 4px rgba(110,98,90,.06), 0 26px 46px -18px rgba(110,98,90,.42); }
+}
+/* لوحة المفاتيح مفتوحة: تختفي البطاقة ويصعد النموذج */
+@media (max-width: 600px) and (max-height: 620px) {
+  .login-card .lg-tips { display: none !important; }
+  .login-card, [data-theme] .login-card { padding-top: calc(env(safe-area-inset-top, 0px) + 44px); padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 10px); }
+  .brand-block { margin: 0 0 10px; }
+  .brand-block::after { display: none; }
+  .login-card .brand-logo img { max-height: 58px; }
+}
+/* الشعار وحده بلا دوائر أو هالات في كل الحالات */
+.login-card .brand-block::before, [data-theme] .login-card .brand-block::before { content: none !important; display: none !important; }
+@media (max-width: 959px) { .login-card .brand-block::after, [data-theme] .login-card .brand-block::after { content: none !important; display: none !important; } }
+@media (min-width: 960px) { [data-theme="luxe"] .login-card .brand-block { background: linear-gradient(160deg, #FBF4E8 0%, #F3E6D2 55%, #EBDABF 100%); } }
+@media (prefers-reduced-motion: reduce) { #screen-login::after, .brand-block::before, .brand-logo::after, .lg-tips, .login-card .brand-block::after, .login-card .view.on > * { animation: none !important; } }
+</style>
 <body>
 
 <div id="bg"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
@@ -1854,9 +2020,10 @@ body { display: flow-root; }
         <h1 class="portal-title" data-portal-name></h1>
         <div class="gold-rule"></div>
       </div>
-
+      <div class="login-side">
       <p class="boot-err" id="bootErr" hidden></p>
       <form class="view on" id="vLogin" novalidate>
+        <div class="lg-hi"><h2 data-i18n="welcomeTitle"></h2><p data-i18n="welcomeSub"></p></div>
         <label class="field"><span data-i18n="userOrEmail"></span>
           <div class="input-wrap"><i data-ic="user"></i><input id="lgUser" type="email" inputmode="email" dir="ltr" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="80" required></div>
         </label>
@@ -1888,11 +2055,14 @@ body { display: flow-root; }
             <button type="button" class="icon-btn" data-act="togglePw" data-for="rsPin" aria-label="إظهار كلمة المرور / Show password"><i data-ic="eye"></i></button>
             <input id="rsPin" type="password" dir="ltr" autocomplete="new-password" maxlength="64" required>
           </div>
+          <div class="pw-meter" aria-hidden="true"><i></i><i></i><i></i></div>
         </label>
         <button class="btn btn-primary btn-block" type="submit" id="rsBtn"><span data-i18n="setPin"></span><i data-ic="check"></i></button>
         <button type="button" class="link-btn" data-act="showLogin" data-i18n="backToLogin"></button>
       </form>
       <button type="button" class="link-btn install-link" data-act="installApp" data-install hidden><i data-ic="phone"></i><span data-i18n="installApp"></span></button>
+      </div>
+      <div class="lg-tips" id="lgTips" hidden></div>
     </div>
   </div>
 </section>
@@ -2031,6 +2201,7 @@ body { display: flow-root; }
             <label class="field"><span data-i18n="mailApps"></span><input class="inp" id="mApps" maxlength="80"></label>
             <label class="field"><span data-i18n="mailTips"></span><textarea class="inp" id="mTips" rows="4" maxlength="1500"></textarea></label>
             <label class="field"><span data-i18n="mailClosing"></span><textarea class="inp" id="mClosing" rows="2" maxlength="800"></textarea></label>
+            <label class="field"><span data-i18n="mailLogin"></span><textarea class="inp" id="mLogin" rows="5" maxlength="1500" data-i18n-ph="mailLoginPh"></textarea></label>
             <p class="row-sub" style="margin:0;white-space:normal" data-i18n="mailHint"></p>
             <div class="mail-actions">
               <button type="button" class="btn btn-ghost" data-act="mailPreview" id="mailPrevBtn"><i data-ic="eye"></i><span data-i18n="preview"></span></button>
@@ -2081,6 +2252,8 @@ const I18N = {
     pushMenu: 'إعدادات الإشعارات', act_PUSH: 'إشعار جوال', act_PUSH_OFF: 'إشعار لم يُرسل (متوقف)', act_PUSH_SUB: 'تفعيل إشعارات جهاز', act_PUSH_UNSUB: 'إيقاف إشعارات جهاز', act_PUSH_DEAD: 'حذف جهاز منتهٍ', act_PUSH_SWITCH: 'مفاتيح إشعارات الجوال', act_PUSH_SETUP: 'تهيئة إشعارات الجوال', act_U_WORKSFOR: 'تحديد «يعمل لـ»',
     PUSH_NOT_READY: 'إرسال الإشعارات لم يُهيأ بعد.', PUSH_BAD_ENDPOINT: 'هذا المتصفح لا يدعم الإشعارات بالطريقة المعتمدة.', ERR_RANGE: 'القيمة خارج الحدود المسموحة.',
     langName: 'English', switchLang: 'تبديل اللغة', username: 'اسم المستخدم', userOrEmail: 'البريد الإلكتروني', pin: 'كلمة المرور', signIn: 'دخول',
+    mailLogin: 'بطاقات شاشة الدخول (سطر لكل بطاقة)', mailLoginPh: '🔑 العنوان | الوصف — إذا تُرك فارغاً تظهر مزايا بريد الدعوة',
+    welcomeTitle: 'أهلاً بك', welcomeSub: 'دخول واحد لكل أنظمة سوار',
     forgot: 'نسيت كلمة المرور؟', forgotIntro: '', sendRequest: 'متابعة', backToLogin: 'العودة لتسجيل الدخول',
     resetIntro: 'إذا كان لحسابك بريد مسجّل فسيصلك رمز تحقق من 6 أرقام، وإلا فسيصل طلبك إلى مدير النظام لإعادة التعيين.',
     code: 'رمز التحقق', newPin: 'كلمة المرور الجديدة', confirmPin: 'تأكيد كلمة المرور', setPin: 'حفظ كلمة المرور', currentPin: 'كلمة المرور الحالية',
@@ -2161,6 +2334,8 @@ const I18N = {
     pushMenu: 'Notification settings', act_PUSH: 'Phone notification', act_PUSH_OFF: 'Notification not sent (off)', act_PUSH_SUB: 'Device notifications on', act_PUSH_UNSUB: 'Device notifications off', act_PUSH_DEAD: 'Expired device removed', act_PUSH_SWITCH: 'Notification switches', act_PUSH_SETUP: 'Notifications set up', act_U_WORKSFOR: '«Works for» set',
     PUSH_NOT_READY: 'Notifications are not set up yet.', PUSH_BAD_ENDPOINT: 'This browser does not support notifications in the supported way.', ERR_RANGE: 'The value is out of the allowed range.',
     langName: 'العربية', switchLang: 'Switch language', username: 'Username', userOrEmail: 'Email', pin: 'Password', signIn: 'Sign in',
+    mailLogin: 'Sign-in screen cards (one per line)', mailLoginPh: '🔑 Title | Description — leave empty to show the invite email features',
+    welcomeTitle: 'Welcome', welcomeSub: 'One sign-in for all SIWAR systems',
     forgot: 'Forgot your password?', forgotIntro: '', sendRequest: 'Continue', backToLogin: 'Back to sign in',
     resetIntro: 'If your account has a registered email, a 6-digit code will be sent to it; otherwise your request goes to the system admin for a reset.',
     code: 'Verification code', newPin: 'New password', confirmPin: 'Confirm password', setPin: 'Save password', currentPin: 'Current password',
@@ -2228,7 +2403,7 @@ const I18N = {
     rs_noEmail: 'no email', rs_suspended: 'suspended', rs_forbidden: 'outside your access', rs_mail: 'send failed',
     ERR_NO_PORTAL_URL: 'Save the deployment URL in Settings first.', ERR_MAIL_QUOTA: 'Daily email limit reached.',
     ERR_INVALID_LOGIN: 'Incorrect email or password.', ERR_LOCKED: 'Too many attempts. Wait a little and try again, or use “Forgot your password?”.',
-    ERR_SUSPENDED: 'This account is suspended.', ERR_SESSION: 'Your session ended. Please sign in again.', ERR_ROLE_CHANGED: 'Your account permissions or details changed. Please sign in again.', ERR_STALE: 'Someone else changed this employee after you opened the page, so your change was not saved.', ERR_BUSY_SAME: 'The previous save is still running. Wait a moment, then refresh and check before trying again.', ERR_FORBIDDEN: 'You are not allowed to do this.', ERR_SENSITIVE: 'Sensitive permission: owner only.', ERR_SHARED: 'Shared setting: edit it on the Siwar page under Systems.', ERR_RANGE: 'Value out of the allowed range.', ERR_CONFLICT: 'Someone else changed this setting after you opened the page.', ERR_RULE: 'The values do not agree with each other.', ERR_IN_USE: 'Role is in use; archive it instead.', ERR_ARCHIVED: 'Role is archived.', ERR_VALUE: 'Invalid value.', NO_SOURCE: 'Source file could not be opened.',
+    ERR_SUSPENDED: 'This account is suspended.', ERR_SESSION: 'Your session ended. Please sign in again.', ERR_ROLE_CHANGED: 'Your account permissions or details changed. Please sign in again.', ERR_STALE: 'Someone else changed this employee after you opened the page, so your change was not saved.', ERR_BUSY_SAME: 'The previous save is still running. Wait a moment, then refresh and check before trying again.', ERR_FORBIDDEN: 'You are not allowed to do this.', ERR_SENSITIVE: 'Sensitive permission: owner only.', ERR_SHARED: 'Shared setting: edit it on the SIWAR page under Systems.', ERR_RANGE: 'Value out of the allowed range.', ERR_CONFLICT: 'Someone else changed this setting after you opened the page.', ERR_RULE: 'The values do not agree with each other.', ERR_IN_USE: 'Role is in use; archive it instead.', ERR_ARCHIVED: 'Role is archived.', ERR_VALUE: 'Invalid value.', NO_SOURCE: 'Source file could not be opened.',
     ERR_NO_URL: 'This app has no URL yet.', ERR_USERNAME: 'Username must be 2–40 English letters or digits.',
     ERR_NAME: 'Arabic and English names are required.', ERR_EMAIL: 'Invalid email address.', ERR_DUP_USERNAME: 'Username already exists.',
     ERR_PIN: 'Password must be at least 8 characters with letters and numbers.', ERR_PIN_WEAK: 'This password is too easy to guess.', ERR_TEMP_EXPIRED: 'Your temporary password expired. Ask the administrator for a new one.', tempTitle: 'Temporary password', tempNote: 'Shown only now. The user must change it at first sign-in.', tempMailed: 'Sent to their email.', tempSend: 'Email the temporary password', copy: 'Copy', copied: 'Copied', noEmail: 'No email', tempCreate: 'Create', ERR_DUP_EMAIL: 'This email belongs to another user.', ERR_MUST_CHANGE: 'Please choose your own password first.', ERR_BUSY: 'The system is busy for a moment — please retry.', linkSaveFirst: 'Save your changes first, then test the link.', regenYes: 'Change key', ERR_PIN_MATCH: 'Passwords do not match.', ERR_PIN_WRONG: 'Current password is incorrect.',
@@ -2526,11 +2701,11 @@ function showErr(code) { if (code !== '__handled') toast(t(I18N.ar[code] ? code 
 const Mock = (() => {
   const now = new Date().toISOString();
   const seed = [
-    ['APP-001', 'كوادر سوار', 'Siwar Kawader', 'التوظيف وتقييم الأداء', 'Hiring & performance reviews', 'kawader', 'pink'],
-    ['APP-002', 'نبض سوار', 'Siwar Pulse', 'التحليلات والطاقة اليومية', 'Analytics & daily capacity', 'pulse', 'gold'],
-    ['APP-003', 'مسار سوار', 'Siwar Masar', 'إدارة الطلبات بين الأقسام', 'Inter-department requests', 'masar', 'grey'],
-    ['APP-004', 'رصيد سوار', 'Siwar Stock', 'المخازن والأرصدة', 'Warehouses & stock', 'stock', 'gold'],
-    ['APP-005', 'رقابة سوار', 'Siwar Audit', 'الرقابة على التالف', 'Damage control & audits', 'audit', 'pink']
+    ['APP-001', 'كوادر سوار', 'SIWAR Kawader', 'التوظيف وتقييم الأداء', 'Hiring & performance reviews', 'kawader', 'pink'],
+    ['APP-002', 'نبض سوار', 'SIWAR Pulse', 'التحليلات والطاقة اليومية', 'Analytics & daily capacity', 'pulse', 'gold'],
+    ['APP-003', 'مسار سوار', 'SIWAR Masar', 'إدارة الطلبات بين الأقسام', 'Inter-department requests', 'masar', 'grey'],
+    ['APP-004', 'رصيد سوار', 'SIWAR Stock', 'المخازن والأرصدة', 'Warehouses & stock', 'stock', 'gold'],
+    ['APP-005', 'رقابة سوار', 'SIWAR Audit', 'الرقابة على التالف', 'Damage control & audits', 'audit', 'pink']
   ];
   const db = {
     settings: { nameAR: 'سوار', nameEN: 'SIWAR', theme: 'luxe', logo: '', webAppUrl: '', inviteMail: { ar: {}, en: {} }, mailDefaults: { ar: {}, en: {} } },
@@ -2608,14 +2783,14 @@ const Mock = (() => {
     admin_review: () => ({ inactiveDays: 30,
       inactive: [{ id: 'U-4D5E6F', username: 'khaled', nameAR: 'خالد علي', nameEN: 'Khaled Ali', lastLogin: '2026-08-20T09:00:00Z', days: 52 }].filter(u => (db.users.find(x => x.id === u.id) || {}).status === 'Active'),
       suspendedWithAccess: db.users.filter(u => u.status === 'Suspended' && (db.access[u.id] || []).length).map(u => Object.assign({}, u, { count: db.access[u.id].length })),
-      unusedAccess: (db.access['U-1A2B3C'] || []).filter(a => a === 'APP-003').map(a => ({ id: 'U-1A2B3C', username: 'sara', nameAR: 'سارة أحمد', nameEN: 'Sara Ahmed', appId: a, appNameAR: 'مسار سوار', appNameEN: 'Siwar Masar', lastLaunch: '', days: 40 })),
+      unusedAccess: (db.access['U-1A2B3C'] || []).filter(a => a === 'APP-003').map(a => ({ id: 'U-1A2B3C', username: 'sara', nameAR: 'سارة أحمد', nameEN: 'Sara Ahmed', appId: a, appNameAR: 'مسار سوار', appNameEN: 'SIWAR Masar', lastLaunch: '', days: 40 })),
       resetRequests: db.users.filter(u => u.resetRequested).map(u => ({ id: u.id, username: u.username, nameAR: u.nameAR, nameEN: u.nameEN, requestedAt: u.resetRequested }))
     }),
     admin_importUsers: p => { p.rows.forEach(r => db.users.push({ id: 'U-' + Math.random().toString(16).slice(2, 8).toUpperCase(), username: r.email.split('@')[0], nameAR: r.nameAR, nameEN: r.nameEN, email: r.email, role: 'user', status: 'Active', lang: 'ar', lastLogin: '', resetRequested: '' })); log('USER_IMPORT', p.rows.length); return { created: p.rows.length, mailed: p.send ? p.rows.length : 0, skipped: [], snapshot: snap() }; },
     admin_invitePreview: p => ({ subject: 'بيانات دخولك إلى أنظمة سوار', html: '<div dir="rtl" style="font-family:Tahoma;padding:40px;text-align:center;background:#F2EBE1">معاينة البريد تظهر هنا بعد النشر</div>' }),
     admin_invite: p => { p.ids.forEach(id => { const u = db.users.find(x => x.id === id); if (u) u.invitedAt = new Date().toISOString(); }); log('INVITE'); return { sent: p.ids.map(id => (db.users.find(x => x.id === id) || {}).username), skipped: [], snapshot: snap() }; },
     admin_revokeAccess: p => { db.access[p.userId] = p.appId === '*' ? [] : (db.access[p.userId] || []).filter(a => a !== p.appId); log('ACCESS_REVOKE'); return snap(); },
-    admin_healthCheck: () => [{ level: 'warn', ar: 'البرنامج كوادر سوار مفعّل بلا رابط.', en: 'App Siwar Kawader is active without a URL.' }, { level: 'warn', ar: 'رابط النشر غير محفوظ في الإعدادات.', en: 'Web app URL is not saved.' }]
+    admin_healthCheck: () => [{ level: 'warn', ar: 'البرنامج كوادر سوار مفعّل بلا رابط.', en: 'App SIWAR Kawader is active without a URL.' }, { level: 'warn', ar: 'رابط النشر غير محفوظ في الإعدادات.', en: 'Web app URL is not saved.' }]
   };
   return { call(action, payload) { try { const f = R[action]; if (!f) return { ok: false, code: 'ERR_ACTION' }; return { ok: true, data: f(payload) }; } catch (c) { return { ok: false, code: typeof c === 'string' ? c : 'ERR_SERVER' }; } } };
 })();
@@ -2723,7 +2898,7 @@ async function boot() {
 function applyConfig(cfg) {
   S.config = Object.assign(S.config, cfg || {});
 
-  if (cfg && cfg.nameAR) try { localStorage.setItem('sp_cfg', JSON.stringify({ nameAR: S.config.nameAR, nameEN: S.config.nameEN, theme: S.config.theme, logo: S.config.logo, appUrl: S.config.appUrl })); } catch (e) {}
+  if (cfg && cfg.nameAR) try { localStorage.setItem('sp_cfg', JSON.stringify({ nameAR: S.config.nameAR, nameEN: S.config.nameEN, theme: S.config.theme, logo: S.config.logo, appUrl: S.config.appUrl, cards: S.config.cards })); } catch (e) {}
 
   instSync();
   $$('[data-pushmenu]').forEach(el => { el.hidden = !SHELL; });
@@ -2753,7 +2928,33 @@ function applyBrand() {
   const logo = '<img src="' + esc(S.config.logo || brandLogo()) + '" alt="' + esc(name || '') + '">';
   $('#loginLogo').innerHTML = logo;
   $('#tbBrand').innerHTML = logo;
+  tipsRender(false);
+  document.documentElement.style.setProperty('--lg', 'url("' + String(S.config.logo || brandLogo()).replace(/["\\\n\r]/g, encodeURIComponent) + '")');
 }
+// بطاقة «من SIWAR» في شاشة الدخول: تبدأ عشوائياً وتتبدل كل 6 ثوانٍ (النصوص من الإعدادات، وإلا مزايا بريد الدعوة)
+const TIP_IC = { '🔑': 'key', '🧭': 'list', '🔐': 'lock', '📱': 'phone', '🛡': 'shield' };
+const TIPS = { i: -1, list: [] };
+function tipsParse(str) {
+  return String(str || '').split('\n').map(l => {
+    const p = l.split('|'), head = (p[0] || '').trim(), d = p.slice(1).join('|').trim();
+    const m = /^[^\p{L}\p{N}\s]+\s*/u.exec(head), sym = m ? m[0].trim() : '';
+    const k = Object.keys(TIP_IC).find(e => sym.indexOf(e) === 0);
+    return { ic: k ? TIP_IC[k] : 'checkCircle', t: head.slice(m ? m[0].length : 0).trim(), d: d };
+  }).filter(x => x.t).slice(0, 12);
+}
+function tipsRender(step) {
+  const box = $('#lgTips'); if (!box) return;
+  const c = S.config.cards; TIPS.list = tipsParse(c && c[S.lang === 'en' ? 'en' : 'ar']);
+  if (!TIPS.list.length) { box.hidden = true; return; }
+  box.hidden = false;
+  if (TIPS.i < 0 || TIPS.i >= TIPS.list.length) TIPS.i = Math.floor(Math.random() * TIPS.list.length); else if (step) TIPS.i = (TIPS.i + 1) % TIPS.list.length;
+  const x = TIPS.list[TIPS.i];
+  box.innerHTML = '<span class="tp-ic">' + ic(x.ic) + '</span><span class="tp-tx"><b>' + esc(x.t) + '</b>' + (x.d ? '<span class="d">' + esc(x.d) + '</span>' : '') + '</span>';
+}
+setInterval(() => {
+  const box = $('#lgTips'); if (!box || box.hidden || S.screen !== 'login' || document.hidden || TIPS.list.length < 2) return;
+  box.classList.add('fade'); setTimeout(() => { tipsRender(true); box.classList.remove('fade'); }, 450);
+}, 6000);
 var BRAND_LOGO = null;
 function brandLogo() {
   if (BRAND_LOGO === null) { const sp = document.getElementById('splash'), m = /url\((data:image\/[^)]+)\)/.exec((sp && sp.getAttribute('style')) || ''); BRAND_LOGO = m ? m[1] : ''; }
@@ -4239,7 +4440,7 @@ const U_JISR_DEF = [
   { k: 'JisrNo', req: 1, txt: 1, w: 14, h: ['الرقم الوظيفي', 'Employee ID'], syn: ['الرقم الوظيفي', 'رقم الموظف', 'Employee ID', 'Employee Number'], n: ['رقم الموظف في جسر — مفتاح المطابقة. أرقام أو حروف كما في جسر.', 'The employee number in Jisr — the matching key. Digits or letters as in Jisr.'] },
   { k: 'NameAR', req: 1, w: 30, h: ['الاسم كاملاً باللغة العربية', 'Arabic Name'], syn: ['الاسم كاملاً باللغة العربية', 'الاسم', 'الاسم بالعربي', 'اسم الموظف', 'الاسم الكامل', 'Name (AR)', 'Arabic Name'], n: ['الاسم بالعربية كما في جسر.', 'The Arabic name as in Jisr.'] },
   { k: 'NameEN', w: 26, h: ['الاسم كاملاً باللغة الانجليزية', 'English Name'], syn: ['الاسم كاملاً باللغة الانجليزية', 'الاسم كاملاً باللغة الإنجليزية', 'الاسم بالإنجليزي', 'الاسم بالانجليزي', 'English Name', 'Name (EN)', 'Name'], n: ['الاسم بالإنجليزية — اختياري.', 'The English name — optional.'] },
-  { k: 'Email', w: 28, h: ['البريد الإلكتروني', 'Email'], syn: ['البريد الإلكتروني', 'البريد', 'الإيميل', 'Email', 'Work Email'], n: ['بريد العمل — اختياري. الفارغ يُبقي البريد المسجَّل في سوار.', 'Work email — optional. Empty keeps the email saved in Siwar.'] },
+  { k: 'Email', w: 28, h: ['البريد الإلكتروني', 'Email'], syn: ['البريد الإلكتروني', 'البريد', 'الإيميل', 'Email', 'Work Email'], n: ['بريد العمل — اختياري. الفارغ يُبقي البريد المسجَّل في سوار.', 'Work email — optional. Empty keeps the email saved in SIWAR.'] },
   { k: 'Title', w: 22, h: ['المسمى الوظيفي', 'Job Title'], syn: ['المسمى الوظيفي', 'Job Title', 'Position'], n: ['المسمى كما في جسر — منه تُعرف وظيفة الموظف وصلاحياته.', 'The title as in Jisr — it sets the employee\'s role and permissions.'] },
   { k: 'Dept', w: 20, h: ['القسم', 'Department'], syn: ['القسم', 'الإدارة', 'Department'], n: ['القسم أو الإدارة كما في جسر.', 'The department as in Jisr.'] },
   { k: 'Section', w: 18, h: ['وحدة عمل', 'Business Unit'], syn: ['وحدة عمل', 'وحدة العمل', 'Business Unit'], n: ['وحدة العمل كما في جسر — اختياري.', 'The business unit as in Jisr — optional.'] },
@@ -6321,7 +6522,7 @@ async function importGo(btn) {
   finally { btn.classList.remove('loading'); }
 }
 
-const MAILF = [['subject', 'mSubject'], ['greeting', 'mGreeting'], ['intro', 'mIntro'], ['featuresTitle', 'mFeatT'], ['features', 'mFeatures'], ['appsTitle', 'mApps'], ['tips', 'mTips'], ['closing', 'mClosing']];
+const MAILF = [['subject', 'mSubject'], ['greeting', 'mGreeting'], ['intro', 'mIntro'], ['featuresTitle', 'mFeatT'], ['features', 'mFeatures'], ['appsTitle', 'mApps'], ['tips', 'mTips'], ['closing', 'mClosing'], ['loginCards', 'mLogin']];
 
 let mailLastField = null;
 document.addEventListener('focusin', e => { if (e.target && e.target.closest && e.target.closest('#mailForm') && /^(INPUT|TEXTAREA)$/.test(e.target.tagName)) mailLastField = e.target; });
@@ -6846,11 +7047,12 @@ function openChangePin(forced) {
       '<form class="form-stack" onsubmit="return false">' +
         '<input type="email" autocomplete="username" value="' + esc(me.email || me.username || '') + '" hidden>' +
         (forced ? '' : '<label class="field"><span>' + esc(t('currentPin')) + '</span><div class="input-wrap"><button type="button" class="icon-btn" data-act="togglePw" data-for="cpCur">' + ic('eye') + '</button><input id="cpCur" type="password" dir="ltr" maxlength="64" autocomplete="current-password"></div></label>') +
-        '<label class="field"><span>' + esc(t('newPin')) + '</span><div class="input-wrap"><button type="button" class="icon-btn" data-act="togglePw" data-for="cpNew">' + ic('eye') + '</button><input id="cpNew" type="password" dir="ltr" maxlength="64" autocomplete="new-password"></div></label>' +
+        '<label class="field"><span>' + esc(t('newPin')) + '</span><div class="input-wrap"><button type="button" class="icon-btn" data-act="togglePw" data-for="cpNew">' + ic('eye') + '</button><input id="cpNew" type="password" dir="ltr" maxlength="64" autocomplete="new-password"></div><div class="pw-meter" aria-hidden="true"><i></i><i></i><i></i></div></label>' +
       '</form>',
     foot: (forced ? '<button class="btn btn-ghost" data-act="logout">' + ic('logout', 'flip') + '<span>' + esc(t('signOut')) + '</span></button>' : '<button class="btn btn-ghost" data-act="closeModal">' + esc(t('cancel')) + '</button>') +
       '<button class="btn btn-primary" data-act="submitChangePin">' + ic('check') + '<span>' + esc(t('save')) + '</span></button>'
   });
+  if (forced) $('#modal').classList.add('m-first');
 }
 async function submitChangePin(btn) {
   const cur = $('#cpCur') ? $('#cpCur').value : '', next = $('#cpNew').value;
@@ -6886,6 +7088,7 @@ let modalLocked = false, confirmResolve = null;
 
 function openModal(o) {
   const m = $('#modal');
+  m.classList.remove('m-first');
   modalLocked = !!o.locked;
   $('#modalX').hidden = modalLocked;
   $('#modalTitle').innerHTML = o.title || '';
@@ -6917,7 +7120,7 @@ function closeModal(force) {
   if (modalLocked && force !== true) return;
   modalLocked = false;
   const m = $('#modal');
-  m.classList.remove('open', 'was-open');
+  m.classList.remove('open', 'was-open', 'm-first');
   m.setAttribute('aria-hidden', 'true');
   if (S.lastFocus && S.lastFocus.focus && document.contains(S.lastFocus)) { try { S.lastFocus.focus({ preventScroll: true }); } catch (e) {} }
   S.lastFocus = null;
@@ -7166,6 +7369,11 @@ function bindEvents() {
     if (e.target.matches && e.target.matches('input[type="file"][data-upload]')) { onUpload(e.target); return; }
     const el = e.target.closest('[data-change]');
     if (el && CHANGES[el.dataset.change]) CHANGES[el.dataset.change](el);
+  });
+  document.addEventListener('input', e => {
+    const el = e.target; if (!el || (el.id !== 'cpNew' && el.id !== 'rsPin')) return;
+    const mt = el.closest('.field') && el.closest('.field').querySelector('.pw-meter'); if (!mt) return;
+    const v = el.value; mt.dataset.lv = String((v.length >= 8 ? 1 : 0) + (/\p{L}/u.test(v) ? 1 : 0) + (/\p{Nd}/u.test(v) ? 1 : 0));
   });
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') { if ($('#modal').classList.contains('open')) closeModal(); else if (NB.open) nbClose(); closeMenu(); }
