@@ -256,43 +256,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
 .pz-sk i{height:64px;border-radius:20px;background:linear-gradient(90deg,#F4EEE6,#FBF7F1,#F4EEE6);background-size:200% 100%;animation:pzs 1.2s linear infinite}
 @keyframes pzs{to{background-position:-200% 0}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-/* (pv19) بطاقة «نسخة جديدة» — بطاقة زجاجية عائمة لا تمنع العمل */
-#siwarUpd{position:fixed;z-index:2147483000;box-sizing:border-box;display:flex;align-items:flex-start;gap:14px;padding:14px 16px 14px 14px;border-radius:24px;color:#3F3A37;font-family:inherit;text-align:start;
- background:linear-gradient(135deg,rgba(255,252,247,.95),rgba(255,246,240,.90));-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%);
- border:1px solid rgba(227,182,109,.45);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 18px 40px -14px rgba(110,98,90,.38),0 40px 70px -40px rgba(110,98,90,.30);overflow:hidden;
- animation:sUin .5s cubic-bezier(.2,.9,.3,1.2) both}
-#siwarUpd.bye{animation:sUout .28s ease both}
-#siwarUpd *{box-sizing:border-box}
-#siwarUpd::after{content:"";position:absolute;inset:0;width:28%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.32),transparent);animation:sUshine 4.5s ease-in-out infinite;pointer-events:none}
-#siwarUpd .sU-o{position:relative;flex:none;display:block;width:50px;height:50px}
-#siwarUpd .sU-orb{position:absolute;inset:0;display:block;border-radius:50%;background:radial-gradient(circle at 35% 30%,#2B3A78 0%,#13224D 55%,#0A1433 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 6px 16px -6px rgba(19,34,77,.55)}
-#siwarUpd .sU-orb::before{content:"";position:absolute;inset:30%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFF1CF,#E3B66D 55%,#B9852F);box-shadow:0 0 10px rgba(227,182,109,.8)}
-#siwarUpd .sU-r{position:absolute;display:block;inset:12%;border-radius:50%;border:1.4px solid rgba(243,221,176,.55);animation:sUspin 2.6s linear infinite}
-#siwarUpd .sU-r::after{content:"";position:absolute;top:-3px;left:50%;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:#FFE3A8;box-shadow:0 0 8px #FFD27A}
-#siwarUpd .sU-r.b{inset:-4%;border-color:rgba(226,166,164,.45);animation-duration:4.2s;animation-direction:reverse}
-#siwarUpd .sU-r.b::after{background:#F5B7B4;box-shadow:0 0 8px #E2A6A4;width:5px;height:5px}
-#siwarUpd .sU-s{position:absolute;display:block;width:8px;height:8px;background:#FFE3A8;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);animation:sUtw 1.8s ease-in-out infinite}
-#siwarUpd .sU-tx{flex:1;min-width:0;position:relative;z-index:1}
-#siwarUpd .sU-t1{font-weight:800;font-size:15px;line-height:1.35}
-#siwarUpd .sU-t2{color:#6F6761;font-size:12.5px;line-height:1.5;margin-top:2px}
-#siwarUpd .sU-b{display:flex;gap:8px;align-items:center;margin-top:10px}
-#siwarUpd .sU-go{display:inline-flex;align-items:center;gap:7px;min-height:38px;padding:0 16px;border:0;border-radius:999px;cursor:pointer;font:inherit;font-size:13.5px;font-weight:700;white-space:nowrap;color:#3F3A37;
- background:linear-gradient(180deg,#F0C3C1 0%,#E2A6A4 55%,#D89593 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.65),inset 0 -2px 0 rgba(150,90,88,.18),0 10px 22px -8px rgba(201,132,130,.65);transition:transform .15s,filter .15s}
-#siwarUpd .sU-go:hover{filter:brightness(1.03)}
-#siwarUpd .sU-go:active{transform:scale(.97)}
-#siwarUpd .sU-go svg{width:16px;height:16px;flex:none}
-#siwarUpd .sU-go.on svg{animation:sUspin .9s linear infinite}
-#siwarUpd .sU-no{background:transparent;border:0;color:#6F6761;font:inherit;font-size:13px;font-weight:600;padding:0 10px;min-height:38px;cursor:pointer;border-radius:999px}
-#siwarUpd .sU-no:hover{background:rgba(161,151,143,.10)}
-#siwarUpd button:focus-visible{outline:3px solid rgba(226,166,164,.45);outline-offset:2px}
-@keyframes sUspin{to{transform:rotate(360deg)}}
-@keyframes sUtw{0%,100%{transform:scale(.3) rotate(0);opacity:.2}50%{transform:scale(1) rotate(90deg);opacity:1}}
-@keyframes sUin{from{transform:translateY(18px) scale(.97);opacity:0}to{transform:none;opacity:1}}
-@keyframes sUout{to{transform:translateY(14px) scale(.97);opacity:0}}
-@keyframes sUshine{0%{transform:translateX(120%)}60%,100%{transform:translateX(-220%)}}
-@media (max-width:640px){#siwarUpd{left:16px;right:16px;bottom:calc(92px + env(safe-area-inset-bottom));margin:0 auto;max-width:440px}}
-@media (min-width:641px){#siwarUpd{left:112px;bottom:28px;width:400px}}
-@media (prefers-reduced-motion:reduce){#siwarUpd,#siwarUpd *,#siwarUpd::after{animation:none!important}}
+/* (UP) زر «تحديث» وشاشة التقدم: أنماطهما داخل مكوّنهما (upd) */
 </style>
 </head>
 <body>
@@ -350,116 +314,129 @@ a.btn{display:grid;place-items:center;text-decoration:none}
 </div>
 
 <script>
-/* (pv19) بطاقة «نسخة جديدة»: تظهر مرة واحدة حين يُكتشف تحديث، لا أثناء الكتابة، و«لاحقًا» تؤجلها ساعتين */
+/* (UP) «تحديث»: زر صغير في منتصف أسفل الشاشة حين تتوفر نسخة أحدث (لا يظهر أثناء الكتابة، و«لاحقًا» تؤجله ساعتين)،
+   وضغطة واحدة تنقل إلى أحدث نسخة مرة واحدة مهما تعدد النشر (شاشة التحميل الموحدة وحدها إن طال الانتظار ثانية فأكثر).
+   الواجهة تعرّف: U.lang() ، U.dark() (''|cur|grey|black) ، U.logo() (رابط الشعار) ، U.onGo (التحديث نفسه). */
 (function () {
   if (window.SiwarUpd) return;
-  var SNK = 'siwar_upd_snooze', RTK = 'siwar_upd_rot', SNOOZE = 2 * 3600000, IDLE = 5000;
-  var MSG = {
-    ar: [['وصلت نسخة جديدة ✨', 'حدّث الآن لتستمتع بها، وستعود إلى نفس مكانك.'],
-         ['تحسينات جديدة وصلت للتو ✨', 'ضغطة واحدة وتصلك كلها.'],
-         ['سوار تجدّد قليلًا ✨', 'حدّث الآن لترى الجديد، وستعود إلى نفس مكانك.'],
-         ['لمسات جديدة جاهزة لك ✨', 'لن يستغرق التحديث إلا لحظات.'],
-         ['نسخة جديدة جاهزة ✨', 'حدّث الآن لتحصل على آخر التحسينات.']],
-    en: [['A new version has arrived ✨', 'Refresh now to enjoy it — you’ll return right where you were.'],
-         ['Fresh improvements just landed ✨', 'One tap brings them all in.'],
-         ['SIWAR got a little refresh ✨', 'Refresh to see what’s new — you’ll stay right where you were.'],
-         ['New touches are ready for you ✨', 'It only takes a moment.'],
-         ['A new version is ready ✨', 'Refresh now to get the latest improvements.']]
+  var SNK = 'siwar_upd_snooze', SNOOZE = 2 * 3600000, IDLE = 5000, MINP = 1000;
+  var TX = {
+    ar: { t: 'نسخة أحدث جاهزة', go: 'تحديث', no: 'لاحقًا' },
+    en: { t: 'A newer version is ready', go: 'Update', no: 'Later' }
   };
-  var BTN = { ar: ['تحديث الآن', 'لاحقًا'], en: ['Refresh now', 'Later'] };
-  var REF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.5-4.5L4 8M4 4v4h4M4 13a8 8 0 0 0 14.5 4.5L20 16M20 20v-4h-4"/></svg>';
-  var memSnooze = 0, lastKey = 0, backAt = 0, tm = 0, rot = -1;
-  var U = window.SiwarUpd = { avail: false, src: '', lang: function () { return 'ar'; }, onGo: null, el: null };
-
+  var REF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.5-4.5L4 8M4 4v4h4M4 13a8 8 0 0 0 14.5 4.5L20 16M20 20v-4h-4"/></svg>';
+  var CSS = '' +
+    '#sUp{position:fixed;left:50%;bottom:calc(26px + env(safe-area-inset-bottom,0px));z-index:2147483600;box-sizing:border-box;display:flex;align-items:center;gap:10px;' +
+    'height:52px;padding:0 6px 0 7px;border-radius:999px;font-family:inherit;color:#2E2A27;white-space:nowrap;max-width:calc(100vw - 32px);' +
+    'background:linear-gradient(180deg,rgba(255,253,249,.97),rgba(250,243,233,.95));-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);' +
+    'border:1px solid rgba(201,156,78,.42);box-shadow:inset 0 1px 0 #fff,inset 0 -1px 0 rgba(160,120,60,.10),0 14px 34px -12px rgba(70,52,30,.42),0 34px 60px -34px rgba(70,52,30,.38);' +
+    'transform:translateX(-50%);animation:sUpIn .5s cubic-bezier(.2,.9,.3,1.15) both}' +
+    '#sUp *{box-sizing:border-box}#sUp.bye{animation:sUpOut .26s ease both}' +
+    '#sUp .sUp-m{position:relative;flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;' +
+    'background:radial-gradient(circle at 35% 28%,#24345F 0%,#121D3D 60%,#0A1129 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 0 0 1.5px rgba(227,182,109,.55),0 6px 14px -6px rgba(10,17,41,.7)}' +
+    '#sUp .sUp-m img{width:33px;height:auto;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))}' +
+    '#sUp .sUp-m::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1.5px solid transparent;border-top-color:rgba(233,190,110,.9);animation:sUpSpin 2.4s linear infinite}' +
+    '#sUp .sUp-t{font-size:14px;font-weight:700;letter-spacing:.1px;overflow:hidden;text-overflow:ellipsis;min-width:0}' +
+    '#sUp .sUp-go{flex:none;display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 18px;border:0;border-radius:999px;cursor:pointer;font:inherit;font-size:14px;font-weight:800;color:#2B1F0E;' +
+    'background:linear-gradient(180deg,#F6DDA4 0%,#E3B66D 52%,#C99645 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),inset 0 -2px 0 rgba(120,80,20,.22),0 8px 18px -8px rgba(185,135,58,.85);transition:transform .15s,filter .15s}' +
+    '#sUp .sUp-go:hover{filter:brightness(1.04)}#sUp .sUp-go:active{transform:scale(.96)}#sUp .sUp-go svg{width:16px;height:16px}' +
+    '#sUp .sUp-x{flex:none;width:32px;height:32px;border:0;border-radius:50%;background:transparent;color:#8A817A;font:inherit;font-size:19px;line-height:1;cursor:pointer}' +
+    '#sUp .sUp-x:hover{background:rgba(120,100,80,.10)}#sUp button:focus-visible{outline:3px solid rgba(227,182,109,.6);outline-offset:2px}' +
+    '#sUp.dk{color:#F3EEE6;background:linear-gradient(180deg,rgba(40,42,50,.96),rgba(26,27,33,.95));border-color:rgba(227,182,109,.38);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 14px 34px -12px rgba(0,0,0,.7),0 34px 60px -34px rgba(0,0,0,.6)}' +
+    '#sUp.dk[data-dk=black]{background:linear-gradient(180deg,rgba(22,22,24,.97),rgba(8,8,9,.96))}' +
+    '#sUp.dk[data-dk=cur]{background:linear-gradient(180deg,rgba(26,36,64,.96),rgba(14,21,42,.95))}' +
+    '#sUp.dk[data-dk=black] .sUp-m{background:radial-gradient(circle at 35% 28%,#3A3A3F 0%,#1C1C1F 60%,#0B0B0C 100%)}' +
+    '#sUp.dk[data-dk=grey] .sUp-m{background:radial-gradient(circle at 35% 28%,#454852 0%,#26282F 60%,#15161A 100%)}' +
+    '#sUp.dk .sUp-x{color:#B9B0A6}#sUp.dk .sUp-x:hover{background:rgba(255,255,255,.08)}' +
+    '@media (max-width:640px){#sUp{bottom:calc(84px + env(safe-area-inset-bottom,0px));height:46px;gap:8px}#sUp .sUp-m{width:32px;height:32px}#sUp .sUp-m img{width:28px}' +
+    '#sUp .sUp-t{font-size:12.5px}#sUp .sUp-go{height:36px;padding:0 14px;font-size:13px}#sUp .sUp-x{width:28px;height:28px;font-size:17px}}' +
+    '#sUpv{position:fixed;inset:0;z-index:2147483640;display:grid;place-items:center;opacity:0;transition:opacity .35s ease;' +
+    'background:radial-gradient(circle at 50% 44%,#FFFDF9 0,#FDFAF5 45%,#F7EEE4 100%)}#sUpv.on{opacity:1}' +
+    '#sUpv .sUpv-c{display:flex;flex-direction:column;align-items:center;gap:26px}#sUpv img{width:min(260px,64vw);height:auto}' +
+    '#sUpv .sUpv-b{width:120px;height:3px;border-radius:3px;background:rgba(194,146,63,.15);overflow:hidden}' +
+    '#sUpv .sUpv-b i{display:block;width:40%;height:100%;border-radius:3px;background:linear-gradient(90deg,#E3B66D,#E2A6A4);animation:sUpRun 1.3s ease-in-out infinite}' +
+    '#sUpv.dk{background:radial-gradient(circle at 50% 44%,#2A2C34 0,#1B1C22 50%,#111216 100%)}' +
+    '#sUpv.dk[data-dk=black]{background:radial-gradient(circle at 50% 44%,#1A1A1C 0,#0B0B0C 55%,#000 100%)}' +
+    '#sUpv.dk[data-dk=cur]{background:radial-gradient(circle at 50% 44%,#1C2748 0,#121A33 55%,#0A1022 100%)}' +
+    '@keyframes sUpRun{0%{transform:translateX(-110%)}100%{transform:translateX(260%)}}' +
+    '@keyframes sUpIn{from{transform:translate(-50%,16px) scale(.96);opacity:0}to{transform:translateX(-50%);opacity:1}}' +
+    '@keyframes sUpOut{to{transform:translate(-50%,12px) scale(.96);opacity:0}}@keyframes sUpSpin{to{transform:rotate(360deg)}}' +
+    '@media (prefers-reduced-motion:reduce){#sUp,#sUp *,#sUp .sUp-m::after{animation:none!important}}';
+  var memSnooze = 0, lastKey = 0, backAt = 0, tm = 0;
+  var U = window.SiwarUpd = { avail: false, src: '', lang: function () { return 'ar'; }, dark: function () { return ''; }, logo: function () { return ''; }, onGo: null, el: null, pv: null };
   function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, String(v)); } catch (e) {} return null; }
-  function snoozeLeft() { var s = Math.max(Number(ls(SNK)) || 0, memSnooze); return s - Date.now(); }
+  function css() { if (document.getElementById('sUpCss')) return; var s = document.createElement('style'); s.id = 'sUpCss'; s.textContent = CSS; (document.head || document.documentElement).appendChild(s); }
+  function L() { return TX[U.lang() === 'en' ? 'en' : 'ar']; }
+  function tone(el) { var d = ''; try { d = String(U.dark() || ''); } catch (e) {} el.classList.toggle('dk', !!d); if (d) el.setAttribute('data-dk', d); else el.removeAttribute('data-dk'); }
+  function snoozeLeft() { return Math.max(Number(ls(SNK)) || 0, memSnooze) - Date.now(); }
   function editable(el) {
     if (!el) return false;
-    if (el.isContentEditable) return true;
-    if (el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') return true;
+    if (el.isContentEditable || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') return true;
     return el.tagName === 'INPUT' && !/^(button|submit|reset|checkbox|radio|range|color|file|image|hidden)$/i.test(el.type || '');
   }
-  // مكان التركيز: داخل الإطارات من نفس الموقع يُتتبَّع، وإطار من موقع آخر (نظام) = غير معروف
   function focusState() {
     var a = document.activeElement, hops = 0;
-    while (a && a.tagName === 'IFRAME' && hops++ < 4) {
-      var d = null; try { d = a.contentDocument; } catch (e) { d = null; }
-      if (!d) return 'x';
-      a = d.activeElement;
-    }
+    while (a && a.tagName === 'IFRAME' && hops++ < 4) { var d = null; try { d = a.contentDocument; } catch (e) { d = null; } if (!d) return 'x'; a = d.activeElement; }
     return editable(a) ? 'type' : 'free';
   }
-  function idleOk() {
-    if (Date.now() - lastKey < IDLE) return false;
-    var f = focusState();
-    if (f === 'type') return false;
-    // التركيز داخل نظام (موقع آخر) لا نرى ما يُكتب فيه: تظهر البطاقة حين يعود الموظف للنافذة أو للرئيسية فقط
-    if (f === 'x') return Date.now() - backAt < 4000;
-    return true;
-  }
+  // لا يظهر أثناء الكتابة؛ والتركيز داخل نظام (موقع آخر) لا نرى ما يُكتب فيه: يظهر حين يعود الموظف للنافذة
+  function idleOk() { if (Date.now() - lastKey < IDLE) return false; var f = focusState(); if (f === 'type') return false; if (f === 'x') return Date.now() - backAt < 4000; return true; }
   function onKey() { lastKey = Date.now(); }
-  U.watchDoc = function (doc) {
-    try {
-      if (!doc || doc.__sUw) return; doc.__sUw = 1;
-      ['keydown', 'input', 'compositionupdate'].forEach(function (ev) { doc.addEventListener(ev, onKey, true); });
-    } catch (e) {}
-  };
+  U.watchDoc = function (doc) { try { if (!doc || doc.__sUw) return; doc.__sUw = 1; ['keydown', 'input', 'compositionupdate'].forEach(function (ev) { doc.addEventListener(ev, onKey, true); }); } catch (e) {} };
   function back() { backAt = Date.now(); if (U.avail && !U.el) { clearTimeout(tm); tm = setTimeout(tryShow, 300); } }
   window.addEventListener('focus', back);
   document.addEventListener('visibilitychange', function () { if (!document.hidden) back(); });
   U.watchDoc(document);
-
   function tryShow() {
     clearTimeout(tm); tm = 0;
-    if (!U.avail || U.el || document.getElementById('siwarUpd')) return;
-    var left = snoozeLeft();
-    if (left > 0) { tm = setTimeout(tryShow, Math.min(left + 500, 2147483000)); return; }
+    if (!U.avail || U.el || U.pv || document.getElementById('sUp')) return;
+    var left = snoozeLeft(); if (left > 0) { tm = setTimeout(tryShow, Math.min(left + 500, 2147483000)); return; }
     if (document.hidden || !idleOk()) { tm = setTimeout(tryShow, 2000); return; }
     render();
   }
-  function texts() {
-    var l = U.lang() === 'en' ? 'en' : 'ar';
-    if (rot < 0) { rot = ((Number(ls(RTK)) || 0) + 1) % MSG.ar.length; ls(RTK, rot); }
-    return { l: l, m: MSG[l][rot], b: BTN[l] };
-  }
   function fill() {
-    var el = U.el; if (!el) return;
-    var x = texts();
-    el.dir = x.l === 'en' ? 'ltr' : 'rtl'; el.lang = x.l;
-    el.querySelector('.sU-t1').textContent = x.m[0];
-    el.querySelector('.sU-t2').textContent = x.m[1];
-    el.querySelector('.sU-go span').textContent = x.b[0];
-    el.querySelector('.sU-no').textContent = x.b[1];
+    var el = U.el; if (!el) return; var x = L(), en = U.lang() === 'en';
+    el.dir = en ? 'ltr' : 'rtl'; el.lang = en ? 'en' : 'ar';
+    el.querySelector('.sUp-t').textContent = x.t; el.querySelector('.sUp-go span').textContent = x.go;
+    el.querySelector('.sUp-x').setAttribute('aria-label', x.no); el.querySelector('.sUp-x').title = x.no;
+    tone(el);
   }
   function render() {
-    var el = document.createElement('div');
-    el.id = 'siwarUpd'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
-    el.innerHTML = '<span class="sU-o"><span class="sU-orb"></span><span class="sU-r"></span><span class="sU-r b"></span>' +
-      '<span class="sU-s" style="top:-4px;right:-2px"></span><span class="sU-s" style="bottom:2px;left:-4px;animation-delay:.7s"></span></span>' +
-      '<div class="sU-tx"><div class="sU-t1"></div><div class="sU-t2"></div><div class="sU-b"><button type="button" class="sU-go">' + REF + '<span></span></button><button type="button" class="sU-no"></button></div></div>';
-    el.querySelector('.sU-go').onclick = function () { go(this); };
-    el.querySelector('.sU-no').onclick = later;
-    document.body.appendChild(el);
-    U.el = el; fill();
+    css();
+    var el = document.createElement('div'), lg = '';
+    try { lg = String(U.logo() || ''); } catch (e) {}
+    el.id = 'sUp'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
+    el.innerHTML = '<span class="sUp-m">' + (lg ? '<img alt="" src="' + lg.replace(/"/g, '&quot;') + '">' : '') + '</span><span class="sUp-t"></span>' +
+      '<button type="button" class="sUp-go">' + REF + '<span></span></button><button type="button" class="sUp-x">×</button>';
+    el.querySelector('.sUp-go').onclick = go;
+    el.querySelector('.sUp-x').onclick = later;
+    document.body.appendChild(el); U.el = el; fill();
   }
-  function hide() {
-    var el = U.el; U.el = null; if (!el) return;
-    el.classList.add('bye'); setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 300);
-  }
-  function later() {
-    memSnooze = Date.now() + SNOOZE; ls(SNK, memSnooze);
-    hide(); clearTimeout(tm); tm = setTimeout(tryShow, SNOOZE + 500);
-  }
-  function go(b) {
-    if (b.classList.contains('on')) return;
-    b.classList.add('on'); b.disabled = true;
-    try { ls(SNK, 0); } catch (e) {}
+  function hide() { var el = U.el; U.el = null; if (!el) return; el.classList.add('bye'); setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 300); }
+  function later() { memSnooze = Date.now() + SNOOZE; ls(SNK, memSnooze); hide(); clearTimeout(tm); tm = setTimeout(tryShow, SNOOZE + 500); }
+  function go() {
+    if (U.going) return; U.going = true; ls(SNK, 0); hide();
     try { if (U.onGo) U.onGo(); else location.reload(); } catch (e) { location.reload(); }
   }
-  // مصدر الإشارة: sw (عامل الخدمة) أو portal (بصمة الواجهة) — إشارات متكررة لا تُكرر البطاقة
+  // مصدر الإشارة: sw (التطبيق) أو portal (سوار) أو اسم النظام — الإشارات المتكررة لا تكرر الزر
   U.signal = function (src) { U.src = U.src || String(src || ''); U.avail = true; if (!U.el) tryShow(); };
-  U.relang = fill;
+  U.relang = function () { fill(); if (PV) tone(PV); };
   U.hide = hide;
+  /* شاشة التحميل الموحدة أثناء الانتقال إلى النسخة الأحدث: الشعار وحده بلا نص، ولا تظهر إلا إذا طال الانتظار ثانية فأكثر.
+     U.load(true) / U.load(false) */
+  var PV = null, LT = 0;
+  U.load = function (on) {
+    if (!on) { clearTimeout(LT); LT = 0; var p = PV; PV = U.pv = null; if (p) { p.classList.remove('on'); setTimeout(function () { if (p.parentNode) p.parentNode.removeChild(p); }, 380); } return; }
+    if (PV || LT) return;
+    LT = setTimeout(function () {
+      LT = 0; css();
+      var el = document.createElement('div'), lg = '';
+      try { lg = String(U.logo() || ''); } catch (e) {}
+      el.id = 'sUpv'; el.setAttribute('role', 'progressbar'); el.setAttribute('aria-label', 'سوار | SIWAR');
+      el.innerHTML = '<div class="sUpv-c">' + (lg ? '<img alt="سوار | SIWAR" src="' + lg.replace(/"/g, '&quot;') + '">' : '') + '<div class="sUpv-b"><i></i></div></div>';
+      tone(el); document.body.appendChild(el); PV = U.pv = el; void el.offsetWidth; el.classList.add('on');
+    }, MINP);
+  };
 })();
 </script>
 <script>
@@ -549,14 +526,22 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     o.lang = LANG;
     try { o.lw.postMessage({ siwar: 'lang', lang: LANG, v: 1 }, '*'); } catch (e) {}
   }
-  /* (v84) نسخة جديدة: عامل خدمة جديد (فحص كل 30 دقيقة وعند العودة للنافذة)، أو ملف تغيّر على GitHub (رسالة newer من العامل)،
-     أو بصمة سوار تغيّرت (رسالة upd من سوار). تظهر بطاقة واحدة، و«تحديث الآن» يمسح ملفات التطبيق المحفوظة ويعيد التحميل على نفس المكان */
-  var swr = null, swAt = Date.now(), updGoing = false;
-  /* (v94) رقم نسخة هذه الصفحة، ويساوي دائماً رقم CACHE في sw.js (يُرفعان معاً). عامل خدمة جديد بالرقم نفسه ليس تحديثاً:
-     الصفحة الظاهرة هي هذه النسخة أصلاً (أول فتح، أو إعادة التحميل بعد «تحديث الآن») فلا تظهر البطاقة */
-  var APPV = 105;
-  function updFound(src) { if (!updGoing && window.SiwarUpd) SiwarUpd.signal(src); }
-  // رقم نسخة عامل الخدمة (العامل القديم قبل v94 لا يرد → 0 = غير معروف)
+  /* (UP) نسخة أحدث: عامل خدمة جديد (فحص كل 30 دقيقة وعند العودة للنافذة)، أو ملف تغيّر (رسالة newer من العامل)، أو سوار/نظام نُشر أحدث (upd).
+     يظهر زر «تحديث» واحد ولا إعادة تحميل تلقائية أثناء العمل. الضغطة: يُثبَّت أحدث عامل (مهما تعدد النشر، حتى يستقر) ثم إعادة تحميل واحدة.
+     بعد أن يصبح التطبيق جاهزاً للعمل، وفي وقت الخمول وبلا أي شاشة أو نص: سوار تسخّن الأنظمة، وكل نظام يجهّز صفحاته المتغيّرة فقط.
+     وإن تجاهل الزر يُطبَّق بصمت في الفتح التالي */
+  var swr = null, swAt = Date.now(), updGoing = false, swReady = null, swRes = null;
+  swReady = new Promise(function (r) { swRes = r; });
+  /* (v94) رقم نسخة هذه الصفحة، ويساوي دائماً رقم CACHE في sw.js (يُرفعان معاً) */
+  var APPV = 106;
+  var UFL = 'siwar_upd_flow', UPN = 'siwar_upd_pend';
+  function lsj(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} return null; }
+  function updFound(src) {
+    if (ACC && ACC.on) { accNewer(); return; }
+    if (updGoing || !window.SiwarUpd) return;
+    if (!lsj(UPN)) lsj(UPN, { t: Date.now(), s: String(src || '') });
+    SiwarUpd.signal(src);
+  }
   function swVer(w) {
     return new Promise(function (res) {
       if (!w || !window.MessageChannel) { res(0); return; }
@@ -565,10 +550,13 @@ a.btn{display:grid;place-items:center;text-decoration:none}
       try { w.postMessage({ siwar: 'ver' }, [ch.port2]); } catch (x) { clearTimeout(t); res(0); }
     });
   }
-  if (window.SiwarUpd) SiwarUpd.lang = function () { return LANG; };
+  if (window.SiwarUpd) {
+    SiwarUpd.lang = function () { return LANG; };
+    SiwarUpd.logo = function () { return 'icons/logo.webp'; };
+    // درجة الداكن من سوار الظاهرة (نفس الموقع)
+    SiwarUpd.dark = function () { try { var h = portalWin().document.documentElement; return h.classList.contains('dk') ? (h.getAttribute('data-dk') || 'cur') : ''; } catch (e) { return ''; } };
+  }
   if ('serviceWorker' in navigator) {
-    /* (v94) أول فتح أو أول تثبيت: لا عامل خدمة قبل هذه الصفحة، فالعامل الأول الذي يُثبَّت ويتولى الصفحة (clients.claim) ليس تحديثاً.
-       كان v93 يُظهر البطاقة هنا: controllerchange يجعل hadCtl صحيحاً ثم يصل statechange «activated» للعامل نفسه فيُعَدّ تحديثاً */
     var hadCtl = !!navigator.serviceWorker.controller, firstW = null;
     var swNew = function (w) {
       if (!w || updGoing) return;
@@ -576,14 +564,14 @@ a.btn{display:grid;place-items:center;text-decoration:none}
       swVer(w).then(function (v) { if (!v || v > APPV) updFound('sw'); });
     };
     navigator.serviceWorker.register('sw.js').then(function (reg) {
-      swr = reg;
+      swr = reg; swRes(reg);
       if (!hadCtl && !firstW) firstW = reg.installing || reg.waiting || reg.active;
       if (reg.waiting) swNew(reg.waiting);
       reg.addEventListener('updatefound', function () {
         var w = reg.installing; if (!w) return;
         w.addEventListener('statechange', function () { if (w.state === 'installed' || w.state === 'activated') swNew(w); });
       });
-    }).catch(function () {});
+    }).catch(function () { swRes(null); });
     navigator.serviceWorker.addEventListener('controllerchange', function () { swNew(navigator.serviceWorker.controller); });
     navigator.serviceWorker.addEventListener('message', function (e) { var d = e.data || {}; if (d.siwar === 'newer') updFound('sw'); });
     var swCheck = function (force) {
@@ -594,25 +582,29 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     setInterval(function () { swCheck(true); }, 30 * 60000);
     document.addEventListener('visibilitychange', function () { if (!document.hidden) swCheck(false); });
     window.addEventListener('focus', function () { swCheck(false); });
-  }
-  if (window.SiwarUpd) SiwarUpd.onGo = function () {
-    updGoing = true; SiwarUpd.hide();
-    try { localStorage.setItem('siwar_upd_done', String(Date.now())); } catch (e) {}   // (v94) رسالة «تم التحديث» بعد البطاقة أيضاً، لا بعد F5 فقط
-    $('splash').className = '';   // شاشة التحميل الموحدة
+  } else swRes(null);
+  if (window.SiwarUpd) SiwarUpd.onGo = function () { updRun(false); };
+  /* التحديث نفسه (الضغطة، أو بصمت عند فتح التطبيق): المرحلة 1 قبل إعادة التحميل الواحدة */
+  function updRun(silent) {
+    if (updGoing) return; updGoing = true;
+    if (window.SiwarUpd) { SiwarUpd.hide(); SiwarUpd.load(true); }   // شاشة التحميل الموحدة إن طال الانتظار ثانية فأكثر
+    var fl = lsj(UFL) || {}; fl = { t: Date.now(), n: (Date.now() - (fl.t || 0) < 120000 ? fl.n || 0 : 0) + 1, s: silent ? 1 : 0 };
+    lsj(UFL, fl); lsj(UPN, null);
+    try { localStorage.setItem('siwar_upd_done', String(Date.now())); } catch (e) {}   // رسالة «تم التحديث إلى أحدث إصدار» بعد إعادة التحميل
     if ($('prog').className === 'on' && cur) curSave(cur);   // إعادة التحميل تفتح النظام نفسه على نفس الصفحة
-    /* (v94) ضغطة واحدة تصل إلى أحدث نسخة: يُفحص وجود عامل أحدث، ويُنتظر حتى يتولى، ثم يُفحص مرة أخرى (نُشرت عدة نسخ متتالية)،
-       وبعدها فقط إعادة التحميل الواحدة. ملفات العامل الأحدث تبقى (جُلبت من GitHub مباشرة عند تثبيته) وتُحذف النسخ الأقدم */
     var done = false, fin = function () { if (done) return; done = true; location.reload(); };
-    setTimeout(fin, 15000);
-    swSettle(3).then(function (ok) {
+    setTimeout(fin, 25000);
+    swReady.then(function () {
+      return swSettle(8);
+    }).then(function (ok) {
       if (!window.caches) return;
       return (ok && swr && swr.active ? swVer(swr.active) : Promise.resolve(0)).then(function (v) {
         var keep = v ? 'siwar-app-v' + v : '';
         return caches.keys().then(function (ks) { return Promise.all(ks.filter(function (k) { return /^siwar-app-/.test(k) && k !== keep; }).map(function (k) { return caches.delete(k); })); });
       });
     }).then(fin, fin);
-  };
-  // يجعل أحدث عامل خدمة هو المتولي: true إن لم يبقَ عامل قيد التثبيت أو الانتظار
+  }
+  // يجعل أحدث عامل خدمة هو المتولي، ويعيد الفحص بعد كل تولٍّ حتى لا يبقى أحدث منه (نُشرت عدة نسخ متتالية): true إن استقر
   function swSettle(n) {
     if (!swr) return Promise.resolve(false);
     return swr.update().catch(function () {}).then(function () {
@@ -620,7 +612,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
       if (!w) return true;
       if (n <= 1) return false;
       return new Promise(function (res) {
-        var t = setTimeout(function () { res(false); }, 10000);
+        var t = setTimeout(function () { res(false); }, 12000);
         var chk = function () {
           if (w.state === 'activated' || w.state === 'redundant') { clearTimeout(t); res(true); }
           else if (w.state === 'installed') try { w.postMessage({ siwar: 'skip' }); } catch (e) {}
@@ -628,6 +620,59 @@ a.btn{display:grid;place-items:center;text-decoration:none}
         w.addEventListener('statechange', chk); chk();
       }).then(function (ok) { return ok ? swSettle(n - 1) : false; });
     });
+  }
+  /* (UP) بعد التحديث (أو فتح طُبّق فيه التحديث بصمت): تجهيز في الخلفية بلا شاشة ولا نص، بعد أن يجهز التطبيق وفي وقت الخمول.
+     سوار تسخّن الأنظمة (accel)، وكل نظام يجهّز صفحاته المتغيّرة فقط (acc) — لا شيء على الجوال مع توفير البيانات أو شبكة 2G.
+     نسخة أحدث تصل خلال الدقيقتين الأوليين (حتى 3 مرات) تُطبَّق بالمسار نفسه، فيبقى تحديثاً واحداً */
+  var ACC = null;
+  function lowNet() { try { var c = navigator.connection; return !!(c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''))); } catch (e) { return false; } }
+  function accStart(n) {
+    ACC = { on: true, n: n || 1, t0: Date.now(), sys: {}, portal: false, cur: '', end: 0 };
+    ACC.end = setTimeout(accDone, 120000);
+  }
+  (function () {
+    var fl = lsj(UFL);
+    if (fl && Date.now() - (fl.t || 0) <= 120000) { accStart(fl.n); return; }
+    if (fl) lsj(UFL, null);
+    // زر «تحديث» ظهر ولم يُضغط: يُطبَّق بصمت في هذا الفتح — الأنظمة تُفتح بأحدث نسخها أصلاً، وعامل خدمة أحدث (إن وُجد) يُثبَّت بإعادة تحميل واحدة
+    var pn = lsj(UPN);
+    if (!pn || navigator.onLine === false) return;
+    lsj(UPN, null); lsj(UFL, { t: Date.now(), n: 1, s: 1 });
+    accStart(1);
+    swReady.then(function (r) {
+      if (!r) return;
+      return r.update().catch(function () {}).then(function () {
+        if (ACC && ACC.on && (r.installing || r.waiting)) { ACC.on = false; clearTimeout(ACC.end); updRun(true); }
+      });
+    });
+  })();
+  // يبدأ التجهيز مع شاشة التحميل نفسها (لحظة تحميل سوار، ومرة أخرى عند جاهزيتها إن لم تكن استلمت)، ولا تنتظره الشاشة:
+  // تُغلق حين يجهز التطبيق كالمعتاد، وما لم يكتمل يستمر في الخلفية بأولوية منخفضة
+  function accPortal(ready) {
+    if (!ACC || !ACC.on || lowNet()) return;
+    if (ready) { if (ACC.portal) return; ACC.portal = true; }
+    toPortal({ siwar: 'accel' });
+  }
+  function accDone() {
+    if (!ACC || !ACC.on) return;
+    ACC.on = false; clearTimeout(ACC.end); lsj(UFL, null); lsj(UPN, null); updGoing = false;
+  }
+  function accNewer() {
+    if (!ACC || !ACC.on) return;
+    if (ACC.n >= 3) return;   // حد أمان: لا حلقة تحديث
+    ACC.on = false; clearTimeout(ACC.end); updGoing = false; lsj(UFL, null); updFound('sw');
+  }
+  function accIn(fid, d) {
+    if (!ACC || !ACC.on) return;
+    ACC.sys[fid] = { n: Math.max(0, Number(d.n) || 0), of: Math.max(0, Number(d.of) || 0) };
+    var ids = Object.keys(ACC.sys);
+    if (ACC.portal && ids.length && ids.every(function (k) { return ACC.sys[k].n >= ACC.sys[k].of; })) accDone();
+  }
+  function accFrame(fid, o) {
+    if (!ACC || !ACC.on || !o || !o.win || o.accSent) return;
+    if (lowNet()) return;
+    o.accSent = 1;
+    try { o.win.postMessage({ siwar: 'acc', v: 1 }, '*'); } catch (e) {}
   }
 
   /* ── سوار ── */
@@ -650,11 +695,12 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     } else {
       // إعادة تحميل الصفحة وهو داخل نظام: يُفتح النظام نفسه على الصفحة نفسها بدل الرئيسية
       var rs = curLoad();
+      if (rs && ACC && ACC.on) ACC.cur = rs.id;
       if (rs) deep = '&open=' + encodeURIComponent(rs.id) + (rs.go ? '&go=' + encodeURIComponent(rs.go) : '') + '&back=1';
     }
     f.src = 'portal.html?app=1' + deep;
     // شاشة تحميل واحدة: تبقى حتى تقول سوار إنها جاهزة (والحد الأقصى 12 ثانية)
-    f.onload = function () { setTimeout(hideSplash, 8000); };
+    f.onload = function () { setTimeout(hideSplash, 8000); accPortal(false); };
     $('portal').appendChild(f);
     setTimeout(hideSplash, 12000);
   }
@@ -1173,7 +1219,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     // (DK3) درجة الداكن الواحدة لكل الأنظمة: كل صفحة (سوار أو نظام) تعلن نفسها بـ dkhi فتأخذ الدرجة المحفوظة، واختيارها في أي صفحة (dkt) يُحفظ ويصل للبقية فورًا
     if (d.siwar === 'dkhi' || d.siwar === 'dkt') { dkMsg(e.source, d); return; }
     if (mine) {
-      if (d.siwar === 'portalReady') { hideSplash(); sendAlive(); portalOk = true; relReady.then(function () { toPortal({ siwar: 'inst', st: instSt() }); }); try { if (window.SiwarUpd) SiwarUpd.watchDoc(portalWin().document); } catch (x) {} return; }
+      if (d.siwar === 'portalReady') { hideSplash(); sendAlive(); portalOk = true; accPortal(true); relReady.then(function () { toPortal({ siwar: 'inst', st: instSt() }); }); try { if (window.SiwarUpd) SiwarUpd.watchDoc(portalWin().document); } catch (x) {} return; }
       if (d.siwar === 'install') { instAsk(); return; }
       if (d.siwar === 'prep') { onPrep(id || '_', String(d.name || ''), ic, d.rect && typeof d.rect === 'object' ? d.rect : null, typeof d.go === 'string' ? d.go : ''); return; }
       if (d.siwar === 'open' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onOpen(id || '_', String(d.url), String(d.name || ''), ic, String(d.src || '')); return; }
@@ -1221,8 +1267,10 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     if (d.siwar === 'navok') { if (o.nav !== e.source) { o.nav = e.source; if (o.ready) sendAlive(); } return; }
     if (d.siwar === 'navack') { navAck(fid, d); return; }
     if (d.siwar === 'gone') { if ((SN && SN.id === fid) || Date.now() - (SNLAST[fid] || 0) < 15000) snapToast(snT('gone')); return; }
+    if (d.siwar === 'accp') { accIn(fid, d); return; }   // (UP) تقدم «المسرّع» في النظام
     if (/^(hold|alive|ready)$/.test(d.siwar)) warmedSay(o, fid);
     if (/^(hold|alive|ready)$/.test(d.siwar) && o.win !== e.source) { o.win = e.source; o.ps = ''; if (!o.netSent) { o.netSent = 1; if (!navigator.onLine) try { e.source.postMessage({ siwar: 'net', on: false }, '*'); } catch (x) {} } setTimeout(syncPause, 0); }
+    if (/^(hold|alive|ready)$/.test(d.siwar)) accFrame(fid, o);   // (UP) أول إشارة من النظام: يبدأ تجهيز صفحاته المتغيّرة (النظام نفسه يؤجله حتى تجهز شاشته)
     if (d.siwar === 'hold') { o.held = true; pMark(fid, 'hold'); if (d.g && PJ[fid]) PJ[fid].g = String(d.g).slice(0, 8); if (cur === fid && !o.ready) stage(.82, .95); }
     else if (d.siwar === 'alive') { o.alive = true; pMark(fid, 'alive'); }
     else if (d.siwar === 'paint') { pMark(fid, 'paint'); o.painted = true; if (o.sil) silSwap(fid); if (cur === fid && !o.ready) loaderDone(); }   // الشاشة المحفوظة ظهرت: تُعرض فوراً والبيانات الجديدة تصل خلفها

@@ -1,48 +1,82 @@
 /* عامل الخدمة: يحفظ ملفات صفحة التطبيق وسوار الثابتة فقط (لا يحفظ أي بيانات من سوار أو البرامج).
    النسخة المحفوظة تُعرض فوراً، وأي تحديث على GitHub يصل في الفتح التالي.
    إشعارات الجوال: الإشعار يصل بلا محتوى، فيطلب العامل نصوصه من سوار برمز هذا الجهاز (المحفوظ في siwar-push) ثم يعرضها. */
-const CACHE = 'siwar-app-v105';   // يساوي دائماً APPV في index.html (يُرفعان معاً)
+const CACHE = 'siwar-app-v106';   // يساوي دائماً APPV في index.html (يُرفعان معاً)
 const PUSHC = 'siwar-push', PUSHK = './__push';
-const FILES = ['./', './index.html', './portal.html', './config.js', './manifest.webmanifest?v=89', './icons/logo.webp'];
+/* (UP) بصمة كل ملف (أول 16 حرفاً من sha256 لمحتواه) تُختم هنا عند كل إصدار (stamp_sw.js). عند تثبيت عامل جديد يُنزَّل الملف الذي تغيّرت بصمته فقط،
+   وغير المتغيّر يُنسخ من النسخة المحفوظة على الجهاز. ولا يُعاد تنزيل ملفات التطبيق في كل فتح: النسخة المحفوظة ببصمتها هي الأحدث،
+   والتحديث يصل بعامل جديد (sw.js صغير يفحصه المتصفح). فحص احتياطي مرة كل 24 ساعة بطلب مشروط (304 بلا محتوى إن لم يتغيّر) */
+const FILES = {
+  './': '08939b5626ed3fc8', './index.html': '08939b5626ed3fc8', './portal.html': '31836ee503fdf67e', './config.js': 'c0607a481ed95db2',
+  './manifest.webmanifest?v=89': 'bf12bd9f809e10dc', './icons/logo.webp': '8b1d4d5eac530863'
+};
+const HK = f => './__h/' + f.replace(/^\.\//, '').replace(/[?=]/g, '_');
+const DAY = 24 * 3600000, LASTK = './__h/__last';
 
-// (v94) الجلب من GitHub بمعامل فريد (?sw=…): لا يأتي من ذاكرة المتصفح ولا من نسخة قديمة في شبكة GitHub الوسيطة،
-// فتتطابق ملفات العامل الجديد مع نسخته، ولا يتبدل المحفوظ بين نسخة قديمة وجديدة (فتعود البطاقة). يُحفظ كل ملف باسمه المعتاد
+// (v94) الجلب من GitHub بمعامل فريد (?sw=…): لا يأتي من ذاكرة المتصفح ولا من نسخة وسيطة قديمة
 const bust = u => u + (u.indexOf('?') < 0 ? '?' : '&') + 'sw=' + Date.now().toString(36);
+// نسخة محفوظة بالبصمة نفسها في أي ذاكرة سابقة للتطبيق
+async function reuse(f, h) {
+  const ks = (await caches.keys()).filter(k => /^siwar-app-/.test(k) && k !== CACHE);
+  for (const k of ks) {
+    const c = await caches.open(k), m = await c.match(HK(f));
+    if (m && (await m.text()) === h) { const r = await c.match(f); if (r) return r; }
+  }
+  return null;
+}
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => Promise.all(FILES.map(f =>
-    fetch(new Request(bust(f), { cache: 'reload' })).then(r => {
-      if (!r.ok) throw new Error(f);
-      return c.put(f, r);
-    })))).then(() => self.skipWaiting()));
+  e.waitUntil((async () => {
+    const c = await caches.open(CACHE), got = {};
+    for (const f of Object.keys(FILES)) {
+      const h = FILES[f];
+      let r = got[h] && h.indexOf('__H_') < 0 ? got[h].clone() : (h.indexOf('__H_') < 0 ? await reuse(f, h) : null);
+      if (!r) { r = await fetch(new Request(bust(f), { cache: 'reload' })); if (!r.ok) throw new Error(f); }
+      got[h] = r.clone();
+      await c.put(f, r);
+      await c.put(HK(f), new Response(h));
+    }
+    await c.put(LASTK, new Response(String(Date.now())));
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== PUSHC).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
 
+// فحص احتياطي يومي: طلب مشروط لملفات التطبيق؛ إن اختلف ملف عن المحفوظ (نُشر بلا ختم بصمة) يُحفظ ويُبلَّغ التطبيق بزر «تحديث»
+async function daily(c) {
+  const l = await c.match(LASTK), at = l ? Number(await l.text()) || 0 : 0;
+  if (Date.now() - at < DAY) return;
+  await c.put(LASTK, new Response(String(Date.now())));
+  for (const f of ['./index.html', './portal.html', './config.js']) {
+    try {
+      const r = await fetch(new Request(f, { cache: 'no-cache', credentials: 'same-origin' }));
+      const hit = await c.match(f);
+      if (!r.ok || !hit) continue;
+      const a = await hit.clone().text(), b = await r.clone().text();
+      if (a !== b) { await c.put(f, r); if (f === './index.html') await c.put('./', r.clone()); newer(f); }
+    } catch (x) {}
+  }
+}
+
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET' || url.origin !== location.origin) return;
-  if (/\/__push$/.test(url.pathname)) return;
+  if (/\/__push$|\/__h\//.test(url.pathname)) return;
   // مفتاح الحفظ بلا معاملات (?open=… لا تُنشئ نسخاً مكررة)
   const key = new Request(url.origin + url.pathname);
-  // من ذاكرة الجهاز فوراً، والتحديث من GitHub يُحفظ في الخلفية ويظهر في الفتح التالي
-  // (v84) الجلب في الخلفية يتجاوز ذاكرة المتصفح (cache:'reload') فيصل أحدث ملف مباشرة لا نسخة وسيطة،
-  // وإن اختلف عن المحفوظ تُبلَّغ الصفحات بوجود نسخة أحدث (ليعرض التطبيق بطاقة التحديث، وضغطة واحدة تفتح الأحدث)
   const shell = /\/($|index\.html$|portal\.html$|config\.js$)/.test(url.pathname);
   e.respondWith(caches.open(CACHE).then(c => c.match(key).then(hit => {
-    const net = fetch(new Request(shell ? bust(url.href) : url.href, { cache: 'reload', credentials: 'same-origin' })).then(r => {
-      if (r && r.ok) {
-        const fresh = r.clone();
-        const put = (hit && shell)
-          ? Promise.all([hit.clone().text(), fresh.clone().text()]).then(t => c.put(key, fresh).then(() => { if (t[0] !== t[1]) newer(url.pathname); }))
-          : c.put(key, fresh);
-        e.waitUntil(put.catch(() => {}));
-      }
+    if (hit) {
+      // (UP) النسخة المحفوظة ببصمتها هي الأحدث: لا تنزيل في الخلفية، إلا الفحص الاحتياطي اليومي لملفات التطبيق
+      if (shell) e.waitUntil(daily(c).catch(() => {}));
+      return hit;
+    }
+    return fetch(new Request(url.href, { cache: 'reload', credentials: 'same-origin' })).then(r => {
+      if (r && r.ok) e.waitUntil(c.put(key, r.clone()).catch(() => {}));
       return r;
-    });
-    if (hit) { e.waitUntil(net.catch(() => {})); return hit; }
-    return net.catch(() => c.match('./index.html'));
+    }).catch(() => c.match('./index.html'));
   })));
 });
 

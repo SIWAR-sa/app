@@ -1608,43 +1608,7 @@ body { display: flow-root; }
 </style>
 <style id="sdfix">input[type=date],input[type=time],input[type=month],input[type=datetime-local]{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important;word-spacing:normal!important;text-align:start!important}input[type=date]::-webkit-datetime-edit,input[type=time]::-webkit-datetime-edit,input[type=month]::-webkit-datetime-edit,input[type=datetime-local]::-webkit-datetime-edit{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important}</style>
 <style id="siwarUpdCss">
-/* (pv19) بطاقة «نسخة جديدة» — بطاقة زجاجية عائمة لا تمنع العمل */
-#siwarUpd{position:fixed;z-index:2147483000;box-sizing:border-box;display:flex;align-items:flex-start;gap:14px;padding:14px 16px 14px 14px;border-radius:24px;color:#3F3A37;font-family:inherit;text-align:start;
- background:linear-gradient(135deg,rgba(255,252,247,.95),rgba(255,246,240,.90));-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%);
- border:1px solid rgba(227,182,109,.45);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 18px 40px -14px rgba(110,98,90,.38),0 40px 70px -40px rgba(110,98,90,.30);overflow:hidden;
- animation:sUin .5s cubic-bezier(.2,.9,.3,1.2) both}
-#siwarUpd.bye{animation:sUout .28s ease both}
-#siwarUpd *{box-sizing:border-box}
-#siwarUpd::after{content:"";position:absolute;inset:0;width:28%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.32),transparent);animation:sUshine 4.5s ease-in-out infinite;pointer-events:none}
-#siwarUpd .sU-o{position:relative;flex:none;display:block;width:50px;height:50px}
-#siwarUpd .sU-orb{position:absolute;inset:0;display:block;border-radius:50%;background:radial-gradient(circle at 35% 30%,#2B3A78 0%,#13224D 55%,#0A1433 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 6px 16px -6px rgba(19,34,77,.55)}
-#siwarUpd .sU-orb::before{content:"";position:absolute;inset:30%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFF1CF,#E3B66D 55%,#B9852F);box-shadow:0 0 10px rgba(227,182,109,.8)}
-#siwarUpd .sU-r{position:absolute;display:block;inset:12%;border-radius:50%;border:1.4px solid rgba(243,221,176,.55);animation:sUspin 2.6s linear infinite}
-#siwarUpd .sU-r::after{content:"";position:absolute;top:-3px;left:50%;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:#FFE3A8;box-shadow:0 0 8px #FFD27A}
-#siwarUpd .sU-r.b{inset:-4%;border-color:rgba(226,166,164,.45);animation-duration:4.2s;animation-direction:reverse}
-#siwarUpd .sU-r.b::after{background:#F5B7B4;box-shadow:0 0 8px #E2A6A4;width:5px;height:5px}
-#siwarUpd .sU-s{position:absolute;display:block;width:8px;height:8px;background:#FFE3A8;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);animation:sUtw 1.8s ease-in-out infinite}
-#siwarUpd .sU-tx{flex:1;min-width:0;position:relative;z-index:1}
-#siwarUpd .sU-t1{font-weight:800;font-size:15px;line-height:1.35}
-#siwarUpd .sU-t2{color:#6F6761;font-size:12.5px;line-height:1.5;margin-top:2px}
-#siwarUpd .sU-b{display:flex;gap:8px;align-items:center;margin-top:10px}
-#siwarUpd .sU-go{display:inline-flex;align-items:center;gap:7px;min-height:38px;padding:0 16px;border:0;border-radius:999px;cursor:pointer;font:inherit;font-size:13.5px;font-weight:700;white-space:nowrap;color:#3F3A37;
- background:linear-gradient(180deg,#F0C3C1 0%,#E2A6A4 55%,#D89593 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.65),inset 0 -2px 0 rgba(150,90,88,.18),0 10px 22px -8px rgba(201,132,130,.65);transition:transform .15s,filter .15s}
-#siwarUpd .sU-go:hover{filter:brightness(1.03)}
-#siwarUpd .sU-go:active{transform:scale(.97)}
-#siwarUpd .sU-go svg{width:16px;height:16px;flex:none}
-#siwarUpd .sU-go.on svg{animation:sUspin .9s linear infinite}
-#siwarUpd .sU-no{background:transparent;border:0;color:#6F6761;font:inherit;font-size:13px;font-weight:600;padding:0 10px;min-height:38px;cursor:pointer;border-radius:999px}
-#siwarUpd .sU-no:hover{background:rgba(161,151,143,.10)}
-#siwarUpd button:focus-visible{outline:3px solid rgba(226,166,164,.45);outline-offset:2px}
-@keyframes sUspin{to{transform:rotate(360deg)}}
-@keyframes sUtw{0%,100%{transform:scale(.3) rotate(0);opacity:.2}50%{transform:scale(1) rotate(90deg);opacity:1}}
-@keyframes sUin{from{transform:translateY(18px) scale(.97);opacity:0}to{transform:none;opacity:1}}
-@keyframes sUout{to{transform:translateY(14px) scale(.97);opacity:0}}
-@keyframes sUshine{0%{transform:translateX(120%)}60%,100%{transform:translateX(-220%)}}
-@media (max-width:640px){#siwarUpd{left:16px;right:16px;bottom:calc(92px + env(safe-area-inset-bottom));margin:0 auto;max-width:440px}}
-@media (min-width:641px){#siwarUpd{left:112px;bottom:28px;width:400px}}
-@media (prefers-reduced-motion:reduce){#siwarUpd,#siwarUpd *,#siwarUpd::after{animation:none!important}}
+/* (UP) زر «تحديث» وشاشة التقدم: أنماطهما داخل مكوّنهما (upd) */
 </style>
 <style id="rlcss">
 .og-dep{margin:6px auto 0;display:inline-flex;gap:6px;align-items:center;padding:4px 12px;border-radius:var(--pill);background:#FBF0DC;color:#7A5519;font-size:12.5px;cursor:default}
@@ -3901,30 +3865,39 @@ function isMobileDev() { return /Android|iPhone|iPad|iPod/.test(navigator.userAg
 // تسخين الأنظمة في الخلفية: على الكمبيوتر كل الأنظمة المتاحة (حتى 5) واحداً بعد واحد، ويبدأ التالي حين يرسل السابق أول إشارة من حارسه
 // (hold، لا تعتمد على رسم الشاشة لأن الإطار المخفي لا يرسم) أو بعد 15ث؛ وعلى الجوال آخر نظام فقط. يتوقف التسخين إذا فُتح نظام
 let warmQ = null;
-function warmLastApp() {
-  if (!S.inApp || !S.token || warmQ || S.sysOn) return;
+// (UP) acc: تجهيز في الخلفية بعد تحديث التطبيق — يسخّن الأنظمة حتى لو كان نظام مفتوحاً، ولا شيء مع توفير البيانات أو 2G
+function warmLastApp(acc) {
+  if (!S.inApp || !S.token || warmQ || (S.sysOn && !acc)) return;
+  if (acc) { try { const c = navigator.connection; if (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''))) return; } catch (e) {} }
   let id = ''; try { id = localStorage.getItem('sp_last_app') || ''; } catch (e) {}
   const list = S.apps.filter(a => !a.locked && !a.jisrOnly && !S.alive[a.id]);
   list.sort((a, b) => (b.id === id ? 1 : 0) - (a.id === id ? 1 : 0));
   const todo = isMobileDev() ? (id ? list.slice(0, 1) : []) : list.slice(0, 5);
   if (!todo.length) return;
-  warmQ = { todo: todo, id: '', t: 0 };
+  warmQ = { todo: todo, id: '', t: 0, acc: !!acc };
   warmStep();
 }
 function warmStep() {
   const q = warmQ; if (!q) return;
   clearTimeout(q.t);
-  if (!S.inApp || !S.token || S.sysOn || !q.todo.length) { warmQ = null; return; }
+  if (!S.inApp || !S.token || (S.sysOn && !q.acc) || !q.todo.length) { warmQ = null; return; }
   const app = q.todo.shift();
   if (S.alive[app.id]) return warmStep();
   const send = url => {
     if (warmQ !== q) return;
-    if (!url || S.sysOn) { warmQ = null; return; }
+    if (!url || (S.sysOn && !q.acc)) { warmQ = null; return; }
     q.id = app.id; q.t = setTimeout(warmStep, 15000);
     try { window.top.postMessage({ siwar: 'warm', id: app.id, url: withUl(url), name: L(app, 'name'), icon: appIconMsg(app) }, '*'); } catch (e) {}
   };
   const url = takeTicket(app.id);
   if (url) send(url); else prefetchTickets(true).then(() => send(takeTicket(app.id)));
+}
+// (UP) بعد تحديث التطبيق: يبدأ مع شاشة التحميل — تذاكر الأنظمة تُجدَّد الآن (تسخّن خادم سوار وخوادم الأنظمة)، وتسخين إطارات الأنظمة
+// في وقت الخمول بعد أن تجهز سوار، فلا يطيل فتح سوار ولا النظام المفتوح. مرة واحدة لكل فتح
+function accelRun(n) {
+  if (S.accelOn && !n) return; S.accelOn = 1; n = n || 0;
+  if (!S.token || !Array.isArray(S.apps) || !S.apps.length) { if (n < 40) setTimeout(() => accelRun(n + 1), 500); return; }
+  prefetchTickets(true).then(() => { const go = () => warmLastApp(true); if (window.requestIdleCallback) requestIdleCallback(go, { timeout: 5000 }); else setTimeout(go, 1500); });
 }
 function warmed(id) { if (warmQ && warmQ.id === id) { clearTimeout(warmQ.t); warmQ.id = ''; warmQ.t = setTimeout(warmStep, 300); } }
 function afterHome() {
@@ -3969,7 +3942,7 @@ function setupInApp() {
   if (!SHELL || setupInApp.done) return;
   setupInApp.done = true;
   const go = SIWAR_PTR(ptrRefresh);
-  window.addEventListener('message', e => { if (e.origin === SHELL && e.source === window.top && e.data) { if (e.data.siwar === 'relaunch') relaunchLast(String(e.data.id || ''), e.data.go); else if (e.data.siwar === 'refresh') go(); else if (e.data.siwar === 'alive') { S.alive = {}; (e.data.ids || []).forEach(x => { S.alive[x] = 1; }); S.navIds = {}; (e.data.nav || []).forEach(x => { S.navIds[x] = 1; }); } else if (e.data.siwar === 'navRes') { const f = NAVW[String(e.data.n || '')]; if (f) f(e.data.ok); } else if (e.data.siwar === 'home') { S.sysOn = false; prefetchTickets(false).then(() => { if (!isMobileDev()) setTimeout(warmLastApp, 1500); }); } else if (e.data.siwar === 'warmed') warmed(String(e.data.id || '')); else if (e.data.siwar === 'perf') perfSend(e.data.rows); else if (e.data.siwar === 'pushApi') pushRelay(e.data); else if (e.data.siwar === 'lang') langFromSys(String(e.data.lang || '')); else if (e.data.siwar === 'inst') { S.instSt = e.data.st ? Number(e.data.st) : 0; instSync(); } } });
+  window.addEventListener('message', e => { if (e.origin === SHELL && e.source === window.top && e.data) { if (e.data.siwar === 'relaunch') relaunchLast(String(e.data.id || ''), e.data.go); else if (e.data.siwar === 'refresh') go(); else if (e.data.siwar === 'alive') { S.alive = {}; (e.data.ids || []).forEach(x => { S.alive[x] = 1; }); S.navIds = {}; (e.data.nav || []).forEach(x => { S.navIds[x] = 1; }); } else if (e.data.siwar === 'navRes') { const f = NAVW[String(e.data.n || '')]; if (f) f(e.data.ok); } else if (e.data.siwar === 'home') { S.sysOn = false; prefetchTickets(false).then(() => { if (!isMobileDev()) setTimeout(warmLastApp, 1500); }); } else if (e.data.siwar === 'warmed') warmed(String(e.data.id || '')); else if (e.data.siwar === 'accel') accelRun(); else if (e.data.siwar === 'perf') perfSend(e.data.rows); else if (e.data.siwar === 'pushApi') pushRelay(e.data); else if (e.data.siwar === 'lang') langFromSys(String(e.data.lang || '')); else if (e.data.siwar === 'inst') { S.instSt = e.data.st ? Number(e.data.st) : 0; instSync(); } } });
 }
 
 // إشعارات الجوال: غلاف التطبيق يطلب عمليات الاشتراك عبر سوار، لأن الجلسة هنا
@@ -7525,116 +7498,129 @@ function vaultFabSync() {
 }
 </script>
 <script>
-/* (pv19) بطاقة «نسخة جديدة»: تظهر مرة واحدة حين يُكتشف تحديث، لا أثناء الكتابة، و«لاحقًا» تؤجلها ساعتين */
+/* (UP) «تحديث»: زر صغير في منتصف أسفل الشاشة حين تتوفر نسخة أحدث (لا يظهر أثناء الكتابة، و«لاحقًا» تؤجله ساعتين)،
+   وضغطة واحدة تنقل إلى أحدث نسخة مرة واحدة مهما تعدد النشر (شاشة التحميل الموحدة وحدها إن طال الانتظار ثانية فأكثر).
+   الواجهة تعرّف: U.lang() ، U.dark() (''|cur|grey|black) ، U.logo() (رابط الشعار) ، U.onGo (التحديث نفسه). */
 (function () {
   if (window.SiwarUpd) return;
-  var SNK = 'siwar_upd_snooze', RTK = 'siwar_upd_rot', SNOOZE = 2 * 3600000, IDLE = 5000;
-  var MSG = {
-    ar: [['وصلت نسخة جديدة ✨', 'حدّث الآن لتستمتع بها، وستعود إلى نفس مكانك.'],
-         ['تحسينات جديدة وصلت للتو ✨', 'ضغطة واحدة وتصلك كلها.'],
-         ['سوار تجدّد قليلًا ✨', 'حدّث الآن لترى الجديد، وستعود إلى نفس مكانك.'],
-         ['لمسات جديدة جاهزة لك ✨', 'لن يستغرق التحديث إلا لحظات.'],
-         ['نسخة جديدة جاهزة ✨', 'حدّث الآن لتحصل على آخر التحسينات.']],
-    en: [['A new version has arrived ✨', 'Refresh now to enjoy it — you’ll return right where you were.'],
-         ['Fresh improvements just landed ✨', 'One tap brings them all in.'],
-         ['SIWAR got a little refresh ✨', 'Refresh to see what’s new — you’ll stay right where you were.'],
-         ['New touches are ready for you ✨', 'It only takes a moment.'],
-         ['A new version is ready ✨', 'Refresh now to get the latest improvements.']]
+  var SNK = 'siwar_upd_snooze', SNOOZE = 2 * 3600000, IDLE = 5000, MINP = 1000;
+  var TX = {
+    ar: { t: 'نسخة أحدث جاهزة', go: 'تحديث', no: 'لاحقًا' },
+    en: { t: 'A newer version is ready', go: 'Update', no: 'Later' }
   };
-  var BTN = { ar: ['تحديث الآن', 'لاحقًا'], en: ['Refresh now', 'Later'] };
-  var REF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.5-4.5L4 8M4 4v4h4M4 13a8 8 0 0 0 14.5 4.5L20 16M20 20v-4h-4"/></svg>';
-  var memSnooze = 0, lastKey = 0, backAt = 0, tm = 0, rot = -1;
-  var U = window.SiwarUpd = { avail: false, src: '', lang: function () { return 'ar'; }, onGo: null, el: null };
-
+  var REF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.5-4.5L4 8M4 4v4h4M4 13a8 8 0 0 0 14.5 4.5L20 16M20 20v-4h-4"/></svg>';
+  var CSS = '' +
+    '#sUp{position:fixed;left:50%;bottom:calc(26px + env(safe-area-inset-bottom,0px));z-index:2147483600;box-sizing:border-box;display:flex;align-items:center;gap:10px;' +
+    'height:52px;padding:0 6px 0 7px;border-radius:999px;font-family:inherit;color:#2E2A27;white-space:nowrap;max-width:calc(100vw - 32px);' +
+    'background:linear-gradient(180deg,rgba(255,253,249,.97),rgba(250,243,233,.95));-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);' +
+    'border:1px solid rgba(201,156,78,.42);box-shadow:inset 0 1px 0 #fff,inset 0 -1px 0 rgba(160,120,60,.10),0 14px 34px -12px rgba(70,52,30,.42),0 34px 60px -34px rgba(70,52,30,.38);' +
+    'transform:translateX(-50%);animation:sUpIn .5s cubic-bezier(.2,.9,.3,1.15) both}' +
+    '#sUp *{box-sizing:border-box}#sUp.bye{animation:sUpOut .26s ease both}' +
+    '#sUp .sUp-m{position:relative;flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;' +
+    'background:radial-gradient(circle at 35% 28%,#24345F 0%,#121D3D 60%,#0A1129 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 0 0 1.5px rgba(227,182,109,.55),0 6px 14px -6px rgba(10,17,41,.7)}' +
+    '#sUp .sUp-m img{width:33px;height:auto;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))}' +
+    '#sUp .sUp-m::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1.5px solid transparent;border-top-color:rgba(233,190,110,.9);animation:sUpSpin 2.4s linear infinite}' +
+    '#sUp .sUp-t{font-size:14px;font-weight:700;letter-spacing:.1px;overflow:hidden;text-overflow:ellipsis;min-width:0}' +
+    '#sUp .sUp-go{flex:none;display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 18px;border:0;border-radius:999px;cursor:pointer;font:inherit;font-size:14px;font-weight:800;color:#2B1F0E;' +
+    'background:linear-gradient(180deg,#F6DDA4 0%,#E3B66D 52%,#C99645 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),inset 0 -2px 0 rgba(120,80,20,.22),0 8px 18px -8px rgba(185,135,58,.85);transition:transform .15s,filter .15s}' +
+    '#sUp .sUp-go:hover{filter:brightness(1.04)}#sUp .sUp-go:active{transform:scale(.96)}#sUp .sUp-go svg{width:16px;height:16px}' +
+    '#sUp .sUp-x{flex:none;width:32px;height:32px;border:0;border-radius:50%;background:transparent;color:#8A817A;font:inherit;font-size:19px;line-height:1;cursor:pointer}' +
+    '#sUp .sUp-x:hover{background:rgba(120,100,80,.10)}#sUp button:focus-visible{outline:3px solid rgba(227,182,109,.6);outline-offset:2px}' +
+    '#sUp.dk{color:#F3EEE6;background:linear-gradient(180deg,rgba(40,42,50,.96),rgba(26,27,33,.95));border-color:rgba(227,182,109,.38);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 14px 34px -12px rgba(0,0,0,.7),0 34px 60px -34px rgba(0,0,0,.6)}' +
+    '#sUp.dk[data-dk=black]{background:linear-gradient(180deg,rgba(22,22,24,.97),rgba(8,8,9,.96))}' +
+    '#sUp.dk[data-dk=cur]{background:linear-gradient(180deg,rgba(26,36,64,.96),rgba(14,21,42,.95))}' +
+    '#sUp.dk[data-dk=black] .sUp-m{background:radial-gradient(circle at 35% 28%,#3A3A3F 0%,#1C1C1F 60%,#0B0B0C 100%)}' +
+    '#sUp.dk[data-dk=grey] .sUp-m{background:radial-gradient(circle at 35% 28%,#454852 0%,#26282F 60%,#15161A 100%)}' +
+    '#sUp.dk .sUp-x{color:#B9B0A6}#sUp.dk .sUp-x:hover{background:rgba(255,255,255,.08)}' +
+    '@media (max-width:640px){#sUp{bottom:calc(84px + env(safe-area-inset-bottom,0px));height:46px;gap:8px}#sUp .sUp-m{width:32px;height:32px}#sUp .sUp-m img{width:28px}' +
+    '#sUp .sUp-t{font-size:12.5px}#sUp .sUp-go{height:36px;padding:0 14px;font-size:13px}#sUp .sUp-x{width:28px;height:28px;font-size:17px}}' +
+    '#sUpv{position:fixed;inset:0;z-index:2147483640;display:grid;place-items:center;opacity:0;transition:opacity .35s ease;' +
+    'background:radial-gradient(circle at 50% 44%,#FFFDF9 0,#FDFAF5 45%,#F7EEE4 100%)}#sUpv.on{opacity:1}' +
+    '#sUpv .sUpv-c{display:flex;flex-direction:column;align-items:center;gap:26px}#sUpv img{width:min(260px,64vw);height:auto}' +
+    '#sUpv .sUpv-b{width:120px;height:3px;border-radius:3px;background:rgba(194,146,63,.15);overflow:hidden}' +
+    '#sUpv .sUpv-b i{display:block;width:40%;height:100%;border-radius:3px;background:linear-gradient(90deg,#E3B66D,#E2A6A4);animation:sUpRun 1.3s ease-in-out infinite}' +
+    '#sUpv.dk{background:radial-gradient(circle at 50% 44%,#2A2C34 0,#1B1C22 50%,#111216 100%)}' +
+    '#sUpv.dk[data-dk=black]{background:radial-gradient(circle at 50% 44%,#1A1A1C 0,#0B0B0C 55%,#000 100%)}' +
+    '#sUpv.dk[data-dk=cur]{background:radial-gradient(circle at 50% 44%,#1C2748 0,#121A33 55%,#0A1022 100%)}' +
+    '@keyframes sUpRun{0%{transform:translateX(-110%)}100%{transform:translateX(260%)}}' +
+    '@keyframes sUpIn{from{transform:translate(-50%,16px) scale(.96);opacity:0}to{transform:translateX(-50%);opacity:1}}' +
+    '@keyframes sUpOut{to{transform:translate(-50%,12px) scale(.96);opacity:0}}@keyframes sUpSpin{to{transform:rotate(360deg)}}' +
+    '@media (prefers-reduced-motion:reduce){#sUp,#sUp *,#sUp .sUp-m::after{animation:none!important}}';
+  var memSnooze = 0, lastKey = 0, backAt = 0, tm = 0;
+  var U = window.SiwarUpd = { avail: false, src: '', lang: function () { return 'ar'; }, dark: function () { return ''; }, logo: function () { return ''; }, onGo: null, el: null, pv: null };
   function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, String(v)); } catch (e) {} return null; }
-  function snoozeLeft() { var s = Math.max(Number(ls(SNK)) || 0, memSnooze); return s - Date.now(); }
+  function css() { if (document.getElementById('sUpCss')) return; var s = document.createElement('style'); s.id = 'sUpCss'; s.textContent = CSS; (document.head || document.documentElement).appendChild(s); }
+  function L() { return TX[U.lang() === 'en' ? 'en' : 'ar']; }
+  function tone(el) { var d = ''; try { d = String(U.dark() || ''); } catch (e) {} el.classList.toggle('dk', !!d); if (d) el.setAttribute('data-dk', d); else el.removeAttribute('data-dk'); }
+  function snoozeLeft() { return Math.max(Number(ls(SNK)) || 0, memSnooze) - Date.now(); }
   function editable(el) {
     if (!el) return false;
-    if (el.isContentEditable) return true;
-    if (el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') return true;
+    if (el.isContentEditable || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') return true;
     return el.tagName === 'INPUT' && !/^(button|submit|reset|checkbox|radio|range|color|file|image|hidden)$/i.test(el.type || '');
   }
-  // مكان التركيز: داخل الإطارات من نفس الموقع يُتتبَّع، وإطار من موقع آخر (نظام) = غير معروف
   function focusState() {
     var a = document.activeElement, hops = 0;
-    while (a && a.tagName === 'IFRAME' && hops++ < 4) {
-      var d = null; try { d = a.contentDocument; } catch (e) { d = null; }
-      if (!d) return 'x';
-      a = d.activeElement;
-    }
+    while (a && a.tagName === 'IFRAME' && hops++ < 4) { var d = null; try { d = a.contentDocument; } catch (e) { d = null; } if (!d) return 'x'; a = d.activeElement; }
     return editable(a) ? 'type' : 'free';
   }
-  function idleOk() {
-    if (Date.now() - lastKey < IDLE) return false;
-    var f = focusState();
-    if (f === 'type') return false;
-    // التركيز داخل نظام (موقع آخر) لا نرى ما يُكتب فيه: تظهر البطاقة حين يعود الموظف للنافذة أو للرئيسية فقط
-    if (f === 'x') return Date.now() - backAt < 4000;
-    return true;
-  }
+  // لا يظهر أثناء الكتابة؛ والتركيز داخل نظام (موقع آخر) لا نرى ما يُكتب فيه: يظهر حين يعود الموظف للنافذة
+  function idleOk() { if (Date.now() - lastKey < IDLE) return false; var f = focusState(); if (f === 'type') return false; if (f === 'x') return Date.now() - backAt < 4000; return true; }
   function onKey() { lastKey = Date.now(); }
-  U.watchDoc = function (doc) {
-    try {
-      if (!doc || doc.__sUw) return; doc.__sUw = 1;
-      ['keydown', 'input', 'compositionupdate'].forEach(function (ev) { doc.addEventListener(ev, onKey, true); });
-    } catch (e) {}
-  };
+  U.watchDoc = function (doc) { try { if (!doc || doc.__sUw) return; doc.__sUw = 1; ['keydown', 'input', 'compositionupdate'].forEach(function (ev) { doc.addEventListener(ev, onKey, true); }); } catch (e) {} };
   function back() { backAt = Date.now(); if (U.avail && !U.el) { clearTimeout(tm); tm = setTimeout(tryShow, 300); } }
   window.addEventListener('focus', back);
   document.addEventListener('visibilitychange', function () { if (!document.hidden) back(); });
   U.watchDoc(document);
-
   function tryShow() {
     clearTimeout(tm); tm = 0;
-    if (!U.avail || U.el || document.getElementById('siwarUpd')) return;
-    var left = snoozeLeft();
-    if (left > 0) { tm = setTimeout(tryShow, Math.min(left + 500, 2147483000)); return; }
+    if (!U.avail || U.el || U.pv || document.getElementById('sUp')) return;
+    var left = snoozeLeft(); if (left > 0) { tm = setTimeout(tryShow, Math.min(left + 500, 2147483000)); return; }
     if (document.hidden || !idleOk()) { tm = setTimeout(tryShow, 2000); return; }
     render();
   }
-  function texts() {
-    var l = U.lang() === 'en' ? 'en' : 'ar';
-    if (rot < 0) { rot = ((Number(ls(RTK)) || 0) + 1) % MSG.ar.length; ls(RTK, rot); }
-    return { l: l, m: MSG[l][rot], b: BTN[l] };
-  }
   function fill() {
-    var el = U.el; if (!el) return;
-    var x = texts();
-    el.dir = x.l === 'en' ? 'ltr' : 'rtl'; el.lang = x.l;
-    el.querySelector('.sU-t1').textContent = x.m[0];
-    el.querySelector('.sU-t2').textContent = x.m[1];
-    el.querySelector('.sU-go span').textContent = x.b[0];
-    el.querySelector('.sU-no').textContent = x.b[1];
+    var el = U.el; if (!el) return; var x = L(), en = U.lang() === 'en';
+    el.dir = en ? 'ltr' : 'rtl'; el.lang = en ? 'en' : 'ar';
+    el.querySelector('.sUp-t').textContent = x.t; el.querySelector('.sUp-go span').textContent = x.go;
+    el.querySelector('.sUp-x').setAttribute('aria-label', x.no); el.querySelector('.sUp-x').title = x.no;
+    tone(el);
   }
   function render() {
-    var el = document.createElement('div');
-    el.id = 'siwarUpd'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
-    el.innerHTML = '<span class="sU-o"><span class="sU-orb"></span><span class="sU-r"></span><span class="sU-r b"></span>' +
-      '<span class="sU-s" style="top:-4px;right:-2px"></span><span class="sU-s" style="bottom:2px;left:-4px;animation-delay:.7s"></span></span>' +
-      '<div class="sU-tx"><div class="sU-t1"></div><div class="sU-t2"></div><div class="sU-b"><button type="button" class="sU-go">' + REF + '<span></span></button><button type="button" class="sU-no"></button></div></div>';
-    el.querySelector('.sU-go').onclick = function () { go(this); };
-    el.querySelector('.sU-no').onclick = later;
-    document.body.appendChild(el);
-    U.el = el; fill();
+    css();
+    var el = document.createElement('div'), lg = '';
+    try { lg = String(U.logo() || ''); } catch (e) {}
+    el.id = 'sUp'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite');
+    el.innerHTML = '<span class="sUp-m">' + (lg ? '<img alt="" src="' + lg.replace(/"/g, '&quot;') + '">' : '') + '</span><span class="sUp-t"></span>' +
+      '<button type="button" class="sUp-go">' + REF + '<span></span></button><button type="button" class="sUp-x">×</button>';
+    el.querySelector('.sUp-go').onclick = go;
+    el.querySelector('.sUp-x').onclick = later;
+    document.body.appendChild(el); U.el = el; fill();
   }
-  function hide() {
-    var el = U.el; U.el = null; if (!el) return;
-    el.classList.add('bye'); setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 300);
-  }
-  function later() {
-    memSnooze = Date.now() + SNOOZE; ls(SNK, memSnooze);
-    hide(); clearTimeout(tm); tm = setTimeout(tryShow, SNOOZE + 500);
-  }
-  function go(b) {
-    if (b.classList.contains('on')) return;
-    b.classList.add('on'); b.disabled = true;
-    try { ls(SNK, 0); } catch (e) {}
+  function hide() { var el = U.el; U.el = null; if (!el) return; el.classList.add('bye'); setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 300); }
+  function later() { memSnooze = Date.now() + SNOOZE; ls(SNK, memSnooze); hide(); clearTimeout(tm); tm = setTimeout(tryShow, SNOOZE + 500); }
+  function go() {
+    if (U.going) return; U.going = true; ls(SNK, 0); hide();
     try { if (U.onGo) U.onGo(); else location.reload(); } catch (e) { location.reload(); }
   }
-  // مصدر الإشارة: sw (عامل الخدمة) أو portal (بصمة الواجهة) — إشارات متكررة لا تُكرر البطاقة
+  // مصدر الإشارة: sw (التطبيق) أو portal (سوار) أو اسم النظام — الإشارات المتكررة لا تكرر الزر
   U.signal = function (src) { U.src = U.src || String(src || ''); U.avail = true; if (!U.el) tryShow(); };
-  U.relang = fill;
+  U.relang = function () { fill(); if (PV) tone(PV); };
   U.hide = hide;
+  /* شاشة التحميل الموحدة أثناء الانتقال إلى النسخة الأحدث: الشعار وحده بلا نص، ولا تظهر إلا إذا طال الانتظار ثانية فأكثر.
+     U.load(true) / U.load(false) */
+  var PV = null, LT = 0;
+  U.load = function (on) {
+    if (!on) { clearTimeout(LT); LT = 0; var p = PV; PV = U.pv = null; if (p) { p.classList.remove('on'); setTimeout(function () { if (p.parentNode) p.parentNode.removeChild(p); }, 380); } return; }
+    if (PV || LT) return;
+    LT = setTimeout(function () {
+      LT = 0; css();
+      var el = document.createElement('div'), lg = '';
+      try { lg = String(U.logo() || ''); } catch (e) {}
+      el.id = 'sUpv'; el.setAttribute('role', 'progressbar'); el.setAttribute('aria-label', 'سوار | SIWAR');
+      el.innerHTML = '<div class="sUpv-c">' + (lg ? '<img alt="سوار | SIWAR" src="' + lg.replace(/"/g, '&quot;') + '">' : '') + '<div class="sUpv-b"><i></i></div></div>';
+      tone(el); document.body.appendChild(el); PV = U.pv = el; void el.offsetWidth; el.classList.add('on');
+    }, MINP);
+  };
 })();
 
 /* (pv19) ربط البطاقة بسوار: البصمة (BUILD) يضعها الخادم عند الفتح (MD5 لملف Index المنشور)، وتُقارن بـ«ver» كل 30 دقيقة وعند العودة للنافذة.
@@ -7644,6 +7630,10 @@ function vaultFabSync() {
   const U = window.SiwarUpd; if (!U) return;
   const RX = /^[a-f0-9]{16}$/, ON = !STATIC && !DEMO && RX.test(BUILD);
   U.lang = () => (S.lang === 'en' ? 'en' : 'ar');
+  U.logo = () => { try { return brandLogo(); } catch (e) { return ''; } };
+  U.dark = () => { const h = document.documentElement; return h.classList.contains('dk') ? (h.getAttribute('data-dk') || 'cur') : ''; };
+  // (UP) في المتصفح: نظام مفتوح داخل سوار يبلّغ بنسخة أحدث نُشرت (upd) → زر «تحديث» هنا
+  window.addEventListener('message', e => { if (!SHELL && e.data && e.data.siwar === 'upd' && /\.googleusercontent\.com$|^https:\/\/script\.google\.com$/.test(e.origin)) found(String(e.data.src || 'sys')); });
   try { const al = applyLang; applyLang = function () { const r = al.apply(this, arguments); try { U.relang(); } catch (e) {} return r; }; } catch (e) {}
   function found(src) {
     if (SHELL) { try { window.top.postMessage({ siwar: 'upd', src: src }, SHELL); } catch (e) {} return; }
@@ -7663,9 +7653,7 @@ function vaultFabSync() {
   U.onGo = () => {
     const ov = $('#progView'), pv = S.pvOpen && ov && ov.classList.contains('open') ? S.pvOpen : null;
     const url = EXEC_URL + (pv ? '?open=' + encodeURIComponent(pv.app) + (pv.go ? '&go=' + encodeURIComponent(pv.go) : '') : '');
-    const sp = $('#splash'), tx = $('#splashTxt');
-    if (sp) { sp.classList.remove('out'); if (tx) tx.textContent = S.lang === 'en' ? 'Updating' : 'جارٍ التحديث'; }
-    U.hide();
+    U.hide(); U.load(true);
     if (!/^https:\/\//.test(url)) { location.reload(); return; }
     let w = null; try { w = window.open(url, '_top'); } catch (e) { w = null; }
     if (!w) { try { window.top.location.href = url; } catch (e) { location.reload(); return; } }
