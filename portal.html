@@ -1657,6 +1657,28 @@ body { display: flow-root; }
 @media (max-width: 1099px) {
   #screen-home.vfab-room .wrap, #screen-home.vfab-room > .wrap { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 120px) !important; }
 }
+/* الشاشات الواسعة (8 نوفمبر): الشاشة الكبيرة تُستغل كاملة بدل صندوق ضيق في الوسط وتمرير أفقي.
+   الحاوية بعرض الشاشة مع هامش جانبي 16–32px، والحقول بعرض معقول داخلها. */
+:root { --wrap-pad: clamp(16px, 2.2vw, 32px); }
+.wrap { max-width: none; padding-inline: var(--wrap-pad); }
+.topbar { max-width: none; width: calc(100% - 2 * var(--wrap-pad)); }
+.u-bar .input-wrap { max-width: 460px; }
+.u-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr)); gap: 16px; align-items: start; }
+.u-cols > .panel-box { margin: 0; }
+@media (min-width: 1200px) {
+  .u-cols-home { grid-template-columns: minmax(0, 3fr) minmax(320px, 2fr); }
+  #uRoot .u-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 560px), 1fr)); }
+}
+.settings-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); }
+.u-bar .savebar-actions { flex-wrap: wrap; max-width: 100%; }
+#screen-admin .form-stack > .field, #screen-admin .form-stack > .upload-row { max-width: 820px; }
+@media (min-width: 721px) {
+  .og-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(196px, 250px)); justify-content: center; gap: 22px 16px; overflow: visible; padding-inline: 0; }
+  .og-row.many { justify-content: center; scroll-snap-type: none; }
+  .og-col { max-width: none; min-width: 0; }
+  .og-col::before { display: none; }
+  .og-row::before { top: 0; inset-inline: 6%; height: 14px; background: none; border: 2px solid #E9D7B5; border-bottom: 0; border-radius: 14px 14px 0 0; }
+}
 </style>
 <body>
 
@@ -3790,8 +3812,8 @@ function uHome() {
   const undeclared = D.apps.filter(a => !uReg(a.id)).length;
   if (undeclared) todo.push(row('nomail', undeclared + ' من الأنظمة لم تربط إعداداتها بسوار بعد', '<button class="link-btn" data-unav="systems">عرضها</button>'));
   todo.push(row('nomail', 'المراجعة الدورية للصلاحيات', '<button class="link-btn" data-unav="review">فتح</button>'));
-  return '<section class="panel-box u-todo">' + todo.join('') + '</section>' +
-    '<section class="panel-box u-xl"><div><b>تعبئة جماعية من Excel</b><p class="u-muted">الوظائف، والموظفون وأيام راحتهم، والصلاحيات، والإعدادات — بقوائم منسدلة. تظهر معاينة قبل أي تغيير.</p></div><div class="savebar-actions"><button class="btn btn-ghost" data-u="xlDown">' + ic('save') + '<span>تنزيل النموذج</span></button><button class="btn btn-primary" data-u="xlUp">' + ic('upload') + '<span>رفع النموذج</span></button></div></section>';
+  return '<div class="u-cols u-cols-home">' + '<section class="panel-box u-todo">' + todo.join('') + '</section>' +
+    '<section class="panel-box u-xl"><div><b>تعبئة جماعية من Excel</b><p class="u-muted">الوظائف، والموظفون وأيام راحتهم، والصلاحيات، والإعدادات — بقوائم منسدلة. تظهر معاينة قبل أي تغيير.</p></div><div class="savebar-actions"><button class="btn btn-ghost" data-u="xlDown">' + ic('save') + '<span>تنزيل النموذج</span></button><button class="btn btn-primary" data-u="xlUp">' + ic('upload') + '<span>رفع النموذج</span></button></div></section>' + '</div>';
 }
 
 function uPeople() {
@@ -3847,7 +3869,7 @@ function uPerson() {
     '<div class="u-q"><span class="u-q-t">البريد الإلكتروني</span><span class="u-q-v"><input class="inp" dir="ltr" type="email" data-uc="pInfo" data-f="email" maxlength="120" autocapitalize="none" spellcheck="false" value="' + esc(p.email || '') + '"' + (me || hasAcct ? ' disabled' : '') + '></span></div>' + langRow + pushRow +
     (hasAcct ? '<p class="u-muted u-note">له حساب في سوار؛ يتغير بريده من «تعديل الحساب».</p>' : '') + '</section>';
   const og = p.org ? '<section class="panel-box u-work u-info og-pbox"><div class="u-q"><span class="u-q-t">الإدارة والقسم</span><span class="u-q-v">' + (p.org.dn ? '<b>' + esc(p.org.dn) + '</b>' + (p.org.sn ? ' · ' + esc(p.org.sn) : '') : '<span class="u-muted">غير موزّع</span>') + ' <button class="link-btn" data-og="goOrg" data-id="' + esc(p.org.d || '__un') + '">تعديل في الهيكل التنظيمي</button></span></div>' +
-    '<div class="u-q"><span class="u-q-t">المدير المباشر</span><span class="u-q-v">' + (p.org.m ? esc(p.org.m) + ' <span class="og-src og-src-' + esc(p.org.src) + '">' + (OG_SRC[p.org.src] || '') + '</span>' : '<span class="u-muted">لا يوجد</span>') + '</span></div></section>' : '';
+    '<div class="u-q"><span class="u-q-t">المدير المباشر</span><span class="u-q-v">' + (p.org.m ? esc(ogN2(p.org.m)) + ' <span class="og-src og-src-' + esc(p.org.src) + '">' + (OG_SRC[p.org.src] || '') + '</span>' : '<span class="u-muted">لا يوجد</span>') + '</span></div></section>' : '';
   const work = '<section class="panel-box u-work"><div class="u-q"><span class="u-q-t">يوم الراحة الأسبوعي</span><span class="u-days" data-prest="1">' + U_DAYS.map((n, i) => '<button class="seg-btn' + (rd.indexOf(i) >= 0 ? ' on' : '') + '" data-u="pRest" data-i="' + i + '"' + (me && !p.owner ? ' disabled' : '') + '>' + n + '</button>').join('') + '</span></div>' +
     (p.owner ? '' : '<div class="u-q"><span class="u-q-t">المسمى الوظيفي</span><span class="u-q-v"><select class="inp" data-uc="pTitle"' + (me ? ' disabled' : '') + '>' + uTitleOpts(p.title) + '</select></span></div>') + (p.owner ? '' : '<div class="u-q"><span class="u-q-t">وظيفته</span><span class="u-q-v"><select class="inp" data-uc="pProf"' + (me ? ' disabled' : '') + '><option value="">' + esc(U_BYTITLE) + '</option>' + D.profiles.map(f => '<option value="' + esc(f.id) + '"' + (p.profileId === f.id ? ' selected' : '') + '>' + esc(f.nameAR) + '</option>').join('') + '</select></span></div>') + (p.owner ? '' : uBundleSel(p, me)) + '</section>';
   const ua = p.userId && S.admin ? (S.admin.users || []).find(u => u.id === p.userId) : null;
@@ -3879,7 +3901,7 @@ function uPerson() {
     return '<section class="panel-box u-sys' + (e.on ? '' : ' is-off') + '"><div class="u-sys-head">' + uIcon(a) + '<b>' + esc(a.nameAR) + '</b>' + sw + '</div>' + (p.owner ? '' : uRoleSel(p, a, me)) + body + '</section>';
   }).join('');
   const copyBox = p.owner || me ? '' : '<section class="panel-box"><div class="u-q"><span class="u-q-t">نسخ صلاحياته إلى موظفين آخرين</span><span class="u-q-v"><button class="btn btn-ghost btn-sm" data-u="pCopy">' + ic('copy') + '<span>نسخ إلى…</span></button></span></div></section>';
-  return head + (me && !p.owner ? '<p class="u-muted u-note">لا يمكنك تعديل صلاحياتك بنفسك.</p>' : '') + line + info + og + work + '<div class="u-sys-grid">' + cards + '</div>' + copyBox + acct;
+  return head + (me && !p.owner ? '<p class="u-muted u-note">لا يمكنك تعديل صلاحياتك بنفسك.</p>' : '') + line + '<div class="u-cols">' + info + og + work + '</div>' + '<div class="u-sys-grid">' + cards + '</div>' + copyBox + acct;
 }
 
 function uProfiles() {
@@ -4587,11 +4609,13 @@ function uRoles() {
   if (!roles.length) h += '<section class="panel-box"><h3>' + ic('info') + '<span>لا أدوار بعد</span></h3><p class="u-muted">يمكن تجهيز أدوار جاهزة مبنية على صلاحيات الأنظمة الفعلية (موظف، قائد فريق، مدير قسم، موارد بشرية، مالي، جودة، مطبخ…) ثم تعديلها كما تشاء.</p>' +
     (boss ? '<button class="btn btn-primary" data-u="seedRoles">' + ic('plus') + '<span>تجهيز الأدوار الجاهزة</span></button>' : '<p class="u-muted">يجهّزها المالك.</p>') + '</section>';
   h += '<section class="panel-box"><div class="u-bar"><h3>' + ic('users') + '<span>الأدوار العامة</span></h3><button class="btn btn-primary btn-sm" data-u="newRole" data-kind="general">' + ic('plus') + '<span>دور عام جديد</span></button></div><div class="list u-list">' + (gen.length ? gen.map(row).join('') : '<p class="u-muted">لا أدوار عامة.</p>') + '</div></section>';
+  h += '<div class="u-cols">';
   D.apps.forEach(a => {
     const list = roles.filter(r => r.kind === 'app' && r.app === a.id);
     h += '<section class="panel-box"><div class="u-bar"><h3>' + uIcon(a) + '<span>' + esc(a.nameAR) + '</span></h3>' + (uDeclared(a.id) ? '<button class="btn btn-ghost btn-sm" data-u="newRole" data-kind="app" data-app="' + esc(a.id) + '">' + ic('plus') + '<span>دور جديد</span></button>' : '') + '</div>' +
       '<div class="list u-list">' + (list.length ? list.map(row).join('') : '<p class="u-muted">' + (uDeclared(a.id) ? 'لا أدوار لهذا النظام.' : 'لم يربط النظام قدراته بسوار بعد.') + '</p>') + '</div></section>';
   });
+  h += '</div>';
   return h;
 }
 
@@ -4775,8 +4799,8 @@ function ogMgr(p) {
   return { id: '', src: '' };
 }
 const ogCoOk = p => !O.co || p.co === O.co;
-const ogNm = id => { const p = ogP(id); return p ? p.name : ''; };
-const ogAv = (p, drag) => '<span class="og-av" title="' + esc(p.name + (p.title ? ' · ' + p.title : '')) + '"' + (drag && O.d.edit ? ' draggable="true" data-ogp="' + esc(p.id) + '"' : '') + '>' + esc(String(p.name || '?').trim().charAt(0)) + '</span>';
+const ogNm = id => { const p = ogP(id); return p ? ogN2(p.name) : ''; };
+const ogAv = (p, drag) => '<span class="og-av" title="' + esc(ogN2(p.name) + (p.title ? ' · ' + p.title : '')) + '"' + (drag && O.d.edit ? ' draggable="true" data-ogp="' + esc(p.id) + '"' : '') + '>' + esc(String(p.name || '?').trim().charAt(0)) + '</span>';
 
 async function ogLoad(keepSel, quiet) {
   if (O.busy) return;
@@ -4816,7 +4840,7 @@ function ogCoSeg() {
 }
 function ogHeadBox(u, kind) {
   const h = u.head ? ogP(u.head) : null;
-  return '<div class="og-head' + (kind !== 'section' ? ' is-dept' : '') + '"' + (O.d.edit ? ' data-og="pickHead" data-id="' + esc(u.id) + '" role="button" tabindex="0"' : '') + '><div class="t">' + (kind === 'top' ? OG_GM : kind === 'dept' ? 'رئيس الإدارة' : 'رئيس القسم') + '</div><div class="nm">' + (h ? esc(h.name) : '<span class="og-none">لم يُحدَّد</span>') + '</div>' + (h && h.title ? '<div class="rl">' + esc(h.title) + '</div>' : '') + '</div>';
+  return '<div class="og-head' + (kind !== 'section' ? ' is-dept' : '') + '"' + (O.d.edit ? ' data-og="pickHead" data-id="' + esc(u.id) + '" role="button" tabindex="0"' : '') + '><div class="t">' + (kind === 'top' ? OG_GM : kind === 'dept' ? 'رئيس الإدارة' : 'رئيس القسم') + '</div><div class="nm">' + (h ? esc(ogN2(h.name)) : '<span class="og-none">لم يُحدَّد</span>') + '</div>' + (h && h.title ? '<div class="rl">' + esc(h.title) + '</div>' : '') + '</div>';
 }
 // بطاقة قسم (أو إدارة في عرض الإدارة العامة): act = open يفتح قائمة الأعضاء، sel ينتقل إلى الإدارة
 function ogCard(id, title, sub, head, list, act) {
@@ -4855,7 +4879,7 @@ function ogMemOut(mem) { return mem && !ogNarrow() ? mem : ''; }
 // الإدارة العامة: المدير العام في الأعلى، وتحته الإدارات (الضغط على إدارة يفتحها)، ومن يعمل تحته مباشرة
 function ogTopView(T) {
   const vis = O.w.people.filter(ogCoOk), direct = vis.filter(p => ogPlace(p).d === T.id && p.id !== T.head);
-  const cards = ogDepts().map(d => ({ id: d.id, h: ogCard(d.id, d.name, 'إدارة', 'رئيس الإدارة: ' + (d.head ? esc(ogN2(ogNm(d.head))) : '<span class="og-none">لم يُحدَّد</span>'), vis.filter(p => ogPlace(p).d === d.id), 'sel') }))
+  const cards = ogDepts().map(d => ({ id: d.id, h: ogCard(d.id, d.name, 'إدارة', 'رئيس الإدارة: ' + (d.head ? esc(ogNm(d.head)) : '<span class="og-none">لم يُحدَّد</span>'), vis.filter(p => ogPlace(p).d === d.id), 'sel') }))
     .concat([{ id: T.id, h: ogCard(T.id, 'مباشرة تحت ' + OG_TOP, 'مكتب ' + OG_GM, 'المدير المباشر: ' + OG_GM, direct) }]);
   const mem = O.open === T.id ? ogMembers(T.id, direct) : '';
   const tools = O.d.edit ? '<span class="og-tools"><button class="og-ib" data-og="editUnit" data-id="' + esc(T.id) + '" title="تعديل الاسم">' + ic('edit') + '</button><button class="og-ib" data-og="delUnit" data-id="' + esc(T.id) + '" title="حذف">' + ic('trash') + '</button></span>' : '';
@@ -4871,8 +4895,8 @@ function ogMembers(uid, list) {
 }
 function ogRow(p) {
   const m = ogMgr(p), mp = m.id ? ogP(m.id) : null;
-  return '<div class="og-r' + (O.hi === p.id ? ' og-hi' : '') + '" data-row="' + esc(p.id) + '">' + ogAv(p, true) + '<div class="og-ri"><div class="og-rn">' + esc(p.name) + (p.title ? '<span class="u-muted"> · ' + esc(p.title) + '</span>' : '') + '</div>' +
-    '<div class="og-rs">المدير المباشر: ' + (mp ? '<b>' + esc(mp.name) + '</b> <span class="og-src og-src-' + m.src + '">' + OG_SRC[m.src] + '</span>' : '<span class="og-none">لا يوجد</span>') + '</div></div>' +
+  return '<div class="og-r' + (O.hi === p.id ? ' og-hi' : '') + '" data-row="' + esc(p.id) + '">' + ogAv(p, true) + '<div class="og-ri"><div class="og-rn">' + esc(ogN2(p.name)) + (p.title ? '<span class="u-muted"> · ' + esc(p.title) + '</span>' : '') + '</div>' +
+    '<div class="og-rs">المدير المباشر: ' + (mp ? '<b>' + esc(ogN2(mp.name)) + '</b> <span class="og-src og-src-' + m.src + '">' + OG_SRC[m.src] + '</span>' : '<span class="og-none">لا يوجد</span>') + '</div></div>' +
     (O.d.edit ? '<div class="og-ra"><button class="btn btn-ghost btn-sm" data-og="pickMgr" data-id="' + esc(p.id) + '">المدير المباشر</button><button class="btn btn-ghost btn-sm" data-og="move" data-id="' + esc(p.id) + '">نقل</button></div>' : '') + '</div>';
 }
 function ogUnplaced(un) {
@@ -4969,7 +4993,7 @@ function ogPkDraw() {
   const q = ogN(O.pk.q), L = $('#ogPkL'); if (!L) return;
   const list = O.w.people.filter(p => !q || ogN([p.name, p.nameEN, p.title, p.no, p.jdept].join(' ')).indexOf(q) >= 0).sort((a, b) => a.name.localeCompare(b.name, 'ar')).slice(0, 60);
   L.innerHTML = (O.pk.none ? '<button class="og-pi' + (!O.pk.cur ? ' on' : '') + '" data-og="pk" data-id=""><span class="og-av">—</span><span>' + esc(O.pk.none) + '</span></button>' : '') +
-    list.map(p => '<button class="og-pi' + (O.pk.cur === p.id ? ' on' : '') + '" data-og="pk" data-id="' + esc(p.id) + '">' + ogAv(p) + '<span><b>' + esc(p.name) + '</b><small>' + esc([p.title, (ogU(ogPlace(p).s) || ogU(ogPlace(p).d) || {}).name].filter(Boolean).join(' · ')) + '</small></span></button>').join('') +
+    list.map(p => '<button class="og-pi' + (O.pk.cur === p.id ? ' on' : '') + '" data-og="pk" data-id="' + esc(p.id) + '">' + ogAv(p) + '<span><b>' + esc(ogN2(p.name)) + '</b><small>' + esc([p.title, (ogU(ogPlace(p).s) || ogU(ogPlace(p).d) || {}).name].filter(Boolean).join(' · ')) + '</small></span></button>').join('') +
     (list.length ? '' : '<p class="u-muted og-pad">لا نتائج</p>');
 }
 function ogMoveTo(pid, uid) {
@@ -4982,7 +5006,7 @@ function ogMovePick(pid) {
   const p = ogP(pid); O.mv = pid; const T = ogTop();
   const opts = (T ? '<button class="og-pi" data-og="mvTo" data-id="' + esc(T.id) + '"><span class="og-dot"></span><span><b>' + esc(T.name) + '</b><small>مباشرة تحت ' + OG_GM + '</small></span></button>' : '') + ogDepts().map(d => '<button class="og-pi" data-og="mvTo" data-id="' + esc(d.id) + '"><span class="og-dot"></span><span><b>' + esc(d.name) + '</b><small>مباشرة تحت الإدارة</small></span></button>' +
     ogSecs(d.id).map(s => '<button class="og-pi og-pi-sec" data-og="mvTo" data-id="' + esc(s.id) + '"><span class="og-dot sec"></span><span><b>' + esc(s.name) + '</b><small>' + esc(d.name) + '</small></span></button>').join('')).join('');
-  openModal({ title: '<span>نقل «' + esc(p.name) + '»</span>', body: '<div class="og-pk">' + opts + '<button class="og-pi" data-og="mvTo" data-id=""><span class="og-dot none"></span><span><b>بلا مكان</b><small>يعود حسب قسمه في جسر</small></span></button></div>', foot: '<button class="btn btn-ghost" data-act="closeModal"><span>إلغاء</span></button>' });
+  openModal({ title: '<span>نقل «' + esc(ogN2(p.name)) + '»</span>', body: '<div class="og-pk">' + opts + '<button class="og-pi" data-og="mvTo" data-id=""><span class="og-dot none"></span><span><b>بلا مكان</b><small>يعود حسب قسمه في جسر</small></span></button></div>', foot: '<button class="btn btn-ghost" data-act="closeModal"><span>إلغاء</span></button>' });
 }
 async function ogSave() {
   if (!O.ops.length) return;
@@ -5012,8 +5036,8 @@ async function ogSeed() {
   const out = $('#ogSeedOut'); if (!out) return;
   if (!r.ok) { out.innerHTML = '<p class="u-err">' + esc(r.code === 'ERR_EXISTS' ? 'الهيكل معرَّف بالفعل.' : t(I18N.ar[r.code] ? r.code : 'ERR_SERVER')) + '</p>'; return; }
   out.innerHTML = '<div class="u-prev"><span><b>' + r.depts.length + '</b> إدارات</span><span><b>' + r.depts.reduce((a, d) => a + d.secs.length, 0) + '</b> أقسام</span><span><b>' + (r.placed + r.viaJisr) + '</b> موظفاً في أماكنهم</span><span><b>' + r.unplaced + '</b> غير موزّعين</span></div>' +
-    '<div class="og-seed">' + r.depts.map(d => '<div><b>' + esc(d.name) + '</b>' + (d.head ? ' — ' + esc(d.head) : ' — <span class="og-none">بلا رئيس</span>') + (d.secs.length ? '<ul>' + d.secs.map(s => '<li>' + esc(s.name) + (s.head ? ' — ' + esc(s.head) : '') + '</li>').join('') + '</ul>' : '') + '</div>').join('') + '</div>' +
-    (r.mgrChanges && r.mgrChanges.length ? '<p class="u-muted"><b>يتغير المدير المباشر لـ' + r.mgrChanges.length + ' موظفاً</b> إلى رئيس قسمه أو إدارته: ' + esc(r.mgrChanges.slice(0, 12).map(x => x.name + ' (' + x.from + ' ← ' + x.to + ')').join('، ')) + (r.mgrChanges.length > 12 ? '…' : '') + '</p>' : '<p class="u-muted">لا يتغير المدير المباشر لأحد عمّا في جسر.</p>') +
+    '<div class="og-seed">' + r.depts.map(d => '<div><b>' + esc(d.name) + '</b>' + (d.head ? ' — ' + esc(ogN2(d.head)) : ' — <span class="og-none">بلا رئيس</span>') + (d.secs.length ? '<ul>' + d.secs.map(s => '<li>' + esc(s.name) + (s.head ? ' — ' + esc(ogN2(s.head)) : '') + '</li>').join('') + '</ul>' : '') + '</div>').join('') + '</div>' +
+    (r.mgrChanges && r.mgrChanges.length ? '<p class="u-muted"><b>يتغير المدير المباشر لـ' + r.mgrChanges.length + ' موظفاً</b> إلى رئيس قسمه أو إدارته: ' + esc(r.mgrChanges.slice(0, 12).map(x => ogN2(x.name) + ' (' + ogN2(x.from) + ' ← ' + ogN2(x.to) + ')').join('، ')) + (r.mgrChanges.length > 12 ? '…' : '') + '</p>' : '<p class="u-muted">لا يتغير المدير المباشر لأحد عمّا في جسر.</p>') +
     (r.groups.length ? '<p class="u-muted">غير موزّعين حسب قسمهم في جسر: ' + esc(r.groups.slice(0, 8).map(g => g.jisr + ' (' + g.n + ')').join('، ')) + '. تُربط بعد الاعتماد من «غير موزّعين».</p>' : '') +
     (r.skipped.length ? '<p class="u-err">لم يُقرأ: ' + esc(r.skipped.join('، ')) + '</p>' : '');
   $('#ogSeedOk').disabled = !r.depts.length;
@@ -5181,9 +5205,9 @@ function ogXlPlan(wb) {
       const f = findP(x.code, x.name);
       if (!f.p) { info.unknown.push((x.code ? x.code + ' · ' : '') + (x.name || '') + (f.many ? ' (أكثر من موظف بالاسم نفسه)' : '')); return; }
       const p = f.p;
-      if (used[p.id]) return bad(OG_XL_P, x.r, 'الموظف مكرر في الملف: ' + p.name + ' (صف ' + used[p.id] + ')');
+      if (used[p.id]) return bad(OG_XL_P, x.r, 'الموظف مكرر في الملف: ' + ogN2(p.name) + ' (صف ' + used[p.id] + ')');
       used[p.id] = x.r;
-      if (f.how === 'name') info.byName.push((x.code ? x.code + ' ' : '') + '«' + x.name + '» ← ' + p.name + (p.no ? ' (' + p.no + ')' : ''));
+      if (f.how === 'name') info.byName.push((x.code ? x.code + ' ' : '') + '«' + x.name + '» ← ' + ogN2(p.name) + (p.no ? ' (' + p.no + ')' : ''));
       // المكان
       if (S.P.cols.dept || S.P.cols.sec) {
         let to = '';
@@ -5204,7 +5228,7 @@ function ogXlPlan(wb) {
         else { const m = findP(x.mcode, x.mname); if (!m.p) return bad(OG_XL_P, x.r, 'المدير المباشر غير موجود في سوار: ' + (x.mcode ? x.mcode + ' ' : '') + x.mname); mgrWant[p.id] = m.p.id === p.id ? '' : m.p.id; }
       }
     });
-    people.forEach(p => { if (!used[p.id]) info.notInFile.push(p.name + (p.no ? ' (' + p.no + ')' : '')); });
+    people.forEach(p => { if (!used[p.id]) info.notInFile.push(ogN2(p.name) + (p.no ? ' (' + p.no + ')' : '')); });
   }
   // المحاكاة: المكان الجديد ثم المدير المباشر حسب الهيكل، ولا يُحفظ «مدير محدَّد» إلا إذا خالف الهيكل
   const keepW = O.w; O.w = W;
@@ -5216,7 +5240,7 @@ function ogXlPlan(wb) {
       if (cur.d === nw.d && cur.s === nw.s) return;
       p.org = to; ops.push({ t: 'place', pid: p.id, unit: to });
       const b = before[p.id].pl, nm = z => z.s ? (uById(z.s) || {}).name : z.d ? (uById(z.d) || {}).name : 'غير موزّع', om = id => (keepW.units.find(u => u.id === id) || {}).name || '';
-      if (b.d !== nw.d || b.s !== nw.s) ch.move.push(p.name + ': ' + (b.s ? om(b.s) : b.d ? om(b.d) : 'غير موزّع') + ' ← ' + nm(nw));
+      if (b.d !== nw.d || b.s !== nw.s) ch.move.push(ogN2(p.name) + ': ' + (b.s ? om(b.s) : b.d ? om(b.d) : 'غير موزّع') + ' ← ' + nm(nw));
     });
     W.people.forEach(p => {
       if (!(p.id in mgrWant)) return;
@@ -5226,7 +5250,7 @@ function ogXlPlan(wb) {
       p.mgrPid = ''; const rule = ogMgr(p).id, desired = w === rule ? '' : w; p.mgrPid = keep;
       if (desired !== keep) { p.mgrPid = desired; ops.push({ t: 'mgr', pid: p.id, mgr: desired }); }
     });
-    W.people.forEach(p => { const a = before[p.id].m, b = ogMgr(p).id; if (a !== b) ch.mgr.push(p.name + ': ' + (a ? (keepW.people.find(z => z.id === a) || {}).name : '—') + ' ← ' + (b ? ogNm(b) : '—')); });
+    W.people.forEach(p => { const a = before[p.id].m, b = ogMgr(p).id; if (a !== b) ch.mgr.push(ogN2(p.name) + ': ' + (a ? ogN2((keepW.people.find(z => z.id === a) || {}).name) : '—') + ' ← ' + (b ? ogNm(b) : '—')); });
   } finally { O.w = keepW; }
   return { errs: errs, ops: ops, ch: ch, info: info, S: S };
 }
@@ -5333,7 +5357,7 @@ function ogPersonClick(el) {
   if (k === 'goOrg') { O.sel = el.dataset.id; O.open = ''; if (O.d && Date.now() - O.at > 30000 && !O.ops.length) O.d = null; return uNav('org'); }
   if (k === 'pDel') {
     const p = U.d.people.find(x => x.id === U.id); if (!p) return;
-    return openModal({ title: '<span>حذف «' + esc(p.name) + '» نهائياً؟</span>', body: '<p>أُضيف يدوياً ولم يدخل أي نظام. سيُحذف من سوار ومن الأنظمة كلها مع حسابه وصلاحياته، ولا يمكن التراجع.</p>' +
+    return openModal({ title: '<span>حذف «' + esc(ogN2(p.name)) + '» نهائياً؟</span>', body: '<p>أُضيف يدوياً ولم يدخل أي نظام. سيُحذف من سوار ومن الأنظمة كلها مع حسابه وصلاحياته، ولا يمكن التراجع.</p>' +
       '<label class="field"><span>سبب الحذف</span><textarea class="inp" id="ogDelWhy" rows="2" maxlength="200" placeholder="مثل: أُضيف للتجربة"></textarea></label><p class="u-err" id="ogDelErr" hidden></p>',
       foot: '<button class="btn btn-ghost" data-act="closeModal"><span>إلغاء</span></button><button class="btn btn-danger" data-og="pDelOk" id="ogDelOk" disabled>' + ic('trash') + '<span>حذف نهائي</span></button>' }), setTimeout(() => { const w = $('#ogDelWhy'); if (w) { w.oninput = () => { $('#ogDelOk').disabled = w.value.trim().length < 3; }; w.focus(); } }, 60);
   }
