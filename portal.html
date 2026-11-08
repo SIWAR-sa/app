@@ -3483,6 +3483,7 @@ addEventListener('keydown',function(e){if(e.key==='F5'||((e.ctrlKey||e.metaKey)&
 async function ptrRefresh(done) {
   if (S.inApp && S.sysOn) { try { window.top.postMessage({ siwar: 'reloadCur' }, '*'); } catch (e) {} done(); return; }
   if (S.screen !== 'home' || !S.token || document.querySelector('.modal.open')) { done(); return; }
+  if (S.inApp && SHELL) { try { window.top.postMessage({ siwar: 'chkUpd' }, SHELL); } catch (e) {} }   // (v90) السحب للتحديث يفحص نسخة التطبيق أيضاً
   const pend = loadPending(true);
   try {
     const d = await api('init', {});
