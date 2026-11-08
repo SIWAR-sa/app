@@ -1,12 +1,19 @@
 /* عامل الخدمة: يحفظ ملفات صفحة التطبيق وسوار الثابتة فقط (لا يحفظ أي بيانات من سوار أو البرامج).
    النسخة المحفوظة تُعرض فوراً، وأي تحديث على GitHub يصل في الفتح التالي.
    إشعارات الجوال: الإشعار يصل بلا محتوى، فيطلب العامل نصوصه من سوار برمز هذا الجهاز (المحفوظ في siwar-push) ثم يعرضها. */
-const CACHE = 'siwar-app-v93';
+const CACHE = 'siwar-app-v94';   // يساوي دائماً APPV في index.html (يُرفعان معاً)
 const PUSHC = 'siwar-push', PUSHK = './__push';
 const FILES = ['./', './index.html', './portal.html', './config.js', './manifest.webmanifest?v=89', './icons/logo.webp'];
 
+// (v94) الجلب من GitHub بمعامل فريد (?sw=…): لا يأتي من ذاكرة المتصفح ولا من نسخة قديمة في شبكة GitHub الوسيطة،
+// فتتطابق ملفات العامل الجديد مع نسخته، ولا يتبدل المحفوظ بين نسخة قديمة وجديدة (فتعود البطاقة). يُحفظ كل ملف باسمه المعتاد
+const bust = u => u + (u.indexOf('?') < 0 ? '?' : '&') + 'sw=' + Date.now().toString(36);
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES.map(f => new Request(f, { cache: 'reload' })))).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then(c => Promise.all(FILES.map(f =>
+    fetch(new Request(bust(f), { cache: 'reload' })).then(r => {
+      if (!r.ok) throw new Error(f);
+      return c.put(f, r);
+    })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {
@@ -22,11 +29,12 @@ self.addEventListener('fetch', e => {
   // من ذاكرة الجهاز فوراً، والتحديث من GitHub يُحفظ في الخلفية ويظهر في الفتح التالي
   // (v84) الجلب في الخلفية يتجاوز ذاكرة المتصفح (cache:'reload') فيصل أحدث ملف مباشرة لا نسخة وسيطة،
   // وإن اختلف عن المحفوظ تُبلَّغ الصفحات بوجود نسخة أحدث (ليعرض التطبيق بطاقة التحديث، وضغطة واحدة تفتح الأحدث)
+  const shell = /\/($|index\.html$|portal\.html$|config\.js$)/.test(url.pathname);
   e.respondWith(caches.open(CACHE).then(c => c.match(key).then(hit => {
-    const net = fetch(new Request(url.href, { cache: 'reload', credentials: 'same-origin' })).then(r => {
+    const net = fetch(new Request(shell ? bust(url.href) : url.href, { cache: 'reload', credentials: 'same-origin' })).then(r => {
       if (r && r.ok) {
         const fresh = r.clone();
-        const put = (hit && /\/($|index\.html$|portal\.html$|config\.js$)/.test(url.pathname))
+        const put = (hit && shell)
           ? Promise.all([hit.clone().text(), fresh.clone().text()]).then(t => c.put(key, fresh).then(() => { if (t[0] !== t[1]) newer(url.pathname); }))
           : c.put(key, fresh);
         e.waitUntil(put.catch(() => {}));
@@ -42,7 +50,11 @@ function newer(path) {
   return self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => list.forEach(cl => { try { cl.postMessage({ siwar: 'newer', path: path }); } catch (x) {} }));
 }
 // «تحديث الآن»: الصفحة تطلب تفعيل العامل الجديد إن كان ينتظر
-self.addEventListener('message', e => { if (e.data && e.data.siwar === 'skip') self.skipWaiting(); });
+self.addEventListener('message', e => {
+  if (e.data && e.data.siwar === 'skip') self.skipWaiting();
+  // (v94) رقم نسخة هذا العامل: الصفحة لا تعرض بطاقة التحديث لعامل بنسختها نفسها
+  if (e.data && e.data.siwar === 'ver' && e.ports && e.ports[0]) e.ports[0].postMessage({ v: CACHE });
+});
 
 /* ── إشعارات الجوال ── */
 function pushCfg() { return caches.open(PUSHC).then(c => c.match(PUSHK)).then(r => r ? r.json() : null).catch(() => null); }

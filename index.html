@@ -552,19 +552,39 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   /* (v84) نسخة جديدة: عامل خدمة جديد (فحص كل 30 دقيقة وعند العودة للنافذة)، أو ملف تغيّر على GitHub (رسالة newer من العامل)،
      أو بصمة سوار تغيّرت (رسالة upd من سوار). تظهر بطاقة واحدة، و«تحديث الآن» يمسح ملفات التطبيق المحفوظة ويعيد التحميل على نفس المكان */
   var swr = null, swAt = Date.now(), updGoing = false;
+  /* (v94) رقم نسخة هذه الصفحة، ويساوي دائماً رقم CACHE في sw.js (يُرفعان معاً). عامل خدمة جديد بالرقم نفسه ليس تحديثاً:
+     الصفحة الظاهرة هي هذه النسخة أصلاً (أول فتح، أو إعادة التحميل بعد «تحديث الآن») فلا تظهر البطاقة */
+  var APPV = 94;
   function updFound(src) { if (!updGoing && window.SiwarUpd) SiwarUpd.signal(src); }
+  // رقم نسخة عامل الخدمة (العامل القديم قبل v94 لا يرد → 0 = غير معروف)
+  function swVer(w) {
+    return new Promise(function (res) {
+      if (!w || !window.MessageChannel) { res(0); return; }
+      var ch = new MessageChannel(), t = setTimeout(function () { res(0); }, 1500);
+      ch.port1.onmessage = function (e) { clearTimeout(t); res(Number((/v(\d+)$/.exec(String(e.data && e.data.v || '')) || [])[1]) || 0); };
+      try { w.postMessage({ siwar: 'ver' }, [ch.port2]); } catch (x) { clearTimeout(t); res(0); }
+    });
+  }
   if (window.SiwarUpd) SiwarUpd.lang = function () { return LANG; };
   if ('serviceWorker' in navigator) {
-    var hadCtl = !!navigator.serviceWorker.controller;
+    /* (v94) أول فتح أو أول تثبيت: لا عامل خدمة قبل هذه الصفحة، فالعامل الأول الذي يُثبَّت ويتولى الصفحة (clients.claim) ليس تحديثاً.
+       كان v93 يُظهر البطاقة هنا: controllerchange يجعل hadCtl صحيحاً ثم يصل statechange «activated» للعامل نفسه فيُعَدّ تحديثاً */
+    var hadCtl = !!navigator.serviceWorker.controller, firstW = null;
+    var swNew = function (w) {
+      if (!w || updGoing) return;
+      if (!hadCtl && (!firstW || firstW === w)) { firstW = w; return; }
+      swVer(w).then(function (v) { if (!v || v > APPV) updFound('sw'); });
+    };
     navigator.serviceWorker.register('sw.js').then(function (reg) {
       swr = reg;
-      if (reg.waiting && hadCtl) updFound('sw');
+      if (!hadCtl && !firstW) firstW = reg.installing || reg.waiting || reg.active;
+      if (reg.waiting) swNew(reg.waiting);
       reg.addEventListener('updatefound', function () {
         var w = reg.installing; if (!w) return;
-        w.addEventListener('statechange', function () { if (hadCtl && (w.state === 'installed' || w.state === 'activated')) updFound('sw'); });
+        w.addEventListener('statechange', function () { if (w.state === 'installed' || w.state === 'activated') swNew(w); });
       });
     }).catch(function () {});
-    navigator.serviceWorker.addEventListener('controllerchange', function () { if (hadCtl) updFound('sw'); hadCtl = true; });
+    navigator.serviceWorker.addEventListener('controllerchange', function () { swNew(navigator.serviceWorker.controller); });
     navigator.serviceWorker.addEventListener('message', function (e) { var d = e.data || {}; if (d.siwar === 'newer') updFound('sw'); });
     var swCheck = function (force) {
       if (!swr || document.hidden) return;
@@ -577,14 +597,38 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   }
   if (window.SiwarUpd) SiwarUpd.onGo = function () {
     updGoing = true; SiwarUpd.hide();
+    try { localStorage.setItem('siwar_upd_done', String(Date.now())); } catch (e) {}   // (v94) رسالة «تم التحديث» بعد البطاقة أيضاً، لا بعد F5 فقط
     $('splash').className = '';   // شاشة التحميل الموحدة
     if ($('prog').className === 'on' && cur) curSave(cur);   // إعادة التحميل تفتح النظام نفسه على نفس الصفحة
-    var done = false, fin = function () { if (done) return; done = true; location.reload(); }, jobs = [];
-    if (swr && swr.waiting) try { swr.waiting.postMessage({ siwar: 'skip' }); } catch (e) {}
-    if (window.caches) jobs.push(caches.keys().then(function (ks) { return Promise.all(ks.filter(function (k) { return /^siwar-app-/.test(k); }).map(function (k) { return caches.delete(k); })); }));
-    if (swr) jobs.push(swr.update().catch(function () {}));
-    Promise.all(jobs).then(fin, fin); setTimeout(fin, 4000);
+    /* (v94) ضغطة واحدة تصل إلى أحدث نسخة: يُفحص وجود عامل أحدث، ويُنتظر حتى يتولى، ثم يُفحص مرة أخرى (نُشرت عدة نسخ متتالية)،
+       وبعدها فقط إعادة التحميل الواحدة. ملفات العامل الأحدث تبقى (جُلبت من GitHub مباشرة عند تثبيته) وتُحذف النسخ الأقدم */
+    var done = false, fin = function () { if (done) return; done = true; location.reload(); };
+    setTimeout(fin, 15000);
+    swSettle(3).then(function (ok) {
+      if (!window.caches) return;
+      return (ok && swr && swr.active ? swVer(swr.active) : Promise.resolve(0)).then(function (v) {
+        var keep = v ? 'siwar-app-v' + v : '';
+        return caches.keys().then(function (ks) { return Promise.all(ks.filter(function (k) { return /^siwar-app-/.test(k) && k !== keep; }).map(function (k) { return caches.delete(k); })); });
+      });
+    }).then(fin, fin);
   };
+  // يجعل أحدث عامل خدمة هو المتولي: true إن لم يبقَ عامل قيد التثبيت أو الانتظار
+  function swSettle(n) {
+    if (!swr) return Promise.resolve(false);
+    return swr.update().catch(function () {}).then(function () {
+      var w = swr.installing || swr.waiting;
+      if (!w) return true;
+      if (n <= 1) return false;
+      return new Promise(function (res) {
+        var t = setTimeout(function () { res(false); }, 10000);
+        var chk = function () {
+          if (w.state === 'activated' || w.state === 'redundant') { clearTimeout(t); res(true); }
+          else if (w.state === 'installed') try { w.postMessage({ siwar: 'skip' }); } catch (e) {}
+        };
+        w.addEventListener('statechange', chk); chk();
+      }).then(function (ok) { return ok ? swSettle(n - 1) : false; });
+    });
+  }
 
   /* ── سوار ── */
   if (!/^https:\/\/script\.google\.com\/.+\/exec$/.test(PORTAL)) {
@@ -773,11 +817,20 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     s.f.className = 'pf' + (cur === id && $('prog').className === 'on' ? ' cur' : '');
     sendAlive(); syncPause();
   }
-  function relaunchSoft(id) {
+  function relaunchSoft(id, now) {
     var o = frames[id];
     if (SIL[id]) return;
+    /* (v94) النظام طلب إعادة الفتح (واجهة أحدث) وهو لم يجهز بعد، كما بعد «تحديث الآن» حين يُفتح من شاشته المحفوظة:
+       يُنتظر «جاهز» ثم التبديل الصامت، بدل شاشة فتح ثانية ظاهرة. إن لم يجهز خلال 6 ث يُعاد فتحه كما كان */
+    if (o && !o.ready && !o.sil && !offline() && now !== 1) {
+      if (!o.rl) o.rl = setTimeout(function () {
+        o.rl = 0; if (frames[id] !== o || o.ready) return;
+        if (cur === id && $('prog').className === 'on') relaunch(id, true); else dropFrame(id);   // في الخلفية: يُغلق ويُفتح من جديد عند لمسه
+      }, 6000);
+      return;
+    }
     if (!o || !o.ready || o.sil || offline()) { relaunch(id, false); return; }
-    if (Date.now() - relT < 1500) return; relT = Date.now();
+    if (now !== 1 && Date.now() - relT < 1500) return; relT = Date.now();
     SIL[id] = o; delete frames[id];
     pStart(id, 'silent');
     toPortal({ siwar: 'relaunch', id: id, go: o.go || '' });
@@ -853,6 +906,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     if (!o.ready) { pMark(id, 'ready'); pEnd(id, how || (o.late ? 'late' : 'ok')); }
     o.ready = true; rt[id] = 0; clearTimeout(o.wd); clearTimeout(o.wd3); if (o.uf === uf) { try { localStorage.setItem(UFK, uf); } catch (e) {} }
     if (o.sil) silSwap(id);
+    if (o.rl) { clearTimeout(o.rl); o.rl = 0; setTimeout(function () { if (frames[id] === o && cur === id) relaunchSoft(id, 1); }, 0); }
     if (cur === id) loaderDone();
     if (SN && SN.id === id) snapDone(id);
     if (o.nav) sendAlive();
@@ -1088,7 +1142,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
       if (d.siwar === 'dropFrames') { hideLayer(false); Object.keys(frames).forEach(dropFrame); return; }   // بعد تغيير كلمة المرور: جلسات الأنظمة انتهت فتُغلق شاشاتها وتُفتح من جديد بتذاكر جديدة
       if (d.siwar === 'pushOpen') { if (d.lang) applyLang(String(d.lang)); pushOpen(); return; }
       if (d.siwar === 'pushRes') { pushGot(d); return; }
-      if (d.siwar === 'reloadCur') { if ($('prog').className === 'on' && cur) refreshCur(cur); return; }
+      if (d.siwar === 'reloadCur') { if ($('prog').className === 'on' && cur) { if (updPend()) updGo(); else refreshCur(cur); } return; }
       if (d.siwar === 'chkUpd') { updNow(); return; }
       if (d.siwar === 'nav') { navLive(id, String(d.go || ''), String(d.n || '').slice(0, 40)); return; }
     }
@@ -1229,7 +1283,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     if (!(e.key === 'F5' || ((e.ctrlKey || e.metaKey) && !e.shiftKey && /^[rRق]$/.test(e.key)))) return;
     if (!portalWin()) return;
     e.preventDefault();
-    if ($('prog').className === 'on' && cur) refreshCur(cur);
+    if ($('prog').className === 'on' && cur) { if (updPend()) updGo(); else refreshCur(cur); }
     else { toPortal({ siwar: 'refresh' }); updNow(); }
   });
   /* (v90) زر التحديث بضغطة واحدة: النظام المفتوح يُسأل أولاً {siwar:'refresh'}؛ إن ردّ refreshok يحدّث بياناته بنفسه
@@ -1242,21 +1296,18 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     try { o.lw.postMessage({ siwar: 'refresh', v: 1 }, '*'); } catch (e) { relaunchSoft(id); return; }
     o.rfT = setTimeout(function () { o.rfT = 0; if (cur === id && frames[id] === o) relaunchSoft(id); }, 800);
   }
-  function updGo() { try { localStorage.setItem('siwar_upd_done', String(Date.now())); } catch (e) {} SiwarUpd.onGo(); }
+  function updGo() { SiwarUpd.onGo(); }
+  /* (v94) نسخة أحدث معروفة (البطاقة متاحة أو عامل ينتظر) والنظام مفتوح: F5 أو السحب للتحديث يطبّقها في الضغطة نفسها،
+     وإعادة التحميل الواحدة تفتح النظام نفسه بواجهته الأحدث، بدل تحديث النظام وحده ثم ضغطة ثانية على البطاقة */
+  function updPend() { return !updGoing && !offline() && !!window.SiwarUpd && !!SiwarUpd.onGo && (SiwarUpd.avail || !!(swr && swr.waiting)); }
   function updNow() {
     if (updGoing || !window.SiwarUpd || !SiwarUpd.onGo || offline()) return;
     if (SiwarUpd.avail || (swr && swr.waiting)) { updGo(); return; }
     if (!swr) return;
     swAt = Date.now();
     swr.update().then(function () {
-      if (updGoing) return;
-      if (swr.waiting) { updGo(); return; }
-      // (v91) الملفات الجديدة ما زالت تُحفظ على الجهاز: تُنتظر حتى تكتمل ثم إعادة التحميل الواحدة، فيفتح التطبيق على العامل الجديد
-      // ولا تعود بطاقة «نسخة جديدة» بعد التحديث تطلب ضغطة ثانية (كان يعيد التحميل والعامل الجديد لم يكتمل)
-      var w = swr.installing; if (!w) return;
-      var t = 0, go = function () { if (t < 0) return; clearTimeout(t); t = -1; if (!updGoing) updGo(); };
-      t = setTimeout(go, 10000);
-      w.addEventListener('statechange', function () { if (w.state !== 'installing') go(); });
+      // (v94) عامل أحدث يُثبَّت أو ينتظر: «تحديث الآن» نفسه (onGo) ينتظره حتى يتولى ويفحص مرة أخرى قبل إعادة التحميل الواحدة
+      if (!updGoing && (swr.installing || swr.waiting)) updGo();
     }).catch(function () {});
   }
   (function () {
