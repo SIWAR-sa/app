@@ -350,19 +350,34 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     '#sUp.dk .sUp-x{color:#B9B0A6}#sUp.dk .sUp-x:hover{background:rgba(255,255,255,.08)}' +
     '@media (max-width:640px){#sUp{bottom:calc(84px + env(safe-area-inset-bottom,0px));height:46px;gap:8px}#sUp .sUp-m{width:32px;height:32px}#sUp .sUp-m img{width:28px}' +
     '#sUp .sUp-t{font-size:12.5px}#sUp .sUp-go{height:36px;padding:0 14px;font-size:13px}#sUp .sUp-x{width:28px;height:28px;font-size:17px}}' +
-    '#sUpv{position:fixed;inset:0;z-index:2147483640;display:grid;place-items:center;opacity:0;transition:opacity .25s ease;cursor:progress;touch-action:none;' +
-    'background:rgba(46,38,30,.38);-webkit-backdrop-filter:blur(5px) saturate(80%);backdrop-filter:blur(5px) saturate(80%)}#sUpv.on{opacity:1}' +
-    '#sUpv .sUpv-c{padding:26px 34px 24px;border-radius:24px;background:linear-gradient(180deg,rgba(255,253,249,.97),rgba(250,243,233,.95));border:1px solid rgba(201,156,78,.42);' +
-    'box-shadow:inset 0 1px 0 #fff,0 18px 40px -14px rgba(40,30,18,.55),0 40px 70px -40px rgba(40,30,18,.5)}' +
-    '#sUpv .sUpv-t{font-size:14px;font-weight:700;color:#2E2A27;letter-spacing:.1px}' +
-    '#sUpv.dk .sUpv-c{background:linear-gradient(180deg,rgba(40,42,50,.97),rgba(26,27,33,.96));border-color:rgba(227,182,109,.38);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px 40px -14px rgba(0,0,0,.75)}' +
-    '#sUpv.dk[data-dk=black] .sUpv-c{background:linear-gradient(180deg,rgba(22,22,24,.98),rgba(8,8,9,.97))}#sUpv.dk[data-dk=cur] .sUpv-c{background:linear-gradient(180deg,rgba(26,36,64,.97),rgba(14,21,42,.96))}' +
-    '#sUpv.dk .sUpv-t{color:#F3EEE6}#sUpv.dk{background:rgba(0,0,0,.5)}' +
-    '@media (max-width:640px){#sUpv .sUpv-c{padding:20px 26px 18px;gap:18px!important}#sUpv img{width:min(170px,50vw)!important}#sUpv .sUpv-t{font-size:12.5px}}' +
-    '#sUpv .sUpv-c{display:flex;flex-direction:column;align-items:center;gap:22px}#sUpv img{width:min(200px,56vw);height:auto}' +
-    '#sUpv .sUpv-b{width:120px;height:3px;border-radius:3px;background:rgba(194,146,63,.15);overflow:hidden}' +
-    '#sUpv .sUpv-b i{display:block;width:40%;height:100%;border-radius:3px;background:linear-gradient(90deg,#E3B66D,#E2A6A4);animation:sUpRun 1.3s ease-in-out infinite}' +
-                '@keyframes sUpRun{0%{transform:translateX(-110%)}100%{transform:translateX(260%)}}' +
+    '#sUpv{position:fixed;inset:0;z-index:2147483640;display:grid;place-items:center;opacity:0;transition:opacity .3s ease;cursor:progress;touch-action:none;' +
+    'background:rgba(20,16,12,.68)}#sUpv.on{opacity:1}' +
+    '#sUpv .sUpv-c{position:relative;width:min(340px,calc(100vw - 40px));padding:22px 24px 20px;border-radius:26px;text-align:center;font-family:inherit;' +
+    'background:linear-gradient(180deg,#FFFDF9,#FAF2E6);border:1px solid rgba(201,156,78,.5);' +
+    'box-shadow:inset 0 1px 0 #fff,inset 0 -2px 0 rgba(160,120,60,.12),0 26px 60px -18px rgba(0,0,0,.6),0 0 0 6px rgba(255,248,236,.08);transform:translateY(8px) scale(.97);transition:transform .45s cubic-bezier(.2,.9,.3,1.2)}' +
+    '#sUpv.on .sUpv-c{transform:none}' +
+    '#sUpv .sUpv-art{position:relative;width:150px;height:104px;margin:0 auto 6px}' +
+    '#sUpv .sUpv-art svg{position:absolute;overflow:visible}' +
+    '#sUpv .g1{width:74px;height:74px;left:22px;top:20px;animation:sUpSpin 3.2s linear infinite}' +
+    '#sUpv .g2{width:46px;height:46px;left:86px;top:8px;animation:sUpSpin 2s linear infinite reverse}' +
+    '#sUpv .g3{width:34px;height:34px;left:92px;top:58px;animation:sUpSpin 1.6s linear infinite}' +
+    '#sUpv .sUpv-sp{position:absolute;width:7px;height:7px;border-radius:50%;background:#E3B66D;opacity:0;animation:sUpPop 2.4s ease-in-out infinite}' +
+    '#sUpv .sp1{left:10px;top:12px}#sUpv .sp2{right:6px;top:40px;animation-delay:.8s;background:#E2A6A4}#sUpv .sp3{left:16px;bottom:6px;animation-delay:1.6s;width:5px;height:5px}' +
+    '#sUpv .sUpv-t{font-size:16px;font-weight:800;color:#2E2A27;letter-spacing:.1px;margin-bottom:4px}' +
+    '#sUpv .sUpv-m{font-size:13px;font-weight:600;color:#7A6A58;min-height:20px;transition:opacity .35s}' +
+    '#sUpv .sUpv-m.out{opacity:0}' +
+    '#sUpv .sUpv-d{display:flex;justify-content:center;gap:6px;margin-top:14px}' +
+    '#sUpv .sUpv-d i{width:8px;height:8px;border-radius:50%;background:#D9A955;animation:sUpHop 1.2s ease-in-out infinite}' +
+    '#sUpv .sUpv-d i:nth-child(2){animation-delay:.15s;background:#E2A6A4}#sUpv .sUpv-d i:nth-child(3){animation-delay:.3s;background:#B8935A}' +
+    '#sUpv .sUpv-n{margin-top:12px;font-size:11.5px;color:#9A8B7C}' +
+    '#sUpv.dk .sUpv-c{background:linear-gradient(180deg,#2A2C33,#1C1D22);border-color:rgba(227,182,109,.4)}#sUpv.dk[data-dk=black] .sUpv-c{background:linear-gradient(180deg,#1B1B1D,#0C0C0D)}' +
+    '#sUpv.dk[data-dk=cur] .sUpv-c{background:linear-gradient(180deg,#1E2A4C,#121A33)}#sUpv.dk .sUpv-t{color:#F3EEE6}#sUpv.dk .sUpv-m{color:#C9BBA8}#sUpv.dk .sUpv-n{color:#8E8478}' +
+    '#sUpv.dk{background:rgba(0,0,0,.66)}' +
+    '@media (max-width:640px){#sUpv .sUpv-c{padding:18px 18px 16px;border-radius:22px}#sUpv .sUpv-art{transform:scale(.85);margin:-6px auto 0}#sUpv .sUpv-t{font-size:14px}#sUpv .sUpv-m{font-size:12px}#sUpv .sUpv-n{font-size:11px}}' +
+    '@keyframes sUpPop{0%,100%{opacity:0;transform:scale(.3)}40%{opacity:1;transform:scale(1.15)}70%{opacity:.6;transform:scale(.9)}}' +
+    '@keyframes sUpHop{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-7px)}}' +
+    '@media (prefers-reduced-motion:reduce){#sUpv *{animation-duration:6s!important}}' +
+    '@keyframes sUpRun{0%{transform:translateX(-110%)}100%{transform:translateX(260%)}}' +
     '@keyframes sUpIn{from{transform:translate(-50%,16px) scale(.96);opacity:0}to{transform:translateX(-50%);opacity:1}}' +
     '@keyframes sUpOut{to{transform:translate(-50%,12px) scale(.96);opacity:0}}@keyframes sUpSpin{to{transform:rotate(360deg)}}' +
     '@media (prefers-reduced-motion:reduce){#sUp,#sUp *,#sUp .sUp-m::after{animation:none!important}}';
@@ -443,14 +458,21 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   // (v108 · طلب محمد) أثناء التحديث: طبقة باهتة على الشاشة كلها تمنع العمل حتى ينتهي التحديث فعلاً (لا لمس ولا كتابة)
   function stopEv(e) { if (PV) { e.preventDefault(); e.stopPropagation(); } }
   U.load = function (on) {
-    if (!on) { clearTimeout(LT); LT = 0; var p = PV; PV = U.pv = null; if (p) { p.classList.remove('on'); setTimeout(function () { if (p.parentNode) p.parentNode.removeChild(p); }, 300); } return; }
+    if (!on) { clearTimeout(LT); LT = 0; var p = PV; PV = U.pv = null; if (p) { clearInterval(p.__mt); p.classList.remove('on'); setTimeout(function () { if (p.parentNode) p.parentNode.removeChild(p); }, 300); } return; }
     if (PV) return;
     css();
     var el = document.createElement('div'), lg = '', en = U.lang() === 'en';
     try { lg = String(U.logo() || ''); } catch (e) {}
     el.id = 'sUpv'; el.setAttribute('role', 'progressbar'); el.setAttribute('aria-busy', 'true'); el.setAttribute('aria-label', en ? 'Updating' : 'جارٍ التحديث');
     el.dir = en ? 'ltr' : 'rtl'; el.lang = en ? 'en' : 'ar';
-    el.innerHTML = '<div class="sUpv-c">' + (lg ? '<img alt="سوار | SIWAR" src="' + lg.replace(/"/g, '&quot;') + '">' : '') + '<div class="sUpv-b"><i></i></div><div class="sUpv-t">' + (en ? 'Updating…' : 'جارٍ التحديث…') + '</div></div>';
+    var GEAR = (function () { var d = '', n = 10; for (var i = 0; i < n; i++) { var a0 = i * 2 * Math.PI / n, a1 = a0 + Math.PI / n * .55, a2 = a0 + Math.PI / n, a3 = a2 + Math.PI / n * .45; d += (i ? 'L' : 'M') + (44 * Math.cos(a0)).toFixed(1) + ' ' + (44 * Math.sin(a0)).toFixed(1) + 'L' + (44 * Math.cos(a1)).toFixed(1) + ' ' + (44 * Math.sin(a1)).toFixed(1) + 'L' + (34 * Math.cos(a2)).toFixed(1) + ' ' + (34 * Math.sin(a2)).toFixed(1) + 'L' + (34 * Math.cos(a3)).toFixed(1) + ' ' + (34 * Math.sin(a3)).toFixed(1); } return d + 'Z'; })();
+    var gsv = function (c, f1, f2) { return '<svg viewBox="-50 -50 100 100" class="' + c + '"><path fill="' + f1 + '" d="' + GEAR + '"/><circle r="15" fill="#FFF8EC"/><circle r="6" fill="' + f2 + '"/></svg>'; };
+    var MS = en ? ['Bringing you the newest version…', 'Tightening the last screws…', 'Polishing the screens…', 'Almost there — a few seconds…'] : ['نجهّز لك أحدث نسخة…', 'نشدّ آخر المسامير…', 'نلمّع الشاشات…', 'قربنا… ثوانٍ ونكمل'];
+    el.innerHTML = '<div class="sUpv-c"><div class="sUpv-art" aria-hidden="true">' + gsv('g1', '#D9A955', '#B8862F') + gsv('g2', '#E2A6A4', '#C27E7C') + gsv('g3', '#B8935A', '#8C6A33') +
+      '<i class="sUpv-sp sp1"></i><i class="sUpv-sp sp2"></i><i class="sUpv-sp sp3"></i></div>' +
+      '<div class="sUpv-t">' + (en ? 'Updating SIWAR' : 'جارٍ تحديث سوار') + '</div><div class="sUpv-m">' + MS[0] + '</div>' +
+      '<div class="sUpv-d" aria-hidden="true"><i></i><i></i><i></i></div><div class="sUpv-n">' + (en ? 'The screen comes back by itself when done' : 'الشاشة ترجع لوحدها بعد التحديث') + '</div></div>';
+    var mi = 0, mEl = el.querySelector('.sUpv-m'); el.__mt = setInterval(function () { if (!el.parentNode) { clearInterval(el.__mt); return; } mEl.classList.add('out'); setTimeout(function () { mi = (mi + 1) % MS.length; mEl.textContent = MS[mi]; mEl.classList.remove('out'); }, 350); }, 2600);
     ['pointerdown', 'pointerup', 'click', 'touchstart', 'touchmove', 'wheel', 'contextmenu'].forEach(function (ev) { el.addEventListener(ev, stopEv, { capture: true, passive: false }); });
     tone(el); document.body.appendChild(el); PV = U.pv = el; void el.offsetWidth; el.classList.add('on');
     try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (e) {}
@@ -552,7 +574,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   var swr = null, swAt = Date.now(), updGoing = false, swReady = null, swRes = null;
   swReady = new Promise(function (r) { swRes = r; });
   /* (v94) رقم نسخة هذه الصفحة، ويساوي دائماً رقم CACHE في sw.js (يُرفعان معاً) */
-  var APPV = 108;
+  var APPV = 109;
   var UFL = 'siwar_upd_flow', UPN = 'siwar_upd_pend';
   function lsj(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} return null; }
   /* (v107) كوادر والتحليلات والمخازن والرقابة: كل نظام يقارن بصمة واجهته المنشورة بما فُتح به، ويبلّغ مرة واحدة (upd) وهو غير مشغول.
