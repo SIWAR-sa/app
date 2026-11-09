@@ -574,7 +574,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   var swr = null, swAt = Date.now(), updGoing = false, swReady = null, swRes = null;
   swReady = new Promise(function (r) { swRes = r; });
   /* (v94) رقم نسخة هذه الصفحة، ويساوي دائماً رقم CACHE في sw.js (يُرفعان معاً) */
-  var APPV = 111;
+  var APPV = 112;
   var UFL = 'siwar_upd_flow', UPN = 'siwar_upd_pend';
   function lsj(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} return null; }
   /* (v107) كوادر والتحليلات والمخازن والرقابة: كل نظام يقارن بصمة واجهته المنشورة بما فُتح به، ويبلّغ مرة واحدة (upd) وهو غير مشغول.
@@ -590,7 +590,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     if (!updAutoOk() || !window.SiwarUpd || SiwarUpd.going || !SiwarUpd.avail) return;
     try { if (SiwarUpd.busy && SiwarUpd.busy()) return; } catch (e) {}
     SiwarUpd.going = true; SiwarUpd.hide();
-    try { SiwarUpd.onGo(); } catch (e) { location.reload(); }
+    try { if (!UPFULL && !(swr && swr.waiting) && Object.keys(UPF).length) updFrames(true); else updRun(true); } catch (e) { location.reload(); }
   }
   function updFound(src, win) {
     if (updAutoOk()) setTimeout(updAuto, 0);
@@ -674,8 +674,10 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   if (window.SiwarUpd) SiwarUpd.onGo = function () { if (!UPFULL && !(swr && swr.waiting) && Object.keys(UPF).length) updFrames(); else updRun(false); };
   /* (v107) تحديث نظام بعينه: النظام الظاهر يُفتح من جديد خلف شاشته الحالية ويحل محلها حين يجهز (شاشة التحميل الموحدة فوقه إن طال الانتظار ثانية)،
      والأنظمة المفتوحة في الخلفية تُغلق فتُفتح بأحدث نسخة عند لمسها. رابط النظام يقدّم دائماً آخر نسخة منشورة، فهي قفزة واحدة مهما تعدد النشر */
-  function updFrames() {
-    if (updGoing) return;
+  // quiet: تحديث عند الفتح (قبل أي عمل) — بلا شاشة تحديث ولا رسالة «تم التحديث»؛ شاشة الفتح العادية وحدها
+  var UPQ = false;
+  function updFrames(quiet) {
+    if (updGoing) return; UPQ = !!quiet;
     if (upBusy() || offline()) { SiwarUpd.going = false; SiwarUpd.recheck(); return; }
     updGoing = true;
     var ids = Object.keys(UPF), on = $('prog').className === 'on' ? cur : '', wait = [];
@@ -689,7 +691,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
       else dropFrame(id);
     });
     if (!wait.length) { updFramesDone(true); return; }
-    SiwarUpd.load(true);
+    if (!UPQ) SiwarUpd.load(true);
     UPW = { ids: wait, end: setTimeout(function () { updFramesDone(false); }, 25000) };
   }
   function updFramesDone(ok, retry) {
@@ -697,7 +699,8 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     UPW = null; updGoing = false;
     if (window.SiwarUpd) { SiwarUpd.load(false); SiwarUpd.going = false; SiwarUpd.avail = false; SiwarUpd.src = ''; }
     if (retry) { Object.keys(retry).forEach(function (id) { UPF[id] = { s: retry[id], t: Date.now() }; }); SiwarUpd.signal(retry[Object.keys(retry)[0]]); return; }
-    if (ok) setTimeout(function () { snapToast(LANG === 'en' ? 'Updated to the latest version.' : 'تم التحديث إلى أحدث إصدار.'); }, 300);
+    if (ok && !UPQ) setTimeout(function () { snapToast(LANG === 'en' ? 'Updated to the latest version.' : 'تم التحديث إلى أحدث إصدار.'); }, 300);
+    UPQ = false;
   }
   // النظام فُتح من جديد بعد إشارته بطريق آخر (طلبه هو إعادة الفتح، أو أُغلق وفُتح): صار على أحدث نسخة فلا حاجة للزر من أجله
   function updFrameNew(id) {
@@ -714,10 +717,10 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   /* التحديث نفسه (الضغطة، أو بصمت عند فتح التطبيق): المرحلة 1 قبل إعادة التحميل الواحدة */
   function updRun(silent) {
     if (updGoing) return; updGoing = true;
-    if (window.SiwarUpd) { SiwarUpd.hide(); SiwarUpd.load(true); }   // شاشة التحميل الموحدة إن طال الانتظار ثانية فأكثر
+    if (window.SiwarUpd) { SiwarUpd.hide(); if (!silent) SiwarUpd.load(true); }   // التحديث بالزر: شاشة التحديث؛ وعند الفتح (silent) بلا شاشة
     var fl = lsj(UFL) || {}; fl = { t: Date.now(), n: (Date.now() - (fl.t || 0) < 120000 ? fl.n || 0 : 0) + 1, s: silent ? 1 : 0 };
     lsj(UFL, fl); lsj(UPN, null);
-    try { localStorage.setItem('siwar_upd_done', String(Date.now())); } catch (e) {}   // رسالة «تم التحديث إلى أحدث إصدار» بعد إعادة التحميل
+    if (!silent) try { localStorage.setItem('siwar_upd_done', String(Date.now())); } catch (e) {}   // رسالة «تم التحديث إلى أحدث إصدار» بعد إعادة التحميل (بالزر فقط)
     if ($('prog').className === 'on' && cur) curSave(cur);   // إعادة التحميل تفتح النظام نفسه على نفس الصفحة
     var done = false, fin = function () { if (done) return; done = true; location.reload(); };
     setTimeout(fin, 25000);
