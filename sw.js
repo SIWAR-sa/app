@@ -1,13 +1,13 @@
 /* عامل الخدمة: يحفظ ملفات صفحة التطبيق وسوار الثابتة فقط (لا يحفظ أي بيانات من سوار أو البرامج).
    النسخة المحفوظة تُعرض فوراً، وأي تحديث على GitHub يصل في الفتح التالي.
    إشعارات الجوال: الإشعار يصل بلا محتوى، فيطلب العامل نصوصه من سوار برمز هذا الجهاز (المحفوظ في siwar-push) ثم يعرضها. */
-const CACHE = 'siwar-app-v118';   // يساوي دائماً APPV في index.html (يُرفعان معاً)
+const CACHE = 'siwar-app-v119';   // يساوي دائماً APPV في index.html (يُرفعان معاً)
 const PUSHC = 'siwar-push', PUSHK = './__push';
 /* (UP) بصمة كل ملف (أول 16 حرفاً من sha256 لمحتواه) تُختم هنا عند كل إصدار (stamp_sw.js). عند تثبيت عامل جديد يُنزَّل الملف الذي تغيّرت بصمته فقط،
    وغير المتغيّر يُنسخ من النسخة المحفوظة على الجهاز. ولا يُعاد تنزيل ملفات التطبيق في كل فتح: النسخة المحفوظة ببصمتها هي الأحدث،
    والتحديث يصل بعامل جديد (sw.js صغير يفحصه المتصفح). فحص احتياطي مرة كل 24 ساعة بطلب مشروط (304 بلا محتوى إن لم يتغيّر) */
 const FILES = {
-  './': 'f82e3eeff9d26e75', './index.html': 'f82e3eeff9d26e75', './portal.html': 'd058fa52e88190a0', './config.js': 'c0607a481ed95db2',
+  './': 'a5d79332c78770f7', './index.html': 'a5d79332c78770f7', './portal.html': 'd058fa52e88190a0', './config.js': 'c0607a481ed95db2',
   './manifest.webmanifest?v=89': 'bf12bd9f809e10dc', './icons/logo.webp': '8b1d4d5eac530863'
 };
 const HK = f => './__h/' + f.replace(/^\.\//, '').replace(/[?=]/g, '_');
@@ -24,8 +24,12 @@ async function reuse(f, h) {
   }
   return null;
 }
+// (v119) رقم هذا العامل: لا يُثبَّت عامل أقدم من نسخة موجودة على الجهاز (الخادم الوسيط قد يقدّم sw.js قديماً لدقائق بعد النشر — كان يسبب تحديثاً ذهاباً وإياباً)
+const MYV = Number((/v(\d+)$/.exec(CACHE) || [])[1]) || 0;
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
+    const newer = (await caches.keys()).some(k => { const m = /^siwar-app-v(\d+)$/.exec(k); return m && Number(m[1]) > MYV; });
+    if (newer) throw new Error('older worker');
     const c = await caches.open(CACHE), got = {};
     for (const f of Object.keys(FILES)) {
       const h = FILES[f];
@@ -41,7 +45,10 @@ self.addEventListener('install', e => {
 });
 
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== PUSHC).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== PUSHC).map(k => caches.delete(k)))).then(() => self.clients.claim()).then(() =>
+    // (v119) صفحة قديمة في الخلفية (جهاز فُتح آخر مرة على إصدار سابق): تُفتح من جديد على هذا الإصدار مباشرة — قفزة واحدة إلى الأحدث.
+    // الصفحة الظاهرة لا تُعاد تحميلها من هنا؛ هي تطبّق التحديث بنفسها في أول لحظة آمنة
+    self.clients.matchAll({ type: 'window' }).then(list => Promise.all(list.map(cl => cl.visibilityState === 'hidden' && cl.navigate ? cl.navigate(cl.url).catch(() => {}) : null)))).catch(() => {}));
 });
 
 // فحص احتياطي يومي: طلب مشروط لملفات التطبيق؛ إن اختلف ملف عن المحفوظ (نُشر بلا ختم بصمة) يُحفظ ويُبلَّغ التطبيق بزر «تحديث»
