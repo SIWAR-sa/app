@@ -574,7 +574,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   var swr = null, swAt = Date.now(), updGoing = false, swReady = null, swRes = null;
   swReady = new Promise(function (r) { swRes = r; });
   /* (v94) رقم نسخة هذه الصفحة، ويساوي دائماً رقم CACHE في sw.js (يُرفعان معاً) */
-  var APPV = 109;
+  var APPV = 110;
   var UFL = 'siwar_upd_flow', UPN = 'siwar_upd_pend';
   function lsj(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} return null; }
   /* (v107) كوادر والتحليلات والمخازن والرقابة: كل نظام يقارن بصمة واجهته المنشورة بما فُتح به، ويبلّغ مرة واحدة (upd) وهو غير مشغول.
@@ -1524,12 +1524,24 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   (function () {
     var at = 0; try { at = Number(localStorage.getItem('siwar_upd_done') || 0); localStorage.removeItem('siwar_upd_done'); } catch (e) {}
     if (!at || Date.now() - at > 180000 || !window.caches) return;
+    // (v110 · طلب محمد) بعد إعادة التحميل بسبب التحديث (بالزر أو تلقائياً عند الفتح): شاشة التحديث نفسها تبقى فوق الصفحة حتى يجهز سوار والنظام المفتوح
+    var t0 = Date.now(), ovOn = false;
+    var c0 = null; try { c0 = curLoad(); } catch (ce) { c0 = null; }
+    // يظهر حين يعود التطبيق إلى نظام مفتوح (إعادة فتحه تأخذ وقتاً)؛ الرئيسية وحدها تجهز فوراً
+    try { if (window.SiwarUpd && c0 && c0.id) { SiwarUpd.load(true); ovOn = true; } } catch (oe) {}
+    var ovDone = function () {
+      if (!ovOn) return true;
+      var ready = portalOk && (!cur || $('prog').className !== 'on' || (frames[cur] && frames[cur].ready) || (SN && SN.id === cur && SN.st === 'done'));
+      if (ready || Date.now() - t0 > 25000) { ovOn = false; try { SiwarUpd.load(false); } catch (e) {} return true; }
+      return false;
+    };
+    (function tick() { if (!ovDone()) setTimeout(tick, 250); })();
     caches.keys().then(function (ks) {
       var v = ''; ks.forEach(function (k) { var m = /^siwar-app-(v\d+)$/.exec(k); if (m && (!v || +m[1].slice(1) > +v.slice(1))) v = m[1]; });
       var t = document.createElement('div'); t.className = 'sntoast'; t.setAttribute('role', 'status');
       t.style.cssText = 'position:fixed;z-index:2147483000;top:calc(env(safe-area-inset-top,0px) + 12px);bottom:auto';
       t.textContent = LANG === 'en' ? 'Updated to the latest version' + (v ? ' (' + v + ')' : '') + '.' : 'تم التحديث إلى أحدث إصدار' + (v ? ' (' + v + ')' : '') + '.';
-      setTimeout(function () { document.body.appendChild(t); setTimeout(function () { t.style.opacity = '0'; setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 320); }, 3500); }, 1200);
+      (function show() { if (ovOn) { setTimeout(show, 300); return; } setTimeout(function () { document.body.appendChild(t); setTimeout(function () { t.style.opacity = '0'; setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 320); }, 3500); }, 300); })();
     }).catch(function () {});
   })();
 
