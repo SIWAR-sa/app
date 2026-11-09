@@ -246,6 +246,8 @@ input[dir="ltr"] { text-align: left; }
 #busyPill.on { transform: translate(-50%, 0); opacity: 1; }
 #busyPill i { width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(233,190,110,.22); border-top-color: #F1CF86; animation: spin .8s linear infinite; }
 #busyPill:not(.on) i { animation: none; }
+.fld-err { display: block; margin-top: 6px; font-size: 12.5px; font-weight: 600; line-height: 1.6; color: var(--pink-deep); }
+.inp.is-bad { border-color: var(--pink-deep) !important; box-shadow: 0 0 0 3px rgba(201,132,130,.18); }
 @keyframes spin { to { transform: rotate(360deg); } }
 #busy::before { content: ''; position: absolute; top: 0; height: 100%; width: 40%; background: linear-gradient(90deg, transparent, var(--pink), var(--gold), transparent); animation: busy 1.1s ease-in-out infinite; }
 
@@ -2254,7 +2256,7 @@ const I18N = {
     tint_pink: 'وردي', tint_gold: 'ذهبي', tint_grey: 'رمادي', sort: 'الترتيب', status: 'الحالة',
     st_Active: 'مفعّل', st_Hidden: 'مخفي', st_Suspended: 'موقوف',
     linkData: 'بيانات الربط', appId: 'معرّف البرنامج', appSecret: 'مفتاح الربط', regen: 'توليد مفتاح جديد', copy: 'نسخ', show: 'إظهار',
-    fullNameAr: 'الاسم بالعربية', fullNameEn: 'الاسم بالإنجليزية', email: 'البريد الإلكتروني', role: 'نوع الحساب',
+    fullNameAr: 'الاسم بالعربية', fullNameEn: 'الاسم بالإنجليزية', email: 'البريد الإلكتروني', emailOne: 'البريد الإلكتروني (للدخول والإيميلات)', role: 'نوع الحساب',
     role_owner: 'مالك النظام', role_admin: 'مدير النظام', role_supervisor: 'مشرف المستخدمين', role_user: 'مستخدم', uiLang: 'لغة الواجهة', lang_ar: 'العربية', lang_en: 'English',
     resetPin: 'كلمة مرور مؤقتة جديدة', lastLogin: 'آخر دخول', neverLogged: 'لم يدخل بعد', noUrl: 'لم يُضبط الرابط', you: 'أنت',
     resetReq: 'طلب إعادة تعيين', appsCount: 'البرامج: {n}',
@@ -2336,7 +2338,7 @@ const I18N = {
     tint_pink: 'Pink', tint_gold: 'Gold', tint_grey: 'Grey', sort: 'Order', status: 'Status',
     st_Active: 'Active', st_Hidden: 'Hidden', st_Suspended: 'Suspended',
     linkData: 'Integration', appId: 'App ID', appSecret: 'App secret', regen: 'New secret', copy: 'Copy', show: 'Show',
-    fullNameAr: 'Arabic name', fullNameEn: 'English name', email: 'Email', role: 'Account type',
+    fullNameAr: 'Arabic name', fullNameEn: 'English name', email: 'Email', emailOne: 'Email (for sign-in and emails)', role: 'Account type',
     role_owner: 'System owner', role_admin: 'System admin', role_supervisor: 'User supervisor', role_user: 'User', uiLang: 'Interface language', lang_ar: 'العربية', lang_en: 'English',
     resetPin: 'New temporary password', lastLogin: 'Last sign-in', neverLogged: 'Never signed in', noUrl: 'URL not set', you: 'You',
     resetReq: 'Reset requested', appsCount: 'Apps: {n}',
@@ -3986,7 +3988,20 @@ const U_SHARED_ORDER = ['workweek', 'holidays', 'companies', 'departments', 'loc
 function renderUnified() {
   if (!U.d) { $('#uRoot').innerHTML = '<div class="u-wait"><span class="u-spin"></span><span>جارٍ تحميل بيانات الموظفين والأنظمة…</span></div>'; uLoad(); return; }
   uRender();
-  if (Date.now() - U.at > 60000) uLoad();
+  if (Date.now() - U.at > U_BG_AGE) uLoad(true);
+}
+// (NL) التنقل لا يستدعي الخادم: البيانات تُجلب مرة وتُستعمل من الذاكرة. بعد الحفظ، أو إن مضت 10 دقائق، تُحدَّث في الخلفية بلا مؤشر انشغال،
+// ولا تُعاد رسم الصفحة إلا إذا تغيّر شيء فعلاً ولم يكن المستخدم يكتب في حقل؛ وإلا تُطبَّق عند الانتقال التالي
+const U_BG_AGE = 600000;
+function uTyping() { const a = document.activeElement; return !!(a && a.closest && a.closest('#uRoot') && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)); }
+function uApplyBg(d) {
+  if (!d || (U.dirty && U.dirty.size)) return;
+  U.at = Date.now();
+  let same = false; try { same = !!U.orig && JSON.stringify(d) === JSON.stringify(U.orig); } catch (e) { same = false; }
+  if (same) { U.later = null; return; }
+  if (uTyping() || $('#modal').classList.contains('open')) { U.later = d; return; }
+  const y = window.scrollY; U.later = null; U.d = d; U.orig = JSON.parse(JSON.stringify(d));
+  if (S.tab === 'unified' && S.screen === 'admin') { uRender(); window.scrollTo(0, y); }
 }
 // طلب u_load واحد في كل لحظة: كل من يحتاجه ينضم إلى الطلب الجاري؛ والنتيجة صالحة فقط إن لم يُحفظ شيء بعد بدء الطلب
 function uFetch(quiet) {
@@ -3997,15 +4012,16 @@ function uFetch(quiet) {
   return p;
 }
 function uPre() {
-  if (myRank() < RANK.admin || (U.dirty && U.dirty.size) || (U.p && U.pg === DATA_GEN) || (U.d && Date.now() - U.at < 60000)) return;
+  if (myRank() < RANK.admin || (U.dirty && U.dirty.size) || (U.p && U.pg === DATA_GEN) || (U.d && Date.now() - U.at < U_BG_AGE)) return;
   if (U.pre && U.pre.g === DATA_GEN && Date.now() - U.pre.at < 60000) return;
   uFetch(true).catch(() => {});
 }
-async function uLoad() {
+async function uLoad(bg) {
   if (U.dirty && U.dirty.size) return;
   let d, fail;
   const pre = U.pre; U.pre = null;
   if (pre && pre.g === DATA_GEN && Date.now() - pre.at < 60000) d = pre.d;
+  if (bg && U.d) { if (!d) { try { d = await uFetch(true); U.pre = null; } catch (c) { return; } } return uApplyBg(d); }
   for (let k = 0; k < 3 && !d; k++) { try { d = await uFetch(false); U.pre = null; } catch (c) { fail = c; if (c === '__handled') return; await new Promise(r => setTimeout(r, 1200 * (k + 1))); } }
   if (!d) { if (U.d) { toast('تعذّر تحديث البيانات، المعروض آخر نسخة', 'err'); return; } showErr(fail); $('#uRoot').innerHTML = '<div class="empty">' + ic('alert') + '<span>تعذّر التحميل</span><button class="btn btn-ghost" data-u="reload">' + ic('refresh') + '<span>إعادة المحاولة</span></button></div>'; return; }
   try { if (U.dirty && U.dirty.size) return; const y = window.scrollY; U.d = d; U.orig = JSON.parse(JSON.stringify(d)); U.at = Date.now(); if (S.tab === 'unified') { uRender(); window.scrollTo(0, y); } }
@@ -4087,7 +4103,7 @@ async function uCommit() {
       const r = await api('u_batch', { ops: ops });
       if (!r.ok) { uSaveFail(r.code, r.op, ops, r.detail); return; }
       U.dirty.clear(); U.base = null; U.orig = JSON.parse(JSON.stringify(U.d)); uBar(); toast(ops.length === 1 ? 'حُفظ التعديل' : 'حُفظت ' + ops.length + ' تعديلات', 'ok'); uFlushSoon();
-      setTimeout(uLoad, 1500);
+      setTimeout(() => uLoad(true), 1500);
     } catch (c) { uSaveFail(c, -1, ops); }
     finally { b.disabled = false; b.classList.remove('is-busy'); }
   };
@@ -4107,10 +4123,10 @@ async function uHist(appId) {
   const body = U.hist.length ? '<div class="list u-list">' + U.hist.map((x, i) => '<div class="row"><div class="row-main"><div class="row-title">' + esc(q(x.key)) + '</div><div class="row-sub">' + esc(fmt(x.old)) + ' ← ' + esc(fmt(x.v)) + ' · ' + esc(String(x.by || '').split(' · ')[0]) + ' · ' + esc(String(x.at).slice(0, 16).replace('T', ' ')) + (x.via && x.via !== 'portal' ? ' · من داخل النظام' : '') + '</div></div>' + (x.old !== '' && x.old != null ? '<button class="btn btn-ghost" data-u="histBack" data-i="' + i + '"><span>استرجاع</span></button>' : '') + '</div>').join('') + '</div>' : '<p class="u-muted">لا تعديلات مسجلة بعد.</p>';
   openModal({ title: ic('clock') + '<span>سجل تعديلات الإعدادات</span>', body: body, foot: '<button class="btn btn-ghost" data-act="closeModal"><span>إغلاق</span></button>' });
 }
-function uFlushSoon() { clearTimeout(U.ft); U.ft = setTimeout(() => { api('u_flush', {}).catch(() => {}); }, 800); }
+function uFlushSoon() { clearTimeout(U.ft); U.ft = setTimeout(() => { api('u_flush', {}, { quiet: true }).catch(() => {}); }, 800); }
 async function uSave(action, payload, okMsg) {
-  try { const r = await api(action, payload); if (r && r.ok === false) { uSaveFail(r.code, -1, null, r.detail); uLoad(); return null; } if (okMsg) toast(okMsg, 'ok'); uFlushSoon(); uLoad(); return r; }
-  catch (c) { if (c !== '__handled') uSaveFail(c, -1, null); uLoad(); return null; }
+  try { const r = await api(action, payload); if (r && r.ok === false) { uSaveFail(r.code, -1, null, r.detail); uLoad(true); return null; } if (okMsg) toast(okMsg, 'ok'); uFlushSoon(); uLoad(true); return r; }
+  catch (c) { if (c !== '__handled') uSaveFail(c, -1, null); uLoad(true); return null; }
 }
 const U_TOP = { home: 1, people: 1, org: 1, profiles: 1, roles: 1, systems: 1 };
 const U_PARENT = { person: 'people', profile: 'profiles', role: 'roles', rdist: 'roles', noorg: 'home', system: 'systems', shared: 'systems' };
@@ -4151,6 +4167,7 @@ function uSummaryOld(p) {
 
 function uRender() {
   navSave();
+  if (U.later) { if (!(U.dirty && U.dirty.size)) { U.d = U.later; U.orig = JSON.parse(JSON.stringify(U.later)); } U.later = null; }
   const root = $('#uRoot'); if (!root || !U.d) return;
   const v = U.view;
   const html = ({ home: uHome, people: uPeople, org: uOrg, person: uPerson, profiles: uProfiles, profile: uProfile, roles: uRoles, role: uRole, rdist: uRolesDist, noorg: uNoOrg, systems: uSystems, system: uSystem, shared: uSharedV })[v] || uHome;
@@ -4207,6 +4224,8 @@ function uTitleOpts(cur) {
   if (cur) set[cur] = 1;
   return '<option value="">—</option>' + Object.keys(set).sort().map(x => '<option value="' + esc(x) + '"' + (x === cur ? ' selected' : '') + '>' + esc(x) + '</option>').join('') + '<option value="__new">+ مسمى جديد…</option>';
 }
+// البريد الظاهر تحت الاسم: بريد الدخول إن كان له حساب (هو نفسه بريد الإيميلات)
+function uMail(p) { const ua = p.userId && S.admin ? (S.admin.users || []).find(u => u.id === p.userId) : null; return (ua && ua.email) || p.email || ''; }
 function uPerson() {
   const D = U.d, p = D.people.find(x => x.id === U.id);
   if (!p) return '<div class="empty"><span>غير موجود</span></div>';
@@ -4214,7 +4233,7 @@ function uPerson() {
   const n = uDiffN(p);
   const head = '<div class="u-head"><span class="u-av u-av-lg">' + esc(String(p.name || '?').charAt(0)) + '</span><div><h3>' + esc(p.name) + '</h3>' +
     '<p>' + esc([p.title, p.dept, uCo(p.company), p.no ? 'رقم ' + p.no : ''].filter(Boolean).join(' · ')) + '</p>' +
-    '<p class="u-muted">' + (p.email ? esc(p.email) : 'لا بريد إلكتروني') + '</p></div>' +
+    '<p class="u-muted">' + (uMail(p) ? esc(uMail(p)) : 'لا بريد إلكتروني') + '</p></div>' +
     '<span class="u-tag' + (uLeftP(p) ? ' u-tag-grey' : '') + '">' + esc(p.stopped ? 'موقوف من سوار' : uLeftP(p) ? (p.status || 'غادر') : 'على رأس العمل') + '</span>' +
     (p.email && !p.owner && !me && !uLeftP(p) ? '<button class="btn btn-primary btn-sm" data-u="pInvite" data-pid="' + esc(p.id) + '">' + ic('send') + '<span>إرسال دعوة</span></button>' : '') + (p.owner || me ? '' : p.stopped ? '<button class="btn btn-ghost btn-sm" data-u="pResume">' + ic('check') + '<span>إعادة تفعيل</span></button>' : '<button class="btn btn-ghost btn-sm" data-u="pStop">' + ic('lock') + '<span>إيقاف في كل الأنظمة</span></button>') + (p.canDel && !p.owner && !me ? '<button class="btn btn-danger btn-sm" data-og="pDel">' + ic('trash') + '<span>حذف نهائي</span></button>' : '') + '</div>';
   const rd = p.restDays || [];
@@ -4226,12 +4245,12 @@ function uPerson() {
   const pushRow = '<div class="u-q"><span class="u-q-t">إشعارات الجوال</span><span class="u-q-v u-wf"><span class="seg" data-ppush="1">' + [['1', 'تعمل'], ['0', 'متوقفة']].map(o => '<button type="button" class="seg-btn' + ((pOn ? '1' : '0') === o[0] ? ' on' : '') + '" data-u="pPush" data-on="' + o[0] + '"' + (wfMay ? '' : ' disabled') + '>' + o[1] + '</button>').join('') + '</span>' + '</span></div>';
   const langRow = '<div class="u-q"><span class="u-q-t">لغة الإيميلات</span><span class="u-q-v"><span class="seg" data-plang="1">' + [['ar', 'العربية'], ['en', 'English']].map(l => '<button type="button" class="seg-btn' + (p.mailLang === l[0] ? ' on' : '') + '" data-u="pLang" data-l="' + l[0] + '">' + l[1] + '</button>').join('') + '</span></span></div>';
   const info = p.owner ? '<section class="panel-box u-work u-info">' + wfRow + langRow + pushRow + '</section>' : '<section class="panel-box u-work u-info"><div class="u-q"><span class="u-q-t">الاسم</span><span class="u-q-v"><input class="inp" data-uc="pInfo" data-f="name" maxlength="80" value="' + esc(p.name || '') + '"' + (me ? ' disabled' : '') + '></span></div>' +
-    '<div class="u-q"><span class="u-q-t">الاسم بالإنجليزية</span><span class="u-q-v"><input class="inp" dir="ltr" data-uc="pInfo" data-f="nameEN" maxlength="80" value="' + esc(p.nameEN || '') + '"' + (me ? ' disabled' : '') + '></span></div>' +
+    '<div class="u-q"><span class="u-q-t">الاسم بالإنجليزية</span><span class="u-q-v"><input class="inp' + (nameEnHasMail(p.nameEN) ? ' is-bad' : '') + '" dir="ltr" data-uc="pInfo" data-f="nameEN" maxlength="80" autocomplete="off" value="' + esc(p.nameEN || '') + '"' + (me ? ' disabled' : '') + '>' + (nameEnHasMail(p.nameEN) ? '<span class="fld-err" role="alert">' + esc(NAME_EN_MAIL()) + '</span>' : '') + '</span></div>' +
     '<div class="u-q"><span class="u-q-t">الشركة</span><span class="u-q-v"><select class="inp" data-uc="pInfo" data-f="company"' + (me ? ' disabled' : '') + '><option value="">—</option>' + ((D.shared || {}).companies || []).map(c => '<option value="' + esc(c.code) + '"' + (p.company === c.code ? ' selected' : '') + '>' + esc(c.nameAR) + '</option>').join('') + '</select></span></div>' + wfRow +
     '<div class="u-q"><span class="u-q-t">قسمه في جسر</span><span class="u-q-v"><input class="inp" list="uDeptL" data-uc="pInfo" data-f="dept" maxlength="80" value="' + esc(p.dept || '') + '"' + (me ? ' disabled' : '') + '><datalist id="uDeptL">' + Array.from(new Set(D.people.map(x => x.dept).filter(Boolean))).sort().map(x => '<option value="' + esc(x) + '">').join('') + '</datalist></span></div>' +
     '<div class="u-q"><span class="u-q-t">وحدة العمل في جسر</span><span class="u-q-v"><input class="inp" list="uSecL" data-uc="pInfo" data-f="section" maxlength="80" value="' + esc(p.section || '') + '"' + (me ? ' disabled' : '') + '><datalist id="uSecL">' + Array.from(new Set(D.people.map(x => x.section).filter(Boolean))).sort().map(x => '<option value="' + esc(x) + '">').join('') + '</datalist></span></div>' +
-    '<div class="u-q"><span class="u-q-t">البريد الإلكتروني</span><span class="u-q-v"><input class="inp" dir="ltr" type="email" data-uc="pInfo" data-f="email" maxlength="120" autocapitalize="none" spellcheck="false" value="' + esc(p.email || '') + '"' + (me || hasAcct ? ' disabled' : '') + '></span></div>' + langRow + pushRow +
-    (hasAcct ? '<p class="u-muted u-note">له حساب في سوار؛ يتغير بريده من «تعديل الحساب».</p>' : '') + '</section>';
+    '<div class="u-q"><span class="u-q-t">' + esc(t('emailOne')) + '</span><span class="u-q-v"><input class="inp" dir="ltr" type="email" data-uc="pInfo" data-f="email" maxlength="120" autocapitalize="none" spellcheck="false" value="' + esc(p.email || '') + '"' + (me || hasAcct ? ' disabled' : '') + '></span></div>' + langRow + pushRow +
+    (hasAcct ? '<p class="u-muted u-note">' + esc(RX('البريد نفسه للدخول إلى سوار وللإيميلات، ويتغير من «تعديل الحساب».', 'The same email is used to sign in to SIWAR and for emails; change it from “Edit account”.')) + '</p>' : '') + '</section>';
   const og = p.org ? '<section class="panel-box u-work u-info og-pbox"><div class="u-q"><span class="u-q-t">الإدارة والقسم</span><span class="u-q-v">' + (p.org.dn ? '<b>' + esc(p.org.dn) + '</b>' + (p.org.sn ? ' · ' + esc(p.org.sn) : '') : '<span class="u-muted">غير موزّع</span>') + ' <button class="link-btn" data-og="goOrg" data-id="' + esc(p.org.d || '__un') + '">تعديل في الهيكل التنظيمي</button></span></div>' +
     '<div class="u-q"><span class="u-q-t">المدير المباشر</span><span class="u-q-v">' + (p.org.m ? esc(ogN2(p.org.m)) + ' <span class="og-src og-src-' + esc(p.org.src) + '">' + (OG_SRC[p.org.src] || '') + '</span>' : '<span class="u-muted">لا يوجد</span>') + '</span></div></section>' : '';
   const work = '<section class="panel-box u-work"><div class="u-q"><span class="u-q-t">يوم الراحة الأسبوعي</span><span class="u-days" data-prest="1">' + U_DAYS.map((n, i) => '<button class="seg-btn' + (rd.indexOf(i) >= 0 ? ' on' : '') + '" data-u="pRest" data-i="' + i + '"' + (me && !p.owner ? ' disabled' : '') + '>' + n + '</button>').join('') + '</span></div>' +
@@ -4880,6 +4899,9 @@ function uOnChange(el) {
     const nm = g('name'), em = g('email').toLowerCase();
     if (!nm) { toast('اكتب الاسم', 'err'); el.value = p.name || ''; return; }
     if (em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { toast('البريد غير صحيح', 'err'); return; }
+    const ne = $('[data-uc="pInfo"][data-f="nameEN"]');
+    if (nameEnHasMail(g('nameEN'))) { fldErr(ne, NAME_EN_MAIL()); return; }
+    fldErr(ne, '');
     p.name = nm; p.nameEN = g('nameEN'); p.email = em; p.dept = g('dept'); p.section = g('section'); p.company = g('company');
     return uMark('pi:' + p.id, { t: 'personInfo', personId: p.id, name: nm, nameEN: p.nameEN, email: em, dept: p.dept, section: p.section, company: p.company });
   }
@@ -5135,7 +5157,7 @@ function uRoleClick(el, e) {
         (lost.tasksKept ? '<p class="u-muted">' + RX('بقي لـ ', 'Kept as exception for ') + lost.tasksKept + RX(' موظفاً ما عندهم في مهام وإجراءات كاستثناء.', ' employees in Tasks & procedures.') + '</p>' : '') +
         ks.map(k => '<p><b>' + esc(sysN[k] || k) + RX(' — توقف دخول: ', ' — no longer open for: ') + '</b>' + esc(lost[k].map(ogN2).join('، ')) + '</p>').join(''), foot: '<button class="btn btn-primary" data-act="closeModal">' + ic('check') + '<span>' + RX('حسناً', 'OK') + '</span></button>' });
       else toast(RX('الأدوار مكتملة', 'Roles are complete'), 'ok');
-      uLoad(); }).catch(c => { el.disabled = false; showErr(c); });
+      uLoad(true); }).catch(c => { el.disabled = false; showErr(c); });
     return true;
   }
   return false;
@@ -5504,13 +5526,15 @@ async function ogLoad(keepSel, quiet) {
   let d, fail;
   for (let k = 0; k < 3 && !d; k++) { try { d = await api('u_orgLoad', {}, quiet ? { quiet: true } : undefined); } catch (c) { fail = c; if (c === '__handled') { O.busy = false; return; } await new Promise(r => setTimeout(r, 1000 * (k + 1))); } }
   O.busy = false;
+  if (!d && quiet && O.d) return;
+  if (d && quiet && O.d && !O.ops.length) { let same = false; try { same = JSON.stringify(d) === JSON.stringify(O.d); } catch (e) { same = false; } if (same) { O.at = Date.now(); return; } if (uTyping() || $('#modal').classList.contains('open')) return; }
   if (!d) { if (U.view === 'org') $('#uRoot').innerHTML = '<div class="empty">' + ic('alert') + '<span>تعذّر تحميل الهيكل التنظيمي. ' + esc(t(I18N.ar[fail] ? fail : 'ERR_NETWORK')) + '</span><button class="btn btn-ghost" data-og="reload">' + ic('refresh') + '<span>إعادة المحاولة</span></button></div>'; return; }
   O.d = d; O.w = JSON.parse(JSON.stringify(d)); O.ops = []; O.at = Date.now();
   if (!keepSel || (O.sel !== '__un' && !ogU(O.sel))) O.sel = ogFirst();
   if (U.view === 'org') uRender();
 }
 function uOrg() {
-  if (O.d && !O.ops.length && Date.now() - O.at > 60000 && !O.busy) setTimeout(() => ogLoad(true), 0);
+  if (O.d && !O.ops.length && Date.now() - O.at > U_BG_AGE && !O.busy) setTimeout(() => ogLoad(true, true), 0);
   if (!O.d) { ogLoad(); return '<div class="u-wait"><span class="u-spin"></span><span>جارٍ تحميل الهيكل التنظيمي…</span></div>'; }
   const D = O.w;
   if (!D.units.length) return ogEmpty();
@@ -6220,7 +6244,7 @@ function uOnClick(el, e) {
     const w = ($('input[name="uInvW"]:checked') || {}).value || 'none', ids = (U.inv && U.inv[w]) || [], out = $('#uInvOut'); if (!ids.length) { out.textContent = 'لا يوجد من يُرسل له'; return; }
     el.disabled = true; let sent = 0, failed = 0, done = 0;
     (async () => { try { for (let i = 0; i < ids.length; i += 20) { const d = await api('u_inviteMany', { ids: ids.slice(i, i + 20) }); sent += d.sent; failed += d.failed.length; done += Math.min(20, ids.length - i); out.textContent = 'أُرسل ' + sent + ' من ' + ids.length + (failed ? ' · تعذّر ' + failed : ''); }
-      toast('أُرسلت ' + sent + ' دعوة' + (failed ? ' وتعذّر ' + failed : ''), failed ? 'err' : 'ok'); uLoad(); } catch (c) { showErr(c); } finally { el.disabled = false; } })();
+      toast('أُرسلت ' + sent + ' دعوة' + (failed ? ' وتعذّر ' + failed : ''), failed ? 'err' : 'ok'); uLoad(true); } catch (c) { showErr(c); } finally { el.disabled = false; } })();
     return;
   }
   if (k === 'pInvite') {
@@ -6234,7 +6258,7 @@ function uOnClick(el, e) {
     const p = D.people.find(x => x.id === el.dataset.pid), wp = $('#uInvPass') ? $('#uInvPass').checked : true;
     el.disabled = true; el.classList.add('is-busy');
     api('u_invite', { personId: el.dataset.pid, withPass: wp }).then(d => {
-      closeModal(true); uFlushSoon(); uLoad();
+      closeModal(true); uFlushSoon(); uLoad(true);
       openModal({ title: ic(d.mailed ? 'check' : 'info') + '<span>' + (d.mailed ? 'أُرسلت الدعوة' : 'لم تُرسل الدعوة') + '</span>',
         body: d.mailed ? '<p>أُرسلت إلى <b dir="ltr">' + esc(d.email || p.email) + '</b>.</p><p class="u-muted">' + (d.created ? 'أُنشئ حسابه ومعه كلمة مرور مؤقتة.' : d.withPass ? 'مع كلمة مرور مؤقتة جديدة.' : 'بدون تغيير كلمة مروره.') + '</p>' : '<p>تعذّر إرسال الرسالة. تأكد من صحة البريد، أو أن حد الإرسال اليومي لم ينفد.</p>' + (d.created ? '<p class="u-muted">أُنشئ الحساب، ويمكن إعادة الإرسال.</p>' : ''),
         foot: '<button class="btn btn-primary" data-act="closeModal">' + ic('check') + '<span>حسناً</span></button>' });
@@ -6267,13 +6291,25 @@ async function openAdmin() {
   closeMenu();
   show('admin');
 
-  if (S.admin) { renderAdmin(); if (Date.now() - (S.adminAt || 0) < 60000) return; }
-  else { renderAdminSkeleton(); if (myRank() >= RANK.admin && S.tab === 'unified') uPre(); }   // بيانات الموظفين مع بيانات اللوحة معاً لا بعدها
+  if (S.admin) { renderAdmin(); if (Date.now() - (S.adminAt || 0) >= U_BG_AGE) adminBg(); return; }
+  renderAdminSkeleton(); if (myRank() >= RANK.admin && S.tab === 'unified') uPre();   // بيانات الموظفين مع بيانات اللوحة معاً لا بعدها
   await loadAdmin();
+}
+// (NL) لوحة الإدارة مفتوحة من قبل: تُعرض فوراً من الذاكرة، وتُحدَّث في الخلفية بلا مؤشر إن مضت 10 دقائق، ولا تُعاد رسمها إلا إن تغيّر شيء
+function adminBg() {
+  const g = DATA_GEN, pre = S.adminPre; S.adminPre = null;
+  const p = pre && pre.g === DATA_GEN && Date.now() - pre.at < 60000 ? Promise.resolve(pre.d) : (S.adminP || api('admin_load', {}, { quiet: true }));
+  p.then(d => {
+    if (!d || g !== DATA_GEN || !S.token || !S.admin) return;
+    const k = x => { try { return JSON.stringify(Object.assign({}, x, { logs: 0 })); } catch (e) { return ''; } };
+    if (k(d) === k(S.admin)) { S.adminAt = Date.now(); if (d.logs !== undefined) { S.admin.logs = d.logs; if (S.screen === 'admin' && S.tab === 'logs') renderAdmin(); } return; }
+    if (S.screen === 'admin' && (uTyping() || $('#modal').classList.contains('open') || (S.draft && Object.keys(S.draft).length))) return;
+    setAdmin(d);
+  }).catch(() => {});
 }
 // جلب مسبق للوحة الإدارة (عند نية الفتح): طلب واحد، والفتح ينضم إليه أو يستعمل نتيجته إن جُلبت قبل أقل من دقيقة ولم يُحفظ شيء بعدها
 function adminPre() {
-  if (S.adminP || (S.admin && Date.now() - (S.adminAt || 0) < 60000)) return;
+  if (S.adminP || (S.admin && Date.now() - (S.adminAt || 0) < U_BG_AGE)) return;
   const g = DATA_GEN, p = S.adminP = api('admin_load', {}, { quiet: true });
   p.then(d => { if (S.adminP === p) S.adminP = null; if (d && g === DATA_GEN && S.token) S.adminPre = { at: Date.now(), d: d, g: g }; }, () => { if (S.adminP === p) S.adminP = null; });
 }
@@ -6498,7 +6534,7 @@ function parseImport(text) {
     const c = l.split(/\t|;|,/).map(x => x.trim().replace(/^"|"$/g, ''));
     const email = (c[0] || '').toLowerCase();
     if (i === 0 && !/@/.test(email)) return;
-    const r = { email: email, nameAR: c[1] || '', nameEN: c[2] || '' };
+    const r = { email: email, nameAR: c[1] || '', nameEN: nameEnHasMail(c[2]) ? '' : c[2] || '' };
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) r.bad = 'email';
     else if (seen[email]) r.bad = 'dup';
     else if (!r.nameAR && !r.nameEN) r.bad = 'name';
@@ -6997,9 +7033,9 @@ function openUserForm(id) {
   const self = user && user.id === S.admin.me;
   const body =
     '<div class="form-grid">' +
-      fld('uEmail', 'email', u.email, { dir: 'ltr', max: 120, type: 'email', extra: ' autocapitalize="none" spellcheck="false"' }) +
+      fld('uEmail', 'emailOne', u.email, { dir: 'ltr', max: 120, type: 'email', extra: ' autocapitalize="none" spellcheck="false"' }) +
       (user ? '<div class="field"><span>' + esc(t('username')) + '</span><div class="inp ro ltr">' + esc(u.username) + '</div></div>' : '') +
-      fld('uNameAR', 'fullNameAr', u.nameAR, { dir: 'rtl', max: 80 }) + fld('uNameEN', 'fullNameEn', u.nameEN, { dir: 'ltr', max: 80 }) +
+      fld('uNameAR', 'fullNameAr', u.nameAR, { dir: 'rtl', max: 80 }) + fld('uNameEN', 'fullNameEn', u.nameEN, { dir: 'ltr', max: 80, extra: ' autocomplete="off"' }) +
       '<div class="field full"><span>' + esc(t('role')) + '</span>' + seg('uRole', self ? [u.role] : assignable().slice().reverse(), u.role, 'role_') + '</div>' +
       '<div class="field"><span>' + esc(t('status')) + '</span>' + seg('uStatus', self ? ['Active'] : ['Active', 'Suspended'], u.status, 'st_') + '</div>' +
       '<div class="field"><span>' + esc(t('uiLang')) + '</span>' + seg('uLang', ['ar', 'en'], u.lang, 'lang_') + '</div>' +
@@ -7009,7 +7045,19 @@ function openUserForm(id) {
     title: ic(user ? 'edit' : 'userPlus') + esc(t(user ? 'editUser' : 'addUser')), body: body, wide: true,
     foot: '<button class="btn btn-ghost" data-act="closeModal">' + esc(t('cancel')) + '</button><button class="btn btn-primary" data-act="submitUser" data-id="' + esc(user ? user.id : '') + '">' + ic('save') + '<span>' + esc(t('save')) + '</span></button>'
   });
+  if (nameEnHasMail(u.nameEN)) fldErr($('#uNameEN'), NAME_EN_MAIL());
 }
+// (NL) الاسم الإنجليزي لا يكون بريداً إلكترونياً: رسالة واضحة تحت الحقل بدل الحفظ، وتختفي حين يُصحَّح
+function nameEnHasMail(v) { return String(v || '').indexOf('@') >= 0; }
+function NAME_EN_MAIL() { return S.lang === 'en' ? 'The English name cannot be an email address. Type the name in English letters, or leave it empty.' : 'الاسم بالإنجليزية لا يكون بريداً إلكترونياً. اكتب الاسم بحروف إنجليزية، أو اتركه فارغاً.'; }
+function fldErr(inp, msg) {
+  if (!inp || !inp.parentNode) return;
+  let m = inp.parentNode.querySelector('.fld-err');
+  if (!msg) { if (m) m.remove(); inp.classList.remove('is-bad'); return; }
+  if (!m) { m = document.createElement('span'); m.className = 'fld-err'; m.setAttribute('role', 'alert'); inp.insertAdjacentElement('afterend', m); }
+  m.textContent = msg; inp.classList.add('is-bad');
+}
+document.addEventListener('input', e => { const x = e.target; if (x && x.classList && x.classList.contains('is-bad') && (x.id === 'uNameEN' || (x.dataset && x.dataset.f === 'nameEN')) && !nameEnHasMail(x.value)) fldErr(x, ''); });
 
 async function submitUser(btn) {
   const user = {
@@ -7018,12 +7066,18 @@ async function submitUser(btn) {
     role: segVal('uRole'), status: segVal('uStatus'), lang: segVal('uLang')
   };
   if ((user.email || !user.id) && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) { showErr('ERR_EMAIL'); return; }
+  if (nameEnHasMail(user.nameEN)) { fldErr($('#uNameEN'), NAME_EN_MAIL()); $('#uNameEN').focus(); return; }
   if (!user.nameAR && !user.nameEN) { showErr('ERR_NAME'); return; }
   if (!user.id) user.send = $('#uSend').checked;
+  const old = user.id ? String((S.admin.users.find(u => u.id === user.id) || {}).email || '').toLowerCase() : '';
   setLoading(btn, true);
   try {
     const d = await api('admin_saveUser', { user: user });
+    // بريد واحد: سجل الموظف المرتبط يأخذ بريد الحساب الجديد (الخادم يغيّره في الحفظ نفسه)، فتتحدث البطاقة فوراً
+    const moved = !!(old && user.email && old !== user.email && U.d);
+    if (moved) [U.d, U.orig].forEach(D => { const p = D && (D.people || []).find(x => String(x.email || '').toLowerCase() === old); if (p) p.email = user.email; });
     setAdmin(d);
+    if (moved) uLoad(true);
     if (d.extra && d.extra.temp) showTemp(d.extra); else { closeModal(true); toast(t('ok_saved'), 'ok'); }
   }
   catch (c) { showErr(c); }
