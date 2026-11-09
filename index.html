@@ -574,13 +574,26 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   var swr = null, swAt = Date.now(), updGoing = false, swReady = null, swRes = null;
   swReady = new Promise(function (r) { swRes = r; });
   /* (v94) رقم نسخة هذه الصفحة، ويساوي دائماً رقم CACHE في sw.js (يُرفعان معاً) */
-  var APPV = 110;
+  var APPV = 111;
   var UFL = 'siwar_upd_flow', UPN = 'siwar_upd_pend';
   function lsj(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} return null; }
   /* (v107) كوادر والتحليلات والمخازن والرقابة: كل نظام يقارن بصمة واجهته المنشورة بما فُتح به، ويبلّغ مرة واحدة (upd) وهو غير مشغول.
      الضغطة تعيد فتح ذلك النظام وحده على أحدث نسخة (التطبيق لا يُعاد تحميله إلا إن كان هو أو سوار أو نظام آخر أحدث) */
   var UPSYS = { kawader: 1, analytics: 1, stores: 1, talaf: 1 }, UPF = {}, UPFULL = false, UPW = null, UPC = {};
+  // (v111 · طلب محمد) التحديث الإجباري عند الفتح: نسخة أحدث تظهر في أول 20 ثانية من فتح التطبيق وقبل أي لمسة أو كتابة
+  // تُطبَّق وحدها (بلا زر)؛ ومن بدأ العمل يظهر له زر «تحديث» كما هو
+  var UPT0 = Date.now(), UPTOUCH = false;
+  ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(function (ev) { window.addEventListener(ev, function () { UPTOUCH = true; }, { capture: true, passive: true }); });
+  window.addEventListener('blur', function () { if (Date.now() - UPT0 > 1500) UPTOUCH = true; });
+  function updAutoOk() { return !UPTOUCH && Date.now() - UPT0 < 20000 && !document.hidden; }
+  function updAuto() {
+    if (!updAutoOk() || !window.SiwarUpd || SiwarUpd.going || !SiwarUpd.avail) return;
+    try { if (SiwarUpd.busy && SiwarUpd.busy()) return; } catch (e) {}
+    SiwarUpd.going = true; SiwarUpd.hide();
+    try { SiwarUpd.onGo(); } catch (e) { location.reload(); }
+  }
   function updFound(src, win) {
+    if (updAutoOk()) setTimeout(updAuto, 0);
     var fid = win && UPSYS[src] ? frameIdOf(win) : '';
     if (fid) {
       if (updGoing || !window.SiwarUpd) return;
@@ -1337,7 +1350,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     // (DK3) درجة الداكن الواحدة لكل الأنظمة: كل صفحة (سوار أو نظام) تعلن نفسها بـ dkhi فتأخذ الدرجة المحفوظة، واختيارها في أي صفحة (dkt) يُحفظ ويصل للبقية فورًا
     if (d.siwar === 'dkhi' || d.siwar === 'dkt') { dkMsg(e.source, d); return; }
     if (mine) {
-      if (d.siwar === 'portalReady') { hideSplash(); sendAlive(); portalOk = true; accPortal(true); relReady.then(function () { toPortal({ siwar: 'inst', st: instSt() }); }); try { if (window.SiwarUpd) SiwarUpd.watchDoc(portalWin().document); } catch (x) {} return; }
+      if (d.siwar === 'portalReady') { hideSplash(); sendAlive(); portalOk = true; accPortal(true); relReady.then(function () { toPortal({ siwar: 'inst', st: instSt() }); }); try { if (window.SiwarUpd) SiwarUpd.watchDoc(portalWin().document); } catch (x) {} try { var pd = portalWin().document; if (!pd.__upT) { pd.__upT = 1; ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(function (ev) { pd.addEventListener(ev, function () { UPTOUCH = true; }, { capture: true, passive: true }); }); } } catch (x2) {} return; }
       if (d.siwar === 'install') { instAsk(); return; }
       if (d.siwar === 'prep') { onPrep(id || '_', String(d.name || ''), ic, d.rect && typeof d.rect === 'object' ? d.rect : null, typeof d.go === 'string' ? d.go : ''); return; }
       if (d.siwar === 'open' && /^https:\/\/script\.google\.com\//.test(String(d.url || ''))) { onOpen(id || '_', String(d.url), String(d.name || ''), ic, String(d.src || '')); return; }
