@@ -1607,6 +1607,162 @@ body { display: flow-root; }
   #screen-home .sv .app-icon.is-sw, [data-theme] #screen-home .sv .app-icon.is-sw { width: calc((var(--sws, 72px) + 12px) * .76); height: calc((var(--sws, 72px) + 12px) * .76); }
   #screen-home .sv .app-icon:not(.is-sw):not(.is-img) { width: 62px; height: 62px; }
 }
+/* (RP) الصلاحيات بالأدوار أولاً */
+.rp-top { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin-bottom: 12px; }
+.rp-modes .seg-btn { display: inline-flex; align-items: center; gap: 6px; }
+.rp-modes .seg-btn svg { width: 16px; height: 16px; }
+.rp-flt { display: flex; flex-wrap: wrap; gap: 8px; flex: 1; min-width: 0; }
+.rp-flt .input-wrap { flex: 1 1 220px; max-width: 360px; }
+.rp-flt select.inp { width: auto; min-width: 140px; max-width: 220px; }
+.rp-bulk { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px; margin-bottom: 12px; border: 1px dashed var(--border-strong); border-radius: var(--radius-sm); color: var(--muted); font-size: 13.5px; }
+.rp-bulk.on { border-style: solid; border-color: var(--gold); background: color-mix(in srgb, var(--gold) 12%, var(--surface)); color: var(--text); }
+.rp-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 12px; align-items: start; }
+.rp-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 12px; transition: border-color .15s, box-shadow .15s; }
+.rp-card.is-sel { border-color: var(--gold); box-shadow: 0 0 0 2px color-mix(in srgb, var(--gold) 45%, transparent); }
+.rp-card.is-left { opacity: .6; }
+.rp-ch { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.rp-ck { flex: none; width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--border-strong); background: var(--surface); cursor: pointer; position: relative; padding: 0; }
+.rp-ck.sm { width: 22px; height: 22px; }
+.rp-ck.on { background: var(--gold-deep); border-color: var(--gold-deep); }
+.rp-ck.on::after { content: ''; position: absolute; inset: 5px 7px 7px 7px; border: solid #fff; border-width: 0 0 2.5px 2.5px; transform: rotate(-45deg) translate(1px, -1px); width: 8px; height: 4px; }
+.rp-ck.sm.on::after { inset: 4px 5px 6px 5px; }
+.rp-ck:disabled { opacity: .35; cursor: not-allowed; }
+.rp-who { display: flex; flex-direction: column; align-items: flex-start; background: none; border: 0; padding: 0; cursor: pointer; text-align: start; color: var(--text); min-width: 0; }
+.rp-who b { font-size: 15px; }
+.rp-who small { color: var(--muted); font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.rp-mini { display: grid; gap: 4px; }
+.rp-mr { display: grid; grid-template-columns: 26px 1fr auto auto; align-items: center; gap: 8px; padding: 6px 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-2); cursor: pointer; text-align: start; color: var(--text); font-size: 13.5px; }
+.rp-mr:hover { border-color: var(--gold); }
+.rp-mr .app-icon { width: 26px; height: 26px; }
+.rp-mr .n { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rp-mr .v { font-weight: 700; white-space: nowrap; }
+.rp-mr.k-off .v { color: var(--faint); font-weight: 500; }
+.rp-mr.k-auto .v { color: var(--gold-deep); }
+.rp-mr em, .rp-cell em { font-style: normal; font-size: 11px; font-weight: 700; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--pink-soft); color: var(--pink-deep); display: inline-flex; align-items: center; justify-content: center; margin-inline-start: 6px; }
+.rp-mr:disabled { cursor: not-allowed; opacity: .55; }
+/* صف النظام */
+.rp-box h3 { display: flex; align-items: center; gap: 8px; margin: 0; }
+.rp-bh { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 12px; }
+.rp-sysg { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 12px; align-items: start; }
+.rp-sys { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; background: var(--surface-2); }
+.rp-card .rp-sys { padding: 8px; }
+.rp-sysg .rp-sys.is-x { grid-column: 1 / -1; order: -1; }
+@media (min-width: 900px) { .rp-sys.is-x .rp-caps { grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 10px 22px; align-items: start; } .rp-sys.is-x .rp-pv { max-width: 900px; } }
+.rp-sys.is-off .rp-sh b { color: var(--muted); }
+.rp-sh { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.rp-sh .app-icon { width: 30px; height: 30px; flex: none; }
+.rp-sh b { flex: 1; font-size: 15px; min-width: 0; }
+.rp-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.rp-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 4px 12px; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--surface); color: var(--text); font: inherit; font-size: 13.5px; cursor: pointer; transition: background .12s, border-color .12s, color .12s; }
+.rp-chip:hover:not(:disabled) { border-color: var(--gold); }
+.rp-chip small { font-size: 11px; color: var(--muted); font-weight: 700; }
+.rp-chip.on { background: var(--gold-deep); border-color: var(--gold-deep); color: #fff; font-weight: 700; box-shadow: 0 3px 10px color-mix(in srgb, var(--gold-deep) 35%, transparent); }
+.rp-chip.on small { color: rgba(255,255,255,.85); }
+.rp-chip.rp-auto { border-style: dashed; }
+.rp-chip.rp-auto.on { border-style: solid; }
+.rp-chip.rp-off.on { background: var(--grey); border-color: var(--grey); box-shadow: none; }
+.rp-chip.rp-nc.on { background: var(--surface-3); color: var(--text); border-color: var(--border-strong); box-shadow: none; }
+.rp-chip.is-arch { opacity: .7; }
+.rp-chip:disabled { cursor: not-allowed; opacity: .55; }
+.rp-xb, .rp-pb { display: inline-flex; align-items: center; gap: 5px; border: 1px solid transparent; background: none; color: var(--muted); font: inherit; font-size: 12.5px; padding: 3px 8px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
+.rp-xb:hover, .rp-pb:hover, .rp-xb.on, .rp-pb.on { border-color: var(--border-strong); color: var(--text); background: var(--surface); }
+.rp-xb.has { color: var(--pink-deep); border-color: color-mix(in srgb, var(--pink-deep) 40%, transparent); background: var(--pink-soft); font-weight: 700; }
+.rp-xb b { font-weight: 800; } .rp-xb b.m { color: var(--muted); } .rp-xb svg, .rp-pb svg { width: 14px; height: 14px; }
+.rp-body { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); }
+.rp-pv { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 13.5px; }
+.rp-pv li { display: flex; align-items: flex-start; gap: 8px; line-height: 1.55; }
+.rp-pv li > span:last-child { flex: 1; min-width: 0; }
+.rp-pv .rp-sc { color: var(--muted); } .rp-pv .rp-sc svg { width: 15px; height: 15px; flex: none; margin-top: 3px; }
+.rp-pv-none { color: var(--muted); font-size: 13.5px; margin: 0; }
+.rp-k { flex: none; display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 700; padding: 1px 8px; border-radius: 999px; white-space: nowrap; }
+.rp-k i { font-style: normal; font-weight: 500; opacity: .8; }
+.rp-k i::before { content: '· '; }
+.rp-k-self { background: #EEF1F6; color: #4A5A78; }
+.rp-k-see { background: #EAF4EE; color: #2F6B49; }
+.rp-k-work { background: #FBF0DC; color: #8C6524; }
+.rp-k-mgr { background: #F6E7F0; color: #8A3D6A; }
+.rp-sens { font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 999px; background: #FCE3E1; color: #A2423D; white-space: nowrap; }
+.rp-exc { font-size: 11px; font-weight: 800; padding: 1px 7px; border-radius: 999px; background: var(--pink-deep); color: #fff; white-space: nowrap; }
+.rp-xh { font-size: 12.5px; color: var(--muted); margin: 0 0 8px; }
+.rp-scope { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; font-size: 13.5px; }
+.rp-scope select { width: auto; max-width: 100%; min-width: 0; }
+/* قائمة الخصائص المختصرة */
+.rp-caps { display: grid; gap: 10px; margin-bottom: 10px; }
+.rp-gh { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.rp-gh b { font-size: 12.5px; color: var(--muted); letter-spacing: .2px; }
+.rp-gl { display: grid; gap: 3px; }
+.rp-cap { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 5px 8px; border: 1px solid transparent; border-radius: var(--radius-sm); background: none; color: var(--text); font: inherit; text-align: start; cursor: pointer; }
+.rp-cap:hover:not(:disabled) { background: var(--surface); border-color: var(--border); }
+.rp-cap.is-exc { background: color-mix(in srgb, var(--pink-soft) 70%, transparent); border-color: color-mix(in srgb, var(--pink-deep) 30%, transparent); }
+.rp-cap:disabled { cursor: default; }
+.rp-sw { width: 32px; height: 18px; border-radius: 9px; background: var(--border-strong); position: relative; transition: background .15s; }
+.rp-sw::after { content: ''; position: absolute; top: 2px; inset-inline-start: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2); transition: inset-inline-start .15s; }
+.rp-cap.on .rp-sw { background: var(--gold-deep); }
+.rp-cap.on .rp-sw::after { inset-inline-start: 16px; }
+.rp-cl { display: flex; flex-direction: column; min-width: 0; }
+.rp-cl b { font-weight: 600; font-size: 13.5px; }
+.rp-cap:not(.on) .rp-cl b { color: var(--muted); font-weight: 500; }
+.rp-cl small { font-size: 11.5px; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rp-tags { display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; max-width: 46vw; }
+.rp-sys.is-x .rp-tags { max-width: 210px; }
+/* المصفوفة */
+.rp-mxw { overflow-x: auto; max-width: 100%; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.rp-mx { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 13px; }
+.rp-mx th, .rp-mx td { padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: start; vertical-align: middle; }
+.rp-mx thead th { position: sticky; top: 0; background: var(--surface-2); font-weight: 700; white-space: nowrap; z-index: 1; }
+.rp-mx thead th .app-icon { width: 22px; height: 22px; vertical-align: middle; margin-inline-end: 6px; }
+.rp-mxn { position: sticky; inset-inline-start: 0; background: var(--surface); z-index: 2; min-width: 170px; }
+.rp-mx th.rp-mxn { display: flex; align-items: center; gap: 8px; }
+.rp-mx thead th.rp-mxn { background: var(--surface-2); z-index: 3; }
+.rp-mx tr.is-sel td, .rp-mx tr.is-sel th { background: color-mix(in srgb, var(--gold) 10%, var(--surface)); }
+.rp-mx tr.is-left { opacity: .6; }
+.rp-cell { display: inline-flex; align-items: center; max-width: 170px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); font: inherit; font-size: 12.5px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rp-cell.k-set { background: color-mix(in srgb, var(--gold) 22%, var(--surface)); border-color: color-mix(in srgb, var(--gold-deep) 50%, transparent); font-weight: 700; }
+.rp-cell.k-auto { border-style: dashed; color: var(--gold-deep); }
+.rp-cell.k-off { color: var(--faint); background: var(--surface-2); border-color: var(--border); }
+.rp-cell:disabled { cursor: not-allowed; opacity: .55; }
+.rp-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 12px; }
+.rp-legend .rp-cell { cursor: default; }
+/* الأدوار */
+.rp-intro { font-size: 13.5px; color: var(--muted); margin-bottom: 12px; line-height: 1.7; }
+.rp-rgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 12px; align-items: start; }
+.rp-rsys .rp-sh { margin-bottom: 8px; }
+.rp-rsys.is-off { opacity: .7; }
+.rp-role { display: grid; gap: 3px; width: 100%; text-align: start; padding: 8px 10px; margin-top: 6px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-2); color: var(--text); font: inherit; cursor: pointer; }
+.rp-role:hover { border-color: var(--gold); }
+.rp-role.is-off { opacity: .6; }
+.rp-role .t { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.rp-role .t b { font-size: 14.5px; }
+.rp-role .c { font-size: 12.5px; color: var(--muted); line-height: 1.55; }
+.rp-role .k, .rp-can .k { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.rp-role .k i, .rp-can .k i { font-style: normal; font-size: 11.5px; color: var(--muted); margin-inline-start: 4px; }
+.rp-can { display: grid; gap: 4px; padding: 8px 10px; margin: 8px 0 10px; border-radius: var(--radius-sm); background: color-mix(in srgb, var(--gold) 10%, var(--surface)); font-size: 13.5px; }
+.rp-can > b { font-size: 12px; color: var(--gold-deep); }
+.rp-redit .rp-sh { margin-bottom: 4px; }
+/* نوافذ الاختيار */
+.rp-opts { display: grid; gap: 6px; }
+.rp-opt { display: grid; gap: 2px; text-align: start; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); font: inherit; cursor: pointer; }
+.rp-opt:hover { border-color: var(--gold); }
+.rp-opt.on { border-color: var(--gold-deep); background: color-mix(in srgb, var(--gold) 16%, var(--surface)); box-shadow: inset 3px 0 0 var(--gold-deep); }
+.rp-opt small { color: var(--muted); font-size: 12.5px; }
+.rp-opt.off b { color: var(--muted); }
+.rp-bkr { padding: 8px 0; border-bottom: 1px dashed var(--border); }
+@media (max-width: 720px) {
+  .rp-top { gap: 8px; } .rp-modes { width: 100%; display: flex; } .rp-modes .seg-btn { flex: 1; justify-content: center; font-size: 12.5px; padding: 6px 4px; }
+  .rp-flt .input-wrap { flex-basis: 100%; max-width: none; } .rp-flt select.inp { flex: 1 1 30%; min-width: 0; font-size: 12.5px; padding-inline: 6px; }
+  .rp-cards, .rp-sysg, .rp-rgrid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .rp-card { padding: 8px; } .rp-who b { font-size: 13.5px; } .rp-mini { grid-template-columns: repeat(2, minmax(0, 1fr)); } .rp-mr { font-size: 12px; padding: 4px 6px; grid-template-columns: 20px minmax(0, 1fr) auto; column-gap: 6px; row-gap: 0; } .rp-mr .app-icon { width: 20px; height: 20px; grid-row: 1 / 3; } .rp-mr .n { grid-column: 2; font-size: 10.5px; line-height: 1.3; } .rp-mr .v { grid-column: 2; grid-row: 2; overflow: hidden; text-overflow: ellipsis; line-height: 1.35; } .rp-mr em { grid-column: 3; grid-row: 1 / 3; margin: 0; }
+  .rp-sys { padding: 8px; } .rp-sh b { font-size: 13.5px; } .rp-sh .app-icon { width: 24px; height: 24px; }
+  .rp-chip { min-height: 28px; padding: 3px 9px; font-size: 12px; } .rp-chips { gap: 4px; margin-top: 6px; }
+  .rp-xb, .rp-pb { font-size: 11.5px; padding: 2px 6px; } .rp-pb span { display: none; }
+  .rp-pv { font-size: 12.5px; } .rp-k { font-size: 10.5px; padding: 1px 6px; }
+  .rp-cap { grid-template-columns: 30px minmax(0, 1fr) auto; padding: 3px 4px; gap: 6px; } .rp-tags { flex-wrap: nowrap; gap: 3px; } .rp-k i { display: none; } .rp-sens, .rp-exc { font-size: 10px; padding: 1px 5px; } .rp-gh b { font-size: 11.5px; } .rp-caps { gap: 6px; } .rp-cl b { font-size: 12.5px; } .rp-cl small { display: none; }
+  .rp-mx { font-size: 12px; } .rp-mxn { min-width: 120px; } .rp-cell { font-size: 11.5px; max-width: 120px; padding: 2px 8px; }
+  .rp-bulk { font-size: 12px; padding: 4px 8px; margin-bottom: 8px; } .rp-bulk .btn-sm { padding: 4px 8px; font-size: 12px; min-height: 30px; }
+  .rp-flt .inp, .rp-flt .input-wrap { min-height: 36px; height: 36px; } .rp-flt .input-wrap input { min-height: 34px; height: 34px; font-size: 13px; } .rp-modes .seg-btn { min-height: 34px; }
+  .rp-mx th.rp-mxn { gap: 6px; } .rp-mxn { min-width: 96px; } .rp-mx .rp-who small { display: none; } .rp-mx .rp-who b { font-size: 12.5px; } .rp-mx th, .rp-mx td { padding: 4px 5px; } .rp-mx thead th .app-icon { display: none; }
+}
+html.dk .rp-k-self { background: rgba(120,140,180,.18); color: #B9C6E0; } html.dk .rp-k-see { background: rgba(80,160,110,.18); color: #A8D8B8; } html.dk .rp-k-work { background: rgba(227,182,109,.18); color: #E8C78E; } html.dk .rp-k-mgr { background: rgba(200,110,160,.18); color: #E2B0CF; } html.dk .rp-sens { background: rgba(200,80,70,.2); color: #F0AAA4; } html.dk .rp-chip.on { color: #1D1F26; }
 </style>
 <style id="sdfix">input[type=date],input[type=time],input[type=month],input[type=datetime-local]{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important;word-spacing:normal!important;text-align:start!important}input[type=date]::-webkit-datetime-edit,input[type=time]::-webkit-datetime-edit,input[type=month]::-webkit-datetime-edit,input[type=datetime-local]::-webkit-datetime-edit{direction:rtl!important;unicode-bidi:isolate!important;letter-spacing:normal!important}</style>
 <style id="siwarUpdCss">
@@ -2089,9 +2245,10 @@ body { display: flow-root; }
     <nav class="tabs u-tabs" id="uTabs" hidden>
       <button class="tab" data-unav="home"><i data-ic="alert"></i><span>يحتاج قرارك</span><span class="count alert" id="uTodoN" hidden></span></button>
       <button class="tab" data-unav="people"><i data-ic="users"></i><span>الموظفون</span></button>
+      <button class="tab" data-unav="perms"><i data-ic="shield"></i><span>الصلاحيات</span></button>
       <button class="tab" data-unav="org"><i data-ic="org"></i><span>الهيكل التنظيمي</span></button>
       <button class="tab" data-unav="profiles"><i data-ic="lockOpen"></i><span>الوظائف</span></button>
-      <button class="tab" data-unav="roles"><i data-ic="shield"></i><span>الأدوار</span></button>
+      <button class="tab" data-unav="roles"><i data-ic="org"></i><span>التوزيع التلقائي</span></button>
       <button class="tab" data-unav="systems"><i data-ic="grid"></i><span>الأنظمة</span></button>
       <button class="tab" data-unav="settings" data-owner="1"><i data-ic="palette"></i><span>الإعدادات</span></button>
       <button class="tab" data-unav="logs"><i data-ic="list"></i><span>السجل</span></button>
@@ -4061,7 +4218,8 @@ function uBar() {
   if (!bar) { document.body.insertAdjacentHTML('beforeend', '<div class="u-savebar2" id="uSaveBar" hidden><b id="uSaveN"></b><div class="savebar-actions"><button class="btn btn-ghost" data-u="discard">' + ic('undo') + '<span>تراجع</span></button><button class="btn btn-primary" data-u="commit" id="uCommit">' + ic('save') + '<span>حفظ</span></button></div></div>'); bar = $('#uSaveBar'); }
   const n = U.dirty.size;
   bar.hidden = !n || S.tab !== 'unified' || S.screen !== 'admin';
-  $('#uSaveN').textContent = n === 1 ? 'تعديل واحد لم يُحفظ' : n === 2 ? 'تعديلان لم يُحفظا' : n + ' تعديلات لم تُحفظ';
+  const sm = n ? rpBarSummary() : '';
+  $('#uSaveN').textContent = (S.lang === 'en' ? n + (n === 1 ? ' unsaved change' : ' unsaved changes') : n === 1 ? 'تعديل واحد لم يُحفظ' : n === 2 ? 'تعديلان لم يُحفظا' : n + ' تعديلات لم تُحفظ') + (sm ? ' — ' + sm : '');
 }
 function uDiscard() { if (U.orig) U.d = JSON.parse(JSON.stringify(U.orig)); else if (U.base) U.d = U.base; U.base = null; U.dirty.clear(); U.draft = null; uBar(); uRender(); }
 const U_OPNAME = { personRole: 'دور موظف', personCopy: 'نسخ صلاحيات', roleSave: 'حفظ دور', roleArchive: 'أرشفة دور', roleDelete: 'حذف دور', person: 'صلاحيات موظف', personInfo: 'بيانات موظف', personProfile: 'وظيفة موظف', personRest: 'يوم الراحة', personTitle: 'مسمى موظف', personLang: 'لغة الإيميلات', personWorksFor: 'يعمل لـ', personPush: 'إشعارات الجوال', setting: 'إعداد', shared: 'إعداد مشترك' };
@@ -4128,10 +4286,11 @@ async function uSave(action, payload, okMsg) {
   try { const r = await api(action, payload); if (r && r.ok === false) { uSaveFail(r.code, -1, null, r.detail); uLoad(true); return null; } if (okMsg) toast(okMsg, 'ok'); uFlushSoon(); uLoad(true); return r; }
   catch (c) { if (c !== '__handled') uSaveFail(c, -1, null); uLoad(true); return null; }
 }
-const U_TOP = { home: 1, people: 1, org: 1, profiles: 1, roles: 1, systems: 1 };
+const U_TOP = { perms: 1, home: 1, people: 1, org: 1, profiles: 1, roles: 1, systems: 1 };
 const U_PARENT = { person: 'people', profile: 'profiles', role: 'roles', rdist: 'roles', noorg: 'home', system: 'systems', shared: 'systems' };
 function uNavMark() {
-  const cur = S.tab === 'unified' ? (U_PARENT[U.view] || U.view) : S.tab;
+  const cur = S.tab === 'unified' ? (U.view === 'role' && (U.draft ? U.draft.kind === 'app' : (uRoleById(U.id) || {}).kind === 'app') ? 'perms' : (U_PARENT[U.view] || U.view)) : S.tab;
+  const tp = $('#uTabs [data-unav="perms"] span'), tr = $('#uTabs [data-unav="roles"] span'); if (tp) tp.textContent = RX('الصلاحيات', 'Permissions'); if (tr) tr.textContent = RX('التوزيع التلقائي', 'Auto distribution');
   $$('#uTabs .tab').forEach(b => b.classList.toggle('on', b.dataset.unav === cur));
 }
 async function uNav(v) {
@@ -4170,11 +4329,11 @@ function uRender() {
   if (U.later) { if (!(U.dirty && U.dirty.size)) { U.d = U.later; U.orig = JSON.parse(JSON.stringify(U.later)); } U.later = null; }
   const root = $('#uRoot'); if (!root || !U.d) return;
   const v = U.view;
-  const html = ({ home: uHome, people: uPeople, org: uOrg, person: uPerson, profiles: uProfiles, profile: uProfile, roles: uRoles, role: uRole, rdist: uRolesDist, noorg: uNoOrg, systems: uSystems, system: uSystem, shared: uSharedV })[v] || uHome;
+  const html = ({ perms: uPerms, home: uHome, people: uPeople, org: uOrg, person: uPerson, profiles: uProfiles, profile: uProfile, roles: uRoles, role: uRole, rdist: uRolesDist, noorg: uNoOrg, systems: uSystems, system: uSystem, shared: uSharedV })[v] || uHome;
   const keep = v === 'org' ? ogKeepGet() : null;
   root.innerHTML = (['person', 'profile', 'role', 'system', 'shared', 'rdist', 'noorg'].indexOf(v) >= 0 ? '<button class="u-back" data-u="back">' + ic('arrow') + '<span>' + RX('رجوع', 'Back') + '</span></button>' : '') + html();
   if (keep) ogKeepSet(keep);
-  uAfter(); uNavMark(); uBar();
+  uAfter(); rpAfter(); uNavMark(); uBar();
   const n = (U.d.todo || []).reduce((a, x) => a + (x.kind === 'nomail' ? 0 : x.n), 0), b = $('#uTodoN');
   if (b) { b.hidden = !n; b.textContent = n; }
 }
@@ -4269,23 +4428,8 @@ function uPerson() {
   const line = !p.owner && uRoleGens(p, true).length ? (n ? '<div class="u-like">' + RX('مختلف عن أدواره في ', 'Differs from his roles in ') + (S.lang === 'en' ? n + (n === 1 ? ' point' : ' points') : n === 1 ? 'نقطة واحدة' : n + ' نقاط') + ' <button class="btn btn-ghost btn-sm" data-u="reset" data-id="' + esc(p.id) + '">' + ic('undo') + '<span>' + RX('إلغاء الاستثناءات', 'Remove exceptions') + '</span></button></div>' : '<div class="u-like">' + (U.d.rolesAuto ? RX('صلاحياته من أدواره تماماً', 'His permissions come exactly from his roles') : RX('تأتي صلاحياته من أدواره عند حفظ «توزيع حسب الهيكل»', 'His permissions come from his roles once “Distribute by structure” is saved')) + '</div>') : p.owner ? '<div class="u-like">المالك: كل الصلاحيات في كل الأنظمة دائماً، ولا يستطيع أحد تقليلها.</div>' : p.profile
     ? '<div class="u-like">' + (n ? 'وظيفته «' + esc(p.profile) + '»، ومختلف عنها في ' + (n === 1 ? 'نقطة واحدة' : n + ' نقاط') + ' <button class="btn btn-ghost btn-sm" data-u="reset" data-id="' + esc(p.id) + '">' + ic('undo') + '<span>اجعله مثل وظيفته</span></button>' : 'مثل باقي «' + esc(p.profile) + '» تماماً') + '</div>'
     : '';
-  const cards = D.apps.map(a => {
-    const e = p.access[a.id] || { on: false, caps: [], diff: {} }, d = uReg(a.id);
-    const sw = '<label class="switch"><input type="checkbox" data-uc="pOn" data-app="' + esc(a.id) + '"' + (e.on ? ' checked' : '') + (me ? ' disabled' : '') + '><span></span></label>';
-    let body = '';
-    if (e.on && d && (d.caps || []).length) {
-      const groups = {}; d.caps.forEach(c => { (groups[c.group || ''] = groups[c.group || ''] || []).push(c); });
-      body = Object.keys(groups).map(g => '<div class="u-capg">' + (g ? '<b>' + esc(g) + '</b>' : '') + groups[g].map(c => {
-        const has = e.caps.indexOf(c.key) >= 0, own = c.key in (e.diff || {});
-        return '<label class="u-cap' + (own ? ' is-own' : '') + '"><input type="checkbox" data-uc="pCap" data-app="' + esc(a.id) + '" data-cap="' + esc(c.key) + '"' + (has ? ' checked' : '') + (me ? ' disabled' : '') + '><span>' + esc(c.label) + (c.desc ? '<small class=u-cdesc>' + esc(c.desc) + '</small>' : '') + '</span>' + (c.sensitive ? '<em class="u-sens">حساس</em>' : '') + (own ? '<em>خاص به</em>' : '') + '</label>';
-      }).join('') + '</div>').join('');
-      if ((d.scopes || []).length) body += '<label class="u-scope"><span>يرى:</span><select class="inp" data-uc="pScope" data-app="' + esc(a.id) + '"' + (me ? ' disabled' : '') + '><option value="">حسب وظيفته</option>' + d.scopes.map(s => '<option title="' + esc(s.desc || '') + '" value="' + esc(s.key) + '"' + (e.scope === s.key ? ' selected' : '') + '>' + esc(s.label) + '</option>').join('') + '</select></label>' + (((d.scopes.find(z => z.key === e.scope) || {}).desc) ? '<small class="u-cdesc">' + esc(d.scopes.find(z => z.key === e.scope).desc) + '</small>' : '');
-    } else if (p.owner) body = '<p class="u-muted u-note">كل الصلاحيات.</p>';
-    else if (e.on && !(d && (d.caps || []).length)) body = '<p class="u-muted u-note">هذا النظام لم يربط قدراته بسوار بعد؛ يكفي الآن تشغيل الدخول أو إيقافه، وصلاحياته التفصيلية ما زالت داخله.</p>';
-    return '<section class="panel-box u-sys' + (e.on ? '' : ' is-off') + '"><div class="u-sys-head">' + uIcon(a) + '<b>' + esc(a.nameAR) + '</b>' + sw + '</div>' + (p.owner ? '' : uRoleSel(p, a, me)) + body + '</section>';
-  }).join('');
   const copyBox = p.owner || me ? '' : '<section class="panel-box"><div class="u-q"><span class="u-q-t">نسخ صلاحياته إلى موظفين آخرين</span><span class="u-q-v"><button class="btn btn-ghost btn-sm" data-u="pCopy">' + ic('copy') + '<span>نسخ إلى…</span></button></span></div></section>';
-  return head + (me && !p.owner ? '<p class="u-muted u-note">لا يمكنك تعديل صلاحياتك بنفسك.</p>' : '') + line + '<div class="u-cols">' + info + og + work + '</div>' + '<div class="u-sys-grid">' + cards + '</div>' + copyBox + acct;
+  return head + (me && !p.owner ? '<p class="u-muted u-note">لا يمكنك تعديل صلاحياتك بنفسك.</p>' : '') + line + '<div class="u-cols">' + info + og + work + '</div>' + rpPersonBlock(p, me) + copyBox + acct;
 }
 
 function uProfiles() {
@@ -4931,6 +5075,330 @@ function uOnChange(el) {
   if (k === 'appNum') { if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); const f = el.dataset.f, lim = { snapMinutes: [1, 1440, 30], linkDays: [1, 3650, 30], linkLegacyDays: [1, 3650, 30] }[f]; if (!lim) return; const x = Math.round(Number(el.value)); if (!(x >= lim[0] && x <= lim[1])) { toast('القيمة من ' + lim[0] + ' إلى ' + lim[1], 'err'); el.value = (D.shared.siwarApp || {})[f] == null ? lim[2] : D.shared.siwarApp[f]; return; } const a = Object.assign({ snapMinutes: 30, linkDays: 30, linkLegacyDays: 30 }, D.shared.siwarApp || {}); a[f] = x; D.shared.siwarApp = a; uMark('sh:siwarApp', { t: 'shared', key: 'siwarApp', value: a }); return; }
   if (k === 'brand') { if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); const b = Object.assign({}, D.shared.brand || {}, { senderName: el.value.trim() }); D.shared.brand = b; uMark('sh:brand', { t: 'shared', key: 'brand', value: b }); return; }
 }
+// ===== (RP) الصلاحيات بالأدوار أولاً: دور واحد لكل نظام، والاستثناء اختياري =====
+// مكان واحد لكل مفهوم: الأدوار تُعرَّف مرة (تبويب «الأدوار» هنا)، ولكل موظف دور في كل نظام بنقرة، وما يزيد أو ينقص عن دوره «استثناء».
+// التخزين كما هو: PersonRoles (دور الموظف في النظام) + PersonAccess (الاستثناءات والمنع والنطاق) — الأنظمة تقرأ النتيجة نفسها من سوار.
+const RP_G = { self: ['الخدمة الذاتية', 'Self-service'], enter: ['دخول الأقسام', 'Section access'], day: ['قرار الأيام', 'Day decisions'], req: ['الطلبات', 'Requests'], request: ['الطلبات', 'Requests'], requests: ['الطلبات', 'Requests'],
+  task: ['المهام', 'Tasks'], ven: ['الموردون', 'Suppliers'], smp: ['العينات', 'Samples'], alt: ['البدائل', 'Alternatives'], dash: ['لوحة المتابعة', 'Dashboard'], ann: ['الإعلانات', 'Announcements'], mfg: ['التصنيع', 'Manufacturing'],
+  rep: ['التقارير', 'Reports'], items: ['الأصناف', 'Items'], item: ['الأصناف', 'Items'], sales: ['المبيعات', 'Sales'], emp: ['الموظفون', 'Employees'], users: ['المستخدمون', 'Users'], log: ['السجل', 'Log'], comm: ['الكوميشن', 'Commission'],
+  page: ['الشاشات', 'Screens'], receipt: ['الاستلام', 'Receiving'], ops: ['العمليات', 'Operations'], batch: ['الدفعات', 'Batches'], count: ['الجرد', 'Counts'], approval: ['الاعتمادات', 'Approvals'], purchase: ['المشتريات', 'Purchasing'],
+  supplier: ['الموردون', 'Suppliers'], qc: ['الجودة', 'Quality'], data: ['البيانات', 'Data'], audit: ['التدقيق', 'Audit'], month: ['إقفال الشهر', 'Month close'], dmg: ['التالف', 'Damage'], tst: ['التذوق', 'Tasting'], admin: ['إدارة النظام', 'System admin'],
+  settings: ['الإعدادات', 'Settings'], cfg: ['الإعدادات', 'Settings'], kpi: ['الأداء الشهري', 'Monthly performance'], exam: ['الاختبارات', 'Exams'], fin: ['المالية', 'Finance'], see: ['اطّلاع', 'View'], edit: ['عمل', 'Work'], use: ['الدخول إلى النظام', 'System access'], act: ['إجراءات إدارية حساسة', 'Sensitive admin actions'],
+  fb: ['إفادة القسم', 'Department response'], rc1: ['تأكيد الاستلام', 'Receipt confirmation'], rc0: ['تأكيد الاستلام', 'Receipt confirmation'], ent: ['البلاغات', 'Reports entry'], sum: ['تقرير التالف', 'Damage report'], dec: ['القرار', 'Decision'], dcs: ['القرار', 'Decision'], ctl: ['الرقابة', 'Control'], gm: ['المدير العام', 'General manager'], money: ['القيم بالريال', 'SAR values'], inq: ['التحقيق', 'Investigation'], mng: ['التحقيق', 'Investigation'] };
+// مجموعات عربية شائعة تصل من الأنظمة: ترجمتها للعرض بالإنجليزية
+const RP_GEN = { 'الخدمة الذاتية': 'Self-service', 'صفحتي': 'My page', 'الدخول إلى النظام': 'System access', 'الطلبات': 'Requests', 'المهام': 'Tasks', 'اطّلاع': 'View', 'عمل': 'Work', 'صلاحيات تفصيلية': 'Detailed permissions', 'إجراءات إدارية حساسة': 'Sensitive admin actions', 'الموردون': 'Suppliers', 'العينات': 'Samples', 'الأداء الشهري': 'Monthly performance', 'الاختبارات': 'Exams', 'التقارير': 'Reports', 'لوحة التحكم': 'Dashboard', 'المالية': 'Finance', 'الإعدادات': 'Settings', 'التالف': 'Damage', 'التذوق': 'Tasting', 'القرار': 'Decision', 'المخزون': 'Inventory', 'الاستلام': 'Receiving', 'الصرف': 'Issuing', 'الجرد': 'Counts', 'الاعتمادات': 'Approvals', 'المشتريات': 'Purchasing' };
+const RP_K = { self: ['لنفسه', 'Self'], see: ['اطّلاع', 'View'], work: ['عمل', 'Work'], mgr: ['إدارة فريقه', 'Manages team'] };
+U.rp = { mode: 'people', q: '', dept: '', app: '', role: '', sel: {}, open: {} };
+const rpN2 = s => (typeof ogN2 === 'function' ? ogN2(s) : String(s || '').split(/\s+/).slice(0, 2).join(' '));
+const rpPN = p => S.lang === 'en' && p.nameEN ? String(p.nameEN).trim().split(/\s+/).slice(0, 2).join(' ') : rpN2(p.name);
+const rpLab = c => S.lang === 'en' ? (c.labelEN || c.label || c.key) : (c.label || c.key);
+const rpDept = p => (p.org && (p.org.sn || p.org.dn)) || p.dept || '';
+function rpGroupOf(c) {
+  const g = String(c.group || '').trim();
+  if (!g || /^[\w.\s-]+$/.test(g)) { const m = RP_G[(g || String(c.key).split('.')[0]).toLowerCase()]; return m ? RX(m[0], m[1]) : RX('أخرى', 'Other'); }
+  return S.lang === 'en' ? (RP_GEN[g] || g) : g;
+}
+// نوع الخاصية: لنفسه (بياناته هو) · اطّلاع (يرى فقط) · عمل (يُجري تغييراً) · إدارة فريقه (يعمل على من تحته)
+function rpKind(c) {
+  if (c.kind && RP_K[c.kind]) return c.kind;
+  const k = String(c.key);
+  if (/^self(\.|$)/.test(k)) return 'self';
+  if (k === 'use.mgr' || /manageDept$|^task\.(assign|supervise)$|^kpi\.(score|send)$|^edit\.kpi$/.test(k)) return 'mgr';
+  if (/^see\.|\.view(All)?$|^rep\.view|^page\.|\.list$|^dash(\.view)?$|^sum$|\.enter$|^ann\.arch\.view$|^(requests|deliveries)\.all$|^audit\.view$|^ctl\.view$|^dec\.view$|^money$|\.money\.|^see$|results$|^manual\.search$/.test(k)) return 'see';
+  // خصائص جديدة لم تُعرف مفاتيحها: من بداية الوصف المنشور في سجل النظام
+  const l = String(c.label || '');
+  if (/(فريقه|من تحته|موظفي إدارته|team)/i.test(l) && !/^يرى|^يطّلع/.test(l)) return 'mgr';
+  if (/^(يرى|يطّلع|اطّلاع|يستعرض|ملخص)/.test(l) || /\b(view|summary|summaries|list)\b/i.test(k)) return 'see';
+  return 'work';
+}
+// النطاق بالكلمات
+function rpScopeW(appId, key, caps) {
+  const d = uReg(appId) || {}, s = (d.scopes || []).find(z => z.key === key);
+  if (!key) {
+    const cs = (d.caps || []).filter(c => (caps || []).indexOf(c.key) >= 0);
+    if (cs.length && cs.every(c => rpKind(c) === 'self')) return RX('بياناته فقط', 'His own data only');
+    if (cs.some(c => rpKind(c) === 'mgr')) return RX('إدارته فقط', 'His department only');
+    return RX('حسب إعداد النظام', 'System default');
+  }
+  const W = { own: ['بياناته فقط', 'His own data only'], self: ['بياناته فقط', 'His own data only'], dept: ['إدارته', 'His department'], company: ['شركته', 'His company'], all: ['الكل', 'Everyone'], '*': ['الكل', 'Everyone'], pack: ['المعرض والتعبئة', 'Showroom & packing'], mfg: ['المطبخ', 'Kitchen'] };
+  if (W[key]) return RX(W[key][0], W[key][1]);
+  if (key.indexOf('=') > 0) {
+    const nm = {}; (d.scopes || []).forEach(z => { nm[z.key] = z.label; });
+    return key.split(';').map(part => { const i = part.indexOf('='), k = part.slice(0, i), v = part.slice(i + 1).split(',').filter(Boolean), vs = v.map(x => nm[k + '=' + x] || x).join('، ');
+      return k === 'team' ? RX('فريق: ', 'Team: ') + vs : k === 'dept' ? RX('إدارة: ', 'Department: ') + vs : k === 'co' ? RX('شركة: ', 'Company: ') + vs : k === 'unit' ? RX('إدارته: ', 'His department: ') + vs : part; }).join(' · ');
+  }
+  return s ? (S.lang === 'en' ? s.labelEN || s.label : s.label) : key;
+}
+const rpList = arr => arr.slice(0, 4).join('، ') + (arr.length > 4 ? RX(' و' + (arr.length - 4) + ' غيرها', ' and ' + (arr.length - 4) + ' more') : '');
+function rpBy(appId, caps) {
+  const d = uReg(appId) || {}, by = { self: [], see: [], work: [], mgr: [] };
+  (d.caps || []).forEach(c => { if ((caps || []).indexOf(c.key) >= 0) by[rpKind(c)].push(rpLab(c)); });
+  return by;
+}
+// «ماذا يرى ويعمل؟» جمل قصيرة من الخصائص الفعلية والنطاق
+function rpPreview(appId, caps, scope, on) {
+  if (!on) return '<p class="rp-pv rp-pv-none">' + RX('لا يدخل هذا النظام.', 'Has no access to this system.') + '</p>';
+  if (!uDeclared(appId)) return '<p class="rp-pv rp-pv-none">' + RX('يدخل النظام؛ تفاصيل صلاحياته ما زالت داخل النظام نفسه.', 'Can sign in; detailed permissions still live inside the system.') + '</p>';
+  const by = rpBy(appId, caps), L = { self: RX('يخصه هو: ', 'About himself: '), see: RX('يرى فقط: ', 'Views only: '), work: RX('يعمل: ', 'Can do: '), mgr: RX('لمن تحته: ', 'For his team: ') };
+  const li = k => by[k].length ? '<li><span class="rp-k rp-k-' + k + '">' + RX(RP_K[k][0], RP_K[k][1]) + '</span><span>' + esc(L[k] + rpList(by[k])) + '</span></li>' : '';
+  return '<ul class="rp-pv">' + li('self') + li('see') + li('work') + li('mgr') + '<li class="rp-sc">' + ic('eye') + '<span>' + RX('على بيانات: ', 'Applies to: ') + '<b>' + esc(rpScopeW(appId, scope, caps)) + '</b></span></li></ul>';
+}
+// سطر «ماذا يستطيع» للدور
+function rpSumLine(appId, caps) {
+  const by = rpBy(appId, caps), parts = [];
+  ['self', 'see', 'work', 'mgr'].forEach(k => { if (by[k].length) parts.push('<span class="rp-k rp-k-' + k + '">' + RX(RP_K[k][0], RP_K[k][1]) + ' ' + by[k].length + '</span>'); });
+  return parts.join('') || '<span class="u-muted">' + RX('لا يعطي شيئاً بعد', 'Gives nothing yet') + '</span>';
+}
+function rpCanLine(appId, caps) {
+  const by = rpBy(appId, caps), s = [];
+  if (by.work.length) s.push(RX('يعمل: ', 'Does: ') + by.work.slice(0, 3).join('، '));
+  if (by.mgr.length) s.push(RX('لفريقه: ', 'Team: ') + by.mgr.slice(0, 2).join('، '));
+  if (by.see.length) s.push(RX('يرى: ', 'Sees: ') + by.see.slice(0, 3).join('، '));
+  if (!s.length && by.self.length) s.push(RX('صفحته هو فقط', 'His own page only'));
+  return s.join(' · ');
+}
+// الحالة الحالية لموظف في نظام: '' تلقائي · رقم دور · 'none' فردي (قديم) · 'off' بلا وصول · 'yes' يدخل (نظام بلا خصائص)
+function rpCur(p, a) {
+  const e = p.access[a] || {}, rs = p.roles || {};
+  if (e.en === 'no') return 'off';
+  const r = rs[a] && uRoleById(rs[a]);
+  if (r && r.kind === 'app' && r.app === a) return r.id;
+  if (rs[a] === 'none') return 'none';
+  if (!uDeclared(a) && e.en === 'yes') return 'yes';
+  return '';
+}
+function rpAuto(p, a) { const q = Object.assign({}, p, { roles: Object.assign({}, p.roles || {}) }); delete q.roles[a]; return uRoleResolve(q, a); }
+function rpExc(e) { const d = (e && e.diff) || {}; let add = 0, rem = 0; Object.keys(d).forEach(k => { if (d[k]) add++; else rem++; }); return { add: add, rem: rem, sc: e && e.scopeOwn ? 1 : 0, n: add + rem + (e && e.scopeOwn ? 1 : 0) }; }
+function rpRoleName(p, a) {
+  const e = p.access[a] || {}, cur = rpCur(p, a);
+  if (cur === 'off' || !e.on) return { t: RX('بلا وصول', 'No access'), k: 'off' };
+  if (cur === 'yes' || (!uDeclared(a) && e.on)) return { t: RX('يدخل', 'Has access'), k: 'auto' };
+  if (cur && cur !== 'none') return { t: rlName(uRoleById(cur)), k: 'set' };
+  if (cur === 'none') return { t: RX('فردي', 'Individual'), k: 'set' };
+  const au = rpAuto(p, a); return { t: au ? rlName(au) : RX('حسب وظيفته', 'From job'), k: 'auto' };
+}
+// يُسقط التعديل إن عاد كما كان عند فتح الصفحة (فلا يظهر في شريط الحفظ)
+function rpMark(p, a, roleTouched) {
+  const o = U.orig && (U.orig.people || []).find(x => x.id === p.id), oe = o && o.access[a] || {}, e = p.access[a];
+  const kr = 'pr:' + p.id + ':' + a, kp = 'p:' + p.id + ':' + a;
+  const rNow = (p.roles || {})[a] || '', rWas = (o && o.roles || {})[a] || '';
+  if (roleTouched) { if (rNow === rWas) U.dirty.delete(kr); else uMark(kr, { t: 'personRole', personId: p.id, appId: a, roleId: rNow }); }
+  const same = (e.en || '') === (oe.en || '') && (e.scopeOwn || '') === (oe.scopeOwn || '') && JSON.stringify(uCanonC(e.diff)) === JSON.stringify(uCanonC(oe.diff));
+  if (same) U.dirty.delete(kp); else uMark(kp, uPOp(p, a));
+  uBar();
+}
+function uCanonC(o) { const x = {}; Object.keys(o || {}).sort().forEach(k => { x[k] = !!o[k]; }); return x; }
+function rpSet(p, a, v) {
+  if (!U.base) U.base = JSON.parse(JSON.stringify(U.d));
+  const e = p.access[a]; if (!e || p.owner) return;
+  const rs = p.roles = p.roles || {};
+  if (v === 'off') { e.en = 'no'; uRecalc(p, a); return rpMark(p, a, false); }
+  if (v === 'yes') { e.en = 'yes'; uRecalc(p, a); return rpMark(p, a, false); }
+  if (v) rs[a] = v; else delete rs[a];
+  if (e.en === 'no') e.en = '';
+  uRecalc(p, a);
+  // ما صار مطابقاً للدور الجديد لم يعد استثناءً
+  const base = e.fromProfile || []; Object.keys(e.diff || {}).forEach(c => { if (!!e.diff[c] === (base.indexOf(c) >= 0)) delete e.diff[c]; });
+  uRecalc(p, a);
+  rpMark(p, a, true);
+}
+function rpCapToggle(p, a, key) {
+  if (!U.base) U.base = JSON.parse(JSON.stringify(U.d));
+  const e = p.access[a]; e.diff = e.diff || {};
+  const has = e.caps.indexOf(key) >= 0, inBase = (e.fromProfile || []).indexOf(key) >= 0;
+  if (!has === inBase) delete e.diff[key]; else e.diff[key] = !has;
+  uRecalc(p, a); rpMark(p, a, false);
+}
+// قائمة الخصائص المختصرة: مجموعات بعناوين عربية واضحة، ونقرة واحدة لكل خاصية، ونوعها ونطاقها ظاهران
+function rpCapList(appId, caps, opt) {
+  const d = uReg(appId); if (!d || !(d.caps || []).length) return '';
+  const groups = {}, order = [];
+  d.caps.forEach(c => { const g = rpGroupOf(c); if (!groups[g]) { groups[g] = []; order.push(g); } groups[g].push(c); });
+  const scopeOther = rpScopeW(appId, opt.scope, caps);
+  return '<div class="rp-caps">' + order.map(g => {
+    const all = groups[g].every(c => caps.indexOf(c.key) >= 0);
+    return '<div class="rp-g"><div class="rp-gh"><b>' + esc(g) + '</b>' + (opt.group ? '<button type="button" class="link-btn" data-u="rpRGroup" data-g="' + esc(g) + '">' + (all ? RX('إلغاء الكل', 'Clear all') : RX('تحديد الكل', 'Select all')) + '</button>' : '') + '</div><div class="rp-gl">' +
+      groups[g].map(c => { const on = caps.indexOf(c.key) >= 0, k = rpKind(c), x = !!(opt.exc && (c.key in opt.exc));
+        const sw = k === 'self' ? RX('بياناته فقط', 'own data') : k === 'mgr' ? rpScopeW(appId, opt.scope && opt.scope !== 'all' ? opt.scope : '', ['use.mgr']) : (opt.scope ? scopeOther : '');
+        return '<button type="button" class="rp-cap' + (on ? ' on' : '') + (x ? ' is-exc' : '') + '" data-u="' + opt.u + '" data-cap="' + esc(c.key) + '" data-app="' + esc(appId) + '"' + (opt.pid ? ' data-pid="' + esc(opt.pid) + '"' : '') + (opt.dis ? ' disabled' : '') + ' aria-pressed="' + on + '"><span class="rp-sw"></span><span class="rp-cl"><b>' + esc(rpLab(c)) + '</b>' + (c.desc ? '<small>' + esc(c.desc) + '</small>' : '') + '</span>' +
+          '<span class="rp-tags"><span class="rp-k rp-k-' + k + '">' + RX(RP_K[k][0], RP_K[k][1]) + (sw ? '<i>' + esc(sw) + '</i>' : '') + '</span>' + (c.sensitive ? '<span class="rp-sens">' + RX('حساس', 'Sensitive') + '</span>' : '') + (x ? '<span class="rp-exc">' + RX('استثناء', 'Exception') + '</span>' : '') + '</span></button>'; }).join('') + '</div></div>';
+  }).join('') + '</div>';
+}
+function rpScopeSel(appId, cur, uc, pid, dis, emptyTxt) {
+  const d = uReg(appId); if (!d || !(d.scopes || []).length) return '';
+  return '<label class="rp-scope"><span>' + RX('على بيانات:', 'Applies to:') + '</span><select class="inp" data-uc="' + uc + '" data-app="' + esc(appId) + '"' + (pid ? ' data-pid="' + esc(pid) + '"' : '') + (dis ? ' disabled' : '') + '><option value="">' + esc(emptyTxt) + '</option>' +
+    d.scopes.map(s => '<option value="' + esc(s.key) + '"' + (cur === s.key ? ' selected' : '') + '>' + esc(rpScopeW(appId, s.key)) + '</option>').join('') + '</select></label>';
+}
+// صف نظام واحد لموظف: شرائح الأدوار + الاستثناء + المعاينة
+function rpSysRow(p, a, me, full) {
+  const e = p.access[a.id] || { on: false, caps: [], diff: {} }, cur = rpCur(p, a.id), dis = me ? ' disabled' : '', decl = uDeclared(a.id);
+  const roles = uRolesAll().filter(r => r.kind === 'app' && r.app === a.id && (!r.archived || cur === r.id)).sort((x, y) => (x.archived - y.archived) || (x.sort - y.sort));
+  const au = rpAuto(p, a.id), key = p.id + '|' + a.id, open = U.rp.open[key] || (full ? 'v' : '');
+  const chip = (v, txt, cls) => '<button type="button" class="rp-chip' + (cur === v ? ' on' : '') + (cls || '') + '" data-u="rpSet" data-pid="' + esc(p.id) + '" data-app="' + esc(a.id) + '" data-v="' + esc(v) + '"' + dis + ' aria-pressed="' + (cur === v) + '">' + txt + '</button>';
+  const autoTxt = au ? rlName(au) : (decl ? RX('لا شيء', 'Nothing') : (e.on && !e.en ? RX('يدخل', 'Has access') : RX('لا يدخل', 'No access')));
+  const chips = chip('', '<small>' + RX('تلقائي', 'Auto') + '</small>' + esc(autoTxt), ' rp-auto') + roles.map(r => chip(r.id, esc(rlName(r)), r.archived ? ' is-arch' : '')).join('') +
+    (cur === 'none' ? chip('none', RX('فردي', 'Individual')) : '') + (!decl ? chip('yes', RX('يدخل', 'Has access')) : '') + chip('off', RX('بلا وصول', 'No access'), ' rp-off');
+  const x = rpExc(e), exBtn = decl && e.on ? '<button type="button" class="rp-xb' + (x.n ? ' has' : '') + (open === 'x' ? ' on' : '') + '" data-u="rpOpen" data-k="' + esc(key) + '" data-w="x">' + (x.n ? RX('استثناء', 'Exception') + (x.add ? ' <b>+' + x.add + '</b>' : '') + (x.rem ? ' <b class="m">−' + x.rem + '</b>' : '') + (x.sc ? ' <b>' + ic('eye') + '</b>' : '') : '+ ' + RX('استثناء', 'Exception')) + '</button>' : '';
+  const pvBtn = '<button type="button" class="rp-pb' + (open === 'v' ? ' on' : '') + '" data-u="rpOpen" data-k="' + esc(key) + '" data-w="v">' + ic('eye') + '<span>' + RX('ماذا يرى ويعمل؟', 'What can he see and do?') + '</span></button>';
+  let body = '';
+  if (open === 'v') body = '<div class="rp-body">' + rpPreview(a.id, e.caps, e.scope, e.on) + '</div>';
+  if (open === 'x' && decl && e.on) body = '<div class="rp-body rp-xp"><p class="rp-xh">' + RX('«استثناء» = مختلف عن دوره. ما عليه الإشارة يملكه الآن؛ اضغط لتغييره.', '“Exception” = differs from his role. Highlighted items are what he has now; tap to change.') + (x.n && !me ? ' <button type="button" class="link-btn" data-u="rpClearX" data-pid="' + esc(p.id) + '" data-app="' + esc(a.id) + '">' + RX('إلغاء استثناءاته هنا', 'Remove his exceptions here') + '</button>' : '') + '</p>' +
+    rpScopeSel(a.id, e.scopeOwn || '', 'rpScope', p.id, me, RX('مثل دوره', 'Same as role') + ' (' + rpScopeW(a.id, (uRoleResolve(p, a.id) || {}).scope || '', e.fromProfile) + ')') +
+    rpCapList(a.id, e.caps, { u: 'rpCap', exc: e.diff, pid: p.id, dis: me, scope: e.scope }) + rpPreview(a.id, e.caps, e.scope, e.on) + '</div>';
+  return '<div class="rp-sys' + (e.on ? '' : ' is-off') + (decl ? '' : ' is-undecl') + (open === 'x' && decl && e.on ? ' is-x' : '') + '"><div class="rp-sh">' + uIcon(a) + '<b>' + esc(L(a, 'name')) + '</b>' + exBtn + pvBtn + '</div><div class="rp-chips">' + chips + '</div>' + body + '</div>';
+}
+function rpPersonBlock(p, me) {
+  if (p.owner) return '<section class="panel-box rp-box"><p class="u-muted">' + RX('المالك: كل الصلاحيات في كل الأنظمة.', 'Owner: every permission in every system.') + '</p></section>';
+  const apps = U.d.apps.slice().sort((x, y) => uDeclared(y.id) - uDeclared(x.id));
+  return '<section class="panel-box rp-box"><div class="rp-bh"><h3>' + ic('shield') + '<span>' + RX('الصلاحيات', 'Permissions') + '</span></h3><span class="u-muted">' + RX('دوره في كل نظام بنقرة · الاستثناء اختياري', 'His role in each system in one tap · exceptions are optional') + '</span></div><div class="rp-sysg">' + apps.map(a => rpSysRow(p, a, me, true)).join('') + '</div></section>';
+}
+// ===== شاشة «الصلاحيات»: الأشخاص · المصفوفة · الأدوار =====
+function rpPeopleList() {
+  const D = U.d, R = U.rp, q = String(R.q || '').trim().toLowerCase();
+  let list = D.people.filter(p => !p.owner);
+  if (R.dept) list = list.filter(p => rpDept(p) === R.dept || (p.org && p.org.dn === R.dept));
+  if (q) list = list.filter(p => [p.name, p.nameEN, p.title, rpDept(p), p.no].join(' ').toLowerCase().indexOf(q) >= 0);
+  if (R.app && R.role) list = list.filter(p => { const c = rpCur(p, R.app); return R.role === 'off' ? !(p.access[R.app] || {}).on : R.role === 'auto' ? c === '' : c === R.role; });
+  return list.sort((a, b) => (uLeftP(a) - uLeftP(b)) || String(a.name).localeCompare(String(b.name), 'ar'));
+}
+function rpMine(p) { return S.user && String(S.user.email || '').toLowerCase() === String(p.email || '').toLowerCase() && S.user.role !== 'owner'; }
+function uPerms() {
+  const D = U.d, R = U.rp, boss = S.user && S.user.role === 'owner';
+  if (boss && !D.rpAt && !U.rpMig && !(U.dirty && U.dirty.size)) { U.rpMig = 1; setTimeout(rpMigrate, 50); }
+  const apps = D.apps.slice().sort((x, y) => uDeclared(y.id) - uDeclared(x.id));
+  const depts = Array.from(new Set(D.people.filter(p => !p.owner).map(rpDept).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'ar'));
+  const mode = (m, t, i) => '<button class="seg-btn' + (R.mode === m ? ' on' : '') + '" data-u="rpMode" data-v="' + m + '">' + ic(i) + '<span>' + t + '</span></button>';
+  const roleOpts = R.app ? '<select class="inp" data-uc="rpF" data-f="role"><option value="">' + RX('كل الأدوار', 'All roles') + '</option><option value="auto"' + (R.role === 'auto' ? ' selected' : '') + '>' + RX('تلقائي', 'Auto') + '</option>' + uRolesAll().filter(r => r.kind === 'app' && r.app === R.app && !r.archived).map(r => '<option value="' + esc(r.id) + '"' + (R.role === r.id ? ' selected' : '') + '>' + esc(rlName(r)) + '</option>').join('') + '<option value="off"' + (R.role === 'off' ? ' selected' : '') + '>' + RX('بلا وصول', 'No access') + '</option></select>' : '';
+  let h = '<div class="rp-top"><div class="seg rp-modes">' + mode('people', RX('الأشخاص', 'People'), 'users') + mode('matrix', RX('المصفوفة', 'Matrix'), 'grid') + mode('roles', RX('الأدوار', 'Roles'), 'shield') + '</div>';
+  if (R.mode !== 'roles') h += '<div class="rp-flt"><div class="input-wrap">' + ic('search') + '<input id="rpQ" type="search" placeholder="' + RX('ابحث بالاسم', 'Search by name') + '" value="' + esc(R.q) + '" autocomplete="off"></div>' +
+    '<select class="inp" data-uc="rpF" data-f="dept"><option value="">' + RX('كل الإدارات', 'All departments') + '</option>' + depts.map(d => '<option' + (R.dept === d ? ' selected' : '') + '>' + esc(d) + '</option>').join('') + '</select>' +
+    '<select class="inp" data-uc="rpF" data-f="app"><option value="">' + RX('كل الأنظمة', 'All systems') + '</option>' + apps.map(a => '<option value="' + esc(a.id) + '"' + (R.app === a.id ? ' selected' : '') + (uDeclared(a.id) ? '' : ' disabled') + '>' + esc(L(a, 'name')) + '</option>').join('') + '</select>' + roleOpts + '</div>';
+  h += '</div>';
+  if (R.mode === 'roles') return h + rpRolesView();
+  const list = rpPeopleList(), n = Object.keys(R.sel).filter(id => R.sel[id]).length;
+  h += '<div class="rp-bulk' + (n ? ' on' : '') + '"><b>' + (n ? (S.lang === 'en' ? n + ' selected' : n === 1 ? 'موظف واحد محدد' : n + ' محددين') : RX('حدّد أشخاصاً لتعيين دور لهم معاً', 'Select people to assign a role to them together')) + '</b><div class="savebar-actions">' +
+    '<button class="btn btn-ghost btn-sm" data-u="rpSelAll">' + ic('check') + '<span>' + RX('تحديد الظاهرين', 'Select shown') + ' (' + list.length + ')</span></button>' + (n ? '<button class="btn btn-ghost btn-sm" data-u="rpSelNone">' + ic('x') + '<span>' + RX('إلغاء التحديد', 'Clear') + '</span></button><button class="btn btn-primary btn-sm" data-u="rpBulk">' + ic('shield') + '<span>' + RX('تعيين دور', 'Assign role') + '</span></button>' : '') + '</div></div>';
+  if (!list.length) return h + '<div class="empty">' + ic('search') + '<span>' + RX('لا نتائج', 'No results') + '</span></div>';
+  if (R.mode === 'matrix') return h + rpMatrix(list, apps);
+  const show = R.app ? apps.filter(a => a.id === R.app) : apps;
+  return h + '<div class="rp-cards">' + list.slice(0, 300).map(p => {
+    const me = rpMine(p), sel = !!R.sel[p.id];
+    return '<div class="rp-card' + (sel ? ' is-sel' : '') + (uLeftP(p) ? ' is-left' : '') + '"><div class="rp-ch"><button type="button" class="rp-ck' + (sel ? ' on' : '') + '" data-u="rpSel" data-pid="' + esc(p.id) + '" aria-pressed="' + sel + '" aria-label="' + RX('تحديد', 'Select') + '"' + (me ? ' disabled' : '') + '></button>' +
+      '<button type="button" class="rp-who" data-u="person" data-id="' + esc(p.id) + '"><b>' + esc(rpPN(p)) + '</b><small>' + esc(rpDept(p) || p.title || '') + (uLeftP(p) ? ' · ' + RX('غادر', 'Left') : '') + '</small></button></div>' +
+      (R.app ? rpSysRow(p, show[0], me, false) : '<div class="rp-mini">' + show.map(a => { const rn = rpRoleName(p, a.id), x = rpExc(p.access[a.id]);
+        return '<button type="button" class="rp-mr k-' + rn.k + '" data-u="rpPick" data-pid="' + esc(p.id) + '" data-app="' + esc(a.id) + '"' + (me ? ' disabled' : '') + '>' + uIcon(a) + '<span class="n">' + esc(L(a, 'name')) + '</span><span class="v">' + esc(rn.t) + '</span>' + (x.n ? '<em>' + x.n + '</em>' : '') + '</button>'; }).join('') + '</div>') + '</div>';
+  }).join('') + '</div>' + (list.length > 300 ? '<p class="u-muted">' + RX('يظهر أول 300 — ضيّق البحث', 'Showing first 300 — narrow the search') + '</p>' : '');
+}
+function rpMatrix(list, apps) {
+  return '<div class="rp-mxw matrix-wrap"><table class="rp-mx"><thead><tr><th class="rp-mxn">' + RX('الموظف', 'Employee') + '</th>' + apps.map(a => '<th>' + uIcon(a) + '<span>' + esc(L(a, 'name')) + '</span></th>').join('') + '</tr></thead><tbody>' +
+    list.slice(0, 400).map(p => { const me = rpMine(p), sel = !!U.rp.sel[p.id];
+      return '<tr class="' + (sel ? 'is-sel' : '') + (uLeftP(p) ? ' is-left' : '') + '"><th class="rp-mxn"><button type="button" class="rp-ck sm' + (sel ? ' on' : '') + '" data-u="rpSel" data-pid="' + esc(p.id) + '"' + (me ? ' disabled' : '') + ' aria-label="' + RX('تحديد', 'Select') + '"></button><button type="button" class="rp-who" data-u="person" data-id="' + esc(p.id) + '"><b>' + esc(rpPN(p)) + '</b><small>' + esc(rpDept(p)) + '</small></button></th>' +
+        apps.map(a => { const rn = rpRoleName(p, a.id), x = rpExc(p.access[a.id]); return '<td><button type="button" class="rp-cell k-' + rn.k + '" data-u="rpPick" data-pid="' + esc(p.id) + '" data-app="' + esc(a.id) + '"' + (me ? ' disabled' : '') + '>' + esc(rn.t) + (x.n ? '<em>' + x.n + '</em>' : '') + '</button></td>'; }).join('') + '</tr>'; }).join('') +
+    '</tbody></table></div><p class="rp-legend"><span class="rp-cell k-set">' + RX('دور محدد', 'Set role') + '</span><span class="rp-cell k-auto">' + RX('تلقائي من الهيكل', 'Auto from structure') + '</span><span class="rp-cell k-off">' + RX('بلا وصول', 'No access') + '</span><span class="rp-cell k-set">' + RX('استثناءات', 'Exceptions') + '<em>2</em></span></p>';
+}
+function rpRolesView() {
+  const D = U.d, boss = S.user && S.user.role === 'owner', apps = D.apps.slice().sort((x, y) => uDeclared(y.id) - uDeclared(x.id));
+  return '<div class="rp-intro">' + RX('الدور = مجموعة صلاحيات في نظام واحد، تُعرَّف هنا مرة واحدة ثم تُعطى لأي موظف بنقرة. تعديل الدور يصل فوراً لكل أصحابه.', 'A role = a set of permissions in one system, defined here once and given to anyone in one tap. Editing a role reaches all its holders at once.') +
+    (boss ? ' <button class="link-btn" data-u="seedRoles">' + RX('إضافة الأدوار الجاهزة الناقصة', 'Add missing ready roles') + '</button>' : '') + ' · <button class="link-btn" data-unav="roles">' + RX('التوزيع التلقائي حسب الهيكل', 'Automatic distribution by structure') + '</button></div><div class="rp-rgrid">' +
+    apps.map(a => { const list = uRolesAll().filter(r => r.kind === 'app' && r.app === a.id).sort((x, y) => (x.archived - y.archived) || (x.sort - y.sort)), decl = uDeclared(a.id);
+      return '<section class="panel-box rp-rsys' + (decl ? '' : ' is-off') + '"><div class="rp-sh">' + uIcon(a) + '<b>' + esc(L(a, 'name')) + '</b>' + (decl ? '<button class="btn btn-ghost btn-sm" data-u="newRole" data-kind="app" data-app="' + esc(a.id) + '">' + ic('plus') + '<span>' + RX('دور جديد', 'New role') + '</span></button>' : '') + '</div>' +
+        (list.length ? list.map(r => { const n = uRoleCount(r); return '<button class="rp-role' + (r.archived ? ' is-off' : '') + '" data-u="role" data-id="' + esc(r.id) + '"><span class="t"><b>' + esc(rlName(r)) + '</b><span class="u-tag' + (n ? '' : ' u-tag-grey') + '">' + rlNum(n) + '</span>' + (r.archived ? '<span class="u-tag u-tag-grey">' + RX('مؤرشف', 'Archived') + '</span>' : '') + '</span><span class="c">' + esc(rpCanLine(a.id, r.caps)) + '</span><span class="k">' + rpSumLine(a.id, r.caps) + '<i>' + esc(rpScopeW(a.id, r.scope, r.caps)) + '</i></span></button>'; }).join('')
+          : '<p class="u-muted">' + (decl ? RX('لا أدوار بعد', 'No roles yet') : RX('لم يربط النظام صلاحياته بسوار بعد', 'This system has not linked its permissions to SIWAR yet')) + '</p>') + '</section>'; }).join('') + '</div>';
+}
+function rpPick(p, a) {
+  const app = uApp(a), cur = rpCur(p, a), au = rpAuto(p, a), decl = uDeclared(a);
+  const roles = uRolesAll().filter(r => r.kind === 'app' && r.app === a && (!r.archived || cur === r.id)).sort((x, y) => (x.archived - y.archived) || (x.sort - y.sort));
+  const opt = (v, n, d) => '<button type="button" class="rp-opt' + (cur === v ? ' on' : '') + (v === 'off' ? ' off' : '') + '" data-u="rpPickGo" data-pid="' + esc(p.id) + '" data-app="' + esc(a) + '" data-v="' + esc(v) + '"><b>' + esc(n) + '</b><small>' + esc(d) + '</small></button>';
+  openModal({ title: uIcon(app) + '<span>' + esc(rpPN(p)) + ' · ' + esc(L(app, 'name')) + '</span>', wide: true,
+    body: '<div class="rp-opts">' + opt('', RX('تلقائي', 'Auto') + ' — ' + (au ? rlName(au) : RX('لا شيء', 'Nothing')), RX('من منصبه ووحدته في الهيكل، ويتغير معهما', 'From his position and unit in the structure, and follows them')) +
+      roles.map(r => opt(r.id, rlName(r), rpCanLine(a, r.caps) || rlDesc(r))).join('') + (!decl ? opt('yes', RX('يدخل', 'Has access'), RX('يدخل النظام', 'Can sign in')) : '') + opt('off', RX('بلا وصول', 'No access'), RX('لا يدخل هذا النظام', 'Cannot enter this system')) + '</div>' +
+      (decl ? '<p class="u-muted">' + RX('الاستثناءات من صفحة الموظف ← «+ استثناء».', 'Exceptions: from the employee page ← “+ Exception”.') + ' <button class="link-btn" data-u="rpGoP" data-id="' + esc(p.id) + '">' + RX('فتح صفحته', 'Open his page') + '</button></p>' : ''),
+    foot: '<button class="btn btn-ghost" data-act="closeModal">' + RX('إغلاق', 'Close') + '</button>' });
+}
+function rpBulkOpen() {
+  const D = U.d, ids = Object.keys(U.rp.sel).filter(id => U.rp.sel[id]);
+  U.rp.bk = {};
+  const apps = D.apps.slice().sort((x, y) => uDeclared(y.id) - uDeclared(x.id));
+  openModal({ title: ic('shield') + '<span>' + (S.lang === 'en' ? 'Assign roles to ' + ids.length : 'تعيين دور لـ ' + (ids.length === 1 ? 'موظف واحد' : ids.length + ' موظفين')) + '</span>', wide: true,
+    body: '<p class="u-muted">' + RX('اختر لكل نظام دوراً، أو اتركه «لا تغيير». يظهر كل شيء في شريط الحفظ قبل اعتماده.', 'Pick a role per system, or leave it “No change”. Everything appears in the save bar before it is applied.') + '</p>' +
+      apps.map(a => { const roles = uRolesAll().filter(r => r.kind === 'app' && r.app === a.id && !r.archived).sort((x, y) => x.sort - y.sort);
+        const c = (v, t, cls) => '<button type="button" class="rp-chip' + (v === '__' ? ' on' : '') + (cls || '') + '" data-u="rpBk" data-app="' + esc(a.id) + '" data-v="' + esc(v) + '">' + t + '</button>';
+        return '<div class="rp-bkr"><div class="rp-sh">' + uIcon(a) + '<b>' + esc(L(a, 'name')) + '</b></div><div class="rp-chips" data-bk="' + esc(a.id) + '">' + c('__', RX('لا تغيير', 'No change'), ' rp-nc') + c('', RX('تلقائي', 'Auto'), ' rp-auto') + roles.map(r => c(r.id, esc(rlName(r)))).join('') + (uDeclared(a.id) ? '' : c('yes', RX('يدخل', 'Has access'))) + c('off', RX('بلا وصول', 'No access'), ' rp-off') + '</div></div>'; }).join(''),
+    foot: '<button class="btn btn-ghost" data-act="closeModal">' + RX('إلغاء', 'Cancel') + '</button><button class="btn btn-primary" data-u="rpBkGo">' + ic('check') + '<span>' + RX('تطبيق في الصفحة', 'Apply on the page') + '</span></button>' });
+}
+async function rpMigrate() {
+  try {
+    const pv = await api('u_rpMigrate', { apply: false }, { quiet: true });
+    if (!pv || !pv.ok) { if (pv && !pv.ok) uSaveFail(pv.code || 'ERR_SERVER', -1, null, pv.detail); return; }
+    if (!pv.n) { U.d.rpAt = 'x'; return; }
+    const en = S.lang === 'en', rows = (pv.plan || []).slice(0, 60).map(x => '<div class="u-q"><span class="u-q-t">' + esc(x.name || '') + ' · ' + esc((D_appName(x.app)) || x.app) + '</span><span class="u-q-v">' + esc(x.toName || x.to || '') + ' · ' + (en ? 'exceptions ' : 'استثناءات ') + x.n0 + ' → ' + x.n1 + '</span></div>').join('');
+    openModal({ title: ic('shield') + '<span>' + (en ? 'Convert permissions to roles' : 'تحويل الصلاحيات إلى أدوار') + '</span>', wide: true,
+      body: '<p>' + (en ? pv.n + ' person/system permission sets will become «role + exceptions». Nobody\'s access changes; anyone whose access would differ is restored automatically.' : 'سيتحوّل ' + pv.n + ' من صلاحيات الأشخاص في الأنظمة إلى «دور + استثناءات». لا يتغيّر وصول أحد، ومن يختلف وصوله يُعاد كما كان تلقائياً.') + '</p>' + rows + (pv.n > 60 ? '<p class="u-muted">' + (en ? '…and ' + (pv.n - 60) + ' more' : '… و' + (pv.n - 60) + ' غيرها') + '</p>' : ''),
+      foot: '<button class="btn btn-ghost" data-act="closeModal">' + (en ? 'Later' : 'لاحقاً') + '</button><button class="btn btn-primary" id="rpMigGo">' + ic('check') + '<span>' + (en ? 'Apply' : 'تطبيق') + '</span></button>' });
+    const go = document.getElementById('rpMigGo');
+    if (go) go.onclick = async () => {
+      go.disabled = true;
+      try {
+        const r = await api('u_rpMigrate', { apply: true }, { quiet: true });
+        closeModal();
+        if (r && r.ok && r.moved) { toast(en ? r.moved + ' permission sets simplified to role + exceptions — nobody\'s access changed' : 'بُسّطت ' + r.moved + ' صلاحية فردية إلى «دور + استثناءات» دون تغيير وصول أحد', 'ok'); uLoad(true); }
+        else if (r && r.ok) U.d.rpAt = 'x';
+        else if (r && !r.ok) uSaveFail(r.code || 'ERR_SERVER', -1, null, r.detail);
+      } catch (c) { closeModal(); uSaveFail('ERR_NETWORK', -1, null, ''); }
+    };
+  } catch (c) { U.rpMig = 0; }
+}
+function D_appName(id) { const a = (U.d && U.d.apps || []).find(x => x.id === id); return a ? L(a, 'name') : ''; }
+function rpRerender() { const y = window.scrollY; uRender(); window.scrollTo(0, y); }
+function rpClick(el) {
+  const k = el.dataset.u, D = U.d, R = U.rp; if (!k || k.indexOf('rp') !== 0) return false;
+  const P = () => D.people.find(x => x.id === (el.dataset.pid || U.id));
+  if (k === 'rpMode') { R.mode = el.dataset.v; rpRerender(); return true; }
+  if (k === 'rpSet') { const p = P(); if (p) rpSet(p, el.dataset.app, el.dataset.v); rpRerender(); return true; }
+  if (k === 'rpOpen') { const kk = el.dataset.k; R.open[kk] = (R.open[kk] || (U.view === 'person' ? 'v' : '')) === el.dataset.w ? '-' : el.dataset.w; rpRerender(); return true; }
+  if (k === 'rpCap') { const p = P(); if (p) rpCapToggle(p, el.dataset.app, el.dataset.cap); rpRerender(); return true; }
+  if (k === 'rpClearX') { const p = P(), a = el.dataset.app, e = p.access[a]; if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); e.diff = {}; e.scopeOwn = ''; if (e.en === 'yes' && e.profileOn) e.en = ''; uRecalc(p, a); rpMark(p, a, false); rpRerender(); return true; }
+  if (k === 'rpSel') { const id = el.dataset.pid; R.sel[id] = !R.sel[id]; rpRerender(); return true; }
+  if (k === 'rpSelAll') { rpPeopleList().forEach(p => { if (!rpMine(p)) R.sel[p.id] = true; }); rpRerender(); return true; }
+  if (k === 'rpSelNone') { R.sel = {}; rpRerender(); return true; }
+  if (k === 'rpPick') { const p = P(); if (p) rpPick(p, el.dataset.app); return true; }
+  if (k === 'rpPickGo') { const p = P(); if (p) rpSet(p, el.dataset.app, el.dataset.v); closeModal(true); rpRerender(); return true; }
+  if (k === 'rpGoP') { closeModal(true); uGo('person', el.dataset.id); return true; }
+  if (k === 'rpBulk') { rpBulkOpen(); return true; }
+  if (k === 'rpBk') { const a = el.dataset.app; if (el.dataset.v === '__') delete R.bk[a]; else R.bk[a] = el.dataset.v; $$('[data-bk="' + CSS.escape(a) + '"] .rp-chip').forEach(b => b.classList.toggle('on', b === el)); return true; }
+  if (k === 'rpBkGo') {
+    const ids = Object.keys(R.sel).filter(id => R.sel[id]), apps = Object.keys(R.bk || {});
+    if (!apps.length) { toast(RX('لم تختر دوراً لأي نظام', 'No role picked for any system'), 'err'); return true; }
+    ids.forEach(id => { const p = D.people.find(x => x.id === id); if (p && !p.owner && !rpMine(p)) apps.forEach(a => rpSet(p, a, R.bk[a])); });
+    closeModal(true); R.sel = {}; rpRerender(); toast(RX('طُبّق في الصفحة — اضغط «حفظ» لاعتماده', 'Applied on the page — press “Save” to apply it'), 'ok'); return true;
+  }
+  if (k === 'rpRCap') { uRoleSync(); const r = U.draft, c = el.dataset.cap; r.caps = r.caps.indexOf(c) >= 0 ? r.caps.filter(x => x !== c) : r.caps.concat([c]); rpRerender(); return true; }
+  if (k === 'rpRGroup') { uRoleSync(); const r = U.draft, d = uReg(r.app), g = el.dataset.g, keys = (d.caps || []).filter(c => rpGroupOf(c) === g).map(c => c.key), all = keys.every(x => r.caps.indexOf(x) >= 0);
+    r.caps = r.caps.filter(x => keys.indexOf(x) < 0); if (!all) r.caps = r.caps.concat(keys); rpRerender(); return true; }
+  return false;
+}
+function rpChange(el) {
+  const k = el.dataset.uc; if (!k || k.indexOf('rp') !== 0) return false;
+  if (k === 'rpF') { U.rp[el.dataset.f] = el.value; if (el.dataset.f === 'app') U.rp.role = ''; rpRerender(); return true; }
+  if (k === 'rpScope') { const p = U.d.people.find(x => x.id === (el.dataset.pid || U.id)), a = el.dataset.app, e = p.access[a]; if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); e.scopeOwn = el.value; if (el.value) e.scope = el.value; uRecalc(p, a); rpMark(p, a, false); rpRerender(); return true; }
+  if (k === 'rpRScope') { uRoleSync(); U.draft.scope = el.value; rpRerender(); return true; }
+  return false;
+}
+function rpAfter() {
+  const q = $('#rpQ');
+  if (q) q.oninput = () => { U.rp.q = q.value; clearTimeout(U.rp.qt); U.rp.qt = setTimeout(() => { const pos = q.selectionStart; rpRerender(); const n = $('#rpQ'); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (e) {} } }, 160); };
+}
+// ملخص شريط الحفظ: ماذا سيتغير
+function rpBarSummary() {
+  const v = Array.from(U.dirty.values()), roles = v.filter(o => o.t === 'personRole').length, acc = v.filter(o => o.t === 'person').length, ppl = new Set(v.filter(o => o.personId).map(o => o.personId)).size, other = v.length - roles - acc;
+  const parts = [];
+  if (roles) parts.push(RX('أدوار ', 'roles ') + roles);
+  if (acc) parts.push(RX('وصول واستثناءات ', 'access & exceptions ') + acc);
+  if (other) parts.push(RX('أخرى ', 'other ') + other);
+  if (ppl) parts.push(S.lang === 'en' ? ppl + ' people' : ppl === 1 ? 'لموظف واحد' : 'لـ ' + ppl + ' موظفين');
+  return parts.join(' · ');
+}
+
 // ===== الأدوار (واجهة) =====
 const uRolesAll = () => U.d.roles || [];
 const uRoleById = id => uRolesAll().find(r => r.id === id) || null;
@@ -5017,13 +5485,9 @@ function uRoleApp() {
   if (r.kind === 'app') {
     const a = uApp(r.app), d = uReg(r.app);
     if (d && (d.caps || []).length) {
-      const groups = {}; d.caps.forEach(c => { (groups[c.group || ''] = groups[c.group || ''] || []).push(c); });
-      body = '<section class="panel-box"><h3>' + uIcon(a) + '<span>ما يستطيعه صاحب الدور في ' + esc(a.nameAR) + '</span></h3>' + Object.keys(groups).map(g => {
-        const all = groups[g].every(c => r.caps.indexOf(c.key) >= 0);
-        return '<div class="u-capg">' + (g ? '<b>' + esc(g) + '</b> <button class="link-btn" data-u="rGroup" data-g="' + esc(g) + '">' + (all ? 'إلغاء المجموعة' : 'تحديد المجموعة') + '</button>' : '') + groups[g].map(c =>
-          '<label class="u-cap"><input type="checkbox" data-uc="rCap" data-cap="' + esc(c.key) + '"' + (r.caps.indexOf(c.key) >= 0 ? ' checked' : '') + '><span>' + esc(c.label) + (c.desc ? '<small class=u-cdesc>' + esc(c.desc) + '</small>' : '') + '</span>' + (c.sensitive ? '<em class="u-sens">حساس</em>' : '') + '</label>').join('') + '</div>';
-      }).join('') +
-        ((d.scopes || []).length ? '<label class="u-scope"><span>يرى:</span><select class="inp" data-uc="rScope"><option value="">—</option>' + d.scopes.map(s => '<option title="' + esc(s.desc || '') + '" value="' + esc(s.key) + '"' + (r.scope === s.key ? ' selected' : '') + '>' + esc(s.label) + '</option>').join('') + '</select></label>' : '') + '</section>';
+      body = '<section class="panel-box rp-redit"><div class="rp-sh">' + uIcon(a) + '<b>' + RX('ما يستطيعه صاحب الدور في ', 'What the role holder can do in ') + esc(L(a, 'name')) + '</b></div>' +
+        '<div class="rp-can"><b>' + RX('ماذا يستطيع', 'What it allows') + '</b><span>' + esc(rpCanLine(r.app, r.caps) || RX('لا شيء بعد', 'Nothing yet')) + '</span><span class="k">' + rpSumLine(r.app, r.caps) + '</span></div>' +
+        rpScopeSel(r.app, r.scope || '', 'rpRScope', '', false, RX('حسب النظام', 'System default')) + rpCapList(r.app, r.caps, { u: 'rpRCap', group: true, scope: r.scope }) + '</section>';
     } else body = '<p class="u-muted u-note">هذا النظام لم يربط قدراته بسوار بعد.</p>';
   } else {
     body = '<section class="panel-box"><h3>' + ic('grid') + '<span>دور كل نظام ضمن هذا الدور العام</span></h3>' + D.apps.map(a => {
@@ -5077,6 +5541,7 @@ function uPkCount() {
 }
 
 function uRoleChange(el) {
+  if (rpChange(el)) return true;
   if (rlChange(el)) return true;
   const k = el.dataset.uc, D = U.d;
   if (k === 'pRole' || k === 'pBundle') {
@@ -5097,6 +5562,7 @@ function uRoleChange(el) {
   return false;
 }
 function uRoleClick(el, e) {
+  if (rpClick(el)) return true;
   if (rlClick(el)) return true;
   if ((el.dataset.u === 'rArch' || el.dataset.u === 'rDel') && U.view === 'role' && U.id && (uRoleById(U.id) || {}).kind === 'general') {
     const r = rlRole(U.id);
