@@ -1732,6 +1732,15 @@ body { display: flow-root; }
 .jb-role { font-weight: 600; }
 .jb-tag { font-style: normal; font-size: 11.5px; color: var(--muted); }
 .jb-sum { margin-bottom: 8px; }
+/* (UR) توحيد الأدوار */
+.ur-band { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 14px; margin-bottom: 12px; border: 1px solid var(--gold); border-radius: var(--radius-sm); background: var(--surface-2); font-size: 13.5px; }
+.ur-band span { flex: 1 1 220px; }
+.ur-h { font-size: 13.5px; margin: 14px 0 4px; color: var(--muted); }
+.ur-caps { display: flex; flex-wrap: wrap; gap: 4px 8px; justify-content: flex-end; }
+.ur-caps .jb-tag { background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; }
+.ur-block { border: 1px solid var(--border); border-inline-start: 3px solid var(--gold); border-radius: var(--radius-sm); padding: 10px 12px; margin: 8px 0; }
+.ur-block p { margin: 4px 0 8px; font-size: 13px; color: var(--muted); }
+@media (max-width: 600px) { .ur-band { padding: 8px 10px; font-size: 12.5px; } .ur-p { flex-wrap: wrap; } .ur-caps { justify-content: flex-start; } .u-q.ur-sys { grid-template-columns: 1fr auto; padding: 6px 0; } .ur-sys .u-q-t { font-size: 13px; } .u-q.ur-p { padding: 8px 0; } .ur-p .u-q-t { font-size: 13px; } .u-prev.jb-sum { gap: 6px; } .u-prev.jb-sum span { padding: 5px 9px; font-size: 12.5px; } .u-prev.jb-sum b { font-size: 15px; } }
 .rp-intro { font-size: 13.5px; color: var(--muted); margin-bottom: 12px; line-height: 1.7; }
 .rp-rgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 12px; align-items: start; }
 .rp-rsys .rp-sh { margin-bottom: 8px; }
@@ -2463,7 +2472,7 @@ const I18N = {
     ERR_INVALID_LOGIN: 'البريد أو كلمة المرور غير صحيحة.', ERR_LOCKED: 'محاولات كثيرة، انتظر قليلاً ثم حاول مجدداً أو استخدم «نسيت كلمة المرور؟».',
     ERR_SUSPENDED: 'هذا الحساب موقوف.', ERR_SESSION: 'انتهت الجلسة، سجّل الدخول مجدداً.', ERR_ROLE_CHANGED: 'تغيّرت صلاحيات حسابك أو بياناته، سجّل الدخول من جديد.', ERR_STALE: 'عدّل غيرك بيانات هذا الموظف بعد أن فتحت الصفحة، فلم يُحفظ تعديلك.', ERR_BUSY_SAME: 'ما زال الحفظ السابق قيد التنفيذ. انتظر قليلاً ثم حدّث الصفحة وتحقق قبل إعادته.', ERR_FORBIDDEN: 'لا تملك صلاحية هذا الإجراء.', ERR_SENSITIVE: 'هذه صلاحية حساسة؛ يمنحها المالك فقط.', ERR_SHARED: 'هذا إعداد مشترك بين الأنظمة؛ يُعدَّل من صفحة «سوار» في الأنظمة.', ERR_RANGE: 'القيمة خارج الحد المسموح.', ERR_CONFLICT: 'عدّل غيرك هذا الإعداد بعد أن فتحت الصفحة.', ERR_RULE: 'القيم لا تتفق مع بعضها.', ERR_IN_USE: 'الدور مستخدم؛ أرشفه بدل حذفه.', ERR_ARCHIVED: 'الدور مؤرشف فلا يُسند لأحد جديد.', ERR_VALUE: 'القيمة غير مقبولة.', NO_SOURCE: 'تعذّر فتح ملف المصدر.', ERR_EXISTS_ORG: 'الهيكل معرَّف بالفعل.',
     ERR_NO_URL: 'لم يُضبط رابط هذا البرنامج بعد.', ERR_USERNAME: 'اسم المستخدم من 2 إلى 40 حرفاً إنجليزياً أو رقماً.',
-    ERR_NAME: 'الاسم بالعربية والإنجليزية مطلوب.', ERR_EMAIL: 'البريد الإلكتروني غير صحيح.', ERR_EXISTS: 'هذا البريد مسجل لموظف آخر من جسر، فلا يمكن استخدامه لموظف ثانٍ.', ERR_REQUIRED: 'حقل مطلوب فارغ.', ERR_DUP_JOB: 'توجد وظيفة بهذا الاسم.', ERR_DRIFT: 'أُلغي النقل لأن وصول بعض الموظفين كان سيتغير. أُعيد كل شيء كما كان.', ERR_HAS_ACCOUNT: 'لهذا الموظف حساب؛ عدّل بريده من الحساب.', ERR_DUP_USERNAME: 'اسم المستخدم مستخدم من قبل.',
+    ERR_NAME: 'الاسم بالعربية والإنجليزية مطلوب.', ERR_EMAIL: 'البريد الإلكتروني غير صحيح.', ERR_EXISTS: 'هذا البريد مسجل لموظف آخر من جسر، فلا يمكن استخدامه لموظف ثانٍ.', ERR_REQUIRED: 'حقل مطلوب فارغ.', ERR_DUP_JOB: 'توجد وظيفة بهذا الاسم.', ERR_DRIFT: 'أُلغي النقل لأن وصول بعض الموظفين كان سيتغير. أُعيد كل شيء كما كان.', ERR_UR_BLOCKED: 'لا يمكن توحيد الأدوار بعد: بعض الموظفين مذكورون في سلسلة بمستوى سيتغير. صحّح أدوارهم ثم أعد المعاينة.', ERR_PORTAL_ONLY: 'الأدوار والصلاحيات تُعدَّل من «الأدوار والصلاحيات» في سوار وحدها.', ERR_HAS_ACCOUNT: 'لهذا الموظف حساب؛ عدّل بريده من الحساب.', ERR_DUP_USERNAME: 'اسم المستخدم مستخدم من قبل.',
     ERR_PIN: 'كلمة المرور 8 خانات على الأقل، فيها حروف وأرقام.', ERR_PIN_WEAK: 'كلمة المرور سهلة التخمين، اختر غيرها.', ERR_TEMP_EXPIRED: 'انتهت صلاحية كلمة المرور المؤقتة، اطلب واحدة جديدة من المسؤول.', tempTitle: 'كلمة المرور المؤقتة', tempNote: 'تظهر الآن فقط، ويُطلب من المستخدم تغييرها عند أول دخول.', tempMailed: 'أُرسلت إلى بريده.', tempSend: 'إرسال كلمة المرور المؤقتة بالبريد', copy: 'نسخ', copied: 'تم النسخ', noEmail: 'بلا بريد', tempCreate: 'إنشاء', ERR_DUP_EMAIL: 'هذا البريد مسجّل لمستخدم آخر.', ERR_MUST_CHANGE: 'اختر كلمة مرور خاصة بك أولاً.', ERR_BUSY: 'النظام مشغول لحظات، أعد المحاولة.', linkSaveFirst: 'احفظ التعديلات أولاً ثم افحص الربط.', regenYes: 'تغيير المفتاح', ERR_PIN_MATCH: 'كلمتا المرور غير متطابقتين.', ERR_PIN_WRONG: 'كلمة المرور الحالية غير صحيحة.',
     ERR_PIN_SAME: 'كلمة المرور الجديدة مطابقة للحالية.', ERR_CODE: 'رمز التحقق غير صحيح أو منتهي الصلاحية.', ERR_SELF: 'لا يمكن تنفيذ هذا الإجراء على حسابك (كلمتك تغيّرها من «تغيير كلمة المرور»).',
     ERR_LAST_ADMIN: 'يجب أن يبقى مدير نظام مفعّل واحد على الأقل.', ERR_URL: 'الرابط يجب أن يبدأ بـ https://', ERR_ICON: 'رابط الصورة غير صالح.',
@@ -2545,7 +2554,7 @@ const I18N = {
     ERR_INVALID_LOGIN: 'Incorrect email or password.', ERR_LOCKED: 'Too many attempts. Wait a little and try again, or use “Forgot your password?”.',
     ERR_SUSPENDED: 'This account is suspended.', ERR_SESSION: 'Your session ended. Please sign in again.', ERR_ROLE_CHANGED: 'Your account permissions or details changed. Please sign in again.', ERR_STALE: 'Someone else changed this employee after you opened the page, so your change was not saved.', ERR_BUSY_SAME: 'The previous save is still running. Wait a moment, then refresh and check before trying again.', ERR_FORBIDDEN: 'You are not allowed to do this.', ERR_SENSITIVE: 'Sensitive permission: owner only.', ERR_SHARED: 'Shared setting: edit it on the SIWAR page under Systems.', ERR_RANGE: 'Value out of the allowed range.', ERR_CONFLICT: 'Someone else changed this setting after you opened the page.', ERR_RULE: 'The values do not agree with each other.', ERR_IN_USE: 'Role is in use; archive it instead.', ERR_ARCHIVED: 'Role is archived.', ERR_VALUE: 'Invalid value.', NO_SOURCE: 'Source file could not be opened.',
     ERR_NO_URL: 'This app has no URL yet.', ERR_USERNAME: 'Username must be 2–40 English letters or digits.',
-    ERR_NAME: 'Arabic and English names are required.', ERR_DUP_JOB: 'A job title with this name already exists.', ERR_DRIFT: 'Cancelled because some people\'s access would have changed. Everything was restored as it was.', ERR_EMAIL: 'Invalid email address.', ERR_DUP_USERNAME: 'Username already exists.',
+    ERR_NAME: 'Arabic and English names are required.', ERR_DUP_JOB: 'A job title with this name already exists.', ERR_DRIFT: 'Cancelled because some people\'s access would have changed. Everything was restored as it was.', ERR_UR_BLOCKED: 'Roles cannot be unified yet: some people are named in a chain by a level that would change. Fix their roles, then preview again.', ERR_PORTAL_ONLY: 'Roles and permissions are edited in «Roles and permissions» in SIWAR only.', ERR_EMAIL: 'Invalid email address.', ERR_DUP_USERNAME: 'Username already exists.',
     ERR_PIN: 'Password must be at least 8 characters with letters and numbers.', ERR_PIN_WEAK: 'This password is too easy to guess.', ERR_TEMP_EXPIRED: 'Your temporary password expired. Ask the administrator for a new one.', tempTitle: 'Temporary password', tempNote: 'Shown only now. The user must change it at first sign-in.', tempMailed: 'Sent to their email.', tempSend: 'Email the temporary password', copy: 'Copy', copied: 'Copied', noEmail: 'No email', tempCreate: 'Create', ERR_DUP_EMAIL: 'This email belongs to another user.', ERR_MUST_CHANGE: 'Please choose your own password first.', ERR_BUSY: 'The system is busy for a moment — please retry.', linkSaveFirst: 'Save your changes first, then test the link.', regenYes: 'Change key', ERR_PIN_MATCH: 'Passwords do not match.', ERR_PIN_WRONG: 'Current password is incorrect.',
     ERR_PIN_SAME: 'New password matches the current one.', ERR_CODE: 'The code is incorrect or expired.', ERR_SELF: 'This action cannot be applied to your own account (change your password from “Change password”).',
     ERR_LAST_ADMIN: 'At least one active system admin must remain.', ERR_URL: 'URL must start with https://', ERR_ICON: 'Invalid image URL.',
@@ -4140,7 +4149,7 @@ function openInstall() {
   if (w) { try { w.opener = null; } catch (e) {} } else toast(t('ERR_POPUP'), 'err');
 }
 
-const U = { d: null, at: 0, view: 'home', id: '', back: [], q: '', co: '', ids: null, imp: null };
+const U = { d: null, at: 0, view: (QS.get('u') === 'perms' ? 'perms' : 'home'), id: '', back: [], q: '', co: '', ids: null, imp: null };   // (UR) «?u=perms» من الأنظمة يفتح «الأدوار والصلاحيات» مباشرة
 const U_DAYS = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
 // الأيام قد تأتي أرقاماً (0 = الأحد) أو أسماءً من النظام
 function uDaysOf(v) {
@@ -5292,11 +5301,13 @@ function uPerms() {
   const D = U.d, R = U.rp, boss = S.user && S.user.role === 'owner';
   if (boss && D.jbN && !U.jbMig && !(U.dirty && U.dirty.size)) { U.jbMig = 1; setTimeout(jbMigrate, 50); }
   else if (boss && !D.jbN && !D.rpAt && !U.rpMig && !(U.dirty && U.dirty.size)) { U.rpMig = 1; setTimeout(rpMigrate, 50); }
+  else if (boss && !D.jbN && D.rpAt && D.urN && !D.urAt && !U.urMig && !(U.dirty && U.dirty.size)) { U.urMig = 1; setTimeout(urMigrate, 50); }
   const apps = D.apps.slice().sort((x, y) => uDeclared(y.id) - uDeclared(x.id));
   const depts = Array.from(new Set(D.people.filter(p => !p.owner).map(rpDept).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'ar'));
   const mode = (m, t, i) => '<button class="seg-btn' + (R.mode === m ? ' on' : '') + '" data-u="rpMode" data-v="' + m + '">' + ic(i) + '<span>' + t + '</span></button>';
   const roleOpts = R.app ? '<select class="inp" data-uc="rpF" data-f="role"><option value="">' + RX('كل الأدوار', 'All roles') + '</option><option value="auto"' + (R.role === 'auto' ? ' selected' : '') + '>' + RX('تلقائي', 'Auto') + '</option>' + uRolesAll().filter(r => r.kind === 'app' && r.app === R.app && !r.archived).map(r => '<option value="' + esc(r.id) + '"' + (R.role === r.id ? ' selected' : '') + '>' + esc(rlName(r)) + '</option>').join('') + '<option value="off"' + (R.role === 'off' ? ' selected' : '') + '>' + RX('بلا وصول', 'No access') + '</option></select>' : '';
-  let h = '<div class="rp-top"><div class="seg rp-modes">' + mode('people', RX('الأشخاص', 'People'), 'users') + mode('matrix', RX('المصفوفة', 'Matrix'), 'grid') + mode('roles', RX('الأدوار', 'Roles'), 'shield') + '</div>';
+  let h = (boss && D.urN && !D.urAt ? '<div class="ur-band" id="urBand">' + ic('shield') + '<span>' + RX('توحيد الأدوار مع الأنظمة: مستويات واستثناءات محلية بانتظار نقلها إلى هنا', 'Unifying roles with the systems: local levels and exceptions are waiting to move here') + '</span><button class="btn btn-primary btn-sm" data-u="urOpen">' + RX('معاينة', 'Preview') + '</button></div>' : '') +
+    '<div class="rp-top"><div class="seg rp-modes">' + mode('people', RX('الأشخاص', 'People'), 'users') + mode('matrix', RX('المصفوفة', 'Matrix'), 'grid') + mode('roles', RX('الأدوار', 'Roles'), 'shield') + '</div>';
   if (R.mode !== 'roles') h += '<div class="rp-flt"><div class="input-wrap">' + ic('search') + '<input id="rpQ" type="search" placeholder="' + RX('ابحث بالاسم', 'Search by name') + '" value="' + esc(R.q) + '" autocomplete="off"></div>' +
     '<select class="inp" data-uc="rpF" data-f="dept"><option value="">' + RX('كل الإدارات', 'All departments') + '</option>' + depts.map(d => '<option' + (R.dept === d ? ' selected' : '') + '>' + esc(d) + '</option>').join('') + '</select>' +
     '<select class="inp" data-uc="rpF" data-f="app"><option value="">' + RX('كل الأنظمة', 'All systems') + '</option>' + apps.map(a => '<option value="' + esc(a.id) + '"' + (R.app === a.id ? ' selected' : '') + (uDeclared(a.id) ? '' : ' disabled') + '>' + esc(L(a, 'name')) + '</option>').join('') + '</select>' + roleOpts + '</div>';
@@ -5353,6 +5364,36 @@ function rpBulkOpen() {
         return '<div class="rp-bkr"><div class="rp-sh">' + uIcon(a) + '<b>' + esc(L(a, 'name')) + '</b></div><div class="rp-chips" data-bk="' + esc(a.id) + '">' + c('__', RX('لا تغيير', 'No change'), ' rp-nc') + c('', RX('تلقائي', 'Auto'), ' rp-auto') + roles.map(r => c(r.id, esc(rlName(r)))).join('') + (uDeclared(a.id) ? '' : c('yes', RX('يدخل', 'Has access'))) + c('off', RX('بلا وصول', 'No access'), ' rp-off') + '</div></div>'; }).join(''),
     foot: '<button class="btn btn-ghost" data-act="closeModal">' + RX('إلغاء', 'Cancel') + '</button><button class="btn btn-primary" data-u="rpBkGo">' + ic('check') + '<span>' + RX('تطبيق في الصفحة', 'Apply on the page') + '</span></button>' });
 }
+// (UR) توحيد الأدوار: معاينة ما ينتقل من كل نظام إلى «الأدوار والصلاحيات»، ولا يُطبَّق شيء إلا بـ «تطبيق»
+async function urMigrate() {
+  try {
+    const pv = await api('u_urMigrate', { apply: false }, { quiet: true });
+    if (!pv || !pv.ok) { if (pv && !pv.ok) uSaveFail(pv.code || 'ERR_SERVER', -1, null, pv.detail); return; }
+    const en = S.lang === 'en', nm = x => rpN2(en && x.nameEN ? x.nameEN : x.name), bl = pv.blocked || [];
+    const sys = (pv.systems || []).slice().sort((a, b) => (b.local - a.local) || (b.n - a.n)).map(a => '<div class="u-q ur-sys"><span class="u-q-t">' + esc(en ? a.appNameEN : a.appName) + '</span><span class="u-q-v"><span class="u-tag' + (a.n ? '' : ' u-tag-grey') + '">' +
+      (a.local ? (en ? a.n + (a.n === 1 ? ' person' : ' people') : a.n + ' موظفاً') : RX('مصدره هنا من قبل', 'Already from here')) + '</span></span></div>').join('');
+    const roles = (pv.roles || []).map(r => '<div class="u-q"><span class="u-q-t">' + esc(en ? (r.nameEN || r.nameAR) : r.nameAR) + '<small class="u-cdesc">' + esc(en ? r.appNameEN : r.appName) + '</small></span><span class="u-q-v"><span class="jb-role">' + esc(en ? (r.capEN || r.cap) : (r.capAR || r.cap)) + '</span><span class="u-tag">' + (en ? r.n + ' people' : r.n + ' موظفاً') + '</span></span></div>').join('');
+    const rows = (pv.items || []).slice(0, 120).map(x => '<div class="u-q ur-p"><span class="u-q-t">' + esc(nm(x)) + '<small class="u-cdesc">' + esc((en ? x.appNameEN : x.appName) + (x.lv ? ' · ' + x.lv : '')) + '</small></span><span class="u-q-v ur-caps">' +
+      x.labels.map(l => '<em class="jb-tag">' + esc(en ? l.en : l.ar) + '</em>').join('') + (x.scope ? '<em class="jb-tag">' + RX('نطاق: ', 'Scope: ') + esc(x.scope) + '</em>' : '') + '</span></div>').join('');
+    openModal({ title: ic('shield') + '<span>' + RX('توحيد الأدوار مع الأنظمة', 'Unify roles with the systems') + '</span>', wide: true,
+      body: '<div class="u-prev jb-sum"><span><b>' + pv.n + '</b> ' + RX('موظفاً', 'people') + '</span><span><b>' + (pv.roles || []).length + '</b> ' + RX('دوراً يأخذ المستوى', 'roles get the level') + '</span><span><b>' + bl.length + '</b> ' + RX('بانتظار تصحيح', 'need a fix') + '</span></div>' +
+        '<p class="u-muted">' + RX('بعد التطبيق تُعدَّل الأدوار والصلاحيات والاستثناءات لكل الأنظمة من هنا وحدها، وتصبح شاشاتها في الأنظمة للاطلاع. لا يتغير وصول أحد: يُفحص كل موظف في كل نظام قبل الحفظ وبعده، وأي اختلاف يعيد كل شيء كما كان.', 'After applying, roles, permissions and exceptions for every system are edited here only, and their screens in the systems become read-only. Nobody\'s access changes: every person in every system is checked before and after, and any difference restores everything as it was.') + '</p>' +
+        (bl.length ? '<div class="ur-block"><b>' + RX('لا يمكن التطبيق بعد', 'Cannot apply yet') + '</b><p>' + RX('هؤلاء مذكورون في سلسلة طلبات بمستوى سيتغير. صحّح دورهم هنا أو غيّر السلسلة، ثم أعد المعاينة:', 'These people are named in a request chain by a level that would change. Fix their role here or change the chain, then preview again:') + '</p><div class="u-chips">' + bl.map(x => '<span class="chip">' + esc(nm(x)) + '</span>').join('') + '</div></div>' : '') +
+        '<h4 class="ur-h">' + RX('الأنظمة', 'Systems') + '</h4>' + sys + (roles ? '<h4 class="ur-h">' + RX('أدوار تأخذ صلاحية المستوى', 'Roles that get the level permission') + '</h4>' + roles : '') +
+        (rows ? '<h4 class="ur-h">' + RX('ما يُضاف لكل شخص', 'What is added for each person') + '</h4>' + rows : ''),
+      foot: '<button class="btn btn-ghost" data-act="closeModal">' + RX('لاحقاً', 'Later') + '</button><button class="btn btn-primary" id="urMigGo"' + (bl.length ? ' disabled' : '') + '>' + ic('check') + '<span>' + RX('تطبيق', 'Apply') + '</span></button>' });
+    const go = document.getElementById('urMigGo');
+    if (go) go.onclick = async () => {
+      go.disabled = true;
+      try {
+        const r = await api('u_urMigrate', { apply: true }, { quiet: true });
+        closeModal();
+        if (r && r.ok) { U.d.urAt = r.at || 'x'; U.d.urN = 0; toast(en ? 'Roles unified — every system now reads roles and permissions from here, nobody\'s access changed' : 'وُحّدت الأدوار — كل الأنظمة تقرأ الأدوار والصلاحيات من هنا، ولم يتغير وصول أحد', 'ok'); uLoad(true); }
+        else uSaveFail((r && r.code) || 'ERR_SERVER', -1, null, r && r.detail);
+      } catch (c) { closeModal(); uSaveFail('ERR_NETWORK', -1, null, ''); }
+    };
+  } catch (c) { U.urMig = 0; }
+}
 async function rpMigrate() {
   try {
     const pv = await api('u_rpMigrate', { apply: false }, { quiet: true });
@@ -5381,6 +5422,7 @@ function rpClick(el) {
   const k = el.dataset.u, D = U.d, R = U.rp; if (!k || k.indexOf('rp') !== 0) return false;
   const P = () => D.people.find(x => x.id === (el.dataset.pid || U.id));
   if (k === 'rpMode') { R.mode = el.dataset.v; rpRerender(); return true; }
+  if (k === 'urOpen') { urMigrate(); return true; }
   if (k === 'rpSet') { const p = P(); if (p) rpSet(p, el.dataset.app, el.dataset.v); rpRerender(); return true; }
   if (k === 'rpOpen') { const kk = el.dataset.k; R.open[kk] = (R.open[kk] || (U.view === 'person' ? 'v' : '')) === el.dataset.w ? '-' : el.dataset.w; rpRerender(); return true; }
   if (k === 'rpCap') { const p = P(); if (p) rpCapToggle(p, el.dataset.app, el.dataset.cap); rpRerender(); return true; }
