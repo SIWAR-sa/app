@@ -1724,6 +1724,14 @@ body { display: flow-root; }
 .rp-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 12px; }
 .rp-legend .rp-cell { cursor: default; }
 /* الأدوار */
+.jb-note { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0; font-size: 13.5px; color: var(--muted); }
+.jb-note svg, .jb-note i { width: 16px; height: 16px; opacity: .7; }
+.jb-form .jb-note { margin-top: 14px; }
+.jb-pv { margin: 10px 0 4px; }
+.jb-pvh { display: block; font-size: 14px; margin: 0 0 4px; }
+.jb-role { font-weight: 600; }
+.jb-tag { font-style: normal; font-size: 11.5px; color: var(--muted); }
+.jb-sum { margin-bottom: 8px; }
 .rp-intro { font-size: 13.5px; color: var(--muted); margin-bottom: 12px; line-height: 1.7; }
 .rp-rgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 12px; align-items: start; }
 .rp-rsys .rp-sh { margin-bottom: 8px; }
@@ -2245,9 +2253,9 @@ html.dk .rp-k-self { background: rgba(120,140,180,.18); color: #B9C6E0; } html.d
     <nav class="tabs u-tabs" id="uTabs" hidden>
       <button class="tab" data-unav="home"><i data-ic="alert"></i><span>يحتاج قرارك</span><span class="count alert" id="uTodoN" hidden></span></button>
       <button class="tab" data-unav="people"><i data-ic="users"></i><span>الموظفون</span></button>
-      <button class="tab" data-unav="perms"><i data-ic="shield"></i><span>الصلاحيات</span></button>
+      <button class="tab" data-unav="perms"><i data-ic="shield"></i><span>الأدوار والصلاحيات</span></button>
       <button class="tab" data-unav="org"><i data-ic="org"></i><span>الهيكل التنظيمي</span></button>
-      <button class="tab" data-unav="profiles"><i data-ic="lockOpen"></i><span>الوظائف</span></button>
+      <button class="tab" data-unav="profiles"><i data-ic="user"></i><span>المسميات الوظيفية</span></button>
       <button class="tab" data-unav="roles"><i data-ic="org"></i><span>التوزيع التلقائي</span></button>
       <button class="tab" data-unav="systems"><i data-ic="grid"></i><span>الأنظمة</span></button>
       <button class="tab" data-unav="settings" data-owner="1"><i data-ic="palette"></i><span>الإعدادات</span></button>
@@ -2455,7 +2463,7 @@ const I18N = {
     ERR_INVALID_LOGIN: 'البريد أو كلمة المرور غير صحيحة.', ERR_LOCKED: 'محاولات كثيرة، انتظر قليلاً ثم حاول مجدداً أو استخدم «نسيت كلمة المرور؟».',
     ERR_SUSPENDED: 'هذا الحساب موقوف.', ERR_SESSION: 'انتهت الجلسة، سجّل الدخول مجدداً.', ERR_ROLE_CHANGED: 'تغيّرت صلاحيات حسابك أو بياناته، سجّل الدخول من جديد.', ERR_STALE: 'عدّل غيرك بيانات هذا الموظف بعد أن فتحت الصفحة، فلم يُحفظ تعديلك.', ERR_BUSY_SAME: 'ما زال الحفظ السابق قيد التنفيذ. انتظر قليلاً ثم حدّث الصفحة وتحقق قبل إعادته.', ERR_FORBIDDEN: 'لا تملك صلاحية هذا الإجراء.', ERR_SENSITIVE: 'هذه صلاحية حساسة؛ يمنحها المالك فقط.', ERR_SHARED: 'هذا إعداد مشترك بين الأنظمة؛ يُعدَّل من صفحة «سوار» في الأنظمة.', ERR_RANGE: 'القيمة خارج الحد المسموح.', ERR_CONFLICT: 'عدّل غيرك هذا الإعداد بعد أن فتحت الصفحة.', ERR_RULE: 'القيم لا تتفق مع بعضها.', ERR_IN_USE: 'الدور مستخدم؛ أرشفه بدل حذفه.', ERR_ARCHIVED: 'الدور مؤرشف فلا يُسند لأحد جديد.', ERR_VALUE: 'القيمة غير مقبولة.', NO_SOURCE: 'تعذّر فتح ملف المصدر.', ERR_EXISTS_ORG: 'الهيكل معرَّف بالفعل.',
     ERR_NO_URL: 'لم يُضبط رابط هذا البرنامج بعد.', ERR_USERNAME: 'اسم المستخدم من 2 إلى 40 حرفاً إنجليزياً أو رقماً.',
-    ERR_NAME: 'الاسم بالعربية والإنجليزية مطلوب.', ERR_EMAIL: 'البريد الإلكتروني غير صحيح.', ERR_EXISTS: 'هذا البريد مسجل لموظف آخر من جسر، فلا يمكن استخدامه لموظف ثانٍ.', ERR_REQUIRED: 'حقل مطلوب فارغ.', ERR_HAS_ACCOUNT: 'لهذا الموظف حساب؛ عدّل بريده من الحساب.', ERR_DUP_USERNAME: 'اسم المستخدم مستخدم من قبل.',
+    ERR_NAME: 'الاسم بالعربية والإنجليزية مطلوب.', ERR_EMAIL: 'البريد الإلكتروني غير صحيح.', ERR_EXISTS: 'هذا البريد مسجل لموظف آخر من جسر، فلا يمكن استخدامه لموظف ثانٍ.', ERR_REQUIRED: 'حقل مطلوب فارغ.', ERR_DUP_JOB: 'توجد وظيفة بهذا الاسم.', ERR_DRIFT: 'أُلغي النقل لأن وصول بعض الموظفين كان سيتغير. أُعيد كل شيء كما كان.', ERR_HAS_ACCOUNT: 'لهذا الموظف حساب؛ عدّل بريده من الحساب.', ERR_DUP_USERNAME: 'اسم المستخدم مستخدم من قبل.',
     ERR_PIN: 'كلمة المرور 8 خانات على الأقل، فيها حروف وأرقام.', ERR_PIN_WEAK: 'كلمة المرور سهلة التخمين، اختر غيرها.', ERR_TEMP_EXPIRED: 'انتهت صلاحية كلمة المرور المؤقتة، اطلب واحدة جديدة من المسؤول.', tempTitle: 'كلمة المرور المؤقتة', tempNote: 'تظهر الآن فقط، ويُطلب من المستخدم تغييرها عند أول دخول.', tempMailed: 'أُرسلت إلى بريده.', tempSend: 'إرسال كلمة المرور المؤقتة بالبريد', copy: 'نسخ', copied: 'تم النسخ', noEmail: 'بلا بريد', tempCreate: 'إنشاء', ERR_DUP_EMAIL: 'هذا البريد مسجّل لمستخدم آخر.', ERR_MUST_CHANGE: 'اختر كلمة مرور خاصة بك أولاً.', ERR_BUSY: 'النظام مشغول لحظات، أعد المحاولة.', linkSaveFirst: 'احفظ التعديلات أولاً ثم افحص الربط.', regenYes: 'تغيير المفتاح', ERR_PIN_MATCH: 'كلمتا المرور غير متطابقتين.', ERR_PIN_WRONG: 'كلمة المرور الحالية غير صحيحة.',
     ERR_PIN_SAME: 'كلمة المرور الجديدة مطابقة للحالية.', ERR_CODE: 'رمز التحقق غير صحيح أو منتهي الصلاحية.', ERR_SELF: 'لا يمكن تنفيذ هذا الإجراء على حسابك (كلمتك تغيّرها من «تغيير كلمة المرور»).',
     ERR_LAST_ADMIN: 'يجب أن يبقى مدير نظام مفعّل واحد على الأقل.', ERR_URL: 'الرابط يجب أن يبدأ بـ https://', ERR_ICON: 'رابط الصورة غير صالح.',
@@ -2537,7 +2545,7 @@ const I18N = {
     ERR_INVALID_LOGIN: 'Incorrect email or password.', ERR_LOCKED: 'Too many attempts. Wait a little and try again, or use “Forgot your password?”.',
     ERR_SUSPENDED: 'This account is suspended.', ERR_SESSION: 'Your session ended. Please sign in again.', ERR_ROLE_CHANGED: 'Your account permissions or details changed. Please sign in again.', ERR_STALE: 'Someone else changed this employee after you opened the page, so your change was not saved.', ERR_BUSY_SAME: 'The previous save is still running. Wait a moment, then refresh and check before trying again.', ERR_FORBIDDEN: 'You are not allowed to do this.', ERR_SENSITIVE: 'Sensitive permission: owner only.', ERR_SHARED: 'Shared setting: edit it on the SIWAR page under Systems.', ERR_RANGE: 'Value out of the allowed range.', ERR_CONFLICT: 'Someone else changed this setting after you opened the page.', ERR_RULE: 'The values do not agree with each other.', ERR_IN_USE: 'Role is in use; archive it instead.', ERR_ARCHIVED: 'Role is archived.', ERR_VALUE: 'Invalid value.', NO_SOURCE: 'Source file could not be opened.',
     ERR_NO_URL: 'This app has no URL yet.', ERR_USERNAME: 'Username must be 2–40 English letters or digits.',
-    ERR_NAME: 'Arabic and English names are required.', ERR_EMAIL: 'Invalid email address.', ERR_DUP_USERNAME: 'Username already exists.',
+    ERR_NAME: 'Arabic and English names are required.', ERR_DUP_JOB: 'A job title with this name already exists.', ERR_DRIFT: 'Cancelled because some people\'s access would have changed. Everything was restored as it was.', ERR_EMAIL: 'Invalid email address.', ERR_DUP_USERNAME: 'Username already exists.',
     ERR_PIN: 'Password must be at least 8 characters with letters and numbers.', ERR_PIN_WEAK: 'This password is too easy to guess.', ERR_TEMP_EXPIRED: 'Your temporary password expired. Ask the administrator for a new one.', tempTitle: 'Temporary password', tempNote: 'Shown only now. The user must change it at first sign-in.', tempMailed: 'Sent to their email.', tempSend: 'Email the temporary password', copy: 'Copy', copied: 'Copied', noEmail: 'No email', tempCreate: 'Create', ERR_DUP_EMAIL: 'This email belongs to another user.', ERR_MUST_CHANGE: 'Please choose your own password first.', ERR_BUSY: 'The system is busy for a moment — please retry.', linkSaveFirst: 'Save your changes first, then test the link.', regenYes: 'Change key', ERR_PIN_MATCH: 'Passwords do not match.', ERR_PIN_WRONG: 'Current password is incorrect.',
     ERR_PIN_SAME: 'New password matches the current one.', ERR_CODE: 'The code is incorrect or expired.', ERR_SELF: 'This action cannot be applied to your own account (change your password from “Change password”).',
     ERR_LAST_ADMIN: 'At least one active system admin must remain.', ERR_URL: 'URL must start with https://', ERR_ICON: 'Invalid image URL.',
@@ -4290,7 +4298,7 @@ const U_TOP = { perms: 1, home: 1, people: 1, org: 1, profiles: 1, roles: 1, sys
 const U_PARENT = { person: 'people', profile: 'profiles', role: 'roles', rdist: 'roles', noorg: 'home', system: 'systems', shared: 'systems' };
 function uNavMark() {
   const cur = S.tab === 'unified' ? (U.view === 'role' && (U.draft ? U.draft.kind === 'app' : (uRoleById(U.id) || {}).kind === 'app') ? 'perms' : (U_PARENT[U.view] || U.view)) : S.tab;
-  const tp = $('#uTabs [data-unav="perms"] span'), tr = $('#uTabs [data-unav="roles"] span'); if (tp) tp.textContent = RX('الصلاحيات', 'Permissions'); if (tr) tr.textContent = RX('التوزيع التلقائي', 'Auto distribution');
+  const tp = $('#uTabs [data-unav="perms"] span'), tr = $('#uTabs [data-unav="roles"] span'); if (tp) tp.textContent = RX('الأدوار والصلاحيات', 'Roles & permissions'); const tj = $('#uTabs [data-unav="profiles"] span'); if (tj) tj.textContent = RX('المسميات الوظيفية', 'Job titles'); if (tr) tr.textContent = RX('التوزيع التلقائي', 'Auto distribution');
   $$('#uTabs .tab').forEach(b => b.classList.toggle('on', b.dataset.unav === cur));
 }
 async function uNav(v) {
@@ -4432,43 +4440,69 @@ function uPerson() {
   return head + (me && !p.owner ? '<p class="u-muted u-note">لا يمكنك تعديل صلاحياتك بنفسك.</p>' : '') + line + '<div class="u-cols">' + info + og + work + '</div>' + rpPersonBlock(p, me) + copyBox + acct;
 }
 
+// (JB) «الوظائف» = مسميات وظيفية فقط. الصلاحيات تُدار من الأدوار (قرار المالك)
+function jbHolders(f) { return U.d.people.filter(p => !uLeftP(p) && !p.owner && (p.pf ? p.pf === f.id : p.profile === f.nameAR)).length; }
+function jbDepts() { const D = U.d, o = {}; (D.orgUnits || []).filter(u => u.kind !== 'top').forEach(u => { o[u.name] = u.nameEN || ''; }); D.people.forEach(p => { if (p.dept && !(p.dept in o)) o[p.dept] = ''; }); return o; }
+function jbDeptName(d) { if (!d) return ''; const en = S.lang === 'en' ? (jbDepts()[d] || '') : ''; return en || d; }
+function jbName(f) { return S.lang === 'en' && f.nameEN ? f.nameEN : f.nameAR; }
+function jbRolesLine() { return '<p class="jb-note">' + ic('shield') + '<span>' + RX('المسمى للتعريف فقط ولا يعطي أي صلاحية · الصلاحيات من الأدوار', 'A job title is for identification only and grants nothing · Permissions come from roles') + '</span><button class="link-btn" data-u="jbRoles">' + RX('فتح الأدوار', 'Open roles') + '</button></p>'; }
 function uProfiles() {
-  const D = U.d;
-  const holders = f => D.people.filter(p => !uLeftP(p) && p.profile === f.nameAR).length;
+  const D = U.d, boss = S.user && S.user.role === 'owner';
+  if (boss && D.jbN && !U.jbMig && !(U.dirty && U.dirty.size)) { U.jbMig = 1; setTimeout(jbMigrate, 50); }
   const titles = {}; D.people.forEach(p => { if (p.title && !uLeftP(p) && !p.profile) titles[p.title] = (titles[p.title] || 0) + 1; });
   const free = Object.keys(titles).sort((a, b) => titles[b] - titles[a]);
-  return '<div class="u-bar"><p class="u-muted">لكل وظيفة ما يستطيعه أصحابها في كل نظام. الموظف يأخذ صلاحيات وظيفته تلقائياً من مسماه في جسر، ويمكن أن يختلف عنها في نقاط تحدّدها من صفحته.</p>' +
-    '<button class="btn btn-primary" data-u="newProfile">' + ic('plus') + '<span>وظيفة جديدة</span></button></div>' +
-    '<div class="list u-list">' + (D.profiles.length ? D.profiles.map(f =>
-      '<button class="row" data-u="profile" data-id="' + esc(f.id) + '"><span class="u-av">' + ic('users') + '</span><div class="row-main"><div class="row-title">' + esc(f.nameAR) + '</div>' +
-      '<div class="row-sub">' + esc((f.titles || []).join('، ') || 'لم تُربط بمسمى من جسر') + '</div></div>' +
-      '<div class="u-row-end"><span class="u-tag">' + holders(f) + ' موظفاً</span><span class="u-apps">' + D.apps.filter(a => f.grants[a.id] && f.grants[a.id].on !== false).map(a => uIcon(a)).join('') + '</span></div></button>').join('')
-      : '<div class="empty">' + ic('users') + '<span>لا وظائف بعد. ابدأ بالمسميات الأكثر عدداً أدناه.</span></div>') + '</div>' +
-    (free.length ? '<section class="panel-box"><h3>' + ic('info') + '<span>مسميات من جسر بلا وظيفة</span></h3><div class="u-chips">' + free.slice(0, 60).map(t2 => '<button class="chip" data-u="newProfile" data-title="' + esc(t2) + '">' + esc(t2) + ' <small>' + titles[t2] + '</small></button>').join('') + '</div></section>' : '');
+  const list = D.profiles.slice().sort((x, y) => String(x.dept || '').localeCompare(String(y.dept || ''), 'ar') || String(x.nameAR).localeCompare(String(y.nameAR), 'ar'));
+  return '<div class="u-bar">' + jbRolesLine() + '<button class="btn btn-primary" data-u="newProfile">' + ic('plus') + '<span>' + RX('وظيفة جديدة', 'New job title') + '</span></button></div>' +
+    '<div class="list u-list jb-list">' + (list.length ? list.map(f => { const n = jbHolders(f), sub = [S.lang === 'en' ? (f.nameEN ? f.nameAR : '') : f.nameEN, jbDeptName(f.dept) || RX('بلا إدارة', 'No department')].filter(Boolean).join(' · ');
+      return '<button class="row" data-u="profile" data-id="' + esc(f.id) + '"><span class="u-av">' + ic('users') + '</span><div class="row-main"><div class="row-title">' + esc(jbName(f)) + '</div>' +
+      '<div class="row-sub">' + esc(sub) + '</div></div>' +
+      '<div class="u-row-end"><span class="u-tag' + (n ? '' : ' u-tag-grey') + '">' + (S.lang === 'en' ? n + (n === 1 ? ' person' : ' people') : n + ' موظفاً') + '</span></div></button>'; }).join('')
+      : '<div class="empty">' + ic('users') + '<span>' + RX('لا وظائف بعد. ابدأ بالمسميات الأكثر عدداً أدناه.', 'No job titles yet. Start with the most common titles below.') + '</span></div>') + '</div>' +
+    (free.length ? '<section class="panel-box"><h3>' + ic('info') + '<span>' + RX('مسميات من جسر بلا وظيفة', 'Jisr titles without a job title') + '</span></h3><div class="u-chips">' + free.slice(0, 60).map(t2 => '<button class="chip" data-u="newProfile" data-title="' + esc(t2) + '">' + esc(t2) + ' <small>' + titles[t2] + '</small></button>').join('') + '</div></section>' : '');
 }
+function jbDraftSync() { const f = U.draft; if (!f) return; const v = id => { const el = $(id); return el ? el.value : null; }; const a = v('#uFName'), e = v('#uFNameEN'), d = v('#uFDept'); if (a != null) f.nameAR = a; if (e != null) f.nameEN = e; if (d != null) f.dept = d; }
 function uProfile() {
   const D = U.d;
-  const f = U.draft || (U.draft = JSON.parse(JSON.stringify(D.profiles.find(x => x.id === U.id) || { id: '', nameAR: '', titles: [], grants: {} })));
+  const f = U.draft || (U.draft = JSON.parse(JSON.stringify(D.profiles.find(x => x.id === U.id) || { id: '', nameAR: '', nameEN: '', dept: '', titles: [], grants: {} })));
   const allTitles = {}; D.people.forEach(p => { if (p.title) allTitles[p.title] = 1; });
-  const holders = D.people.filter(p => !uLeftP(p) && (f.titles || []).indexOf(p.title) >= 0).length;
-  const cards = D.apps.map(a => {
-    const g = f.grants[a.id] || { on: false, caps: [], scope: '' }, d = uReg(a.id), on = !!f.grants[a.id] && g.on !== false;
-    let body = '';
-    if (on && d && (d.caps || []).length) {
-      const groups = {}; d.caps.forEach(c => { (groups[c.group || ''] = groups[c.group || ''] || []).push(c); });
-      body = Object.keys(groups).map(gr => '<div class="u-capg">' + (gr ? '<b>' + esc(gr) + '</b>' : '') + groups[gr].map(c =>
-        '<label class="u-cap"><input type="checkbox" data-uc="fCap" data-app="' + esc(a.id) + '" data-cap="' + esc(c.key) + '"' + ((g.caps || []).indexOf(c.key) >= 0 ? ' checked' : '') + '><span>' + esc(c.label) + (c.desc ? '<small class=u-cdesc>' + esc(c.desc) + '</small>' : '') + '</span>' + (c.sensitive ? '<em class="u-sens">حساس</em>' : '') + '</label>').join('') + '</div>').join('');
-      if ((d.scopes || []).length) body += '<label class="u-scope"><span>يرى:</span><select class="inp" data-uc="fScope" data-app="' + esc(a.id) + '"><option value="">—</option>' + d.scopes.map(s => '<option title="' + esc(s.desc || '') + '" value="' + esc(s.key) + '"' + (g.scope === s.key ? ' selected' : '') + '>' + esc(s.label) + '</option>').join('') + '</select></label>' + (((d.scopes.find(z => z.key === g.scope) || {}).desc) ? '<small class="u-cdesc">' + esc(d.scopes.find(z => z.key === g.scope).desc) + '</small>' : '');
-    } else if (on) body = '<p class="u-muted u-note">يدخل هذا النظام. صلاحياته التفصيلية ستظهر هنا عندما يربط النظام قدراته بسوار.</p>';
-    return '<section class="panel-box u-sys' + (on ? '' : ' is-off') + '"><div class="u-sys-head">' + uIcon(a) + '<b>' + esc(a.nameAR) + '</b><label class="switch"><input type="checkbox" data-uc="fOn" data-app="' + esc(a.id) + '"' + (on ? ' checked' : '') + '><span></span></label></div>' + body + '</section>';
-  }).join('');
-  return '<section class="panel-box"><div class="u-form">' +
-    '<label class="field"><span>اسم الوظيفة</span><input class="inp" id="uFName" maxlength="60" value="' + esc(f.nameAR) + '" placeholder="مثل: أمين مستودع"></label>' +
-    '<div class="field"><span>مسميات جسر التي تأخذ هذه الوظيفة</span><div class="u-chips">' + (f.titles || []).map(x => '<span class="chip on">' + esc(x) + ' <button class="u-x" data-u="fDelTitle" data-t="' + esc(x) + '" aria-label="حذف">' + ic('x') + '</button></span>').join('') +
-    '<select class="inp u-add" data-uc="fAddTitle"><option value="">+ إضافة مسمى</option>' + Object.keys(allTitles).sort().filter(x => (f.titles || []).indexOf(x) < 0).map(x => '<option>' + esc(x) + '</option>').join('') + '</select></div>' +
-    '<small class="hint">ينطبق الآن على ' + holders + ' موظفاً.</small></div></div></section>' +
-    '<div class="u-sys-grid">' + cards + '</div>' +
-    '<div class="savebar u-savebar"><b>' + (holders ? 'الحفظ يطبّق على ' + holders + ' موظفاً فوراً' : 'لا أحد يحمل هذه الوظيفة بعد') + '</b><div class="savebar-actions"><button class="btn btn-ghost" data-u="back">' + ic('undo') + '<span>إلغاء</span></button><button class="btn btn-primary" data-u="saveProfile">' + ic('save') + '<span>حفظ الوظيفة</span></button></div></div>';
+  const holders = D.people.filter(p => !uLeftP(p) && !p.owner && (p.profileId === f.id && f.id || (!p.profileId && (f.titles || []).indexOf(p.title) >= 0))).length;
+  const depts = jbDepts(), dl = Object.keys(depts).sort((x, y) => x.localeCompare(y, 'ar'));
+  if (f.dept && dl.indexOf(f.dept) < 0) dl.unshift(f.dept);
+  return '<section class="panel-box jb-form"><div class="u-form">' +
+    '<label class="field"><span>' + RX('اسم الوظيفة بالعربية', 'Job title (Arabic)') + '</span><input class="inp" id="uFName" maxlength="60" dir="rtl" value="' + esc(f.nameAR) + '" placeholder="' + RX('مثل: أمين مستودع', 'e.g. أمين مستودع') + '"></label>' +
+    '<label class="field"><span>' + RX('اسم الوظيفة بالإنجليزية', 'Job title (English)') + '</span><input class="inp" id="uFNameEN" maxlength="60" dir="ltr" value="' + esc(f.nameEN || '') + '" placeholder="Storekeeper"></label>' +
+    '<label class="field"><span>' + RX('الإدارة', 'Department') + '</span><select class="inp" id="uFDept"><option value="">—</option>' + dl.map(d => '<option value="' + esc(d) + '"' + (f.dept === d ? ' selected' : '') + '>' + esc(S.lang === 'en' && depts[d] ? depts[d] : d) + '</option>').join('') + '</select></label>' +
+    '<div class="field"><span>' + RX('مسميات جسر التي تأخذ هذه الوظيفة', 'Jisr titles that take this job title') + '</span><div class="u-chips">' + (f.titles || []).map(x => '<span class="chip on">' + esc(x) + ' <button class="u-x" data-u="fDelTitle" data-t="' + esc(x) + '" aria-label="' + RX('حذف', 'Remove') + '">' + ic('x') + '</button></span>').join('') +
+    '<select class="inp u-add" data-uc="fAddTitle"><option value="">' + RX('+ إضافة مسمى', '+ Add title') + '</option>' + Object.keys(allTitles).sort().filter(x => (f.titles || []).indexOf(x) < 0).map(x => '<option>' + esc(x) + '</option>').join('') + '</select></div>' +
+    '<small class="hint">' + (S.lang === 'en' ? 'Linked to ' + holders + (holders === 1 ? ' person' : ' people') + ' now.' : 'مرتبطة الآن بـ ' + holders + ' موظفاً.') + '</small></div></div>' + jbRolesLine() + '</section>' +
+    '<div class="savebar u-savebar"><b>' + RX('الوظيفة لا تمنح صلاحيات', 'A job title grants no permissions') + '</b><div class="savebar-actions"><button class="btn btn-ghost" data-u="back">' + ic('undo') + '<span>' + RX('إلغاء', 'Cancel') + '</span></button><button class="btn btn-primary" data-u="saveProfile">' + ic('save') + '<span>' + RX('حفظ الوظيفة', 'Save job title') + '</span></button></div></div>';
+}
+// ترحيل صلاحيات الوظائف إلى أدوار: معاينة أولاً، ولا يُطبَّق شيء إلا بـ «تطبيق»
+async function jbMigrate() {
+  try {
+    const pv = await api('u_jbMigrate', { apply: false }, { quiet: true });
+    if (!pv || !pv.ok) { if (pv && !pv.ok) uSaveFail(pv.code || 'ERR_SERVER', -1, null, pv.detail); return; }
+    if (!pv.n) { U.d.jbN = 0; return; }
+    const en = S.lang === 'en', rn = x => x.role ? (en ? (x.role.nameEN || x.role.nameAR) : x.role.nameAR) : (x.enter ? RX('يدخل', 'Has access') : RX('بلا صلاحيات', 'No permissions'));
+    const by = {}; pv.items.forEach(x => { (by[x.profile] = by[x.profile] || []).push(x); });
+    const rows = Object.keys(by).map(k => { const f = by[k][0];
+      return '<div class="jb-pv"><b class="jb-pvh">' + esc(en && f.profileEN ? f.profileEN : f.profile) + '</b>' + by[k].map(x =>
+        '<div class="u-q"><span class="u-q-t">' + esc(en ? x.appNameEN : x.appName) + '<small class="u-cdesc">' + esc(x.names.map(rpN2).join('، ') + (x.n > x.names.length ? ' …' : '')) + '</small></span><span class="u-q-v"><span class="jb-role' + (x.role && x.role.reuse ? ' is-reuse' : '') + '">' + esc(rn(x)) + '</span><em class="jb-tag">' + (x.role ? (x.role.reuse ? RX('دور موجود', 'Existing role') : RX('دور جديد', 'New role')) : '') + '</em><span class="u-tag' + (x.n ? '' : ' u-tag-grey') + '">' + (en ? x.n + ' people' : x.n + ' موظفاً') + '</span></span></div>').join('') + '</div>'; }).join('');
+    openModal({ title: ic('shield') + '<span>' + RX('نقل صلاحيات الوظائف إلى الأدوار', 'Move job-title permissions into roles') + '</span>', wide: true,
+      body: '<div class="u-prev jb-sum"><span><b>' + pv.profiles + '</b> ' + RX('وظيفة', 'job titles') + '</span><span><b>' + pv.created + '</b> ' + RX('دور جديد', 'new roles') + '</span><span><b>' + pv.reused + '</b> ' + RX('دور موجود', 'existing roles') + '</span><span><b>' + pv.people + '</b> ' + RX('موظفاً يأخذ الدور', 'people get the role') + '</span></div>' +
+        '<p class="u-muted">' + RX('لا يتغير وصول أحد. من يختلف وصوله يُعاد كما كان تلقائياً. بعد التطبيق تبقى «الوظائف» مسميات فقط.', 'Nobody\'s access changes; anyone whose access would differ is restored automatically. After applying, job titles hold no permissions.') + '</p>' + rows,
+      foot: '<button class="btn btn-ghost" data-act="closeModal">' + RX('لاحقاً', 'Later') + '</button><button class="btn btn-primary" id="jbMigGo">' + ic('check') + '<span>' + RX('تطبيق', 'Apply') + '</span></button>' });
+    const go = document.getElementById('jbMigGo');
+    if (go) go.onclick = async () => {
+      go.disabled = true;
+      try {
+        const r = await api('u_jbMigrate', { apply: true }, { quiet: true });
+        closeModal();
+        if (r && r.ok) { U.d.jbN = 0; toast(en ? 'Job-title permissions moved into roles — nobody\'s access changed' : 'نُقلت صلاحيات الوظائف إلى الأدوار دون تغيير وصول أحد', 'ok'); uLoad(true); }
+        else uSaveFail((r && r.code) || 'ERR_SERVER', -1, null, r && r.detail);
+      } catch (c) { closeModal(); uSaveFail('ERR_NETWORK', -1, null, ''); }
+    };
+  } catch (c) { U.jbMig = 0; }
 }
 
 function uSystems() {
@@ -4822,7 +4856,8 @@ function uXlLib() {
   if (window.ExcelJS) return Promise.resolve(window.ExcelJS);
   return U.xlP || (U.xlP = new Promise((res, rej) => { const s = document.createElement('script'); s.src = U_XL_SRC; s.onload = () => res(window.ExcelJS); s.onerror = () => { U.xlP = null; rej('ERR_NETWORK'); }; document.head.appendChild(s); }));
 }
-const U_EN = { '': 'حسب الوظيفة', yes: 'نعم', no: 'لا' };
+const U_EN = { '': 'حسب دوره', yes: 'نعم', no: 'لا' };
+const uEnOf = ev => ev === 'حسب الوظيفة' ? '' : Object.keys(U_EN).find(k => U_EN[k] === ev);
 const U_BYTITLE = 'حسب مسماه في جسر';
 
 function uXlMaps() {
@@ -4846,7 +4881,7 @@ async function uXlDownload(btn) {
     const addList = (name, arr) => { col++; const letter = L.getColumn(col).letter; arr.forEach((v, i) => { L.getCell(letter + (i + 1)).value = v; }); lists[name] = arr.length ? "'_lists'!$" + letter + '$1:$' + letter + '$' + arr.length : null; };
     const profNames = D.profiles.map(f => f.nameAR);
     addList('prof', [U_BYTITLE].concat(profNames));
-    addList('en', ['حسب الوظيفة', 'نعم', 'لا']);
+    addList('en', [U_EN[''], 'نعم', 'لا']);
     addList('grant', ['منح', 'منع']);
     addList('caps', Object.keys(M.caps));
     addList('scopes', Object.keys(M.scopes));
@@ -4860,17 +4895,15 @@ async function uXlDownload(btn) {
     const R = wb.addWorksheet('اقرأني');
     R.views = [{ rightToLeft: true }]; R.getColumn(1).width = 110;
     ['نموذج الصلاحيات والإعدادات — سوار', '', '• عبّئ الأوراق التي تحتاجها فقط واترك الباقي كما هو. كل الخانات الملوّنة قوائم منسدلة: اختر منها فقط.',
-     '• «الوظائف»: كل صف = وظيفة + صلاحية في نظام. الوظيفة المذكورة تُعاد صلاحياتها في الأنظمة المذكورة لها كما في الملف.',
+     '• «الوظائف»: مسميات وظيفية فقط (الاسم بالعربية والإنجليزية والإدارة). الوظيفة لا تمنح صلاحيات؛ الصلاحيات تُدار من الأدوار في سوار.',
      '• «مسميات جسر»: أي مسمى من جسر يأخذ أي وظيفة.', '• «الموظفون»: وظيفة محددة لموظف (أو حسب مسماه)، ودخوله لكل نظام، وما يراه.',
-     '• «مستخدمون جدد»: أضف موظفاً جديداً بالاسم والبريد، واختر مسماه ووظيفته ودخوله لكل نظام من القوائم. بعد «اعتماد» أرسل لكل واحد دعوته من صفحته.', '• «صلاحيات خاصة»: منح أو منع صلاحية لموظف بعينه زيادة على وظيفته.', '• «الإعدادات»: غيّر عمود القيمة فقط.',
+     '• «مستخدمون جدد»: أضف موظفاً جديداً بالاسم والبريد، واختر مسماه ووظيفته ودخوله لكل نظام من القوائم. بعد «اعتماد» أرسل لكل واحد دعوته من صفحته.', '• «صلاحيات خاصة»: استثناء لموظف بعينه فوق دوره — منح صلاحية أو منعها.', '• «الإعدادات»: غيّر عمود القيمة فقط.',
      '• المالك له كل الصلاحيات دائماً ولا يظهر في الملف.', '• الصفوف الرمادية التي يبدأ اسمها بـ «مثال» للتوضيح فقط ولا تُستورد — احذفها أو اتركها.', '• بعد الرفع تظهر معاينة وأي أخطاء؛ لا يتغير شيء قبل «اعتماد».']
       .forEach((t, i) => { const c = R.getCell('A' + (i + 1)); c.value = t; if (!i) c.font = { bold: true, size: 15 }; c.alignment = { wrapText: true }; });
 
-    const F = wb.addWorksheet('الوظائف'); head(F, [['الوظيفة', 'p', 26], ['النظام — الصلاحية', 'c', 46], ['النظام — يرى', 's', 34]]);
-    D.profiles.forEach(f => Object.keys(f.grants || {}).forEach(aid => { const g = f.grants[aid], a = uApp(aid); const sc = g.scope ? Object.keys(M.scopes).find(l => M.scopes[l].appId === aid && M.scopes[l].key === g.scope) : '';
-      const cl = (g.caps || []).map(k => Object.keys(M.caps).find(l => M.caps[l].appId === aid && M.caps[l].key === k)).filter(Boolean);
-      if (!cl.length) F.addRow({ p: f.nameAR, c: '', s: sc || '' }); else cl.forEach((l, i) => F.addRow({ p: f.nameAR, c: l, s: i ? '' : (sc || '') })); }));
-    dv(F, 'c', 'caps'); dv(F, 's', 'scopes');
+    const F = wb.addWorksheet('الوظائف'); head(F, [['الوظيفة', 'p', 30], ['الاسم بالإنجليزية', 'e', 30], ['الإدارة', 'd', 30]]);
+    D.profiles.forEach(f => F.addRow({ p: f.nameAR, e: f.nameEN || '', d: f.dept || '' }));
+    addList('dept', Object.keys(jbDepts()).sort((x, y) => x.localeCompare(y, 'ar'))); dv(F, 'd', 'dept');
 
     const T = wb.addWorksheet('مسميات جسر'); head(T, [['المسمى في جسر', 't', 34], ['الوظيفة', 'p', 30]]);
     const titles = {}; D.people.forEach(p => { if (p.title) titles[p.title] = 1; });
@@ -4946,15 +4979,15 @@ async function uXlRead(file) {
     const payload = { profiles: [], titles: [], people: [], special: [], settings: [] };
     let uXlEx = 0;
     const bad = (sheet, r, msg) => local.push({ sheet: sheet, row: r, msg: msg });
-    rows('الوظائف', (g, r) => { const p = String(g('الوظيفة')), c = g('النظام — الصلاحية'), s = g('النظام — يرى'); if (!p && !c) return;
-      if (c && !M.caps[c]) return bad('الوظائف', r, 'صلاحية ليست من القائمة'); if (s && !M.scopes[s]) return bad('الوظائف', r, 'نطاق ليس من القائمة');
-      if (!c && !s) return bad('الوظائف', r, 'اختر صلاحية أو نطاقاً');
-      payload.profiles.push({ r: r, profile: p, appId: (M.caps[c] || M.scopes[s]).appId, cap: c ? M.caps[c].key : '', scope: s && (!c || M.scopes[s].appId === M.caps[c].appId) ? M.scopes[s].key : '' }); });
+    // (JB) الوظائف مسميات فقط: أعمدة الصلاحيات في نموذج قديم تُتجاهل برسالة واضحة
+    let jbCapsIgnored = 0; const jbSeen = {};
+    rows('الوظائف', (g, r, hdr) => { const p = String(g('الوظيفة')), c = hdr['النظام — الصلاحية'] ? g('النظام — الصلاحية') : '', s = hdr['النظام — يرى'] ? g('النظام — يرى') : ''; if (c || s) jbCapsIgnored++; if (!p || jbSeen[p]) return; jbSeen[p] = 1;
+      payload.profiles.push({ r: r, profile: p, nameEN: hdr['الاسم بالإنجليزية'] ? String(g('الاسم بالإنجليزية')) : '', dept: hdr['الإدارة'] ? String(g('الإدارة')) : '' }); });
     rows('مسميات جسر', (g, r) => { const t = String(g('المسمى في جسر')); if (t) payload.titles.push({ r: r, title: t, profile: String(g('الوظيفة')) }); });
     rows('الموظفون', (g, r, hdr) => { const id = String(g('رمز')); if (!id) return; const pr = String(g('الوظيفة'));
       const person = D.people.find(p => p.id === id); if (!person) return bad('الموظفون', r, 'موظف غير معروف');
       const access = {}; let changed = false;
-      D.apps.forEach(a => { const ev = String(g(a.nameAR + ' — الدخول')); const en = Object.keys(U_EN).find(k => U_EN[k] === ev);
+      D.apps.forEach(a => { const ev = String(g(a.nameAR + ' — الدخول')); const en = uEnOf(ev);
         if (ev && en === undefined) return bad('الموظفون', r, 'قيمة دخول ليست من القائمة');
         const sl = String(g(a.nameAR + ' — يرى')), sc = sl ? ((uReg(a.id) || {}).scopes || []).find(x => x.label === sl) : null;
         if (sl && !sc) return bad('الموظفون', r, 'نطاق ليس من القائمة');
@@ -4975,7 +5008,7 @@ async function uXlRead(file) {
       const pr = String(g('الوظيفة')); if (pr && pr !== U_BYTITLE && !D.profiles.some(f => f.nameAR === pr)) return bad('مستخدمون جدد', r, 'وظيفة ليست من القائمة');
       const rl = String(g('يوم الراحة')), ri = rl ? U_DAYS.indexOf(rl) : -1; if (rl && ri < 0) return bad('مستخدمون جدد', r, 'يوم راحة ليس من القائمة');
       const access = {};
-      for (const a of D.apps) { const ev = String(g(a.nameAR + ' — الدخول')), en = Object.keys(U_EN).find(k => U_EN[k] === ev); if (ev && en === undefined) return bad('مستخدمون جدد', r, 'قيمة دخول ليست من القائمة');
+      for (const a of D.apps) { const ev = String(g(a.nameAR + ' — الدخول')), en = uEnOf(ev); if (ev && en === undefined) return bad('مستخدمون جدد', r, 'قيمة دخول ليست من القائمة');
         const sl = String(g(a.nameAR + ' — يرى')), sc = sl ? ((uReg(a.id) || {}).scopes || []).find(x => x.label === sl) : null; if (sl && !sc) return bad('مستخدمون جدد', r, 'نطاق ليس من القائمة');
         if ((en || '') !== '' || sc) access[a.id] = { en: en || '', scope: sc ? sc.key : '' }; }
       payload.newPeople.push({ r: r, name: nm, email: em, title: String(g('المسمى الوظيفي')).trim(), company: cc ? cc.code : '', profile: pr && pr !== U_BYTITLE ? pr : null, restDays: ri >= 0 ? [ri] : null, access: access }); });
@@ -4998,6 +5031,7 @@ async function uXlRead(file) {
       (errs.length ? '<p class="u-err">صحّح هذه في الملف ثم ارفعه من جديد:</p><ul class="u-errs">' + errs.slice(0, 40).map(e => '<li>' + esc(e.sheet) + ' · صف ' + esc(e.row) + ': ' + esc(e.msg) + '</li>').join('') + '</ul>' : '<p class="u-muted">لا أخطاء. اضغط «اعتماد» للتطبيق.</p>');
     $('#uXlApply').disabled = !!errs.length || !(c.profiles + c.titles + c.people + c.special + c.settings + payload.newPeople.length);
     if (payload.newPeople.length) out.insertAdjacentHTML('afterbegin', '<p class="u-muted"><b>' + payload.newPeople.length + '</b> مستخدم جديد سيُضاف</p>');
+    if (jbCapsIgnored) out.insertAdjacentHTML('afterbegin', '<p class="u-muted"><b>' + esc(uL('ورقة «الوظائف»: أعمدة الصلاحيات تُتجاهل (' + jbCapsIgnored + ' صفاً) — الوظيفة لا تمنح صلاحيات، والصلاحيات تُدار من الأدوار.', 'Sheet «الوظائف»: permission columns are ignored (' + jbCapsIgnored + ' rows) — job titles grant no permissions; permissions are managed in Roles.')) + '</b></p>');
     if (uXlEx) out.insertAdjacentHTML('afterbegin', '<p class="u-muted">' + esc(uL('صفوف الأمثلة لا تُستورد: ', 'Example rows are not imported: ') + uXlEx) + '</p>');
   } catch (c) { out.innerHTML = '<p class="u-err">تعذّرت قراءة الملف. تأكد أنه النموذج المنزّل من سوار وبصيغة xlsx.</p>'; console.error(c); }
 }
@@ -5050,15 +5084,7 @@ function uOnChange(el) {
     return uMark('pi:' + p.id, { t: 'personInfo', personId: p.id, name: nm, nameEN: p.nameEN, email: em, dept: p.dept, section: p.section, company: p.company });
   }
   if (k === 'pProf') { const p = D.people.find(x => x.id === U.id); p.profileId = el.value; uMark('pf:' + p.id, { t: 'personProfile', personId: p.id, profileId: el.value }); return; }
-  if (k === 'fOn' || k === 'fCap' || k === 'fScope') {
-    const f = U.draft, a = el.dataset.app, g = f.grants[a] || (f.grants[a] = { on: true, caps: [], scope: '' });
-    if (k === 'fOn') { if (el.checked) g.on = true; else delete f.grants[a]; }
-    if (k === 'fCap') { g.caps = (g.caps || []).filter(x => x !== el.dataset.cap); if (el.checked) g.caps.push(el.dataset.cap); }
-    if (k === 'fScope') g.scope = el.value;
-    f.nameAR = ($('#uFName') || {}).value || f.nameAR;
-    uRender(); return;
-  }
-  if (k === 'fAddTitle') { if (el.value) { U.draft.nameAR = ($('#uFName') || {}).value || U.draft.nameAR; U.draft.titles.push(el.value); uRender(); } return; }
+  if (k === 'fAddTitle') { if (el.value) { jbDraftSync(); U.draft.titles.push(el.value); uRender(); } return; }
   if (k === 'set') {
     const appId = el.dataset.app, key = el.dataset.key, d = uReg(appId), s = (d.settings || []).find(x => x.key === key);
     let v = el.type === 'checkbox' ? el.checked : el.value;
@@ -5250,7 +5276,7 @@ function rpSysRow(p, a, me, full) {
 function rpPersonBlock(p, me) {
   if (p.owner) return '<section class="panel-box rp-box"><p class="u-muted">' + RX('المالك: كل الصلاحيات في كل الأنظمة.', 'Owner: every permission in every system.') + '</p></section>';
   const apps = U.d.apps.slice().sort((x, y) => uDeclared(y.id) - uDeclared(x.id));
-  return '<section class="panel-box rp-box"><div class="rp-bh"><h3>' + ic('shield') + '<span>' + RX('الصلاحيات', 'Permissions') + '</span></h3><span class="u-muted">' + RX('دوره في كل نظام بنقرة · الاستثناء اختياري', 'His role in each system in one tap · exceptions are optional') + '</span></div><div class="rp-sysg">' + apps.map(a => rpSysRow(p, a, me, true)).join('') + '</div></section>';
+  return '<section class="panel-box rp-box"><div class="rp-bh"><h3>' + ic('shield') + '<span>' + RX('الأدوار والصلاحيات', 'Roles & permissions') + '</span></h3><span class="u-muted">' + RX('دوره في كل نظام بنقرة · الاستثناء اختياري', 'His role in each system in one tap · exceptions are optional') + '</span></div><div class="rp-sysg">' + apps.map(a => rpSysRow(p, a, me, true)).join('') + '</div></section>';
 }
 // ===== شاشة «الصلاحيات»: الأشخاص · المصفوفة · الأدوار =====
 function rpPeopleList() {
@@ -5264,7 +5290,8 @@ function rpPeopleList() {
 function rpMine(p) { return S.user && String(S.user.email || '').toLowerCase() === String(p.email || '').toLowerCase() && S.user.role !== 'owner'; }
 function uPerms() {
   const D = U.d, R = U.rp, boss = S.user && S.user.role === 'owner';
-  if (boss && !D.rpAt && !U.rpMig && !(U.dirty && U.dirty.size)) { U.rpMig = 1; setTimeout(rpMigrate, 50); }
+  if (boss && D.jbN && !U.jbMig && !(U.dirty && U.dirty.size)) { U.jbMig = 1; setTimeout(jbMigrate, 50); }
+  else if (boss && !D.jbN && !D.rpAt && !U.rpMig && !(U.dirty && U.dirty.size)) { U.rpMig = 1; setTimeout(rpMigrate, 50); }
   const apps = D.apps.slice().sort((x, y) => uDeclared(y.id) - uDeclared(x.id));
   const depts = Array.from(new Set(D.people.filter(p => !p.owner).map(rpDept).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'ar'));
   const mode = (m, t, i) => '<button class="seg-btn' + (R.mode === m ? ' on' : '') + '" data-u="rpMode" data-v="' + m + '">' + ic(i) + '<span>' + t + '</span></button>';
@@ -6595,13 +6622,14 @@ function uOnClick(el, e) {
   if (k === 'person') return uGo('person', el.dataset.id);
   if (k === 'profile') { U.draft = null; return uGo('profile', el.dataset.id); }
   if (k === 'system') return uGo('system', el.dataset.id);
-  if (k === 'newProfile') { U.draft = { id: '', nameAR: el.dataset.title || '', titles: el.dataset.title ? [el.dataset.title] : [], grants: {} }; return uGo('profile', ''); }
-  if (k === 'fDelTitle') { e.preventDefault(); U.draft.nameAR = ($('#uFName') || {}).value || U.draft.nameAR; U.draft.titles = U.draft.titles.filter(x => x !== el.dataset.t); return uRender(); }
+  if (k === 'newProfile') { U.draft = { id: '', nameAR: el.dataset.title || '', nameEN: '', dept: '', titles: el.dataset.title ? [el.dataset.title] : [], grants: {} }; return uGo('profile', ''); }
+  if (k === 'fDelTitle') { e.preventDefault(); jbDraftSync(); U.draft.titles = U.draft.titles.filter(x => x !== el.dataset.t); return uRender(); }
+  if (k === 'jbRoles') { U.rp.mode = 'roles'; return uNav('perms'); }
   if (k === 'saveProfile') {
-    const f = U.draft; f.nameAR = ($('#uFName').value || '').trim();
-    if (!f.nameAR) { toast('اكتب اسم الوظيفة', 'err'); return; }
+    jbDraftSync(); const f = U.draft; f.nameAR = String(f.nameAR || '').trim(); f.nameEN = String(f.nameEN || '').trim();
+    if (!f.nameAR) { uSaveFail('ERR_REQUIRED', -1, null, ''); return; }
     U.draft = null; uBack();
-    return uSave('u_saveProfile', { profile: f }, 'حُفظت الوظيفة وطُبّقت');
+    return uSave('u_saveProfile', { profile: { id: f.id, nameAR: f.nameAR, nameEN: f.nameEN, dept: f.dept || '', titles: f.titles || [] } }, RX('حُفظت الوظيفة', 'Job title saved'));
   }
   if (k === 'reset') {
     const p = D.people.find(x => x.id === el.dataset.id);
