@@ -4265,7 +4265,7 @@ function uSaveFail(code, op, ops, det) {
     return;
   }
   const why = code === 'ERR_NETWORK' ? (ops ? 'تعذّر الاتصال بالخادم. لم يُحفظ شيء، وتعديلاتك ما زالت هنا فاضغط «حفظ» مرة أخرى.' : 'تعذّر الاتصال بالخادم بعد عدة محاولات. قد يكون الإجراء تم؛ حدّث الصفحة وتحقق قبل إعادته.') : t(I18N.ar[code] ? code : 'ERR_SERVER') + (I18N.ar[code] ? '' : ' (' + esc(String(code || '')) + ')');
-  openModal({ title: ic('info') + '<span>لم يُحفظ التعديل</span>', body: '<p>' + why + '</p>' + (o ? '<p class="u-muted">' + esc(U_OPNAME[o.t] || '') + (p ? ': ' + esc(p.name) : '') + '</p>' : '') + (ops ? '<p class="u-muted">تعديلاتك ما زالت محفوظة في الصفحة ولم تضِع.</p>' : ''),
+  openModal({ title: ic('info') + '<span>لم يُحفظ التعديل</span>', body: '<p>' + why + '</p>' + (o ? '<p class="u-muted">' + esc(U_OPNAME[o.t] || '') + (p ? ': ' + esc(rpPN(p)) : '') + '</p>' : '') + (ops ? '<p class="u-muted">تعديلاتك ما زالت محفوظة في الصفحة ولم تضِع.</p>' : ''),
     foot: '<button class="btn btn-primary" data-act="closeModal">' + ic('check') + '<span>حسناً</span></button>' });
 }
 async function uCommit() {
@@ -4388,7 +4388,7 @@ function uPeople() {
     '<div class="list u-list">' + (list.length ? list.slice(0, 400).map((p, i) =>
       '<button class="row u-person' + (uLeftP(p) ? ' is-off' : '') + '" data-u="person" data-id="' + esc(p.id) + '" style="--i:' + Math.min(i, 20) + '">' +
         '<span class="u-av">' + esc(String(p.name || '?').trim().charAt(0)) + '</span>' +
-        '<div class="row-main"><div class="row-title">' + esc(p.name) + (uLeftP(p) ? ' <span class="badge badge-grey">غادر</span>' : '') + (!p.email ? ' <span class="badge badge-pink">بلا بريد</span>' : '') + '</div>' +
+        '<div class="row-main"><div class="row-title">' + esc(rpPN(p)) + (uLeftP(p) ? ' <span class="badge badge-grey">غادر</span>' : '') + (!p.email ? ' <span class="badge badge-pink">بلا بريد</span>' : '') + '</div>' +
         '<div class="row-sub">' + esc([p.title, p.dept, uCo(p.company)].filter(Boolean).join(' · ')) + '</div></div>' +
         '<div class="u-row-end">' + uSummary(p) + '<span class="u-apps">' + D.apps.filter(a => p.access[a.id] && p.access[a.id].on).map(a => '<span title="' + esc(a.nameAR) + '">' + uIcon(a) + '</span>').join('') + '</span></div>' +
       '</button>').join('') : '<div class="empty">' + ic('search') + '<span>لا نتائج</span></div>') + '</div>';
@@ -4407,7 +4407,7 @@ function uPerson() {
   if (!p) return '<div class="empty"><span>غير موجود</span></div>';
   const me = (S.user && String(S.user.email || '').toLowerCase() === String(p.email || '').toLowerCase() && S.user.role !== 'owner') || p.owner;
   const n = uDiffN(p);
-  const head = '<div class="u-head"><span class="u-av u-av-lg">' + esc(String(p.name || '?').charAt(0)) + '</span><div><h3>' + esc(p.name) + '</h3>' +
+  const head = '<div class="u-head"><span class="u-av u-av-lg">' + esc(String(p.name || '?').charAt(0)) + '</span><div><h3>' + esc(rpPN(p)) + '</h3>' +
     '<p>' + esc([p.title, p.dept, uCo(p.company), p.no ? 'رقم ' + p.no : ''].filter(Boolean).join(' · ')) + '</p>' +
     '<p class="u-muted">' + (uMail(p) ? esc(uMail(p)) : 'لا بريد إلكتروني') + '</p></div>' +
     '<span class="u-tag' + (uLeftP(p) ? ' u-tag-grey' : '') + '">' + esc(p.stopped ? 'موقوف من سوار' : uLeftP(p) ? (p.status || 'غادر') : 'على رأس العمل') + '</span>' +
@@ -4529,7 +4529,7 @@ function uSystem() {
   const D = U.d, a = uApp(U.id), d = uReg(a.id), saved = (D.settings || {})[a.id] || {};
   const head = '<div class="u-head">' + uIcon(a) + '<div><h3>' + esc(a.nameAR) + '</h3>' + (d ? '' : '<p class="u-muted">لم يربط هذا النظام إعداداته بعد.</p>') + '</div>' +
     '<div class="savebar-actions"><button class="btn btn-ghost" data-act="editApp" data-id="' + esc(a.id) + '">' + ic('link') + '<span>الربط والشكل</span></button><button class="btn btn-ghost" data-u="fetchReg" data-id="' + esc(a.id) + '">' + ic('refresh') + '<span>' + (d ? 'تحديث من النظام' : 'جلب إعداداته الآن') + '</span></button></div></div>' +
-    '<section class="panel-box"><h3>' + ic('users') + '<span>من يدخله</span></h3><div class="u-chips">' + (D.people.filter(p => p.access[a.id] && p.access[a.id].on && !uLeftP(p)).map(p => '<button class="chip" data-u="person" data-id="' + esc(p.id) + '">' + esc(p.name) + '</button>').join('') || '<span class="u-muted">لا أحد بعد</span>') + '</div></section>';
+    '<section class="panel-box"><h3>' + ic('users') + '<span>من يدخله</span></h3><div class="u-chips">' + (D.people.filter(p => p.access[a.id] && p.access[a.id].on && !uLeftP(p)).map(p => '<button class="chip" data-u="person" data-id="' + esc(p.id) + '">' + esc(rpPN(p)) + '</button>').join('') || '<span class="u-muted">لا أحد بعد</span>') + '</div></section>';
   if (!d) return head + '<section class="panel-box"><p class="u-muted">اضغط «جلب إعداداته الآن» فتظهر هنا أسئلته بقيمها الحالية، وتُنقل قيمه الحالية لسوار مرة واحدة.</p></section>';
   const gk = s => s.section || s.group || '';
   const groups = (d.sections || d.groups || []).map(g => ({ key: g.key, title: g.title || g.key, screen: g.screen })); const known = {}; groups.forEach(g => { known[g.key] = 1; });
@@ -4586,7 +4586,7 @@ function uSharedV(onlyKeys, sysId) {
   const ww = sh.workweek || { weekend: [] };
   const people = D.people.filter(p => !uLeftP(p)).sort((a, b) => String(a.name).localeCompare(String(b.name), 'ar'));
   const pick = role => '<label class="u-q"><span class="u-q-t">' + ({ gm: 'المدير العام', cfo: 'المدير المالي', hr: 'مسؤول الموارد البشرية' })[role] + '</span><select class="inp" data-uc="contact" data-r="' + role + '"><option value="">—</option>' +
-    people.map(p => '<option value="' + esc(p.id) + '"' + ((sh.contacts || {})[role] === p.id ? ' selected' : '') + '>' + esc(p.name) + '</option>').join('') + '</select></label>';
+    people.map(p => '<option value="' + esc(p.id) + '"' + ((sh.contacts || {})[role] === p.id ? ' selected' : '') + '>' + esc(rpPN(p)) + '</option>').join('') + '</select></label>';
   const sla = Array.isArray(ww.slaDays) ? ww.slaDays : [0, 1, 2, 3, 4];
   const wwBox = '<div class="u-q"><span class="u-q-t">أيام احتساب المدد والمتابعة<small class="u-cdesc">مدد التسليم والتذكير والمتابعة في كل الأنظمة تُحسب على هذه الأيام فقط</small></span><span class="u-days" data-sla="1">' + U_DAYS.map((n, i) => '<button class="seg-btn' + (sla.indexOf(i) >= 0 ? ' on' : '') + '" data-u="slaDay" data-i="' + i + '">' + n + '</button>').join('') + '</span></div>' +
     '<div class="u-q"><span class="u-q-t">أيام إغلاق الشركة كلها (إن وُجدت)</span><span class="u-days" data-wk="1">' + U_DAYS.map((n, i) => '<button class="seg-btn' + ((ww.weekend || []).indexOf(i) >= 0 ? ' on' : '') + '" data-u="wkDay" data-i="' + i + '">' + n + '</button>').join('') + '</span></div>' +
@@ -4614,7 +4614,7 @@ function uSharedV(onlyKeys, sysId) {
 
 function uRolesHtml(people) {
   const list = Array.isArray(U.d.shared.roles) ? U.d.shared.roles : [];
-  const sel = (i, f, v) => '<select class="inp" data-uc="role" data-i="' + i + '" data-f="' + f + '"><option value="">—</option>' + people.map(p => '<option value="' + esc(p.id) + '"' + (v === p.id ? ' selected' : '') + '>' + esc(p.name) + '</option>').join('') + '</select>';
+  const sel = (i, f, v) => '<select class="inp" data-uc="role" data-i="' + i + '" data-f="' + f + '"><option value="">—</option>' + people.map(p => '<option value="' + esc(p.id) + '"' + (v === p.id ? ' selected' : '') + '>' + esc(rpPN(p)) + '</option>').join('') + '</select>';
   return '<div class="u-role-h"><span>الدور</span><span>صاحبه</span><span>النائب</span><span>الإنابة من</span><span>إلى</span><span></span></div><div class="u-roles">' + list.map((r, i) => '<div class="u-row u-role">' +
     '<input class="inp" data-uc="role" data-i="' + i + '" data-f="title" value="' + esc(r.title || '') + '" placeholder="الدور">' +
     sel(i, 'person', r.person) + sel(i, 'deputy', r.deputy) +
@@ -5570,7 +5570,7 @@ function uRoleApp() {
     '<label class="field"><span>اسم الدور</span><input class="inp" id="uRName" maxlength="60" value="' + esc(r.nameAR) + '" placeholder="مثل: مسؤول متابعة"></label>' +
     '<label class="field"><span>الاسم بالإنجليزية</span><input class="inp" dir="ltr" id="uREn" maxlength="60" value="' + esc(r.nameEN || '') + '"></label>' +
     '<label class="field"><span>وصف قصير</span><input class="inp" id="uRDesc" maxlength="300" value="' + esc(r.desc || '') + '"></label></div></section>' + body +
-    (who.length ? '<section class="panel-box"><h3>' + ic('users') + '<span>أصحاب هذا الدور (' + who.length + ')</span></h3><div class="u-chips">' + who.slice(0, 40).map(p => '<button class="chip" data-u="person" data-id="' + esc(p.id) + '">' + esc(p.name) + '</button>').join('') + (who.length > 40 ? '<span class="u-muted">…</span>' : '') + '</div></section>' : '') +
+    (who.length ? '<section class="panel-box"><h3>' + ic('users') + '<span>أصحاب هذا الدور (' + who.length + ')</span></h3><div class="u-chips">' + who.slice(0, 40).map(p => '<button class="chip" data-u="person" data-id="' + esc(p.id) + '">' + esc(rpPN(p)) + '</button>').join('') + (who.length > 40 ? '<span class="u-muted">…</span>' : '') + '</div></section>' : '') +
     '<div class="savebar u-savebar"><b>' + (isNew ? 'دور جديد' : members ? 'الحفظ يطبّق على ' + members + ' موظفاً فوراً' : 'لا أحد يحمل هذا الدور بعد') + '</b><div class="savebar-actions">' +
     (isNew ? '' : '<button class="btn btn-ghost" data-u="rAssign">' + ic('users') + '<span>تعيينه لأشخاص</span></button><button class="btn btn-ghost" data-u="rDup">' + ic('copy') + '<span>نسخه كدور جديد</span></button>' +
       '<button class="btn btn-ghost" data-u="rArch">' + ic(r.archived ? 'undo' : 'x') + '<span>' + (r.archived ? 'إلغاء الأرشفة' : 'أرشفة') + '</span></button>' +
@@ -5601,7 +5601,7 @@ function uPkDraw() {
   const q = (($('#pkQ') || {}).value || '').trim();
   const l = pk.people.filter(p => !q || (p.name + ' ' + (p.dept || '') + ' ' + (p.title || '')).indexOf(q) >= 0);
   const box = $('#pkList'); if (!box) return;
-  box.innerHTML = l.slice(0, 300).map(p => '<button type="button" class="u-pk-row' + (pk.sel[p.id] ? ' on' : '') + '" data-u="pkTog" data-id="' + esc(p.id) + '"><span class="u-pk-ck"></span><span><b>' + esc(p.name) + '</b><small>' + esc([p.title, p.dept].filter(Boolean).join(' · ')) + '</small></span></button>').join('') || '<div class="empty"><span>لا نتائج</span></div>';
+  box.innerHTML = l.slice(0, 300).map(p => '<button type="button" class="u-pk-row' + (pk.sel[p.id] ? ' on' : '') + '" data-u="pkTog" data-id="' + esc(p.id) + '"><span class="u-pk-ck"></span><span><b>' + esc(rpPN(p)) + '</b><small>' + esc([p.title, p.dept].filter(Boolean).join(' · ')) + '</small></span></button>').join('') || '<div class="empty"><span>لا نتائج</span></div>';
   uPkCount();
 }
 function uPkCount() {
