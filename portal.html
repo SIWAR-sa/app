@@ -1117,10 +1117,18 @@ tr.is-off .mx-user { opacity: .5; }
 .u-q-v .inp { min-width: 180px; }
 .u-num { width: 110px !important; min-width: 0 !important; }
 .u-unit { color: var(--muted); font-size: 13px; }
-.u-by { grid-column: 1 / -1; color: var(--faint); font-size: 11.5px; }
 .u-days { display: flex; flex-wrap: wrap; gap: 6px; }
 .u-days .seg-btn { height: 34px; padding: 0 10px; font-size: 13px; }
-.u-json { min-width: 260px; font-family: ui-monospace, monospace; font-size: 12px; }
+.ur-lose { color: #9b2c2c; }
+.u-role.u-dlg, .u-role-h.u-dlg-h { grid-template-columns: 1fr 1fr 130px 130px 32px; }
+.u-dlg-apps { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.u-dlg-apps .chip { padding: 2px 8px; font-size: 12px; }
+.u-dlg-old { opacity: .55; }
+.u-row-fixed > .inp:first-child { font-weight: 600; }
+@media (max-width: 760px) { .u-role.u-dlg { grid-template-columns: 1fr 1fr; } .u-role-h.u-dlg-h { display: none; } }
+.u-ro { font-weight: 600; color: var(--ink, inherit); overflow-wrap: anywhere; }
+.u-h3go { margin-inline-start: auto; }
+.u-by { grid-column: 1 / -1; color: var(--faint); font-size: 11.5px; }
 .u-const .u-used { margin: 12px 0 0; font-size: 12.5px; color: var(--muted); }
 .u-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
 .u-row { display: flex; gap: 8px; align-items: center; }
@@ -2472,7 +2480,7 @@ const I18N = {
     ERR_INVALID_LOGIN: 'البريد أو كلمة المرور غير صحيحة.', ERR_LOCKED: 'محاولات كثيرة، انتظر قليلاً ثم حاول مجدداً أو استخدم «نسيت كلمة المرور؟».',
     ERR_SUSPENDED: 'هذا الحساب موقوف.', ERR_SESSION: 'انتهت الجلسة، سجّل الدخول مجدداً.', ERR_ROLE_CHANGED: 'تغيّرت صلاحيات حسابك أو بياناته، سجّل الدخول من جديد.', ERR_STALE: 'عدّل غيرك بيانات هذا الموظف بعد أن فتحت الصفحة، فلم يُحفظ تعديلك.', ERR_BUSY_SAME: 'ما زال الحفظ السابق قيد التنفيذ. انتظر قليلاً ثم حدّث الصفحة وتحقق قبل إعادته.', ERR_FORBIDDEN: 'لا تملك صلاحية هذا الإجراء.', ERR_SENSITIVE: 'هذه صلاحية حساسة؛ يمنحها المالك فقط.', ERR_SHARED: 'هذا إعداد مشترك بين الأنظمة؛ يُعدَّل من صفحة «سوار» في الأنظمة.', ERR_RANGE: 'القيمة خارج الحد المسموح.', ERR_CONFLICT: 'عدّل غيرك هذا الإعداد بعد أن فتحت الصفحة.', ERR_RULE: 'القيم لا تتفق مع بعضها.', ERR_IN_USE: 'الدور مستخدم؛ أرشفه بدل حذفه.', ERR_ARCHIVED: 'الدور مؤرشف فلا يُسند لأحد جديد.', ERR_VALUE: 'القيمة غير مقبولة.', NO_SOURCE: 'تعذّر فتح ملف المصدر.', ERR_EXISTS_ORG: 'الهيكل معرَّف بالفعل.',
     ERR_NO_URL: 'لم يُضبط رابط هذا البرنامج بعد.', ERR_USERNAME: 'اسم المستخدم من 2 إلى 40 حرفاً إنجليزياً أو رقماً.',
-    ERR_NAME: 'الاسم بالعربية والإنجليزية مطلوب.', ERR_EMAIL: 'البريد الإلكتروني غير صحيح.', ERR_EXISTS: 'هذا البريد مسجل لموظف آخر من جسر، فلا يمكن استخدامه لموظف ثانٍ.', ERR_REQUIRED: 'حقل مطلوب فارغ.', ERR_DUP_JOB: 'توجد وظيفة بهذا الاسم.', ERR_DRIFT: 'أُلغي النقل لأن وصول بعض الموظفين كان سيتغير. أُعيد كل شيء كما كان.', ERR_UR_BLOCKED: 'لا يمكن توحيد الأدوار بعد: بعض الموظفين مذكورون في سلسلة بمستوى سيتغير. صحّح أدوارهم ثم أعد المعاينة.', ERR_PORTAL_ONLY: 'الأدوار والصلاحيات تُعدَّل من «الأدوار والصلاحيات» في سوار وحدها.', ERR_HAS_ACCOUNT: 'لهذا الموظف حساب؛ عدّل بريده من الحساب.', ERR_DUP_USERNAME: 'اسم المستخدم مستخدم من قبل.',
+    ERR_NAME: 'الاسم بالعربية والإنجليزية مطلوب.', ERR_SYS_ONLY: 'هذا الإعداد يُعدَّل من شاشته في النظام نفسه. افتح النظام من «فتح في النظام».', ERR_UR_FIRST: 'وحّد الأدوار أولاً، ثم أعد المعاينة.', ERR_EMAIL: 'البريد الإلكتروني غير صحيح.', ERR_EXISTS: 'هذا البريد مسجل لموظف آخر من جسر، فلا يمكن استخدامه لموظف ثانٍ.', ERR_REQUIRED: 'حقل مطلوب فارغ.', ERR_DUP_JOB: 'توجد وظيفة بهذا الاسم.', ERR_DRIFT: 'أُلغي النقل لأن وصول بعض الموظفين كان سيتغير. أُعيد كل شيء كما كان.', ERR_UR_BLOCKED: 'لا يمكن توحيد الأدوار بعد: بعض الموظفين مذكورون في سلسلة بمستوى سيتغير. صحّح أدوارهم ثم أعد المعاينة.', ERR_PORTAL_ONLY: 'الأدوار والصلاحيات تُعدَّل من «الأدوار والصلاحيات» في سوار وحدها.', ERR_HAS_ACCOUNT: 'لهذا الموظف حساب؛ عدّل بريده من الحساب.', ERR_DUP_USERNAME: 'اسم المستخدم مستخدم من قبل.',
     ERR_PIN: 'كلمة المرور 8 خانات على الأقل، فيها حروف وأرقام.', ERR_PIN_WEAK: 'كلمة المرور سهلة التخمين، اختر غيرها.', ERR_TEMP_EXPIRED: 'انتهت صلاحية كلمة المرور المؤقتة، اطلب واحدة جديدة من المسؤول.', tempTitle: 'كلمة المرور المؤقتة', tempNote: 'تظهر الآن فقط، ويُطلب من المستخدم تغييرها عند أول دخول.', tempMailed: 'أُرسلت إلى بريده.', tempSend: 'إرسال كلمة المرور المؤقتة بالبريد', copy: 'نسخ', copied: 'تم النسخ', noEmail: 'بلا بريد', tempCreate: 'إنشاء', ERR_DUP_EMAIL: 'هذا البريد مسجّل لمستخدم آخر.', ERR_MUST_CHANGE: 'اختر كلمة مرور خاصة بك أولاً.', ERR_BUSY: 'النظام مشغول لحظات، أعد المحاولة.', linkSaveFirst: 'احفظ التعديلات أولاً ثم افحص الربط.', regenYes: 'تغيير المفتاح', ERR_PIN_MATCH: 'كلمتا المرور غير متطابقتين.', ERR_PIN_WRONG: 'كلمة المرور الحالية غير صحيحة.',
     ERR_PIN_SAME: 'كلمة المرور الجديدة مطابقة للحالية.', ERR_CODE: 'رمز التحقق غير صحيح أو منتهي الصلاحية.', ERR_SELF: 'لا يمكن تنفيذ هذا الإجراء على حسابك (كلمتك تغيّرها من «تغيير كلمة المرور»).',
     ERR_LAST_ADMIN: 'يجب أن يبقى مدير نظام مفعّل واحد على الأقل.', ERR_URL: 'الرابط يجب أن يبدأ بـ https://', ERR_ICON: 'رابط الصورة غير صالح.',
@@ -2554,7 +2562,7 @@ const I18N = {
     ERR_INVALID_LOGIN: 'Incorrect email or password.', ERR_LOCKED: 'Too many attempts. Wait a little and try again, or use “Forgot your password?”.',
     ERR_SUSPENDED: 'This account is suspended.', ERR_SESSION: 'Your session ended. Please sign in again.', ERR_ROLE_CHANGED: 'Your account permissions or details changed. Please sign in again.', ERR_STALE: 'Someone else changed this employee after you opened the page, so your change was not saved.', ERR_BUSY_SAME: 'The previous save is still running. Wait a moment, then refresh and check before trying again.', ERR_FORBIDDEN: 'You are not allowed to do this.', ERR_SENSITIVE: 'Sensitive permission: owner only.', ERR_SHARED: 'Shared setting: edit it on the SIWAR page under Systems.', ERR_RANGE: 'Value out of the allowed range.', ERR_CONFLICT: 'Someone else changed this setting after you opened the page.', ERR_RULE: 'The values do not agree with each other.', ERR_IN_USE: 'Role is in use; archive it instead.', ERR_ARCHIVED: 'Role is archived.', ERR_VALUE: 'Invalid value.', NO_SOURCE: 'Source file could not be opened.',
     ERR_NO_URL: 'This app has no URL yet.', ERR_USERNAME: 'Username must be 2–40 English letters or digits.',
-    ERR_NAME: 'Arabic and English names are required.', ERR_DUP_JOB: 'A job title with this name already exists.', ERR_DRIFT: 'Cancelled because some people\'s access would have changed. Everything was restored as it was.', ERR_UR_BLOCKED: 'Roles cannot be unified yet: some people are named in a chain by a level that would change. Fix their roles, then preview again.', ERR_PORTAL_ONLY: 'Roles and permissions are edited in «Roles and permissions» in SIWAR only.', ERR_EMAIL: 'Invalid email address.', ERR_DUP_USERNAME: 'Username already exists.',
+    ERR_NAME: 'Arabic and English names are required.', ERR_SYS_ONLY: 'This setting is edited on its own screen in the system. Use «Open in the system».', ERR_UR_FIRST: 'Unify the roles first, then preview again.', ERR_DUP_JOB: 'A job title with this name already exists.', ERR_DRIFT: 'Cancelled because some people\'s access would have changed. Everything was restored as it was.', ERR_UR_BLOCKED: 'Roles cannot be unified yet: some people are named in a chain by a level that would change. Fix their roles, then preview again.', ERR_PORTAL_ONLY: 'Roles and permissions are edited in «Roles and permissions» in SIWAR only.', ERR_EMAIL: 'Invalid email address.', ERR_DUP_USERNAME: 'Username already exists.',
     ERR_PIN: 'Password must be at least 8 characters with letters and numbers.', ERR_PIN_WEAK: 'This password is too easy to guess.', ERR_TEMP_EXPIRED: 'Your temporary password expired. Ask the administrator for a new one.', tempTitle: 'Temporary password', tempNote: 'Shown only now. The user must change it at first sign-in.', tempMailed: 'Sent to their email.', tempSend: 'Email the temporary password', copy: 'Copy', copied: 'Copied', noEmail: 'No email', tempCreate: 'Create', ERR_DUP_EMAIL: 'This email belongs to another user.', ERR_MUST_CHANGE: 'Please choose your own password first.', ERR_BUSY: 'The system is busy for a moment — please retry.', linkSaveFirst: 'Save your changes first, then test the link.', regenYes: 'Change key', ERR_PIN_MATCH: 'Passwords do not match.', ERR_PIN_WRONG: 'Current password is incorrect.',
     ERR_PIN_SAME: 'New password matches the current one.', ERR_CODE: 'The code is incorrect or expired.', ERR_SELF: 'This action cannot be applied to your own account (change your password from “Change password”).',
     ERR_LAST_ADMIN: 'At least one active system admin must remain.', ERR_URL: 'URL must start with https://', ERR_ICON: 'Invalid image URL.',
@@ -4540,36 +4548,36 @@ function uSystem() {
   return head + '<div class="u-bar"><span></span><button class="btn btn-ghost" data-u="hist" data-id="' + esc(a.id) + '">' + ic('clock') + '<span>سجل التعديلات</span></button></div>' + groups.map(g => {
     const items = (d.settings || []).filter(s => gk(s) === g.key && !s.shared);
     if (!items.length && !g.screen) return '';
-    return '<section class="panel-box"><h3>' + ic('settings') + '<span>' + esc(g.title) + '</span></h3><div class="u-qs">' + (g.screen ? card(g.screen.label || g.title, '', g.screen.go) : '') + items.map(s => {
+    return '<section class="panel-box"><h3>' + ic('settings') + '<span>' + esc(g.title) + '</span><button class="btn btn-ghost btn-sm u-h3go" data-u="openSys" data-id="' + esc(a.id) + '" data-go="' + esc((g.screen && g.screen.go) || '') + '">' + ic('link') + '<span>فتح في النظام</span></button></h3><div class="u-qs">' + (g.screen ? card(g.screen.label || g.title, '', g.screen.go) : '') + items.map(s => {
       const has = s.key in saved, v = has ? saved[s.key].v : s.default;
       if ((s.type || 'text') === 'json' || s.screen) {
         const n = Array.isArray(v) ? v.length : v && typeof v === 'object' ? Object.keys(v).length : 0;
         return card(s.q || s.key, (s.screen && s.screen.label) || (n ? n + ' عنصراً · تُعدَّل من شاشتها في النظام' : 'تُعدَّل من شاشتها في النظام'), s.screen && s.screen.go);
       }
-      return '<div class="u-q"><span class="u-q-t">' + esc(s.q || s.key) + (s.sensitive ? ' <em class="u-sens">حساس</em>' : '') + (s.help ? '<small class="u-cdesc">' + esc(s.help) + '</small>' : '') + (has && saved[s.key].by ? '<small class="u-cdesc u-last">آخر تعديل: ' + esc(String(saved[s.key].by).split(' · ')[0]) + ' · ' + esc(when(saved[s.key])) + '</small>' : '') + '</span><span class="u-q-v">' + uInput(a.id, s, v) + (s.unit ? '<span class="u-unit">' + esc(s.unit) + '</span>' : '') + '</span>' +
+      return '<div class="u-q"><span class="u-q-t">' + esc(s.q || s.key) + (s.sensitive ? ' <em class="u-sens">حساس</em>' : '') + (s.help ? '<small class="u-cdesc">' + esc(s.help) + '</small>' : '') + (has && saved[s.key].by ? '<small class="u-cdesc u-last">آخر تعديل: ' + esc(String(saved[s.key].by).split(' · ')[0]) + ' · ' + esc(when(saved[s.key])) + '</small>' : '') + '</span><span class="u-q-v"><span class="u-ro">' + esc(uRoVal(s, v)) + '</span>' + (s.unit ? '<span class="u-unit">' + esc(s.unit) + '</span>' : '') + '</span>' +
         '</div>';
     }).join('') + '</div></section>';
   }).join('') + uSharedV(Array.from(new Set((d.settings || []).filter(s => s.shared).map(s => s.shared))), a.id);
 }
-function uInput(appId, s, v) {
-  const at = ' data-uc="set" data-app="' + esc(appId) + '" data-key="' + esc(s.key) + '"';
+// (س1) إعدادات النظام للاطلاع هنا؛ تُعدَّل من شاشة النظام وحده
+function uRoVal(s, v) {
   const t2 = s.type || 'text';
-  if (t2 === 'bool') return '<label class="switch"><input type="checkbox"' + at + (v === true ? ' checked' : '') + '><span></span></label>';
-  if (t2 === 'number') return '<input class="inp u-num" type="number"' + at + (s.min != null ? ' min="' + s.min + '"' : '') + (s.max != null ? ' max="' + s.max + '"' : '') + ' value="' + esc(v == null ? '' : v) + '">';
-  if (t2 === 'time') return '<input class="inp u-num" type="time"' + at + ' value="' + esc(v || '') + '">';
-  if (t2 === 'choice') return '<select class="inp"' + at + '>' + (s.options || []).map(o => { const ov = o && typeof o === 'object' ? (o.v != null ? o.v : o.value) : o, ol = o && o.label != null ? o.label : ov; return '<option value="' + esc(ov) + '"' + (String(ov) === String(v) ? ' selected' : '') + '>' + esc(ol) + '</option>'; }).join('') + '</select>';
-  if (t2 === 'days') { const dv = uDaysOf(v); return '<span class="u-days" data-days="' + esc(appId) + '|' + esc(s.key) + '">' + U_DAYS.map((n, i) => '<button class="seg-btn' + (dv.indexOf(i) >= 0 ? ' on' : '') + '" data-u="setDay" data-i="' + i + '">' + n + '</button>').join('') + '</span>'; }
-  if (t2 === 'list' || t2 === 'emails') return '<input class="inp"' + at + ' dir="' + (t2 === 'emails' ? 'ltr' : 'auto') + '" value="' + esc((v || []).join('، ')) + '" placeholder="افصل بينها بفاصلة">';
-  if (t2 === 'json') return '<textarea class="inp u-json"' + at + ' dir="ltr" rows="3">' + esc(JSON.stringify(v == null ? '' : v)) + '</textarea>';
-  return '<input class="inp"' + at + ' value="' + esc(v == null ? '' : v) + '">';
+  if (t2 === 'bool') return v === true ? 'نعم' : 'لا';
+  if (t2 === 'choice') { const o = (s.options || []).map(o => o && typeof o === 'object' ? { v: o.v != null ? o.v : o.value, l: o.label != null ? o.label : (o.v != null ? o.v : o.value) } : { v: o, l: o }).find(o => String(o.v) === String(v)); return o ? String(o.l) : (v == null ? '—' : String(v)); }
+  if (t2 === 'days') return uDaysOf(v).map(i => U_DAYS[i]).filter(Boolean).join('، ') || '—';
+  if (Array.isArray(v)) return v.length ? v.join('، ') : '—';
+  return v == null || v === '' ? '—' : String(v);
 }
 
 const U_SHARED_FORM = {
   holidays: [{ k: 'name', l: 'العطلة' }, { k: 'from', l: 'من', t: 'date' }, { k: 'to', l: 'إلى', t: 'date' }],
   companies: [{ k: 'code', l: 'الرمز', ro: 1 }, { k: 'nameAR', l: 'الاسم' }, { k: 'aliases', l: 'أسماؤها في الأنظمة', t: 'list' }],
   locations: [{ k: 'nameAR', l: 'الموقع' }, { k: 'company', l: 'الشركة', t: 'co' }],
-  mailGroups: [{ k: 'nameAR', l: 'المجموعة' }, { k: 'emails', l: 'البريد', t: 'list' }]
+  mailGroups: [{ k: 'nameAR', l: 'المجموعة' }, { k: 'emails', l: 'إلى', t: 'list' }, { k: 'cc', l: 'نسخة', t: 'list' }]
 };
+// (FX) مجموعات البريد الثابتة التي تقرؤها الأنظمة بمفتاحها (التحليلات: الاقتراب، الإيقاف، الشهري، اليومي، القرار الفوري). يملؤها المالك هنا ويحفظ بـ «حفظ»
+const U_MAIL_FIXED = [['near', 'تنبيه الاقتراب من الطاقة', 'Near-capacity alert'], ['shut', 'تنبيه إيقاف يوم', 'Day stop alert'], ['monthly', 'التقرير الشهري', 'Monthly report'], ['daily', 'الملخص اليومي', 'Daily summary'], ['urgent', 'قرار فوري', 'Urgent decision']];
+function uMailFixed(sh) { const L = Array.isArray(sh.mailGroups) ? sh.mailGroups : (sh.mailGroups = []); U_MAIL_FIXED.forEach(f => { if (!L.some(g => g && g.key === f[0])) L.push({ key: f[0], nameAR: f[1], emails: [], cc: [] }); }); return L; }
 function uSharedV(onlyKeys, sysId) {
   const D = U.d, sh = D.shared;
   const usedBy = key => D.apps.filter(a => ((uReg(a.id) || {}).settings || []).some(s => s.shared === key)).map(a => a.nameAR);
@@ -4600,7 +4608,8 @@ function uSharedV(onlyKeys, sysId) {
     locations: () => box('locations', rows('locations'), saveBtn('locations')),
     contacts: () => box('contacts', '<div class="u-qs">' + ['gm', 'cfo', 'hr'].map(pick).join('') + '</div>'),
     roles: () => box('roles', uRolesHtml(people)),
-    mailGroups: () => box('mailGroups', rows('mailGroups'), saveBtn('mailGroups')),
+    mailGroups: () => { uMailFixed(sh); return box('mailGroups', rows('mailGroups'), saveBtn('mailGroups')); },
+    delegations: () => box('delegations', uDelegHtml(people)),
     brand: () => box('brand', '<label class="u-q"><span class="u-q-t">اسم المرسل الظاهر في الرسائل</span><input class="inp" data-uc="brand" value="' + esc((sh.brand || {}).senderName || '') + '"></label>'),
     siwarApp: () => { const v = sh.siwarApp || {}, n = (f, l, unit, min, max, def, help) => '<div class="u-q"><span class="u-q-t">' + l + (help ? '<small class="u-cdesc">' + help + '</small>' : '') + '</span><span class="u-q-v"><input class="inp u-num" type="number" min="' + min + '" max="' + max + '" data-uc="appNum" data-f="' + f + '" value="' + esc(v[f] == null ? def : v[f]) + '"><span class="u-unit">' + unit + '</span></span></div>';
       return box('siwarApp', '<div class="u-qs">' + n('snapMinutes', 'أقصى عمر للنسخة المحفوظة من شاشة النظام', 'دقيقة', 1, 1440, 30, 'عند فتح نظام تظهر آخر نسخة من شاشته فوراً حتى يكتمل تحديثها، إذا لم تكن أقدم من هذه المدة') +
@@ -4629,6 +4638,24 @@ function uRolesSet(list) {
   uMark('sh:roles', { t: 'shared', key: 'roles', value: list });
 }
 
+// (س8) الإنابة في سوار لكل الأنظمة: من، ينوب عنه، من–إلى، والأنظمة (بلا اختيار = كل الأنظمة). تُحفظ بـ «حفظ» فقط
+function uDelegHtml(people) {
+  const list = Array.isArray(U.d.shared.delegations) ? U.d.shared.delegations : [], apps = U.d.apps || [];
+  const sel = (i, f, v) => '<select class="inp" data-uc="deleg" data-i="' + i + '" data-f="' + f + '"><option value="">—</option>' + people.map(p => '<option value="' + esc(p.id) + '"' + (v === p.id ? ' selected' : '') + '>' + esc(rpPN(p)) + '</option>').join('') + '</select>';
+  const today = new Date().toISOString().slice(0, 10);
+  return '<div class="u-role-h u-dlg-h"><span>' + RX('الموظف', 'Employee') + '</span><span>' + RX('ينوب عنه', 'Delegate') + '</span><span>' + RX('من', 'From') + '</span><span>' + RX('إلى', 'To') + '</span><span></span></div><div class="u-roles">' + list.map((r, i) => '<div class="u-row u-role u-dlg' + (r.to && r.to < today ? ' u-dlg-old' : '') + '">' +
+    sel(i, 'person', r.person) + sel(i, 'deputy', r.deputy) +
+    '<input class="inp" type="date" data-uc="deleg" data-i="' + i + '" data-f="from" value="' + esc(r.from || '') + '" title="' + RX('من', 'From') + '" aria-label="' + RX('من', 'From') + '">' +
+    '<input class="inp" type="date" data-uc="deleg" data-i="' + i + '" data-f="to" value="' + esc(r.to || '') + '" title="' + RX('إلى', 'To') + '" aria-label="' + RX('إلى', 'To') + '">' +
+    '<button class="u-x" data-u="delDeleg" data-i="' + i + '" aria-label="' + RX('حذف', 'Delete') + '">' + ic('trash') + '</button>' +
+    '<div class="u-chips u-dlg-apps">' + apps.map(a => '<button class="chip' + ((r.apps || []).indexOf(a.id) >= 0 ? ' on' : '') + '" data-u="delegApp" data-i="' + i + '" data-id="' + esc(a.id) + '">' + esc(L(a, 'name')) + '</button>').join('') + '<small class="u-cdesc">' + ((r.apps || []).length ? '' : RX('كل الأنظمة', 'All systems')) + '</small></div></div>').join('') +
+    '</div><button class="link-btn" data-u="addDeleg">+ ' + RX('إضافة إنابة', 'Add delegation') + '</button>';
+}
+function uDelegSet(list) {
+  if (!U.base) U.base = JSON.parse(JSON.stringify(U.d));
+  U.d.shared.delegations = list;
+  uMark('sh:delegations', { t: 'shared', key: 'delegations', value: list });
+}
 function uCoverage() {
   const D = U.d, cap = Number(((D.shared || {}).workweek || {}).maxRestShare) || 50, by = {};
   D.people.filter(p => !uLeftP(p) && p.dept).forEach(p => { (by[p.dept] = by[p.dept] || []).push(p); });
@@ -4642,11 +4669,12 @@ function uCoverage() {
   }).join('') + '</tbody></table></div>' + (noDay ? '<p class="u-muted">' + noDay + ' موظفاً بلا يوم راحة محدد.</p>' : '');
 }
 function uRowHtml(key, f, r, i) {
-  return '<div class="u-row" data-i="' + i + '">' + f.map(c => {
+  const fixed = key === 'mailGroups' && U_MAIL_FIXED.some(x => x[0] === r.key);
+  return '<div class="u-row' + (fixed ? ' u-row-fixed' : '') + '" data-i="' + i + '">' + f.map(c => {
     const v = r[c.k];
     if (c.t === 'co') return '<select class="inp" data-f="' + c.k + '">' + (U.d.shared.companies || []).map(o => '<option value="' + esc(o.code) + '"' + (o.code === v ? ' selected' : '') + '>' + esc(o.nameAR) + '</option>').join('') + '</select>';
-    return '<input class="inp" data-f="' + c.k + '"' + (c.t === 'date' ? ' type="date"' : '') + (c.ro && v ? ' readonly' : '') + ' placeholder="' + esc(c.l) + '" value="' + esc(Array.isArray(v) ? v.join('، ') : (v || '')) + '">';
-  }).join('') + '<button class="u-x" data-u="delRow" aria-label="حذف">' + ic('trash') + '</button></div>';
+    return '<input class="inp" data-f="' + c.k + '"' + (c.t === 'date' ? ' type="date"' : '') + (key === 'mailGroups' && c.t === 'list' ? ' dir="ltr"' : '') + (c.ro && v ? ' readonly' : '') + ' placeholder="' + esc(c.l) + '" value="' + esc(Array.isArray(v) ? v.join('، ') : (v || '')) + '">';
+  }).join('') + (fixed ? '<span class="u-x"></span>' : '<button class="u-x" data-u="delRow" aria-label="حذف">' + ic('trash') + '</button>') + '</div>';
 }
 function uCommitRows(key) {
   const v = uCollectRows(key); if (!U.base) U.base = JSON.parse(JSON.stringify(U.d));
@@ -4949,19 +4977,7 @@ async function uXlDownload(btn) {
       if (pl && cl) Sx.addRow({ p: pl, c: cl, g: p.access[aid].diff[k] ? 'منح' : 'منع' }); })));
     dv(Sx, 'p', 'people'); dv(Sx, 'c', 'caps'); dv(Sx, 'g', 'grant');
 
-    const St = wb.addWorksheet('الإعدادات'); head(St, [['النظام', 'a', 18], ['الإعداد', 'q', 50], ['القيمة', 'v', 30], ['الوحدة', 'u', 10], ['المفتاح', 'k', 10]]);
-    D.apps.forEach(a => { const d = uReg(a.id); if (!d) return; const saved = (D.settings || {})[a.id] || {};
-      (d.settings || []).filter(s => !s.shared && (s.type || 'text') !== 'json').forEach(s => {
-        const v = s.key in saved ? saved[s.key].v : s.default, t = s.type || 'text';
-        const shown = t === 'bool' ? (v ? 'نعم' : 'لا') : t === 'choice' ? ((s.options || []).map(o => o && o.v != null ? o : { v: o, label: o }).find(o => String(o.v) === String(v)) || {}).label || '' : Array.isArray(v) ? (t === 'days' ? v.map(i => U_DAYS[i]) : v).join('، ') : (v == null ? '' : v);
-        const row = St.addRow({ a: a.nameAR, q: s.q || s.key, v: shown, u: s.unit || '', k: a.id + '|' + s.key }), c = row.getCell('v');
-        if (t === 'bool') c.dataValidation = { type: 'list', allowBlank: false, formulae: [lists.yn], showErrorMessage: true, error: 'نعم أو لا' };
-        if (t === 'choice') c.dataValidation = { type: 'list', allowBlank: false, formulae: ['"' + (s.options || []).map(o => String(o && o.label != null ? o.label : o).replace(/[",]/g, ' ')).join(',') + '"'], showErrorMessage: true, error: 'اختر من القائمة فقط' };
-        if (t === 'number') c.dataValidation = { type: 'decimal', operator: 'between', allowBlank: false, formulae: [s.min != null ? s.min : -1e9, s.max != null ? s.max : 1e9], showErrorMessage: true, error: 'رقم' + (s.min != null ? ' من ' + s.min : '') + (s.max != null ? ' إلى ' + s.max : '') };
-        ['a', 'q', 'u'].forEach(k => { row.getCell(k).font = { color: { argb: 'FF6F6761' } }; });
-        c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF8EC' } };
-      }); });
-    St.getColumn('k').hidden = true;
+    // (س1) إعدادات الأنظمة لا تُرفع من هنا: تُعدَّل من شاشة كل نظام
     [F, T, P, Sx].forEach(ws => ws.eachRow((r, i) => { if (i > 1) r.alignment = { vertical: 'middle' }; }));
 
     const buf = await wb.xlsx.writeBuffer();
@@ -5094,17 +5110,8 @@ function uOnChange(el) {
   }
   if (k === 'pProf') { const p = D.people.find(x => x.id === U.id); p.profileId = el.value; uMark('pf:' + p.id, { t: 'personProfile', personId: p.id, profileId: el.value }); return; }
   if (k === 'fAddTitle') { if (el.value) { jbDraftSync(); U.draft.titles.push(el.value); uRender(); } return; }
-  if (k === 'set') {
-    const appId = el.dataset.app, key = el.dataset.key, d = uReg(appId), s = (d.settings || []).find(x => x.key === key);
-    let v = el.type === 'checkbox' ? el.checked : el.value;
-    if (s.type === 'list' || s.type === 'emails') v = String(v).split(/[,،;]+/).map(x => x.trim()).filter(Boolean);
-    if (s.type === 'json') { try { v = JSON.parse(v); } catch (e) { toast('الصيغة غير صحيحة', 'err'); return; } }
-    if (!U.base) U.base = JSON.parse(JSON.stringify(U.d));
-    const was0 = ((U.base.settings || {})[appId] || {})[key];
-    (D.settings[appId] = D.settings[appId] || {})[key] = { v: v, by: S.user && S.user.username, at: new Date().toISOString() };
-    uMark('s:' + appId + ':' + key, { t: 'setting', appId: appId, key: key, value: v, was: was0 ? was0.v : undefined }); el.closest('.u-q') && el.closest('.u-q').classList.remove('is-bad'); el.closest('.u-q') && el.closest('.u-q').classList.add('is-dirty'); return;
-  }
   if (k === 'role') { const list = JSON.parse(JSON.stringify(D.shared.roles || [])), r = list[Number(el.dataset.i)]; if (!r) return; r[el.dataset.f] = el.value.trim(); uRolesSet(list); return; }
+  if (k === 'deleg') { const list = JSON.parse(JSON.stringify(D.shared.delegations || [])), r = list[Number(el.dataset.i)]; if (!r) return; r[el.dataset.f] = el.value.trim(); uDelegSet(list); return; }
   if (k === 'contact') { if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); const c = Object.assign({}, D.shared.contacts || {}); c[el.dataset.r] = el.value; D.shared.contacts = c; uMark('sh:contacts', { t: 'shared', key: 'contacts', value: c }); return; }
   if (k === 'wkCap') { if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); const v = Object.assign({}, D.shared.workweek || {}, { maxRestShare: Math.min(100, Math.max(10, Number(el.value) || 50)) }); D.shared.workweek = v; uMark('sh:workweek', { t: 'shared', key: 'workweek', value: v }); const y = window.scrollY; uRender(); window.scrollTo(0, y); return; }
   if (k === 'appNum') { if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); const f = el.dataset.f, lim = { snapMinutes: [1, 1440, 30], linkDays: [1, 3650, 30], linkLegacyDays: [1, 3650, 30] }[f]; if (!lim) return; const x = Math.round(Number(el.value)); if (!(x >= lim[0] && x <= lim[1])) { toast('القيمة من ' + lim[0] + ' إلى ' + lim[1], 'err'); el.value = (D.shared.siwarApp || {})[f] == null ? lim[2] : D.shared.siwarApp[f]; return; } const a = Object.assign({ snapMinutes: 30, linkDays: 30, linkLegacyDays: 30 }, D.shared.siwarApp || {}); a[f] = x; D.shared.siwarApp = a; uMark('sh:siwarApp', { t: 'shared', key: 'siwarApp', value: a }); return; }
@@ -5306,13 +5313,15 @@ function uPerms() {
   const depts = Array.from(new Set(D.people.filter(p => !p.owner).map(rpDept).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'ar'));
   const mode = (m, t, i) => '<button class="seg-btn' + (R.mode === m ? ' on' : '') + '" data-u="rpMode" data-v="' + m + '">' + ic(i) + '<span>' + t + '</span></button>';
   const roleOpts = R.app ? '<select class="inp" data-uc="rpF" data-f="role"><option value="">' + RX('كل الأدوار', 'All roles') + '</option><option value="auto"' + (R.role === 'auto' ? ' selected' : '') + '>' + RX('تلقائي', 'Auto') + '</option>' + uRolesAll().filter(r => r.kind === 'app' && r.app === R.app && !r.archived).map(r => '<option value="' + esc(r.id) + '"' + (R.role === r.id ? ' selected' : '') + '>' + esc(rlName(r)) + '</option>').join('') + '<option value="off"' + (R.role === 'off' ? ' selected' : '') + '>' + RX('بلا وصول', 'No access') + '</option></select>' : '';
-  let h = (boss && D.urN && !D.urAt ? '<div class="ur-band" id="urBand">' + ic('shield') + '<span>' + RX('توحيد الأدوار مع الأنظمة: مستويات واستثناءات محلية بانتظار نقلها إلى هنا', 'Unifying roles with the systems: local levels and exceptions are waiting to move here') + '</span><button class="btn btn-primary btn-sm" data-u="urOpen">' + RX('معاينة', 'Preview') + '</button></div>' : '') +
-    '<div class="rp-top"><div class="seg rp-modes">' + mode('people', RX('الأشخاص', 'People'), 'users') + mode('matrix', RX('المصفوفة', 'Matrix'), 'grid') + mode('roles', RX('الأدوار', 'Roles'), 'shield') + '</div>';
-  if (R.mode !== 'roles') h += '<div class="rp-flt"><div class="input-wrap">' + ic('search') + '<input id="rpQ" type="search" placeholder="' + RX('ابحث بالاسم', 'Search by name') + '" value="' + esc(R.q) + '" autocomplete="off"></div>' +
+  let h = (boss && D.urAt && D.fxN ? '<div class="ur-band" id="fxBand">' + ic('shield') + '<span>' + RX('ترحيل من الأنظمة: قوائم محلية تمنح وصولاً بانتظار نقلها إلى سوار', 'Moving from the systems: local lists that grant access are waiting to move to SIWAR') + '</span><button class="btn btn-primary btn-sm" data-u="fxOpen">' + RX('معاينة', 'Preview') + '</button></div>' : '') + (boss && D.urAt && D.urRegN ? '<div class="ur-band" id="urRegBand">' + ic('shield') + '<span>' + RX('صفوف كتبها «تحديث من النظام» قبل التوحيد: ', 'Rows written by «Refresh from the system» before unifying: ') + D.urRegN + '</span><button class="btn btn-primary btn-sm" data-u="urRegOpen">' + RX('معاينة', 'Preview') + '</button></div>' : '') +
+    (boss && D.urN && !D.urAt ? '<div class="ur-band" id="urBand">' + ic('shield') + '<span>' + RX('توحيد الأدوار مع الأنظمة: مستويات واستثناءات محلية بانتظار نقلها إلى هنا', 'Unifying roles with the systems: local levels and exceptions are waiting to move here') + '</span><button class="btn btn-primary btn-sm" data-u="urOpen">' + RX('معاينة', 'Preview') + '</button></div>' : '') +
+    '<div class="rp-top"><div class="seg rp-modes">' + mode('people', RX('الأشخاص', 'People'), 'users') + mode('matrix', RX('المصفوفة', 'Matrix'), 'grid') + mode('roles', RX('الأدوار', 'Roles'), 'shield') + mode('deleg', RX('الإنابة', 'Delegations'), 'users') + '</div>';
+  if (R.mode !== 'roles' && R.mode !== 'deleg') h += '<div class="rp-flt"><div class="input-wrap">' + ic('search') + '<input id="rpQ" type="search" placeholder="' + RX('ابحث بالاسم', 'Search by name') + '" value="' + esc(R.q) + '" autocomplete="off"></div>' +
     '<select class="inp" data-uc="rpF" data-f="dept"><option value="">' + RX('كل الإدارات', 'All departments') + '</option>' + depts.map(d => '<option' + (R.dept === d ? ' selected' : '') + '>' + esc(d) + '</option>').join('') + '</select>' +
     '<select class="inp" data-uc="rpF" data-f="app"><option value="">' + RX('كل الأنظمة', 'All systems') + '</option>' + apps.map(a => '<option value="' + esc(a.id) + '"' + (R.app === a.id ? ' selected' : '') + (uDeclared(a.id) ? '' : ' disabled') + '>' + esc(L(a, 'name')) + '</option>').join('') + '</select>' + roleOpts + '</div>';
   h += '</div>';
   if (R.mode === 'roles') return h + rpRolesView();
+  if (R.mode === 'deleg') return h + uSharedV(['delegations']);
   const list = rpPeopleList(), n = Object.keys(R.sel).filter(id => R.sel[id]).length;
   h += '<div class="rp-bulk' + (n ? ' on' : '') + '"><b>' + (n ? (S.lang === 'en' ? n + ' selected' : n === 1 ? 'موظف واحد محدد' : n + ' محددين') : RX('حدّد أشخاصاً لتعيين دور لهم معاً', 'Select people to assign a role to them together')) + '</b><div class="savebar-actions">' +
     '<button class="btn btn-ghost btn-sm" data-u="rpSelAll">' + ic('check') + '<span>' + RX('تحديد الظاهرين', 'Select shown') + ' (' + list.length + ')</span></button>' + (n ? '<button class="btn btn-ghost btn-sm" data-u="rpSelNone">' + ic('x') + '<span>' + RX('إلغاء التحديد', 'Clear') + '</span></button><button class="btn btn-primary btn-sm" data-u="rpBulk">' + ic('shield') + '<span>' + RX('تعيين دور', 'Assign role') + '</span></button>' : '') + '</div></div>';
@@ -5394,6 +5403,67 @@ async function urMigrate() {
     };
   } catch (c) { U.urMig = 0; }
 }
+// (FX) ترحيل من الأنظمة: معاينة لكل شخص وكل نظام، ولا يُكتب شيء إلا بـ «تطبيق»؛ يُتحقق بعده من وصول الجميع ويُعاد كل شيء عند أي اختلاف
+async function fxMigrate() {
+  try {
+    const pv = await api('u_fxMigrate', { apply: false }, { quiet: true });
+    if (!pv || !pv.ok) { if (pv && !pv.ok) uSaveFail(pv.code || 'ERR_SERVER', -1, null, pv.detail); return; }
+    const en = S.lang === 'en', nm = (a, b) => rpN2(en && b ? b : a), ap = x => esc(en ? x.appNameEN : x.appName);
+    const sec = (t, n, body) => n ? '<h4 class="ur-h">' + t + ' <small>' + n + '</small></h4>' + body : '';
+    const capRow = x => '<div class="u-q ur-p"><span class="u-q-t">' + esc(nm(x.name, x.nameEN)) + '<small class="u-cdesc">' + ap(x) + (x.why ? ' · ' + esc(x.why) : '') + '</small></span><span class="u-q-v ur-caps"><em class="jb-tag' + (x.kind === 'deny' ? ' ur-lose' : '') + '">' + (x.kind === 'deny' ? '− ' : '+ ') + esc(en ? x.capEN : x.cap) + '</em>' + (x.viaRole ? '<em class="jb-tag">' + RX('عبر دوره', 'via role') + '</em>' : '') + (x.newAccess ? '<em class="jb-tag">' + RX('يُفتح له النظام', 'gets access') + '</em>' : '') + '</span></div>';
+    const roleRow = r => '<div class="u-q ur-p"><span class="u-q-t">' + esc(en && r.nameEN ? r.nameEN : r.nameAR) + '<small class="u-cdesc">' + ap(r) + ' · ' + r.n + RX(' يحملونه', ' holders') + '</small></span><span class="u-q-v ur-caps">' + r.caps.map(c => '<em class="jb-tag">+ ' + esc(en ? c.en : c.ar) + '</em>').join('') + '</span></div>';
+    const loseRow = x => '<div class="u-q ur-p"><span class="u-q-t">' + esc(rpN2(x.name || x.email || '')) + '<small class="u-cdesc">' + ap(x) + (x.why && x.why !== 'deleg' ? ' · ' + esc(x.why) : '') + '</small></span></div>';
+    const dlgRow = x => '<div class="u-q ur-p"><span class="u-q-t">' + esc(nm(x.name, x.nameEN)) + ' ← ' + esc(nm(x.dname, x.dnameEN)) + '<small class="u-cdesc">' + esc(x.from || '') + ' – ' + esc(x.to) + ' · ' + esc((en ? x.appsEN : x.apps).join('، ')) + '</small></span></div>';
+    const holRow = x => '<div class="u-q ur-p"><span class="u-q-t">' + esc(x.name || '—') + '<small class="u-cdesc">' + esc(x.from) + (x.to && x.to !== x.from ? ' – ' + esc(x.to) : '') + ' · ' + ap(x) + '</small></span></div>';
+    openModal({ title: ic('shield') + '<span>' + RX('ترحيل من الأنظمة إلى سوار', 'Move from the systems to SIWAR') + '</span>', wide: true,
+      body: '<div class="u-prev jb-sum"><span><b>' + (pv.caps || []).length + '</b> ' + RX('صلاحية', 'permissions') + '</span><span><b>' + (pv.roles || []).length + '</b> ' + RX('دوراً', 'roles') + '</span><span><b>' + (pv.deleg || []).length + '</b> ' + RX('إنابة', 'delegations') + '</span><span><b>' + (pv.holidays || []).length + '</b> ' + RX('عطلة', 'holidays') + '</span><span><b>' + ((pv.lose || []).length + (pv.unknown || []).length) + '</b> ' + RX('يتوقف دخوله', 'lose access') + '</span></div>' +
+        '<p class="u-muted">' + RX('لا يفقد أحد ما يستعمله اليوم: ما كانت تمنحه القوائم المحلية يصبح صلاحية هنا. بعد التطبيق يُفحص وصول كل موظف في كل نظام، ويُعاد كل شيء إذا اختلف شيء.', 'Nobody loses what they use today: what the local lists granted becomes a permission here. After applying, every person\'s access in every system is checked, and everything is restored if anything differs.') + '</p>' +
+        sec(RX('أدوار تأخذ الصلاحية لكل حامليها', 'Roles that take the permission for all holders'), (pv.roles || []).length, (pv.roles || []).map(roleRow).join('')) +
+        sec(RX('صلاحيات الأشخاص', 'Personal permissions'), (pv.caps || []).length, (pv.caps || []).map(capRow).join('')) +
+        sec(RX('الإنابة', 'Delegations'), (pv.deleg || []).length, (pv.deleg || []).map(dlgRow).join('')) +
+        sec(RX('العطل الرسمية', 'Official holidays'), (pv.holidays || []).length, (pv.holidays || []).map(holRow).join('')) +
+        sec(RX('يتوقف دخولهم (ليسوا في سوار)', 'They lose access (not in SIWAR)'), (pv.lose || []).length + (pv.unknown || []).length, (pv.lose || []).concat(pv.unknown || []).map(loseRow).join('')),
+      foot: '<button class="btn btn-ghost" data-act="closeModal">' + RX('لاحقاً', 'Later') + '</button><button class="btn btn-primary" id="fxGo">' + ic('check') + '<span>' + RX('تطبيق', 'Apply') + '</span></button>' });
+    const go = document.getElementById('fxGo');
+    if (go) go.onclick = async () => {
+      go.disabled = true;
+      try {
+        const r = await api('u_fxMigrate', { apply: true }, { quiet: true });
+        closeModal();
+        if (r && r.ok) { U.d.fxN = 0; toast(en ? 'Moved · ' + r.checked + ' checks' : 'تم الترحيل · فُحص ' + r.checked + ' موظف×نظام', 'ok'); uLoad(true); }
+        else uSaveFail((r && r.code) || 'ERR_SERVER', -1, null, r && r.detail);
+      } catch (c) { closeModal(); uSaveFail('ERR_NETWORK', -1, null, ''); }
+    };
+  } catch (c) {}
+}
+// (UR) إصلاح صفوف «تحديث من النظام» التي كُتبت قبل التوحيد: معاينة لكل شخص، ولا يُطبَّق شيء إلا بـ «تطبيق»
+async function urRegRepair() {
+  try {
+    const pv = await api('u_urRegRepair', { apply: false }, { quiet: true });
+    if (!pv || !pv.ok) { if (pv && !pv.ok) uSaveFail(pv.code || 'ERR_SERVER', -1, null, pv.detail); return; }
+    const en = S.lang === 'en', nm = x => rpN2(en && x.nameEN ? x.nameEN : x.name);
+    const st = o => (o.on ? RX('يدخل', 'Has access') : RX('لا يدخل', 'No access')) + ' · ' + o.caps + RX(' صلاحية', ' permissions') + (o.scope ? ' · ' + RX('نطاق: ', 'scope: ') + o.scope : '');
+    const row = x => '<div class="u-q ur-p"><span class="u-q-t">' + esc(nm(x)) + '<small class="u-cdesc">' + esc(en ? x.appNameEN : x.appName) + (x.hasRole ? '' : ' · ' + RX('بلا دور', 'no role')) + '</small></span><span class="u-q-v ur-caps">' +
+      '<em class="jb-tag">' + RX('الآن: ', 'Now: ') + esc(st(x.now)) + '</em><em class="jb-tag">' + RX('بعد الإصلاح: ', 'After: ') + esc(st(x.next)) + '</em>' +
+      (x.lose || []).map(l => '<em class="jb-tag ur-lose">− ' + esc(l) + '</em>').join('') + (x.gain || []).map(l => '<em class="jb-tag">+ ' + esc(l) + '</em>').join('') + '</span></div>';
+    openModal({ title: ic('shield') + '<span>' + RX('إصلاح ما استورده «تحديث من النظام»', 'Repair what «Refresh from the system» imported') + '</span>', wide: true,
+      body: '<div class="u-prev jb-sum"><span><b>' + pv.n + '</b> ' + RX('صفاً يُصلح', 'rows to repair') + '</span><span><b>' + (pv.review || []).length + '</b> ' + RX('للمراجعة فقط', 'for review only') + '</span></div>' +
+        '<p class="u-muted">' + RX('كل شخص يعود إلى دوره هنا مع ما نقله التوحيد له فقط. يُحفظ كل صف قبل الإصلاح في سجل التعديلات.', 'Each person goes back to their role here plus only what the unification moved for them. Every row is saved before the repair in the change history.') + '</p>' +
+        (pv.items || []).map(row).join('') +
+        ((pv.review || []).length ? '<h4 class="ur-h">' + RX('أشخاص أضافهم الاستيراد إلى سوار (لا يُغيَّرون هنا)', 'People the import added to SIWAR (not changed here)') + '</h4>' + pv.review.map(row).join('') : ''),
+      foot: '<button class="btn btn-ghost" data-act="closeModal">' + RX('لاحقاً', 'Later') + '</button><button class="btn btn-primary" id="urRegGo"' + (pv.n ? '' : ' disabled') + '>' + ic('check') + '<span>' + RX('تطبيق', 'Apply') + '</span></button>' });
+    const go = document.getElementById('urRegGo');
+    if (go) go.onclick = async () => {
+      go.disabled = true;
+      try {
+        const r = await api('u_urRegRepair', { apply: true }, { quiet: true });
+        closeModal();
+        if (r && r.ok) { U.d.urRegN = 0; toast(en ? r.fixed + ' rows repaired' : 'أُصلح ' + r.fixed + ' صفاً', 'ok'); uLoad(true); }
+        else uSaveFail((r && r.code) || 'ERR_SERVER', -1, null, r && r.detail);
+      } catch (c) { closeModal(); uSaveFail('ERR_NETWORK', -1, null, ''); }
+    };
+  } catch (c) {}
+}
 async function rpMigrate() {
   try {
     const pv = await api('u_rpMigrate', { apply: false }, { quiet: true });
@@ -5419,10 +5489,13 @@ async function rpMigrate() {
 function D_appName(id) { const a = (U.d && U.d.apps || []).find(x => x.id === id); return a ? L(a, 'name') : ''; }
 function rpRerender() { const y = window.scrollY; uRender(); window.scrollTo(0, y); }
 function rpClick(el) {
-  const k = el.dataset.u, D = U.d, R = U.rp; if (!k || k.indexOf('rp') !== 0) return false;
+  const k = el.dataset.u, D = U.d, R = U.rp;
+  if (k === 'urOpen') { urMigrate(); return true; }
+  if (k === 'urRegOpen') { urRegRepair(); return true; }
+  if (k === 'fxOpen') { fxMigrate(); return true; }
+  if (!k || k.indexOf('rp') !== 0) return false;
   const P = () => D.people.find(x => x.id === (el.dataset.pid || U.id));
   if (k === 'rpMode') { R.mode = el.dataset.v; rpRerender(); return true; }
-  if (k === 'urOpen') { urMigrate(); return true; }
   if (k === 'rpSet') { const p = P(); if (p) rpSet(p, el.dataset.app, el.dataset.v); rpRerender(); return true; }
   if (k === 'rpOpen') { const kk = el.dataset.k; R.open[kk] = (R.open[kk] || (U.view === 'person' ? 'v' : '')) === el.dataset.w ? '-' : el.dataset.w; rpRerender(); return true; }
   if (k === 'rpCap') { const p = P(); if (p) rpCapToggle(p, el.dataset.app, el.dataset.cap); rpRerender(); return true; }
@@ -6690,15 +6763,6 @@ function uOnClick(el, e) {
       toast(r.settings + ' إعداداً و' + r.caps + ' صلاحية' + (r.imported ? ' · نُقلت ' + r.imported + ' قيمة من النظام' : '') + (r.importedAccess ? ' · نُقلت صلاحيات ' + r.importedAccess + ' موظفاً' : '') + (r.moved && (r.moved.roles || r.moved.profiles || r.moved.people) ? ' · نُقلت منح الخصائص المستبدلة' : ''), 'ok'); uFlushSoon(); uLoad();
     }).catch(c => { el.disabled = false; showErr(c); });
   }
-  if (k === 'setDay') {
-    const box = el.closest('[data-days]'), [appId, key] = box.dataset.days.split('|');
-    el.classList.toggle('on');
-    const v = $$('.seg-btn', box).map((b, i) => b.classList.contains('on') ? i : -1).filter(i => i >= 0);
-    if (!U.base) U.base = JSON.parse(JSON.stringify(U.d));
-    const was0 = ((U.base.settings || {})[appId] || {})[key];
-    (D.settings[appId] = D.settings[appId] || {})[key] = { v: v, by: S.user && S.user.username, at: new Date().toISOString() };
-    return uMark('s:' + appId + ':' + key, { t: 'setting', appId: appId, key: key, value: v, was: was0 ? was0.v : undefined });
-  }
   if (k === 'slaDay') {
     el.classList.toggle('on');
     const days = $$('[data-sla] .seg-btn').map((b, i) => b.classList.contains('on') ? i : -1).filter(i => i >= 0);
@@ -6727,6 +6791,9 @@ function uOnClick(el, e) {
     return uMark('sh:workweek', { t: 'shared', key: 'workweek', value: v });
   }
   if (k === 'addRole') { const list = JSON.parse(JSON.stringify(U.d.shared.roles || [])); list.push({ key: 'r' + Date.now().toString(36), title: '', person: '', deputy: '', from: '', to: '' }); uRolesSet(list); const y = window.scrollY; uRender(); window.scrollTo(0, y); return; }
+  if (k === 'addDeleg') { const list = JSON.parse(JSON.stringify(U.d.shared.delegations || [])); list.push({ person: '', deputy: '', from: new Date().toISOString().slice(0, 10), to: '', apps: [] }); uDelegSet(list); const y = window.scrollY; uRender(); window.scrollTo(0, y); return; }
+  if (k === 'delDeleg') { const list = JSON.parse(JSON.stringify(U.d.shared.delegations || [])); list.splice(Number(el.dataset.i), 1); uDelegSet(list); const y = window.scrollY; uRender(); window.scrollTo(0, y); return; }
+  if (k === 'delegApp') { const list = JSON.parse(JSON.stringify(U.d.shared.delegations || [])), r = list[Number(el.dataset.i)]; if (!r) return; r.apps = r.apps || []; const j = r.apps.indexOf(el.dataset.id); if (j >= 0) r.apps.splice(j, 1); else r.apps.push(el.dataset.id); uDelegSet(list); const y = window.scrollY; uRender(); window.scrollTo(0, y); return; }
   if (k === 'delRole') { const list = JSON.parse(JSON.stringify(U.d.shared.roles || [])); list.splice(Number(el.dataset.i), 1); uRolesSet(list); const y = window.scrollY; uRender(); window.scrollTo(0, y); return; }
   if (k === 'addRow') { const key = el.dataset.k; $('[data-rows="' + key + '"]').insertAdjacentHTML('beforeend', uRowHtml(key, U_SHARED_FORM[key], {}, -1)); return; }
   if (k === 'delRow') { const box = el.closest('[data-rows]'); el.closest('.u-row').remove(); if (box) uCommitRows(box.dataset.rows); return; }
