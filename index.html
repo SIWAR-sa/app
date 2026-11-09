@@ -376,11 +376,16 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   }
   function focusState() {
     var a = document.activeElement, hops = 0;
-    while (a && a.tagName === 'IFRAME' && hops++ < 4) { var d = null; try { d = a.contentDocument; } catch (e) { d = null; } if (!d) return 'x'; a = d.activeElement; }
+    while (a && a.tagName === 'IFRAME' && hops++ < 4) {
+      var d = null; try { d = a.contentDocument; } catch (e) { d = null; }
+      // (v107) نظام في موقع آخر يبلّغ بحالته (upst): يكتب أو في نموذجه ما لم يُحفظ = لا زر، وغير ذلك = متاح
+      if (!d) { var ff = null; try { ff = U.frameFree ? U.frameFree(a) : null; } catch (e) { ff = null; } return ff === true ? 'free' : ff === false ? 'type' : 'x'; }
+      a = d.activeElement;
+    }
     return editable(a) ? 'type' : 'free';
   }
   // لا يظهر أثناء الكتابة؛ والتركيز داخل نظام (موقع آخر) لا نرى ما يُكتب فيه: يظهر حين يعود الموظف للنافذة
-  function idleOk() { if (Date.now() - lastKey < IDLE) return false; var f = focusState(); if (f === 'type') return false; if (f === 'x') return Date.now() - backAt < 4000; return true; }
+  function idleOk() { if (Date.now() - lastKey < IDLE) return false; try { if (U.busy && U.busy()) return false; } catch (e) {} var f = focusState(); if (f === 'type') return false; if (f === 'x') return Date.now() - backAt < 4000; return true; }
   function onKey() { lastKey = Date.now(); }
   U.watchDoc = function (doc) { try { if (!doc || doc.__sUw) return; doc.__sUw = 1; ['keydown', 'input', 'compositionupdate'].forEach(function (ev) { doc.addEventListener(ev, onKey, true); }); } catch (e) {} };
   function back() { backAt = Date.now(); if (U.avail && !U.el) { clearTimeout(tm); tm = setTimeout(tryShow, 300); } }
@@ -422,6 +427,12 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   U.signal = function (src) { U.src = U.src || String(src || ''); U.avail = true; if (!U.el) tryShow(); };
   U.relang = function () { fill(); if (PV) tone(PV); };
   U.hide = hide;
+  // (v107) تغيّرت حالة نظام (بدأ الكتابة أو صار في نموذجه ما لم يُحفظ، أو انتهى): الزر يختفي فوراً ويعود حين يصبح الوضع مناسباً
+  U.recheck = function () {
+    if (U.going) return;
+    if (U.el && !idleOk()) { hide(); clearTimeout(tm); tm = setTimeout(tryShow, 2000); return; }
+    if (U.avail && !U.el) { clearTimeout(tm); tm = setTimeout(tryShow, 300); }
+  };
   /* شاشة التحميل الموحدة أثناء الانتقال إلى النسخة الأحدث: الشعار وحده بلا نص، ولا تظهر إلا إذا طال الانتظار ثانية فأكثر.
      U.load(true) / U.load(false) */
   var PV = null, LT = 0;
@@ -533,15 +544,41 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   var swr = null, swAt = Date.now(), updGoing = false, swReady = null, swRes = null;
   swReady = new Promise(function (r) { swRes = r; });
   /* (v94) رقم نسخة هذه الصفحة، ويساوي دائماً رقم CACHE في sw.js (يُرفعان معاً) */
-  var APPV = 106;
+  var APPV = 107;
   var UFL = 'siwar_upd_flow', UPN = 'siwar_upd_pend';
   function lsj(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} return null; }
-  function updFound(src) {
+  /* (v107) كوادر والتحليلات والمخازن والرقابة: كل نظام يقارن بصمة واجهته المنشورة بما فُتح به، ويبلّغ مرة واحدة (upd) وهو غير مشغول.
+     الضغطة تعيد فتح ذلك النظام وحده على أحدث نسخة (التطبيق لا يُعاد تحميله إلا إن كان هو أو سوار أو نظام آخر أحدث) */
+  var UPSYS = { kawader: 1, analytics: 1, stores: 1, talaf: 1 }, UPF = {}, UPFULL = false, UPW = null, UPC = {};
+  function updFound(src, win) {
+    var fid = win && UPSYS[src] ? frameIdOf(win) : '';
+    if (fid) {
+      if (updGoing || !window.SiwarUpd) return;
+      var c = UPC[fid]; if (c && Date.now() - c.t < 600000 && c.n >= 2) return;   // حد أمان: لا تكرار للنظام نفسه
+      UPF[fid] = { s: src, t: Date.now() };
+      if (!lsj(UPN)) lsj(UPN, { t: Date.now(), s: String(src || '') });
+      SiwarUpd.signal(src); return;
+    }
     if (ACC && ACC.on) { accNewer(); return; }
     if (updGoing || !window.SiwarUpd) return;
+    UPFULL = true;
     if (!lsj(UPN)) lsj(UPN, { t: Date.now(), s: String(src || '') });
     SiwarUpd.signal(src);
   }
+  /* (v107) حالة كل نظام كما يبلّغ بها (upst): b=1 يكتب الآن أو في نموذجه ما لم يُحفظ. لا يظهر الزر ما دام نظام مفتوح مشغولاً،
+     ويختفي إن بدأ الموظف الكتابة؛ والضغطة نفسها لا تعيد فتح شيء وهناك ما لم يُحفظ */
+  var FST = [];
+  function fstAlive() { FST = FST.filter(function (x) { try { return !x.w.closed && !!frameIdOf(x.w); } catch (e) { return false; } }); return FST; }
+  function upSt(w, d) {
+    if (!w || !frameIdOf(w)) return;
+    var b = d.b ? 1 : 0, x = null;
+    for (var i = 0; i < FST.length; i++) if (FST[i].w === w) { x = FST[i]; break; }
+    if (!x) { x = { w: w, b: -1 }; FST.push(x); }
+    if (x.b === b) return;
+    x.b = b; x.t = Date.now();
+    if (window.SiwarUpd && SiwarUpd.recheck) SiwarUpd.recheck();
+  }
+  function upBusy() { return fstAlive().some(function (x) { return x.b === 1; }); }
   function swVer(w) {
     return new Promise(function (res) {
       if (!w || !window.MessageChannel) { res(0); return; }
@@ -555,6 +592,14 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     SiwarUpd.logo = function () { return 'icons/logo.webp'; };
     // درجة الداكن من سوار الظاهرة (نفس الموقع)
     SiwarUpd.dark = function () { try { var h = portalWin().document.documentElement; return h.classList.contains('dk') ? (h.getAttribute('data-dk') || 'cur') : ''; } catch (e) { return ''; } };
+    SiwarUpd.busy = upBusy;
+    // التركيز داخل إطار نظام: حالته المعلنة إن وُجدت (true متاح، false مشغول، null لا نعرف)
+    SiwarUpd.frameFree = function (ifr) {
+      var cw = ifr && ifr.contentWindow; if (!cw) return null;
+      var L = fstAlive();
+      for (var i = 0; i < L.length; i++) { var w = L[i].w; for (var k = 0; k < 6 && w; k++) { if (w === cw) return L[i].b === 0; try { if (w === w.parent) break; w = w.parent; } catch (e) { break; } } }
+      return null;
+    };
   }
   if ('serviceWorker' in navigator) {
     var hadCtl = !!navigator.serviceWorker.controller, firstW = null;
@@ -583,7 +628,46 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     document.addEventListener('visibilitychange', function () { if (!document.hidden) swCheck(false); });
     window.addEventListener('focus', function () { swCheck(false); });
   } else swRes(null);
-  if (window.SiwarUpd) SiwarUpd.onGo = function () { updRun(false); };
+  if (window.SiwarUpd) SiwarUpd.onGo = function () { if (!UPFULL && !(swr && swr.waiting) && Object.keys(UPF).length) updFrames(); else updRun(false); };
+  /* (v107) تحديث نظام بعينه: النظام الظاهر يُفتح من جديد خلف شاشته الحالية ويحل محلها حين يجهز (شاشة التحميل الموحدة فوقه إن طال الانتظار ثانية)،
+     والأنظمة المفتوحة في الخلفية تُغلق فتُفتح بأحدث نسخة عند لمسها. رابط النظام يقدّم دائماً آخر نسخة منشورة، فهي قفزة واحدة مهما تعدد النشر */
+  function updFrames() {
+    if (updGoing) return;
+    if (upBusy() || offline()) { SiwarUpd.going = false; SiwarUpd.recheck(); return; }
+    updGoing = true;
+    var ids = Object.keys(UPF), on = $('prog').className === 'on' ? cur : '', wait = [];
+    UPF = {}; lsj(UPN, null); SiwarUpd.hide();
+    ids.forEach(function (id) {
+      var c = UPC[id]; UPC[id] = c && Date.now() - c.t < 600000 ? { t: c.t, n: c.n + 1 } : { t: Date.now(), n: 1 };
+      var o = frames[id];
+      if (!o) return;
+      if (id === on && o.ready && !o.sil && !SIL[id]) { wait.push(id); relaunchSoft(id, 1); }
+      else if (id === on) relaunch(id, true);
+      else dropFrame(id);
+    });
+    if (!wait.length) { updFramesDone(true); return; }
+    SiwarUpd.load(true);
+    UPW = { ids: wait, end: setTimeout(function () { updFramesDone(false); }, 25000) };
+  }
+  function updFramesDone(ok, retry) {
+    if (UPW) clearTimeout(UPW.end);
+    UPW = null; updGoing = false;
+    if (window.SiwarUpd) { SiwarUpd.load(false); SiwarUpd.going = false; SiwarUpd.avail = false; SiwarUpd.src = ''; }
+    if (retry) { Object.keys(retry).forEach(function (id) { UPF[id] = { s: retry[id], t: Date.now() }; }); SiwarUpd.signal(retry[Object.keys(retry)[0]]); return; }
+    if (ok) setTimeout(function () { snapToast(LANG === 'en' ? 'Updated to the latest version.' : 'تم التحديث إلى أحدث إصدار.'); }, 300);
+  }
+  // النظام فُتح من جديد بعد إشارته بطريق آخر (طلبه هو إعادة الفتح، أو أُغلق وفُتح): صار على أحدث نسخة فلا حاجة للزر من أجله
+  function updFrameNew(id) {
+    delete UPF[id];
+    if (UPFULL || Object.keys(UPF).length || !window.SiwarUpd || updGoing) return;
+    lsj(UPN, null); SiwarUpd.avail = false; SiwarUpd.src = ''; SiwarUpd.hide();
+  }
+  function updFrameIn(id, ok) {
+    if (!UPW || UPW.ids.indexOf(id) < 0) return;
+    if (!ok) { var r = {}; r[id] = 'sys'; updFramesDone(false, r); return; }
+    UPW.ids = UPW.ids.filter(function (k) { return k !== id; });
+    if (!UPW.ids.length) updFramesDone(true);
+  }
   /* التحديث نفسه (الضغطة، أو بصمت عند فتح التطبيق): المرحلة 1 قبل إعادة التحميل الواحدة */
   function updRun(silent) {
     if (updGoing) return; updGoing = true;
@@ -888,6 +972,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   // الفتح الجديد لم ينجح: تبقى الشاشة القديمة كما هي
   function silRestore(id) {
     var s = SIL[id]; if (!s) return; delete SIL[id];
+    if (UPW) setTimeout(function () { updFrameIn(id, false); }, 0);
     var o = frames[id];
     if (o && o !== s) { delete frames[id]; if (!o.ready) pEnd(id, 'drop'); clearTimeout(o.wd); clearTimeout(o.wd2); clearTimeout(o.wd3); try { o.f.src = 'about:blank'; } catch (e) {} o.f.remove(); }
     frames[id] = s; s.t = Date.now();
@@ -983,6 +1068,8 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     if (!o.ready) { pMark(id, 'ready'); pEnd(id, how || (o.late ? 'late' : 'ok')); }
     o.ready = true; rt[id] = 0; clearTimeout(o.wd); clearTimeout(o.wd3); if (o.uf === uf) { try { localStorage.setItem(UFK, uf); } catch (e) {} }
     if (o.sil) silSwap(id);
+    if (UPW) updFrameIn(id, true);
+    else if (UPF[id] && o.t > UPF[id].t) updFrameNew(id);
     if (o.rl) { clearTimeout(o.rl); o.rl = 0; setTimeout(function () { if (frames[id] === o && cur === id) relaunchSoft(id, 1); }, 0); }
     if (cur === id) loaderDone();
     if (SN && SN.id === id) snapDone(id);
@@ -1214,7 +1301,8 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   window.addEventListener('message', function (e) {
     var mine = e.origin === location.origin;
     if (!mine && !/\.googleusercontent\.com$|^https:\/\/script\.google\.com$/.test(e.origin)) return;
-    if (e.data && e.data.siwar === 'upd') { updFound(String(e.data.src || 'portal')); return; }   // (v84) سوار أو نظام يبلّغ بنسخة أحدث
+    if (e.data && e.data.siwar === 'upd') { updFound(String(e.data.src || 'portal'), mine ? null : e.source); return; }   // (v84) سوار أو نظام يبلّغ بنسخة أحدث
+    if (e.data && e.data.siwar === 'upst' && !mine) { upSt(e.source, e.data); return; }   // (v107) النظام يكتب/نموذجه لم يُحفظ أو انتهى
     var d = e.data || {}, ic = d.icon && typeof d.icon === 'object' ? d.icon : null, id = String(d.id || '');
     // (DK3) درجة الداكن الواحدة لكل الأنظمة: كل صفحة (سوار أو نظام) تعلن نفسها بـ dkhi فتأخذ الدرجة المحفوظة، واختيارها في أي صفحة (dkt) يُحفظ ويصل للبقية فورًا
     if (d.siwar === 'dkhi' || d.siwar === 'dkt') { dkMsg(e.source, d); return; }
@@ -1273,7 +1361,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     if (/^(hold|alive|ready)$/.test(d.siwar)) accFrame(fid, o);   // (UP) أول إشارة من النظام: يبدأ تجهيز صفحاته المتغيّرة (النظام نفسه يؤجله حتى تجهز شاشته)
     if (d.siwar === 'hold') { o.held = true; pMark(fid, 'hold'); if (d.g && PJ[fid]) PJ[fid].g = String(d.g).slice(0, 8); if (cur === fid && !o.ready) stage(.82, .95); }
     else if (d.siwar === 'alive') { o.alive = true; pMark(fid, 'alive'); }
-    else if (d.siwar === 'paint') { pMark(fid, 'paint'); o.painted = true; if (o.sil) silSwap(fid); if (cur === fid && !o.ready) loaderDone(); }   // الشاشة المحفوظة ظهرت: تُعرض فوراً والبيانات الجديدة تصل خلفها
+    else if (d.siwar === 'paint') { pMark(fid, 'paint'); o.painted = true; if (o.sil) { silSwap(fid); if (UPW) updFrameIn(fid, true); } if (cur === fid && !o.ready) loaderDone(); }   // الشاشة المحفوظة ظهرت: تُعرض فوراً والبيانات الجديدة تصل خلفها
     else if (d.siwar === 'mark' && /^[\w:.-]{1,40}$/.test(String(d.n || ''))) pMark(fid, String(d.n), typeof d.ms === 'number' ? d.ms : null);
     else if (d.siwar === 'ready') markReady(fid);
     else if (d.siwar === 'close' || d.siwar === 'logout') { if (cur === fid) hideLayer(false); dropFrame(fid); }
