@@ -3999,7 +3999,7 @@ async function launchInApp(btn, app) {
   if (!go && S.vgo[id] && S.navIds[id]) go = 'page=manage';
   if (go) S.vgo[id] = /(^|&)page=vault(&|$)/.test(go);
   S.lastLaunch = { btn: btn, app: app, id: id, go: go }; S.sysOn = true;
-  try { localStorage.setItem('sp_last_app', id); } catch (e) {}
+  try { localStorage.setItem('sp_last_app', id); const R = JSON.parse(localStorage.getItem('sp_recent_apps') || '[]').filter(x => x !== id); R.unshift(id); localStorage.setItem('sp_recent_apps', JSON.stringify(R.slice(0, 3))); } catch (e) {}
   const icon = appIconMsg(app), name = /(^|&)page=vault(&|$)/.test(go) ? (S.lang === 'ar' ? 'مساحتي الخاصة' : 'My private space') : L(app, 'name');  // (M1) شاشة الانتظار باسم المساحة
 
   if (!go && S.alive[id] && !btn.fresh) { try { window.top.postMessage({ siwar: 'show', id: id }, '*'); } catch (e) {} return; }
@@ -4053,10 +4053,15 @@ let warmQ = null;
 function warmLastApp(acc) {
   if (!S.inApp || !S.token || warmQ || (S.sysOn && !acc)) return;
   if (acc) { try { const c = navigator.connection; if (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''))) return; } catch (e) {} }
-  let id = ''; try { id = localStorage.getItem('sp_last_app') || ''; } catch (e) {}
+  let id = '', rec = []; try { id = localStorage.getItem('sp_last_app') || ''; rec = JSON.parse(localStorage.getItem('sp_recent_apps') || '[]'); } catch (e) {}
+  if (!Array.isArray(rec)) rec = []; if (id && rec.indexOf(id) < 0) rec.unshift(id);
   const list = S.apps.filter(a => !a.locked && !a.jisrOnly && !S.alive[a.id]);
-  list.sort((a, b) => (b.id === id ? 1 : 0) - (a.id === id ? 1 : 0));
-  const todo = isMobileDev() ? (id ? list.slice(0, 1) : []) : list.slice(0, 5);
+  const rk = a => { const i = rec.indexOf(a.id); return i < 0 ? 99 : i; };
+  list.sort((a, b) => rk(a) - rk(b));
+  // (SP2 · R2#1) الجوال: آخر نظامين استُعملا (واحدًا بعد الآخر) حين تكفي الذاكرة (4 غ.ب فأكثر أو غير معروفة) وبلا «توفير البيانات» أو شبكة 2G، وإلا آخر نظام فقط
+  let two = false; try { const dm = navigator.deviceMemory, c = navigator.connection; two = (dm === undefined || dm >= 4) && !(c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''))); } catch (e) { two = false; }
+  const mine = list.filter(a => rk(a) < 99);
+  const todo = isMobileDev() ? mine.slice(0, two ? 2 : 1) : list.slice(0, 5);
   if (!todo.length) return;
   warmQ = { todo: todo, id: '', t: 0, acc: !!acc };
   warmStep();
