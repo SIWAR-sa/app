@@ -104,7 +104,7 @@ function portalPost(cfg, body) {
 }
 const FALLBACK = {
   ar: { title: 'سوار | SIWAR', body: 'لديك إشعار جديد في سوار | SIWAR.' },
-  en: { title: 'سوار | SIWAR', body: 'You have a new notification in SIWAR.' }
+  en: { title: 'سوار | SIWAR', body: 'You have a new notification in سوار | SIWAR.' }
 };
 async function onPush() {
   const cfg = await pushCfg();
