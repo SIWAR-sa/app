@@ -4584,7 +4584,7 @@ const U_SHARED_FORM = {
   mailGroups: [{ k: 'nameAR', l: 'المجموعة' }, { k: 'emails', l: 'إلى', t: 'list' }, { k: 'cc', l: 'نسخة', t: 'list' }]
 };
 // (FX) مجموعات البريد الثابتة التي تقرؤها الأنظمة بمفتاحها (التحليلات: الاقتراب، الإيقاف، الشهري، اليومي، القرار الفوري). يملؤها المالك هنا ويحفظ بـ «حفظ»
-const U_MAIL_FIXED = [['near', 'تنبيه الاقتراب من الطاقة', 'Near-capacity alert'], ['shut', 'تنبيه إيقاف يوم', 'Day stop alert'], ['monthly', 'التقرير الشهري', 'Monthly report'], ['daily', 'الملخص اليومي', 'Daily summary'], ['urgent', 'قرار فوري', 'Urgent decision']];
+const U_MAIL_FIXED = [['near', 'تنبيه الاقتراب من الطاقة', 'Near-capacity alert'], ['shut', 'تنبيه إيقاف يوم', 'Day stop alert'], ['monthly', 'التقرير الشهري', 'Monthly report'], ['daily', 'الملخص اليومي', 'Daily summary'], ['urgent', 'قرار فوري', 'Urgent decision'], ['upload', 'تذكير رفع ملفات المبيعات', 'Sales files upload reminder']];
 function uMailFixed(sh) { const L = Array.isArray(sh.mailGroups) ? sh.mailGroups : (sh.mailGroups = []); U_MAIL_FIXED.forEach(f => { if (!L.some(g => g && g.key === f[0])) L.push({ key: f[0], nameAR: f[1], emails: [], cc: [] }); }); return L; }
 function uSharedV(onlyKeys, sysId) {
   const D = U.d, sh = D.shared;
@@ -4620,7 +4620,7 @@ function uSharedV(onlyKeys, sysId) {
     delegations: () => box('delegations', uDelegHtml(people)),
     brand: () => box('brand', '<label class="u-q"><span class="u-q-t">اسم المرسل الظاهر في الرسائل</span><input class="inp" data-uc="brand" value="' + esc((sh.brand || {}).senderName || '') + '"></label>'),
     siwarApp: () => { const v = sh.siwarApp || {}, n = (f, l, unit, min, max, def, help) => '<div class="u-q"><span class="u-q-t">' + l + (help ? '<small class="u-cdesc">' + help + '</small>' : '') + '</span><span class="u-q-v"><input class="inp u-num" type="number" min="' + min + '" max="' + max + '" data-uc="appNum" data-f="' + f + '" value="' + esc(v[f] == null ? def : v[f]) + '"><span class="u-unit">' + unit + '</span></span></div>';
-      return box('siwarApp', '<div class="u-qs">' + n('snapMinutes', 'أقصى عمر للنسخة المحفوظة من شاشة النظام', 'دقيقة', 1, 1440, 30, 'عند فتح نظام تظهر آخر نسخة من شاشته فوراً حتى يكتمل تحديثها، إذا لم تكن أقدم من هذه المدة') +
+      return box('siwarApp', '<div class="u-qs">' + n('snapMinutes', 'أقصى عمر للنسخة المحفوظة من شاشة النظام', 'دقيقة', 1, 1440, 720, 'عند فتح نظام تظهر آخر نسخة من شاشته فوراً حتى يكتمل تحديثها، إذا لم تكن أقدم من هذه المدة') +
         n('linkDays', 'صلاحية روابط الإجراء في البريد', 'يوم', 1, 3650, 30) + n('linkLegacyDays', 'مهلة الروابط القديمة المرسلة قبل التحديث', 'يوم', 1, 3650, 30) + '</div>'); }
   };
   const keys = onlyKeys || U_SHARED_ORDER.filter(k => !usedBy(k).length);
@@ -5122,7 +5122,7 @@ function uOnChange(el) {
   if (k === 'deleg') { const list = JSON.parse(JSON.stringify(D.shared.delegations || [])), r = list[Number(el.dataset.i)]; if (!r) return; r[el.dataset.f] = el.value.trim(); uDelegSet(list); return; }
   if (k === 'contact') { if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); const c = Object.assign({}, D.shared.contacts || {}); c[el.dataset.r] = el.value; D.shared.contacts = c; uMark('sh:contacts', { t: 'shared', key: 'contacts', value: c }); return; }
   if (k === 'wkCap') { if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); const v = Object.assign({}, D.shared.workweek || {}, { maxRestShare: Math.min(100, Math.max(10, Number(el.value) || 50)) }); D.shared.workweek = v; uMark('sh:workweek', { t: 'shared', key: 'workweek', value: v }); const y = window.scrollY; uRender(); window.scrollTo(0, y); return; }
-  if (k === 'appNum') { if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); const f = el.dataset.f, lim = { snapMinutes: [1, 1440, 30], linkDays: [1, 3650, 30], linkLegacyDays: [1, 3650, 30] }[f]; if (!lim) return; const x = Math.round(Number(el.value)); if (!(x >= lim[0] && x <= lim[1])) { toast('القيمة من ' + lim[0] + ' إلى ' + lim[1], 'err'); el.value = (D.shared.siwarApp || {})[f] == null ? lim[2] : D.shared.siwarApp[f]; return; } const a = Object.assign({ snapMinutes: 30, linkDays: 30, linkLegacyDays: 30 }, D.shared.siwarApp || {}); a[f] = x; D.shared.siwarApp = a; uMark('sh:siwarApp', { t: 'shared', key: 'siwarApp', value: a }); return; }
+  if (k === 'appNum') { if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); const f = el.dataset.f, lim = { snapMinutes: [1, 1440, 720], linkDays: [1, 3650, 30], linkLegacyDays: [1, 3650, 30] }[f]; if (!lim) return; const x = Math.round(Number(el.value)); if (!(x >= lim[0] && x <= lim[1])) { toast('القيمة من ' + lim[0] + ' إلى ' + lim[1], 'err'); el.value = (D.shared.siwarApp || {})[f] == null ? lim[2] : D.shared.siwarApp[f]; return; } const a = Object.assign({ snapMinutes: 720, linkDays: 30, linkLegacyDays: 30 }, D.shared.siwarApp || {}); a[f] = x; D.shared.siwarApp = a; uMark('sh:siwarApp', { t: 'shared', key: 'siwarApp', value: a }); return; }
   if (k === 'brand') { if (!U.base) U.base = JSON.parse(JSON.stringify(U.d)); const b = Object.assign({}, D.shared.brand || {}, { senderName: el.value.trim() }); D.shared.brand = b; uMark('sh:brand', { t: 'shared', key: 'brand', value: b }); return; }
 }
 // ===== (RP) الصلاحيات بالأدوار أولاً: دور واحد لكل نظام، والاستثناء اختياري =====
