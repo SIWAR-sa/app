@@ -472,7 +472,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     var MS = en ? ['Bringing you the newest version…', 'Tightening the last screws…', 'Polishing the screens…', 'Almost there — a few seconds…'] : ['نجهّز لك أحدث نسخة…', 'نشدّ آخر المسامير…', 'نلمّع الشاشات…', 'قربنا… ثوانٍ ونكمل'];
     el.innerHTML = '<div class="sUpv-c"><div class="sUpv-art" aria-hidden="true">' + gsv('g1', '#D9A955', '#B8862F') + gsv('g2', '#E2A6A4', '#C27E7C') + gsv('g3', '#B8935A', '#8C6A33') +
       '<i class="sUpv-sp sp1"></i><i class="sUpv-sp sp2"></i><i class="sUpv-sp sp3"></i></div>' +
-      '<div class="sUpv-t">' + (en ? 'Updating SIWAR' : 'جارٍ تحديث سوار') + '</div><div class="sUpv-m">' + MS[0] + '</div>' +
+      '<div class="sUpv-t">' + (en ? 'Updating SIWAR' : 'جارٍ تحديث سوار | SIWAR') + '</div><div class="sUpv-m">' + MS[0] + '</div>' +
       '<div class="sUpv-d" aria-hidden="true"><i></i><i></i><i></i></div><div class="sUpv-n">' + (en ? 'The screen comes back by itself when done' : 'الشاشة ترجع لوحدها بعد التحديث') + '</div></div>';
     var mi = 0, mEl = el.querySelector('.sUpv-m'); el.__mt = setInterval(function () { if (!el.parentNode) { clearInterval(el.__mt); return; } mEl.classList.add('out'); setTimeout(function () { mi = (mi + 1) % MS.length; mEl.textContent = MS[mi]; mEl.classList.remove('out'); }, 350); }, 2600);
     ['pointerdown', 'pointerup', 'click', 'touchstart', 'touchmove', 'wheel', 'contextmenu'].forEach(function (ev) { el.addEventListener(ev, stopEv, { capture: true, passive: false }); });
@@ -528,7 +528,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   function curClear() { try { sessionStorage.removeItem(CURK); } catch (e) {} try { localStorage.removeItem(CURK); } catch (e) {} }
   /* النصوص بلغة سوار: تصل اللغة من سوار وتُحفظ على الجهاز */
   var TXT = {
-    ar: { back: 'رجوع', ext: 'فتح في المتصفح', title: 'تثبيت تطبيق سوار | SIWAR', later: 'لاحقاً', prog: 'برنامج', noUrl: 'لم يُضبط رابط سوار في config.js',
+    ar: { back: 'رجوع', ext: 'فتح في المتصفح', title: 'تثبيت تطبيق سوار | SIWAR', later: 'لاحقاً', prog: 'برنامج', noUrl: 'لم يُضبط رابط سوار | SIWAR في config.js',
       desc: 'أيقونة على الشاشة الرئيسية، وتفتح الأنظمة في نافذة مستقلة.', install: 'تثبيت التطبيق',
       ios1: 'افتح هذه الصفحة في متصفح Safari', ios2: 'اضغط زر المشاركة ', ios3: 'اختر «إضافة إلى الشاشة الرئيسية» ', ios2n: 'اضغط ••• بجانب العنوان، ثم «مشاركة» ', ios3m: 'مرّر القائمة لأسفل واختر «إضافة إلى الشاشة الرئيسية» ', ios4: 'اضغط «إضافة» في أعلى الشاشة؛ بدونها لا تُضاف الأيقونة', iosInApp: 'التثبيت على الآيفون يتم من Safari.', iosOld: 'على هذا الإصدار من iOS يتم التثبيت من Safari.', openSafari: 'فتح في Safari للتثبيت', iosDone: 'بعد الإضافة افتح سوار | SIWAR من أيقونته على الشاشة الرئيسية.',
       an1: 'إذا كان التطبيق مثبتًا، افتحه من أيقونته. وإلا: افتح هذه الصفحة في Chrome أو Edge', doneT: 'التطبيق مثبت', doneD: 'التطبيق مثبت بالفعل على جهازك — افتحه من أيقونته على الشاشة الرئيسية.', ok: 'حسنًا', an2a: 'من قائمة المتصفح ', an2b: ' اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية»',
@@ -1661,8 +1661,8 @@ a.btn{display:grid;place-items:center;text-decoration:none}
       blockedTxt: 'سبق رفض الإشعارات لهذا التطبيق. افتح إعدادات الموقع في المتصفح (رمز القفل بجانب العنوان، أو إعدادات التطبيق على الجوال)، واسمح بالإشعارات، ثم ارجع هنا.', retry: 'تحقق مرة أخرى',
       iosTxt: 'على الآيفون والآيباد تعمل الإشعارات بعد تثبيت تطبيق سوار | SIWAR على الشاشة الرئيسية (iOS 16.4 أو أحدث)، ثم فتحه من أيقونته.', ios1: 'افتح سوار | SIWAR في Safari', ios2: 'اضغط زر المشاركة ', ios3: 'اختر «إضافة إلى الشاشة الرئيسية» ثم افتح التطبيق من أيقونته',
       unsupTxt: 'هذا المتصفح لا يدعم الإشعارات. استخدم Chrome أو Edge أو Safari بإصدار حديث.',
-      sent: 'أُرسل إشعار تجريبي، ويصل خلال ثوانٍ.', masterOff: 'إرسال الإشعارات متوقف الآن من إدارة سوار.', personOff: 'الإشعارات متوقفة لحسابك من إدارة سوار.', limited: 'وصلت للحد المسموح من الإشعارات في هذه الساعة.',
-      nokey: 'إرسال الإشعارات لم يُهيأ بعد في سوار.', nosess: 'سجّل الدخول إلى سوار أولاً.', fail: 'تعذّر إكمال العملية. تحقق من الاتصال ثم أعد المحاولة.', denied: 'لم يُسمح بالإشعارات.', close: 'إغلاق' },
+      sent: 'أُرسل إشعار تجريبي، ويصل خلال ثوانٍ.', masterOff: 'إرسال الإشعارات متوقف الآن من إدارة سوار | SIWAR.', personOff: 'الإشعارات متوقفة لحسابك من إدارة سوار | SIWAR.', limited: 'وصلت للحد المسموح من الإشعارات في هذه الساعة.',
+      nokey: 'إرسال الإشعارات لم يُهيأ بعد في سوار | SIWAR.', nosess: 'سجّل الدخول إلى سوار | SIWAR أولاً.', fail: 'تعذّر إكمال العملية. تحقق من الاتصال ثم أعد المحاولة.', denied: 'لم يُسمح بالإشعارات.', close: 'إغلاق' },
     en: { title: 'Notification settings', on: 'On for this device', off: 'Off on this device', blocked: 'Blocked by the browser', unsup: 'Not available in this browser', ios: 'Needs the installed app',
       dev: 'This device', devOn: 'This device receives the notifications meant for you only.', devOff: 'Turn it on to get a notification when an action is needed from you; tapping it opens the item.',
       cats: 'What I receive', wait: 'Requests awaiting me', chat: 'Conversations I am in', status: 'Status changes', tasks: 'Tasks', remind: 'Reminders',
