@@ -2750,6 +2750,9 @@ function t(k, vars) {
   return s;
 }
 const L = (o, base) => S.lang === 'ar' ? (o[base + 'AR'] || o[base + 'EN'] || '') : (o[base + 'EN'] || o[base + 'AR'] || '');
+// (DF) الاسم الأول والثاني فقط في كل موضع (قاعدة المالك): «عبد» و«أبو» مع ما بعدهما اسم واحد، و«بن/بنت» ليست اسماً؛ البريد واسم المستخدم كما هما
+const N2 = s => { s = String(s == null ? '' : s).trim(); if (!s || /@/.test(s)) return s; const w = s.split(/\s+/), out = []; for (let i = 0; i < w.length && out.length < 2; i++) { if (/^(بن|بنت|ابن|bin|bint)$/i.test(w[i])) continue; if (/^(عبد|أبو|ابو|abdul|abu)$/i.test(w[i]) && w[i + 1]) { out.push(w[i] + ' ' + w[++i]); continue; } out.push(w[i]); } return out.join(' '); };
+const LN = u => N2(L(u, 'name')) || u.username || '';
 const locale = () => S.lang === 'ar' ? 'ar-SA-u-ca-gregory-nu-latn' : 'en-GB';
 
 const FMT = {};
@@ -3274,7 +3277,7 @@ function enterSession(d, fresh) {
   nbBoot();
   afterHome();
   navRestore();
-  if (fresh) toast(t('ok_welcome', { name: L(S.user, 'name') || S.user.username }), 'ok');
+  if (fresh) toast(t('ok_welcome', { name: LN(S.user) }), 'ok');
   if (S.user.mustChange) openChangePin(true);
   else if (PAIR) openPair();
   else if (OPEN) openDeep();
@@ -3365,7 +3368,7 @@ function renderUserChrome() {
   if (SHELL && S.whoSent !== u.id) { S.whoSent = u.id; try { window.top.postMessage({ siwar: 'pushWho', uid: String(u.id || ''), lang: S.lang }, SHELL); } catch (e) {} }
   $('#avatar').innerHTML = initials(u);
   $('#avatar2').innerHTML = initials(u);
-  $('#menuName').textContent = L(u, 'name') || u.username;
+  $('#menuName').textContent = LN(u);
   $('#menuUser').textContent = u.email || '@' + u.username;
   $$('.admin-only').forEach(el => { el.hidden = (RANK[u.role] || 0) < RANK.supervisor; });
 }
@@ -4258,7 +4261,7 @@ function uStaleFail(det, ops) {
   const en = S.lang === 'en', d = det || {}, p = d.pid ? (U.d.people || []).find(x => x.id === d.pid) : null;
   const app = d.app ? (U.d.apps || []).find(a => a.id === d.app) : null;
   const field = (en ? U_OPNAME_EN : U_OPNAME)[d.f] || (en ? 'Employee details' : 'بيانات موظف');
-  const head = field + (app ? ' · ' + (en ? app.nameEN || app.nameAR : app.nameAR) : '') + (p ? ' — ' + (en ? p.nameEN || p.name : p.name) : '');
+  const head = field + (app ? ' · ' + (en ? app.nameEN || app.nameAR : app.nameAR) : '') + (p ? ' — ' + rpPN(p) : '');
   const when = d.at ? String(d.at).slice(0, 16).replace('T', ' ') : '';
   const who = d.by ? (en ? 'Last changed by ' + d.by + (when ? ' at ' + when : '') + '.' : 'آخر تعديل: ' + d.by + (when ? ' في ' + when : '') + '.') : when ? (en ? 'Last changed at ' + when + '.' : 'آخر تعديل في ' + when + '.') : '';
   const keep = en ? (ops ? 'Nothing was saved. Your edits are still on the page.' : 'Nothing was saved.') : (ops ? 'لم يُحفظ شيء، وتعديلاتك ما زالت في الصفحة.' : 'لم يُحفظ شيء.');
@@ -5474,7 +5477,7 @@ async function rpMigrate() {
     const pv = await api('u_rpMigrate', { apply: false }, { quiet: true });
     if (!pv || !pv.ok) { if (pv && !pv.ok) uSaveFail(pv.code || 'ERR_SERVER', -1, null, pv.detail); return; }
     if (!pv.n) { U.d.rpAt = 'x'; return; }
-    const en = S.lang === 'en', rows = (pv.plan || []).slice(0, 60).map(x => '<div class="u-q"><span class="u-q-t">' + esc(x.name || '') + ' · ' + esc((D_appName(x.app)) || x.app) + '</span><span class="u-q-v">' + esc(x.toName || x.to || '') + ' · ' + (en ? 'exceptions ' : 'استثناءات ') + x.n0 + ' → ' + x.n1 + '</span></div>').join('');
+    const en = S.lang === 'en', rows = (pv.plan || []).slice(0, 60).map(x => '<div class="u-q"><span class="u-q-t">' + esc(rpN2(x.name || '')) + ' · ' + esc((D_appName(x.app)) || x.app) + '</span><span class="u-q-v">' + esc(x.toName || x.to || '') + ' · ' + (en ? 'exceptions ' : 'استثناءات ') + x.n0 + ' → ' + x.n1 + '</span></div>').join('');
     openModal({ title: ic('shield') + '<span>' + (en ? 'Convert permissions to roles' : 'تحويل الصلاحيات إلى أدوار') + '</span>', wide: true,
       body: '<p>' + (en ? pv.n + ' person/system permission sets will become «role + exceptions». Nobody\'s access changes; anyone whose access would differ is restored automatically.' : 'سيتحوّل ' + pv.n + ' من صلاحيات الأشخاص في الأنظمة إلى «دور + استثناءات». لا يتغيّر وصول أحد، ومن يختلف وصوله يُعاد كما كان تلقائياً.') + '</p>' + rows + (pv.n > 60 ? '<p class="u-muted">' + (en ? '…and ' + (pv.n - 60) + ' more' : '… و' + (pv.n - 60) + ' غيرها') + '</p>' : ''),
       foot: '<button class="btn btn-ghost" data-act="closeModal">' + (en ? 'Later' : 'لاحقاً') + '</button><button class="btn btn-primary" id="rpMigGo">' + ic('check') + '<span>' + (en ? 'Apply' : 'تطبيق') + '</span></button>' });
@@ -6671,7 +6674,7 @@ function ogClick(el, e) {
     if (pid && (u.deps || []).indexOf(pid) < 0) O.ops.push({ t: 'unitDeputy', id: u.id, pid: pid, on: true });
     u.deps = pid ? [pid] : []; uRender(); }); }
   if (k === 'pickHead') { const u = ogU(id), isS = u.kind === 'section', isT = u.kind === 'top'; return ogPick(isT ? OG_GM : isS ? 'رئيس قسم «' + u.name + '»' : 'رئيس «' + u.name + '»', u.head, isT ? 'بلا مدير عام' : isS ? 'بلا رئيس خاص (' + OG_XL_FOLLOW + ')' : 'بلا رئيس', pid => ogSetHead(u, pid)); }
-  if (k === 'pickMgr') { const p = ogP(id); return ogPick('المدير المباشر لـ«' + p.name + '»', p.mgrPid, 'حسب الهيكل (رئيس قسمه أو إدارته)', pid => { if (pid === p.id) return toast('لا يكون الموظف مديراً لنفسه', 'err'); if (pid === (p.mgrPid || '')) return; p.mgrPid = pid; ogOp({ t: 'mgr', pid: p.id, mgr: pid }); }); }
+  if (k === 'pickMgr') { const p = ogP(id); return ogPick('المدير المباشر لـ«' + ogN2(p.name) + '»', p.mgrPid, 'حسب الهيكل (رئيس قسمه أو إدارته)', pid => { if (pid === p.id) return toast('لا يكون الموظف مديراً لنفسه', 'err'); if (pid === (p.mgrPid || '')) return; p.mgrPid = pid; ogOp({ t: 'mgr', pid: p.id, mgr: pid }); }); }
   if (k === 'addMem') { const u = ogU(id); return ogPick('إضافة موظف إلى «' + (u.kind === 'dept' ? u.name : u.name) + '»', '', '', pid => ogMoveTo(pid, id)); }
   if (k === 'pk') { const cb = O.pk.cb; closeModal(true); return cb(el.dataset.id); }
   if (k === 'move') return ogMovePick(id);
@@ -7003,7 +7006,7 @@ function renderAdminUsers() {
     const count = (A.access[u.id] || []).filter(id => A.apps.some(a => a.id === id)).length;
     return '<div class="row' + (u.status !== 'Active' ? ' is-off' : '') + '" style="--i:' + i + '">' +
       '<span class="avatar">' + initials(u) + '</span>' +
-      '<div class="row-main"><div class="row-title">' + esc(L(u, 'name') || u.username) +
+      '<div class="row-main"><div class="row-title">' + esc(LN(u)) +
         (u.role !== 'user' ? '<span class="badge ' + (u.role === 'owner' ? 'badge-gold' : u.role === 'admin' ? 'badge-pink' : 'badge-grey') + '">' + esc(t('role_' + u.role)) + '</span>' : '') +
         (self ? '<span class="badge badge-grey">' + esc(t('you')) + '</span>' : '') +
         (u.resetRequested ? '<span class="badge badge-pink">' + esc(t('resetReq')) + '</span>' : '') +
@@ -7044,7 +7047,7 @@ function renderAccess() {
     '<th>' + esc(t('all')) + '</th></tr></thead>';
   const body = '<tbody>' + users.map(u => {
     const all = A.apps.length && A.apps.every(a => hasDraft(u.id, a.id));
-    return '<tr class="' + (u.status !== 'Active' ? 'is-off' : '') + '" data-q="' + esc([u.username, u.nameAR, u.nameEN].join(' ').toLowerCase()) + '"><th class="sticky"><div class="mx-user"><span class="avatar sm">' + initials(u) + '</span><span><b>' + esc(L(u, 'name') || u.username) + '</b><small class="ltr">@' + esc(u.username) + '</small></span></div></th>' +
+    return '<tr class="' + (u.status !== 'Active' ? 'is-off' : '') + '" data-q="' + esc([u.username, u.nameAR, u.nameEN].join(' ').toLowerCase()) + '"><th class="sticky"><div class="mx-user"><span class="avatar sm">' + initials(u) + '</span><span><b>' + esc(LN(u)) + '</b><small class="ltr">@' + esc(u.username) + '</small></span></div></th>' +
       A.apps.map(a => '<td><button class="cbx' + (hasDraft(u.id, a.id) ? ' on' : '') + '" data-act="mxCell" data-user="' + esc(u.id) + '" data-app="' + esc(a.id) + '" aria-pressed="' + hasDraft(u.id, a.id) + '"></button></td>').join('') +
       '<td><button class="cbx all' + (all ? ' on' : '') + '" data-act="mxRow" data-user="' + esc(u.id) + '"></button></td></tr>';
   }).join('') + '</tbody>';
@@ -7107,7 +7110,7 @@ function renderReview() {
   $('#cReview').classList.toggle('alert', !!n);
   if (!S.review) { box.innerHTML = ''; return; }
   const R = S.review;
-  const nm = u => esc(L(u, 'name') || u.username);
+  const nm = u => esc(LN(u));
   const row = (u, sub, action, i) => '<div class="row" style="--i:' + i + '"><span class="avatar">' + initials(u) + '</span>' +
     '<div class="row-main"><div class="row-title">' + nm(u) + '</div><div class="row-sub"><span class="ltr">@' + esc(u.username) + '</span> · ' + sub + '</div></div>' +
     '<div class="row-actions">' + action + '</div></div>';
@@ -7498,7 +7501,7 @@ function invItemsHtml(shown) {
   return shown.map(u => {
     const ok = !!u.email && u.status === 'Active';
     return '<label class="inv-item' + (ok ? '' : ' off') + '"><input type="checkbox" data-inv="' + esc(u.id) + '"' + (INV.sel[u.id] ? ' checked' : '') + (ok ? '' : ' disabled') + '>' +
-      '<span class="avatar sm">' + initials(u) + '</span><span class="inv-main"><b>' + esc(L(u, 'name') || u.username) + '</b>' +
+      '<span class="avatar sm">' + initials(u) + '</span><span class="inv-main"><b>' + esc(LN(u)) + '</b>' +
       '<small><span class="ltr">' + esc(u.email || t('noEmail')) + '</span>' + (u.invitedAt ? ' · ' + esc(t('invitedOn', { d: fmtDate(u.invitedAt) })) : '') + '</small></span></label>';
   }).join('');
 }
@@ -7706,7 +7709,7 @@ function openResetPin(id) {
   const u = S.admin.users.find(x => x.id === id);
   openModal({
     title: ic('key') + esc(t('resetPin')),
-    body: '<p class="row-sub" style="margin:0 0 14px">' + esc(L(u, 'name') || u.username) + (u.email ? ' · <span class="ltr">' + esc(u.email) + '</span>' : '') + '</p>' +
+    body: '<p class="row-sub" style="margin:0 0 14px">' + esc(LN(u)) + (u.email ? ' · <span class="ltr">' + esc(u.email) + '</span>' : '') + '</p>' +
       (u.email ? '<label class="check"><input type="checkbox" id="rpSend" checked><span>' + esc(t('tempSend')) + '</span></label>' : ''),
     foot: '<button class="btn btn-ghost" data-act="closeModal">' + esc(t('cancel')) + '</button><button class="btn btn-primary" data-act="submitResetPin" data-id="' + esc(id) + '">' + ic('key') + '<span>' + esc(t('tempCreate')) + '</span></button>'
   });
@@ -7962,7 +7965,7 @@ const ACTIONS = {
   submitUser: el => submitUser(el),
   deleteUser: async el => {
     const u = S.admin.users.find(x => x.id === el.dataset.id);
-    if (!(await confirmBox(t('cf_deleteUser', { x: L(u, 'name') || u.username }), true))) return;
+    if (!(await confirmBox(t('cf_deleteUser', { x: LN(u) }), true))) return;
     try { setAdmin(await api('admin_deleteUser', { id: u.id })); toast(t('ok_deleted'), 'ok'); } catch (c) { showErr(c); }
   },
   resetPin: el => openResetPin(el.dataset.id),
@@ -8020,16 +8023,16 @@ const ACTIONS = {
   loadReview: () => loadReview(),
   rvSuspend: el => {
     const u = S.admin.users.find(x => x.id === el.dataset.user);
-    reviewAction('admin_setUserStatus', { id: u.id, status: 'Suspended' }, t('cf_suspend', { x: L(u, 'name') || u.username }));
+    reviewAction('admin_setUserStatus', { id: u.id, status: 'Suspended' }, t('cf_suspend', { x: LN(u) }));
   },
   rvRevokeAll: el => {
     const u = S.admin.users.find(x => x.id === el.dataset.user);
-    reviewAction('admin_revokeAccess', { userId: u.id, appId: '*' }, t('cf_revokeAll', { x: L(u, 'name') || u.username }));
+    reviewAction('admin_revokeAccess', { userId: u.id, appId: '*' }, t('cf_revokeAll', { x: LN(u) }));
   },
   rvRevoke: el => {
     const u = S.admin.users.find(x => x.id === el.dataset.user);
     const a = S.admin.apps.find(x => x.id === el.dataset.app);
-    reviewAction('admin_revokeAccess', { userId: u.id, appId: a.id }, t('cf_revoke', { x: L(u, 'name') || u.username, a: L(a, 'name') }));
+    reviewAction('admin_revokeAccess', { userId: u.id, appId: a.id }, t('cf_revoke', { x: LN(u), a: L(a, 'name') }));
   },
   copy: el => copyText(el.dataset.text),
   closeModal: () => closeModal(),
