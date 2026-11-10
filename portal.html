@@ -4190,7 +4190,7 @@ function uFetch(quiet) {
   if (U.p && U.pg === DATA_GEN) { if (!quiet && U.pq) { busy(1); U.p.then(() => busy(-1), () => busy(-1)); U.pq = false; } return U.p; }
   const g = DATA_GEN, p = U.p = api('u_load', {}, quiet ? { quiet: true } : undefined);
   U.pg = g; U.pq = !!quiet;
-  p.then(d => { if (U.p === p) U.p = null; if (d && g === DATA_GEN && S.token) U.pre = { at: Date.now(), d: d, g: g }; }, () => { if (U.p === p) U.p = null; });
+  p.then(d => { if (U.p === p) U.p = null; if (d && d.np) uFlushSoon(); if (d && g === DATA_GEN && S.token) U.pre = { at: Date.now(), d: d, g: g }; }, () => { if (U.p === p) U.p = null; });
   return p;
 }
 function uPre() {
