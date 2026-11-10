@@ -689,12 +689,24 @@ a.btn{display:grid;place-items:center;text-decoration:none}
         if (w && (v === 0 || v > APPV)) { updRun(quiet); return; }
         if (w) UPFULL = false;                       // عامل بنفس الإصدار أو أقدم (نسخة قديمة من الخادم الوسيط): ليس تحديثاً
         if (UPFULL) { updRun(quiet); return; }
+        updSweep(quiet);
         if (Object.keys(UPF).length) { updFrames(quiet); return; }
         if (window.SiwarUpd) { SiwarUpd.going = false; SiwarUpd.avail = false; SiwarUpd.src = ''; SiwarUpd.hide(); } lsj(UPN, null);
       });
     };
     setTimeout(go2, 4000);
     if (swr && !offline()) { swAt = Date.now(); swr.update().then(go2, go2); } else go2();
+  }
+  /* (v120) المرور الواحد يشمل كل نظام مفتوح: الأنظمة المفتوحة في الخلفية (غير المشغولة بكتابة) تُغلق فتُفتح بأحدث نسخها عند لمسها،
+     وشاشاتها المحفوظة من النسخة السابقة تُحذف؛ والنظام الظاهر يُسأل «تحديث» (عند الضغط/السحب) فيفحص نسخته ويعيد فتح نفسه إن نُشرت أحدث */
+  function frameBusy(o) { var L = fstAlive(); for (var i = 0; i < L.length; i++) if (L[i].w === o.win) return L[i].b === 1; return false; }
+  function updSweep(quiet) {
+    var on = $('prog').className === 'on' ? cur : '';
+    Object.keys(frames).forEach(function (id) {
+      var o = frames[id]; if (!o || o.sil || SIL[id] || UPF[id] || frameBusy(o)) return;
+      if (id === on) { if (!quiet && o.ready && o.lw && !offline()) { try { o.lw.postMessage({ siwar: 'refresh', v: 1 }, '*'); } catch (e) {} } return; }
+      snapDropAll(id); dropFrame(id);
+    });
   }
   function autoPend() { return !!window.SiwarUpd && !updGoing && !SiwarUpd.going && (SiwarUpd.avail || !!(swr && swr.waiting)); }
   function autoTyping() {
@@ -1207,9 +1219,13 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     if (d.skip) return kvRaw('del', ek);
     if (typeof d.html !== 'string' || d.html.length > 420000 || !(Number(d.w) > 0) || !(Number(d.at) > 0)) return;
     if (snapHollow(d.html)) return kvRaw('del', ek);   // (v119) نسخة بلا محتوى (شاشة خاصة فُرّغت أو صفحة لم ترسم) لا تُحفظ، وتُحذف السابقة لهذا المكان
+    // (v120) فحص المحتوى نفسه لكل نظام: تُرسم النسخة خارج الشاشة بلا سكربت، فإن كان وسط الشاشة فارغاً (قائمة لم تُرسم بعد، أو جزء فُرّغ) لا تُحفظ
+    snapLook(ek, d.html, Number(d.w)).then(function (full) { if (full) snapSave(fid, d, ek, pk, go, sc); else kvRaw('del', ek); });
+  }
+  function snapSave(fid, d, ek, pk, go, sc) {
     var max = Math.max(1, Math.min(1440, Number(d.max) || 30));
     var nm = {}; if (d.nums && typeof d.nums === 'object') Object.keys(d.nums).slice(0, 400).forEach(function (k) { if (typeof d.nums[k] === 'string' && k.length < 600) nm[k] = d.nums[k].slice(0, 30); });
-    kvRaw('set', ek, { html: d.html, w: Number(d.w), h: Number(d.h) || 0, at: Number(d.at), max: max, scope: sc, go: go, nums: nm, lang: d.lang === 'en' ? 'en' : d.lang === 'ar' ? 'ar' : '' });
+    kvRaw('set', ek, { html: d.html, w: Number(d.w), h: Number(d.h) || 0, at: Number(d.at), max: max, scope: sc, go: go, nums: nm, lang: d.lang === 'en' ? 'en' : d.lang === 'ar' ? 'ar' : '', chk: 2 });
     kvRaw('set', pk, sc);
     kvRaw('get', fid + '|__snapi').then(function (ix) {
       ix = Array.isArray(ix) ? ix.filter(function (x) { return x && x.e !== ek; }) : [];
@@ -1227,6 +1243,40 @@ a.btn{display:grid;place-items:center;text-decoration:none}
       var rm = b.querySelectorAll('style,script,noscript,template'); for (var j = 0; j < rm.length; j++) if (rm[j].parentNode) rm[j].parentNode.removeChild(rm[j]);
       return String(b.textContent || '').replace(/\s+/g, '').length < 40;
     } catch (e) { return false; }
+  }
+  /* (v120) هل في وسط الشاشة محتوى؟ إطار خارج الشاشة بعرض النظام وارتفاع الشاشة، بلا سكربت (allow-same-origin وحده ليُقرأ تخطيطه).
+     يُعدّ ما يظهر من نص أو صورة بين ربع الشاشة الأعلى وأسفلها (بلا الأشرطة الثابتة)؛ أقل من 3 عناصر = فارغة. نسخة واحدة تُفحص في كل مرة */
+  var SLQ = Promise.resolve(), SLK = {};
+  function snapLook(ek, html, w) {
+    var tok = SLK[ek] = {};
+    return SLQ = SLQ.then(function () {
+      if (SLK[ek] !== tok) return false;
+      return new Promise(function (res) {
+        var vh = window.innerHeight || 800, f = document.createElement('iframe'), done = false;
+        var fin = function (v) { if (done) return; done = true; clearTimeout(t); try { f.remove(); } catch (e) {} if (SLK[ek] === tok) delete SLK[ek]; res(v); };
+        var t = setTimeout(function () { fin(false); }, 5000);
+        f.setAttribute('sandbox', 'allow-same-origin'); f.setAttribute('aria-hidden', 'true'); f.tabIndex = -1;
+        f.style.cssText = 'position:fixed;left:-30000px;top:0;width:' + Math.max(200, Math.min(4000, w || 390)) + 'px;height:' + vh + 'px;border:0;opacity:0;pointer-events:none';
+        f.onload = function () {
+          try {
+            var D = f.contentDocument, W = f.contentWindow, b = D && D.body; if (!b) return fin(false);
+            var top = vh * 0.22, bot = vh * 0.88, n = 0, all = b.getElementsByTagName('*');
+            for (var i = 0; i < all.length && n < 3; i++) {
+              var e = all[i], tg = e.tagName;
+              var media = /^(IMG|SVG|CANVAS|VIDEO)$/.test(tg), txt = !media && !e.children.length && /\S/.test(e.textContent || '');
+              if (!media && !txt) continue;
+              var r = e.getBoundingClientRect(); if (r.width < 3 || r.height < 3 || r.bottom < top || r.top > bot || r.right < 0 || r.left > W.innerWidth) continue;
+              var a = e, ok = true, k = 0;
+              for (; a && a !== b && k < 12; a = a.parentElement, k++) { var cs = W.getComputedStyle(a); if (cs.position === 'fixed' || cs.visibility === 'hidden' || cs.display === 'none' || Number(cs.opacity) < 0.05) { ok = false; break; } }
+              if (ok) n++;
+            }
+            fin(n >= 3);
+          } catch (x) { fin(false); }
+        };
+        f.srcdoc = html;
+        document.body.appendChild(f);
+      });
+    });
   }
   // (v119) عند الانتقال إلى إصدار أحدث من التطبيق تُحذف كل النسخ المحفوظة من الإصدار السابق قبل أي عرض (لا شاشة قديمة بعد التحديث)
   var SNW = (function () {
@@ -1254,7 +1304,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     return SNW.then(function () { return kvRaw('get', fid + '|__snapp|' + go); }).then(function (sc) { return sc == null ? null : kvRaw('get', fid + '|__snape|' + go + '|' + sc); });
   }
   function snapOk(s) {
-    if (!s || typeof s.html !== 'string' || !(s.w > 0)) return false;
+    if (!s || typeof s.html !== 'string' || !(s.w > 0) || s.chk !== 2) return false;   // (v120) نسخة لم يُتحقق من محتواها لا تُعرض
     var age = Date.now() - Number(s.at), max = Math.max(1, Math.min(1440, Number(s.max) || 30)) * 60000;
     var w = $('pbody').clientWidth || window.innerWidth;
     return age > -60000 && age <= max && Math.abs(s.w - w) <= w * 0.1 && (!s.lang || s.lang === LANG);   // نسخة بلغة أخرى لا تُعرض
