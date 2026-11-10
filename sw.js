@@ -1,13 +1,13 @@
 /* عامل الخدمة: يحفظ ملفات صفحة التطبيق وسوار الثابتة فقط (لا يحفظ أي بيانات من سوار أو البرامج).
    النسخة المحفوظة تُعرض فوراً، وأي تحديث على GitHub يصل في الفتح التالي.
    إشعارات الجوال: الإشعار يصل بلا محتوى، فيطلب العامل نصوصه من سوار برمز هذا الجهاز (المحفوظ في siwar-push) ثم يعرضها. */
-const CACHE = 'siwar-app-v124';   // يساوي دائماً APPV في index.html (يُرفعان معاً)
+const CACHE = 'siwar-app-v125';   // يساوي دائماً APPV في index.html (يُرفعان معاً)
 const PUSHC = 'siwar-push', PUSHK = './__push';
 /* (UP) بصمة كل ملف (أول 16 حرفاً من sha256 لمحتواه) تُختم هنا عند كل إصدار (stamp_sw.js). عند تثبيت عامل جديد يُنزَّل الملف الذي تغيّرت بصمته فقط،
    وغير المتغيّر يُنسخ من النسخة المحفوظة على الجهاز. ولا يُعاد تنزيل ملفات التطبيق في كل فتح: النسخة المحفوظة ببصمتها هي الأحدث،
    والتحديث يصل بعامل جديد (sw.js صغير يفحصه المتصفح). فحص احتياطي مرة كل 24 ساعة بطلب مشروط (304 بلا محتوى إن لم يتغيّر) */
 const FILES = {
-  './': '5fa2dc9ff4e69e97', './index.html': '5fa2dc9ff4e69e97', './portal.html': 'd96c7229fa40f8a9', './config.js': 'c0607a481ed95db2',
+  './': 'ca80ba685631646e', './index.html': 'ca80ba685631646e', './portal.html': 'd96c7229fa40f8a9', './config.js': 'c0607a481ed95db2',
   './manifest.webmanifest?v=89': '6fecf35b4a5b5f40', './icons/logo.webp': '8b1d4d5eac530863'
 };
 const HK = f => './__h/' + f.replace(/^\.\//, '').replace(/[?=]/g, '_');
@@ -67,6 +67,34 @@ async function daily(c) {
   }
 }
 
+/* (v125 · طلب محمد: «البوابة بتعمل تحميل مرتين») كان الجهاز يفتح النسخة المحفوظة ثم يكتشف إصداراً أحدث فيعيد التحميل مرة ثانية.
+   الآن صفحة التطبيق تُطلب من الشبكة أولاً بطلب مشروط صغير (304 إن لم تتغيّر) ومهلة قصيرة؛ إن وصلت نسخة أحدث تُعرض هي مباشرة
+   وتُطلب صفحة سوار (portal.html) أحدث معها — فتح واحد على أحدث إصدار بلا إعادة تحميل. بلا شبكة أو شبكة بطيئة: النسخة المحفوظة فوراً كما كانت */
+const NAVMS = 900, PORTMS = 6000;
+let freshAt = 0;   // وقت وصول صفحة تطبيق أحدث من المحفوظة: صفحة سوار التالية تُطلب من الشبكة أيضاً
+async function hex16(r) {
+  try { const b = await crypto.subtle.digest('SHA-256', await r.arrayBuffer()); return Array.from(new Uint8Array(b).slice(0, 8)).map(x => x.toString(16).padStart(2, '0')).join(''); } catch (x) { return ''; }
+}
+function timed(p, ms) { return Promise.race([p, new Promise(res => setTimeout(() => res(null), ms))]); }
+async function netFirst(e, c, key, hit, nav) {
+  const f = './' + key.url.slice(self.registration.scope.length);
+  const net = fetch(new Request(key.url, { cache: 'no-cache', credentials: 'same-origin' })).then(async r => {
+    if (!r || !r.ok) return null;
+    const a = hit ? await hit.clone().text() : null, b = await r.clone().text();
+    if (a === b) return { same: true };
+    await c.put(key, r.clone());
+    if (nav) { await c.put('./', r.clone()); await c.put('./index.html', r.clone()); freshAt = Date.now(); }
+    const h = await hex16(r.clone());
+    if (h) { if (nav) { await c.put(HK('./'), new Response(h)); await c.put(HK('./index.html'), new Response(h)); } else await c.put(HK(f), new Response(h)); }
+    return { r: r };
+  }).catch(() => null);
+  e.waitUntil(net);
+  const got = await timed(net, nav ? NAVMS : PORTMS);
+  if (got && got.r) return got.r;
+  if (hit) return hit;
+  return (await net) && (await c.match(key)) || fetch(key);
+}
+
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET' || url.origin !== location.origin) return;
@@ -74,6 +102,13 @@ self.addEventListener('fetch', e => {
   // مفتاح الحفظ بلا معاملات (?open=… لا تُنشئ نسخاً مكررة)
   const key = new Request(url.origin + url.pathname);
   const shell = /\/($|index\.html$|portal\.html$|config\.js$)/.test(url.pathname);
+  const nav = e.request.mode === 'navigate' && /\/($|index\.html$)/.test(url.pathname);
+  const port = /\/portal\.html$/.test(url.pathname) && freshAt && Date.now() - freshAt < 60000;
+  if ((nav || port) && self.navigator.onLine !== false) {
+    if (port) freshAt = 0;
+    e.respondWith(caches.open(CACHE).then(c => c.match(key).then(hit => netFirst(e, c, key, hit, nav))));
+    return;
+  }
   e.respondWith(caches.open(CACHE).then(c => c.match(key).then(hit => {
     if (hit) {
       // (UP) النسخة المحفوظة ببصمتها هي الأحدث: لا تنزيل في الخلفية، إلا الفحص الاحتياطي اليومي لملفات التطبيق
