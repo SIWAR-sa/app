@@ -576,7 +576,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   var swr = null, swAt = Date.now(), updGoing = false, swReady = null, swRes = null;
   swReady = new Promise(function (r) { swRes = r; });
   /* (v94) رقم نسخة هذه الصفحة، ويساوي دائماً رقم CACHE في sw.js (يُرفعان معاً) */
-  var APPV = 121;
+  var APPV = 122;
   var UFL = 'siwar_upd_flow', UPN = 'siwar_upd_pend';
   function lsj(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} return null; }
   /* (v107) كوادر والتحليلات والمخازن والرقابة: كل نظام يقارن بصمة واجهته المنشورة بما فُتح به، ويبلّغ مرة واحدة (upd) وهو غير مشغول.
@@ -1177,7 +1177,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   }
   function markReady(id, how) {
     var o = frames[id]; if (!o) return;
-    if (!o.ready) { pMark(id, 'ready'); pEnd(id, how || (o.late ? 'late' : 'ok')); }
+    if (!o.ready) { pMark(id, 'ready'); pEnd(id, how || (o.late ? 'late' : 'ok')); o.rdAt = Date.now(); }
     o.ready = true; rt[id] = 0; clearTimeout(o.wd); clearTimeout(o.wd3); if (o.uf === uf) { try { localStorage.setItem(UFK, uf); } catch (e) {} }
     if (o.sil) silSwap(id);
     if (UPW) updFrameIn(id, true);
@@ -1216,16 +1216,52 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     var o = frames[fid], go = snGo(o && o.go), sc = String(d.scope || '').slice(0, 40);
     if (d.off) return snapDropAll(fid);
     var ek = fid + '|__snape|' + go + '|' + sc, pk = fid + '|__snapp|' + go;
-    if (d.skip) return kvRaw('del', ek);
+    if (d.skip) { delete SNP[ek]; return kvRaw('del', ek); }
     if (typeof d.html !== 'string' || d.html.length > 420000 || !(Number(d.w) > 0) || !(Number(d.at) > 0)) return;
-    if (snapHollow(d.html)) return kvRaw('del', ek);   // (v119) نسخة بلا محتوى (شاشة خاصة فُرّغت أو صفحة لم ترسم) لا تُحفظ، وتُحذف السابقة لهذا المكان
-    // (v120) فحص المحتوى نفسه لكل نظام: تُرسم النسخة خارج الشاشة بلا سكربت، فإن كان وسط الشاشة فارغاً (قائمة لم تُرسم بعد، أو جزء فُرّغ) لا تُحفظ
-    snapLook(ek, d.html, Number(d.w)).then(function (full) { if (full) snapSave(fid, d, ek, pk, go, sc); else kvRaw('del', ek); });
+    // (v122) الفحص لا يجري لحظة وصول النسخة (عادةً لحظة الرجوع للرئيسية والضغط على نظام آخر): يُؤجَّل إلى وقت فراغ الصفحة، وأحدث نسخة لكل مكان تحل محل السابقة
+    SNP[ek] = { fid: fid, d: d, ek: ek, pk: pk, go: go, sc: sc, t: Date.now() };
+    snIdle();
   }
-  function snapSave(fid, d, ek, pk, go, sc) {
+  /* (v122) وقت الفراغ: نسخة واحدة تُفحص في كل مرة، ولا فحص أثناء فتح نظام أو بعد لمسة مباشرة أو أثناء عرض نسخة محفوظة تنتظر النظام الحي.
+     نسخة تنتظر أكثر من 45 ثانية تُترك (تبقى السابقة صالحة، والنظام يرسل نسخة جديدة في الرجوع التالي) */
+  var SNP = {}, SNPT = 0;
+  function snPendDrop(fid) { for (var k in SNP) if (SNP[k].fid === fid) delete SNP[k]; }
+  function snBusy() {
+    var now = Date.now(), o = cur && frames[cur];
+    if (now - AUT.lastIn < 700 || now - ldAt < 1500 || snapActive()) return true;
+    if (cur && $('prog').className === 'on' && !SIL[cur] && (!o || !o.ready || now - (o.rdAt || 0) < 1500)) return true;   // يُفتح الآن أو ظهر للتو
+    return false;
+  }
+  function snIdle() {
+    if (SNPT) return;
+    var run = function (dl) {
+      SNPT = 0;
+      var ks = Object.keys(SNP); if (!ks.length) return;
+      if (snBusy() || (dl && !dl.didTimeout && dl.timeRemaining() < 8)) {
+        ks.forEach(function (k) { if (Date.now() - SNP[k].t > 45000) delete SNP[k]; });
+        SNPT = setTimeout(function () { SNPT = 0; snIdle(); }, 400); return;
+      }
+      var p = SNP[ks[0]]; delete SNP[ks[0]];
+      snapCheck(p).then(snIdle, snIdle);
+    };
+    SNPT = -1;
+    if (window.requestIdleCallback) requestIdleCallback(run, { timeout: 4000 }); else setTimeout(run, 300);
+  }
+  // النسخة نفسها التي فُحصت آخر مرة (نفس البصمة): يُحدَّث وقتها فقط، بلا تحليل ولا رسم
+  function snHash(h) { var x = 0x811c9dc5; for (var i = 0; i < h.length; i++) { x ^= h.charCodeAt(i); x = Math.imul(x, 16777619); } return (x >>> 0).toString(36) + '.' + h.length; }
+  function snapCheck(p) {
+    var d = p.d, ek = p.ek, hx = snHash(d.html);
+    return kvRaw('get', ek).then(function (e) {
+      if (e && e.chk === 2 && e.hx === hx && typeof e.html === 'string') { snapSave(p.fid, d, ek, p.pk, p.go, p.sc, e.html, e.h, hx); return; }
+      if (snapHollow(d.html)) return kvRaw('del', ek);   // (v119) نسخة بلا محتوى (شاشة خاصة فُرّغت أو صفحة لم ترسم) لا تُحفظ، وتُحذف السابقة لهذا المكان
+      // (v120) فحص المحتوى نفسه لكل نظام: تُرسم النسخة خارج الشاشة بلا سكربت، فإن كان وسط الشاشة فارغاً (قائمة لم تُرسم بعد، أو جزء فُرّغ) لا تُحفظ
+      return snapLook(ek, d.html, Number(d.w), Number(d.h) || 0).then(function (r) { if (r) snapSave(p.fid, d, ek, p.pk, p.go, p.sc, r.html, r.h, hx); else kvRaw('del', ek); });
+    });
+  }
+  function snapSave(fid, d, ek, pk, go, sc, html, h, hx) {
     var max = Math.max(1, Math.min(1440, Number(d.max) || 30));
     var nm = {}; if (d.nums && typeof d.nums === 'object') Object.keys(d.nums).slice(0, 400).forEach(function (k) { if (typeof d.nums[k] === 'string' && k.length < 600) nm[k] = d.nums[k].slice(0, 30); });
-    kvRaw('set', ek, { html: d.html, w: Number(d.w), h: Number(d.h) || 0, at: Number(d.at), max: max, scope: sc, go: go, nums: nm, lang: d.lang === 'en' ? 'en' : d.lang === 'ar' ? 'ar' : '', chk: 2 });
+    kvRaw('set', ek, { html: html, w: Number(d.w), h: Number(h) || 0, at: Number(d.at), max: max, scope: sc, go: go, nums: nm, lang: d.lang === 'en' ? 'en' : d.lang === 'ar' ? 'ar' : '', chk: 2, hx: hx });
     kvRaw('set', pk, sc);
     kvRaw('get', fid + '|__snapi').then(function (ix) {
       ix = Array.isArray(ix) ? ix.filter(function (x) { return x && x.e !== ek; }) : [];
@@ -1245,9 +1281,37 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     } catch (e) { return false; }
   }
   /* (v120) هل في وسط الشاشة محتوى؟ إطار خارج الشاشة بعرض النظام وارتفاع الشاشة، بلا سكربت (allow-same-origin وحده ليُقرأ تخطيطه).
-     يُعدّ ما يظهر من نص أو صورة بين ربع الشاشة الأعلى وأسفلها (بلا الأشرطة الثابتة)؛ أقل من 3 عناصر = فارغة. نسخة واحدة تُفحص في كل مرة */
-  var SLQ = Promise.resolve(), SLK = {};
-  function snapLook(ek, html, w) {
+     يُعدّ ما يظهر من نص أو صورة بين ربع الشاشة الأعلى وأسفلها (بلا الأشرطة الثابتة)؛ أقل من 3 عناصر = فارغة. نسخة واحدة تُفحص في كل مرة.
+     (v122) بعد نجاح الفحص تُقصّ النسخة عند شاشتين ونصف: يُحذف كل عنصر يبدأ تحت هذا الحد (أعلى الصفحة يبقى كما هو)، ثم يُعاد الفحص نفسه
+     على النسخة المقصوصة؛ إن لم تنجح تُحفظ الكاملة. النتيجة: false أو { html, h } */
+  var SLQ = Promise.resolve(), SLK = {}, SNCUT = 2.5;
+  function snFull(D, W, b, vh) {
+    var top = vh * 0.22, bot = vh * 0.88, n = 0, all = b.getElementsByTagName('*');
+    for (var i = 0; i < all.length && n < 3; i++) {
+      var e = all[i], tg = e.tagName;
+      var media = /^(IMG|SVG|CANVAS|VIDEO)$/.test(tg), txt = !media && !e.children.length && /\S/.test(e.textContent || '');
+      if (!media && !txt) continue;
+      var r = e.getBoundingClientRect(); if (r.width < 3 || r.height < 3 || r.bottom < top || r.top > bot || r.right < 0 || r.left > W.innerWidth) continue;
+      var a = e, ok = true, k = 0;
+      for (; a && a !== b && k < 12; a = a.parentElement, k++) { var cs = W.getComputedStyle(a); if (cs.position === 'fixed' || cs.visibility === 'hidden' || cs.display === 'none' || Number(cs.opacity) < 0.05) { ok = false; break; } }
+      if (ok) n++;
+    }
+    return n >= 3;
+  }
+  function snCut(D, W, b, vh) {
+    var lim = vh * SNCUT, rm = [];
+    (function walk(el, dp) {
+      for (var c = el.firstElementChild; c; c = c.nextElementSibling) {
+        var r = c.getBoundingClientRect();
+        if (!r.width && !r.height) { if (dp < 40 && W.getComputedStyle(c).display === 'contents') walk(c, dp + 1); continue; }
+        if (r.top > lim) rm.push(c);
+        else if (r.bottom > lim && dp < 40) walk(c, dp + 1);
+      }
+    })(b, 0);
+    for (var i = 0; i < rm.length; i++) if (rm[i].parentNode) rm[i].parentNode.removeChild(rm[i]);
+    return rm.length;
+  }
+  function snapLook(ek, html, w, h0) {
     var tok = SLK[ek] = {};
     return SLQ = SLQ.then(function () {
       if (SLK[ek] !== tok) return false;
@@ -1260,17 +1324,14 @@ a.btn{display:grid;place-items:center;text-decoration:none}
         f.onload = function () {
           try {
             var D = f.contentDocument, W = f.contentWindow, b = D && D.body; if (!b) return fin(false);
-            var top = vh * 0.22, bot = vh * 0.88, n = 0, all = b.getElementsByTagName('*');
-            for (var i = 0; i < all.length && n < 3; i++) {
-              var e = all[i], tg = e.tagName;
-              var media = /^(IMG|SVG|CANVAS|VIDEO)$/.test(tg), txt = !media && !e.children.length && /\S/.test(e.textContent || '');
-              if (!media && !txt) continue;
-              var r = e.getBoundingClientRect(); if (r.width < 3 || r.height < 3 || r.bottom < top || r.top > bot || r.right < 0 || r.left > W.innerWidth) continue;
-              var a = e, ok = true, k = 0;
-              for (; a && a !== b && k < 12; a = a.parentElement, k++) { var cs = W.getComputedStyle(a); if (cs.position === 'fixed' || cs.visibility === 'hidden' || cs.display === 'none' || Number(cs.opacity) < 0.05) { ok = false; break; } }
-              if (ok) n++;
-            }
-            fin(n >= 3);
+            if (!snFull(D, W, b, vh)) return fin(false);
+            var whole = { html: html, h: h0 };
+            try {
+              if (!(Math.max(D.documentElement.scrollHeight || 0, b.scrollHeight || 0) > vh * SNCUT) || !snCut(D, W, b, vh) || !snFull(D, W, b, vh)) return fin(whole);
+              var dt = D.doctype, out = (dt ? '<!DOCTYPE ' + dt.name + (dt.publicId ? ' PUBLIC "' + dt.publicId + '"' : '') + (dt.systemId ? ' "' + dt.systemId + '"' : '') + '>' : '') + D.documentElement.outerHTML;
+              var sh = Math.max(vh, D.documentElement.scrollHeight || 0, b.scrollHeight || 0);
+              fin(out.length < html.length ? { html: out, h: h0 > 0 ? Math.min(h0, Math.ceil(sh)) : 0 } : whole);
+            } catch (cx) { fin(whole); }
           } catch (x) { fin(false); }
         };
         f.srcdoc = html;
@@ -1294,6 +1355,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     }).catch(function () { return false; });
   }
   function snapDropAll(fid) {
+    snPendDrop(fid);
     return kvRaw('get', fid + '|__snapi').then(function (ix) {
       (Array.isArray(ix) ? ix : []).forEach(function (x) { kvRaw('del', x.e); kvRaw('del', x.p); });
       kvRaw('del', fid + '|__snapi');
@@ -1585,6 +1647,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   function shrCan(fs) { try { return !!(navigator.share && navigator.canShare && fs.length && navigator.canShare({ files: fs })); } catch (e) { return false; } }
   function shrClose() { var w = $('shr'); if (w) w.hidden = true; if (SHR && SHR.url) try { URL.revokeObjectURL(SHR.url); } catch (e) {} SHR = null; }
   function shrOpen(fs, d, go) {
+    lzRun();
     shrClose();
     var en = LANG === 'en', n = fs.length - 1, sk = Array.isArray(d.skip) ? d.skip.map(String).filter(Boolean).slice(0, 20) : [];
     SHR = { url: URL.createObjectURL(fs[0]) };
@@ -1620,9 +1683,11 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     go(false);
   }
   window.__shareIn = shareIn;   // للاختبار
-  $('shrX').onclick = shrClose;
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && SHR) shrClose(); });
-  $('shr').addEventListener('click', function (e) { if (e.target === this) shrClose(); });
+  lz(function () {
+    $('shrX').onclick = shrClose;
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && SHR) shrClose(); });
+    $('shr').addEventListener('click', function (e) { if (e.target === this) shrClose(); });
+  });
 
   /* انقطاع الاتصال: شريط هادئ واحد، ويُبلَّغ كل نظام مفتوح */
   function netState() {
@@ -1812,6 +1877,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     });
   }
   function pushOpen() {
+    lzRun();
     $('push').hidden = false; PZ.warned = false; PZ.info = null; PZ.saved = null; PZ.draft = null; PZ.loading = true; PZ.st = 'wait'; pzRender();
     // المفتاح العام وإعداداتي يُطلبان فور الفتح، فيبقى طلب الإذن داخل لمسة المستخدم عند تشغيل المفتاح
     Promise.all([pushState(), pzLoadInfo()]).then(function (a) {
@@ -1823,8 +1889,10 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     if (pzDirty() && !PZ.warned) { PZ.warned = true; pzRender(PT('unsaved'), 'bad'); return; }
     $('push').hidden = true;
   }
-  $('pzX').onclick = pzClose;
-  $('push').addEventListener('click', function (e) { if (e.target === $('push')) pzClose(); });
+  lz(function () {
+    $('pzX').onclick = pzClose;
+    $('push').addEventListener('click', function (e) { if (e.target === $('push')) pzClose(); });
+  });
   function pzSave() {
     var q = PZ.draft.q;
     if (q.on && !q.days.length) { pzRender(PT('noDays'), 'bad'); return; }
@@ -1982,7 +2050,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
         '</div>';
     }
   }
-  function showInstall() { if (standalone) return; renderInstall(); $('install').hidden = false; }
+  function showInstall() { if (standalone) return; lzRun(); renderInstall(); $('install').hidden = false; }
   /* زر التثبيت في سوار (v72): من المتصفح يفتح نافذة التثبيت دائماً، ومن التطبيق المثبّت يعرض رمز QR لتثبيته على الجوال */
   var appLink = location.origin + location.pathname.replace(/index\.html$/, '');
   function qrLib(cb) {
@@ -1991,6 +2059,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     sc.onload = cb; sc.onerror = cb; document.head.appendChild(sc);
   }
   function showPhone() {
+    lzRun();
     $('iT').textContent = T('phT');
     var b = $('iBody');
     b.innerHTML = '<p>' + T('phD') + '</p><div class="qr" id="iQr"></div><div class="qr-url" dir="ltr">' + appLink + '</div>';
@@ -2009,6 +2078,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     });
   }
   function instAsk() {
+    lzRun();
     if (standalone) { showPhone(); return; }
     /* (v74) ضغطة واحدة: حيث يتيح المتصفح التثبيت (أندرويد وكمبيوتر بكروم أو إيدج) تُفتح نافذة التثبيت الأصلية مباشرة */
     if (deferred) {
@@ -2023,15 +2093,17 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   }
   /* التحديثات: الإصدار الجديد يُجلب عند العودة للتطبيق، وتعرضه بطاقة التحديث (ضغطة واحدة).
      (v92) لا إعادة تحميل تلقائية والتطبيق في الخلفية: كانت تغلق الأنظمة المفتوحة وتُظهر شاشة التحميل عند العودة */
-  if ('serviceWorker' in navigator) {
+  if ('serviceWorker' in navigator) lz(function () {
     document.addEventListener('visibilitychange', function () {
       if (document.hidden) return;
       navigator.serviceWorker.getRegistration('./').then(function (r) { if (r) r.update().catch(function () {}); }).catch(function () {});
     });
-  }
+  });
   var forced = /[?&]install=1/.test(location.search), snoozed = false;
   try { snoozed = Date.now() - Number(localStorage.getItem('inst_later') || 0) < 7 * 864e5; } catch (e) {}
-  $('iLater').onclick = function () { $('install').hidden = true; if ($('iLater').dataset.ph) return; try { localStorage.setItem('inst_later', String(Date.now())); } catch (e) {} };
+  lz(function () {
+    $('iLater').onclick = function () { $('install').hidden = true; if ($('iLater').dataset.ph) return; try { localStorage.setItem('inst_later', String(Date.now())); } catch (e) {} };
+  });
 
   window.addEventListener('beforeinstallprompt', function (e) {
     e.preventDefault(); deferred = e; relFound = false; flagSet(false);
@@ -2045,6 +2117,19 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   function instSt() { return standalone ? 1 : (isInstalled() ? 2 : 0); }
   function instNote() { try { toPortal({ siwar: 'inst', st: instSt() }); } catch (e) {} }
   relReady.then(function () { if (portalOk && !standalone) instNote(); });
+
+  /* (v122) تجهيز ما لا يلزم قبل أول رسم (أزرار نوافذ الإشعارات والتثبيت والمشاركة، وفحص تحديث التطبيق عند العودة) يجري في وقت الفراغ بعد أول رسم،
+     أو عند أول فتح لإحدى هذه النوافذ إن سبق ذلك. ما يلزم من البداية (رسائل الإشعار والمشاركة وحدث التثبيت) يبقى مسجلاً من البداية */
+  function lz(f) { (lz.q = lz.q || []).push(f); if (lz.done) lzRun(); }
+  function lzRun() {
+    lz.done = true; var q = lz.q || []; lz.q = [];
+    for (var i = 0; i < q.length; i++) try { q[i](); } catch (e) {}
+  }
+  (function () {
+    var go = function () { if (lz.done) return; if (window.requestIdleCallback) requestIdleCallback(lzRun, { timeout: 2000 }); else lzRun(); };
+    try { requestAnimationFrame(function () { setTimeout(go, 0); }); } catch (e) {}
+    setTimeout(function () { if (!lz.done) lzRun(); }, 3000);
+  })();
 })();
 </script>
 </body>
