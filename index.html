@@ -582,7 +582,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   var swr = null, swAt = Date.now(), updGoing = false, swReady = null, swRes = null;
   swReady = new Promise(function (r) { swRes = r; });
   /* (v94) رقم نسخة هذه الصفحة، ويساوي دائماً رقم CACHE في sw.js (يُرفعان معاً) */
-  var APPV = 127;
+  var APPV = 128;
   var UFL = 'siwar_upd_flow', UPN = 'siwar_upd_pend';
   function lsj(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} return null; }
   /* (v107) كوادر والتحليلات والمخازن والرقابة: كل نظام يقارن بصمة واجهته المنشورة بما فُتح به، ويبلّغ مرة واحدة (upd) وهو غير مشغول.
@@ -1004,7 +1004,10 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   }
   function setIcon(ic) {
     var box = $('picon'); box.innerHTML = ''; box.className = 'picon';
-    $('prog').style.setProperty('--pc', ic && ic.kind === 'sw' && /^#[0-9a-f]{6}$/i.test(String(ic.color || '')) ? ic.color : '#101A2E');
+    /* (v128 · اختيار محمد «ج»): في الوضع الداكن شاشة الفتح تتبع اللون الداكن المختار (كحلي/أسود/رمادي) مع الحلقة الذهبية، بدل لون أيقونة النظام (كان أسود باهتاً في كوادر) */
+    var dkT = ''; try { dkT = window.SiwarUpd && SiwarUpd.dark ? String(SiwarUpd.dark() || '') : ''; } catch (e) { dkT = ''; }
+    var DKPC = { cur: '#22325A', grey: '#3A3D44', black: '#2A2A2E' };
+    $('prog').style.setProperty('--pc', dkT ? (DKPC[dkT] || DKPC.cur) : (ic && ic.kind === 'sw' && /^#[0-9a-f]{6}$/i.test(String(ic.color || '')) ? ic.color : '#101A2E'));
     var img = document.createElement('img'); img.alt = '';
     if (ic && ic.kind === 'img' && /^(https:\/\/[^\s"'<>]+|data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+\/=]+)$/.test(String(ic.src || ''))) { box.className = 'picon img'; img.src = ic.src; }
     else img.src = 'icons/logo.webp';
