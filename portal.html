@@ -1438,6 +1438,36 @@ body.og-dragging .og-sec, body.og-dragging .og-di { transition: none; }
 .nb-tm { flex: none; display: inline-flex; align-items: center; height: 28px; padding: 0 11px; border-radius: 10px; font-size: 12.5px; color: var(--muted); background: #F2EDE5; white-space: nowrap; box-shadow: inset 0 1px 0 rgba(255,255,255,.8); }
 .nb-tm.now { color: #0F6E56; background: #E4F2EA; }
 .nb-item.read .nb-tm { background: #F1EDE7; }
+/* (nt2) صفوف مضغوطة: «مطلوب منك» مميّز بالذهبي، والتحديثات صفوف هادئة */
+.nb-chip i { font-style: normal; font: 700 11px/1 Montserrat, system-ui, sans-serif; padding: 2px 6px; border-radius: 99px; background: rgba(110,80,40,.1); margin-inline-start: 4px; }
+.nb-chip.on i { background: rgba(255,255,255,.18); }
+.nb-gl { display: flex; align-items: center; gap: 6px; padding: 8px 6px 3px; font-size: 11.5px; font-weight: 800; color: var(--muted); }
+.nb-gl::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.nb-gl.me { color: #A87E35; }
+.nb-item { margin-top: 4px; padding: 6px 10px; gap: 10px; border-radius: 12px; }
+.nb-item:hover { transform: none; filter: brightness(.985); }
+.nb-item.need { background: linear-gradient(135deg, #FFF9EE, #FBF1DE); box-shadow: inset 0 0 0 1.5px #DDBF86, 0 8px 18px -14px rgba(150,110,40,.55); }
+.nb-item.need::after { content: ""; position: absolute; inset-inline-start: 0; top: 7px; bottom: 7px; width: 3px; border-radius: 3px; background: linear-gradient(180deg, #E2C07F, #B08A3E); }
+.nb-ic { width: 30px; height: 30px; }
+.nb-src { flex: none; width: 56px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.nb-sn { max-width: 56px; font-size: 9px; line-height: 1.25; font-weight: 700; color: var(--muted); text-align: center; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.nb-item { padding: 5px 10px; margin-top: 3px; }
+.nb-ic .app-icon { width: 28px !important; height: 28px !important; border-radius: 8px; box-shadow: 0 4px 10px -6px rgba(30,15,10,.5); }
+.nb-ic .app-icon.is-sw { width: 30px !important; height: 30px !important; }
+.nb-ic .app-icon.is-img { width: 30px !important; height: 26px !important; }
+.nb-tx { gap: 1px; }
+.nb-t { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 800; }
+.nb-tt { overflow: hidden; text-overflow: ellipsis; }
+.nb-tag { flex: none; font-size: 9.5px; font-weight: 800; color: #fff; background: #B08A3E; padding: 1px 7px; border-radius: 99px; }
+.nb-s { font-size: 11.5px; }
+.nb-sys { font-size: 9.5px; font-weight: 800; color: var(--muted); background: #F2EEE8; padding: 0 6px; border-radius: 99px; margin-inline-end: 5px; }
+.nb-end { flex: none; display: flex; align-items: center; gap: 6px; }
+.nb-tm { height: auto; padding: 0; background: none !important; box-shadow: none; font-size: 10.5px; color: var(--faint); }
+.nb-tm.now { color: #0F6E56; background: none; }
+.nb-dot { position: static; margin: 0; width: 7px; height: 7px; background: #5A77A3; box-shadow: none; }
+.nb-item.need .nb-dot { background: #B08A3E; }
+.nb-item.read { background: transparent; box-shadow: inset 0 0 0 1px rgba(110,80,40,.07); }
+.nb-item.need.read { background: linear-gradient(135deg, #FFFCF6, #FBF5EA); }
 html.nb-lock, html.nb-lock body { overflow: hidden; }
 @media (max-width: 600px) {
   .nb-panel { top: auto !important; left: 0 !important; right: 0 !important; bottom: 0; width: 100%; max-width: none; max-height: 88vh !important; padding: 8px 12px calc(10px + env(safe-area-inset-bottom)); border-radius: 30px 30px 0 0;
@@ -1447,8 +1477,8 @@ html.nb-lock, html.nb-lock body { overflow: hidden; }
   .nb-grab { display: block; width: 46px; height: 5px; margin: 4px auto 10px; border-radius: 3px; background: #D9CFC3; }
   .nb-h { padding: 6px 6px 12px; }
   .nb-ttl b { font-size: 22px; }
-  .nb-item { padding: 12px 13px; gap: 12px; border-radius: 20px; }
-  .nb-t { font-size: 14px; }
+  .nb-item { padding: 6px 9px; gap: 9px; border-radius: 12px; }
+  .nb-t { font-size: 12.5px; }
 }
 @media (prefers-reduced-motion: reduce) { .nb-panel, .nb-veil, .nb-item { transition: none !important; } }
 
@@ -2414,7 +2444,7 @@ const I18N = {
     forgot: 'نسيت كلمة المرور؟', forgotIntro: '', sendRequest: 'متابعة', backToLogin: 'العودة لتسجيل الدخول',
     resetIntro: 'إذا كان لحسابك بريد مسجّل فسيصلك رمز تحقق من 6 أرقام، وإلا فسيصل طلبك إلى مدير النظام لإعادة التعيين.',
     code: 'رمز التحقق', newPin: 'كلمة المرور الجديدة', confirmPin: 'تأكيد كلمة المرور', setPin: 'حفظ كلمة المرور', currentPin: 'كلمة المرور الحالية',
-    nbTitle: 'الإشعارات', nbNew: '{n} جديدة', nbAll: 'تعليم الكل كمقروء', nbAllF: 'الكل', nbUnread: 'غير المقروءة', nbNone: 'لا توجد إشعارات', nbNoneU: 'لا توجد إشعارات غير مقروءة',
+    nbTitle: 'الإشعارات', nbNeedF: 'مطلوب منك', nbUpdF: 'تحديثات', nbToYou: 'موجّه لك', nbChatN: '{n} ردود جديدة في المحادثة', nbNew: '{n} جديدة', nbAll: 'تعليم الكل كمقروء', nbAllF: 'الكل', nbUnread: 'غير المقروءة', nbNone: 'لا توجد إشعارات', nbNoneU: 'لا توجد إشعارات غير مقروءة',
     nbLoading: 'جارٍ تحميل الإشعارات…', nbFail: 'تعذّر تحميل الإشعارات. تحقق من الاتصال ثم أعد المحاولة.', nbStale: 'تعذّر التحديث؛ المعروض آخر نسخة محفوظة.', nbReadFail: 'لم تُحفظ حالة القراءة على الخادم بعد.',
     nbRetry: 'إعادة المحاولة', nbFold: 'إخفاء', nbNoApp: 'لم يعد لديك دخول إلى هذا النظام.', ago_now: 'الآن', ago_m: 'منذ {n} د', ago_h1: 'منذ ساعة', ago_h: 'منذ {n} س', ago_y: 'أمس',
     hvLabel: 'طريقة العرض', hvList: 'قائمة', hvFloat: 'بطاقات عائمة', fcTitle: 'كل أنظمتك في <em>مكان واحد</em>', fcWait: '{n} أمور بانتظارك', fcWait1: 'أمر واحد بانتظارك', fcNone: 'لا شيء بانتظارك', fcDone: 'مكتمل',
@@ -2496,7 +2526,7 @@ const I18N = {
     forgot: 'Forgot your password?', forgotIntro: '', sendRequest: 'Continue', backToLogin: 'Back to sign in',
     resetIntro: 'If your account has a registered email, a 6-digit code will be sent to it; otherwise your request goes to the system admin for a reset.',
     code: 'Verification code', newPin: 'New password', confirmPin: 'Confirm password', setPin: 'Save password', currentPin: 'Current password',
-    nbTitle: 'Notifications', nbNew: '{n} new', nbAll: 'Mark all as read', nbAllF: 'All', nbUnread: 'Unread', nbNone: 'No notifications', nbNoneU: 'No unread notifications',
+    nbTitle: 'Notifications', nbNeedF: 'For you', nbUpdF: 'Updates', nbToYou: 'For you', nbChatN: '{n} new replies in the conversation', nbNew: '{n} new', nbAll: 'Mark all as read', nbAllF: 'All', nbUnread: 'Unread', nbNone: 'No notifications', nbNoneU: 'No unread notifications',
     nbLoading: 'Loading notifications…', nbFail: 'Could not load notifications. Check the connection and try again.', nbStale: 'Could not refresh; showing the last saved copy.', nbReadFail: 'Read status is not saved on the server yet.',
     nbRetry: 'Try again', nbFold: 'Hide', nbNoApp: 'You no longer have access to this system.', ago_now: 'Now', ago_m: '{n} min ago', ago_h1: '1 h ago', ago_h: '{n} h ago', ago_y: 'Yesterday',
     hvLabel: 'View', hvList: 'List', hvFloat: 'Floating cards', fcTitle: 'All your systems in <em>one place</em>', fcWait: '{n} items waiting for you', fcWait1: 'One item waiting for you', fcNone: 'Nothing waiting for you', fcDone: 'Done',
@@ -3395,6 +3425,7 @@ async function loadPending(force) {
     const r = pre ? await pre : null;
     S.pending = r && r.ok ? r.data : await api('pending', { force: !!force });
     S.pendingAt = Date.now();
+    try { const at = Date.parse(S.pending && S.pending.at || ''); if (!force && at && Date.now() - at > 60000) setTimeout(() => { if (S.screen === 'home' && !S.sysOn) loadPending(true); }, 1500); } catch (se) {}
     pendSave();
     if (hvMode() === 'float') fcHeadRender();
     renderPending();
@@ -3559,40 +3590,50 @@ function nbIcon(a) {
   if (!a) return '<span class="nb-ic"><span class="app-icon tint-gold">' + glyph('portal') + '</span></span>';
   return '<span class="nb-ic"><span class="app-icon' + imgCls(a.icon, a.shape) + ' tint-' + esc(a.tint || 'gold') + '">' + iconHtml(a.icon) + '</span></span>';
 }
+function nbNeed(x) { return /^need_|^(exam|training|eval_result|reminder)$/.test(String(x.k || '')); }
 function nbCard(x) {
-  const a = nbAppOf(x.app), m = /^([^|]*)(?:\|(.*))?$/.exec(x.g || '') || [], tm = nbAgo(x.at);
-  const appId = m[1] || x.app || '', name = a ? L(a, 'name') : (S.lang === 'ar' ? (S.config.nameAR || 'سوار') : (S.config.nameEN || 'SIWAR'));
-  const sub = [name, x.b && x.b !== name ? x.b : ''].filter(Boolean).join(' · ');
-  return '<button type="button" class="nb-item' + (x.r ? ' read' : '') + '" data-act="nbItem" data-nid="' + esc(x.id) + '" data-id="' + esc(appId) + '" data-go="' + esc(m[2] || '') + '">' +
-    (x.r ? '' : '<span class="nb-dot" aria-hidden="true"></span>') + nbIcon(a) +
-    '<span class="nb-tx"><span class="nb-t">' + esc(x.t || name) + '</span><span class="nb-s">' + esc(sub) + '</span></span>' +
-    (tm.s ? '<span class="nb-tm' + (tm.now ? ' now' : '') + '">' + esc(tm.s) + '</span>' : '') + '</button>';
+  const a = nbAppOf(x.app), m = /^([^|]*)(?:\|(.*))?$/.exec(x.g || '') || [], tm = nbAgo(x.at), need = nbNeed(x);
+  const appId = m[1] || x.app || '', name = a ? L(a, 'name') : (S.lang === 'ar' ? (S.config.nameAR || 'سوار | SIWAR') : (S.config.nameEN || 'سوار | SIWAR'));
+  const sub = x.b && x.b !== name ? x.b : '';
+  const ttl = x.n > 1 ? t('nbChatN', { n: x.n }) : (x.t || name);
+  return '<button type="button" class="nb-item' + (need ? ' need' : '') + (x.r ? ' read' : '') + '" data-act="nbItem" data-nid="' + esc(x.id) + '" data-id="' + esc(appId) + '" data-go="' + esc(m[2] || '') + '">' +
+    '<span class="nb-src">' + nbIcon(a) + '<span class="nb-sn">' + esc(name) + '</span></span>' +
+    '<span class="nb-tx"><span class="nb-t"><span class="nb-tt">' + esc(ttl) + '</span>' + (need ? '<span class="nb-tag">' + esc(t('nbToYou')) + '</span>' : '') + '</span>' +
+    '<span class="nb-s">' + esc(sub) + '</span></span>' +
+    '<span class="nb-end">' + (tm.s ? '<span class="nb-tm' + (tm.now ? ' now' : '') + '">' + esc(tm.s) + '</span>' : '') + (x.r ? '' : '<span class="nb-dot" aria-hidden="true"></span>') + '</span></button>';
+}
+// ردود المحادثة المتتالية على الطلب نفسه تُجمع في صف واحد بعددها
+function nbFold(list) {
+  const out = [], at = {};
+  list.forEach(x => {
+    if (x.k === 'chat' && x.ref) {
+      const key = (x.app || '') + '|' + x.ref, o = at[key];
+      if (o) { o.n++; if (!x.r) o.r = 0; o.ids.push(x.id); return; }
+      const c = Object.assign({}, x, { n: 1, ids: [x.id] }); at[key] = c; out.push(c); return;
+    }
+    out.push(x);
+  });
+  return out;
 }
 function nbRender() {
   const p = $('#nbPanel'); if (!p || !NB.open) return;
-  const all = NB.items || [], un = nbUnread(), list = NB.filter === 'unread' ? all.filter(x => !x.r) : all;
+  const all = NB.items || [], un = nbUnread();
+  const needs = all.filter(nbNeed), upds = nbFold(all.filter(x => !nbNeed(x)));
+  NB.many = all.some(x => x.app) && new Set(all.map(x => x.app || '')).size > 1;
+  const chip = (f, label, n) => '<button type="button" role="tab" class="nb-chip' + (NB.filter === f ? ' on' : '') + '" data-act="nbFilter" data-f="' + f + '" aria-selected="' + (NB.filter === f) + '">' + esc(label) + (n ? ' <i>' + n + '</i>' : '') + '</button>';
   const head = '<span class="nb-grab" aria-hidden="true"></span><div class="nb-h"><div class="nb-ttl"><b>' + esc(t('nbTitle')) + '</b>' + (un ? '<span class="nb-new">' + esc(t('nbNew', { n: un })) + '</span>' : '') +
     (NB.loading && NB.items ? '<span class="nb-sync" role="status" aria-label="…"></span>' : '') + '</div>' + (un ? '<button type="button" class="nb-all" data-act="nbAll">' + esc(t('nbAll')) + '</button>' : '') + '</div>' +
-    '<div class="nb-chips" role="tablist"><button type="button" role="tab" class="nb-chip' + (NB.filter === 'all' ? ' on' : '') + '" data-act="nbFilter" data-f="all" aria-selected="' + (NB.filter === 'all') + '">' + esc(t('nbAllF')) + '</button>' +
-    '<button type="button" role="tab" class="nb-chip' + (NB.filter === 'unread' ? ' on' : '') + '" data-act="nbFilter" data-f="unread" aria-selected="' + (NB.filter === 'unread') + '">' + esc(t('nbUnread')) + '</button></div>';
+    '<div class="nb-chips" role="tablist">' + chip('all', t('nbAllF'), needs.length + upds.length) + chip('need', t('nbNeedF'), needs.length) + chip('upd', t('nbUpdF'), upds.length) + '</div>';
   const warn = (msg, retry) => '<div class="nb-warn" role="alert">' + ic('info') + '<span>' + esc(msg) + '</span>' + (retry ? '<button type="button" data-act="nbRetry">' + esc(t('nbRetry')) + '</button>' : '') + '</div>';
   let body = '';
   if (!NB.items) body = NB.err ? warn(t('nbFail'), true) : '<div class="nb-wait" role="status"><i></i><span>' + esc(t('nbLoading')) + '</span></div>';
   else {
     if (NB.err) body += warn(t('nbStale'), true);
     if (NB.rerr) body += warn(t('nbReadFail'), true);
-    if (!list.length) body += '<div class="nb-empty">' + ic('bell') + '<span>' + esc(t(NB.filter === 'unread' && all.length ? 'nbNoneU' : 'nbNone')) + '</span></div>';
-    const groups = [], by = {};
-    list.forEach(x => { const k = x.app || ''; if (!by[k]) { by[k] = []; groups.push(k); } by[k].push(x); });
-    body += groups.map(k => {
-      const g = by[k];
-      if (g.length === 1) return nbCard(g[0]);
-      if (groups.length === 1) return g.map(nbCard).join('');
-      if (NB.grp[k]) return g.map(nbCard).join('') + '<button type="button" class="nb-fold" data-act="nbGroup" data-app="' + esc(k) + '">' + esc(t('nbFold')) + '</button>';
-      const hidUn = g.slice(1).some(x => !x.r);
-      return '<div class="nb-grp">' + nbCard(g[0]) + '<div class="nb-peek"></div>' + (g.length > 2 ? '<div class="nb-peek"></div>' : '') +
-        '<button type="button" class="nb-more' + (hidUn ? ' hot' : '') + '" data-act="nbGroup" data-app="' + esc(k) + '" aria-expanded="false">+' + (g.length - 1) + '</button></div>';
-    }).join('');
+    // (nt3 · طلب محمد) بلا أقسام: قائمة واحدة بالأحدث، و«مطلوب منك» مميّز بلونه وعلامة «موجّه لك»
+    const L = (NB.filter === 'need' ? needs : NB.filter === 'upd' ? upds : needs.concat(upds)).slice().sort((a, b) => Number(b.id) - Number(a.id));
+    if (!L.length) body += '<div class="nb-empty">' + ic('bell') + '<span>' + esc(t('nbNone')) + '</span></div>';
+    body += L.map(nbCard).join('');
   }
   const sc = $('.nb-body', p) ? $('.nb-body', p).scrollTop : 0;
   p.innerHTML = head + '<div class="nb-body">' + body + '</div>';
@@ -3631,7 +3672,8 @@ addEventListener('resize', () => { if (NB.open) nbPlace(); });
 function nbQueue(op) { NB.q.push(op); nbSave(); nbFlush().then(() => { if (NB.open) nbRender(); }); }
 function nbItem(el) {
   const x = (NB.items || []).find(i => i.id === el.dataset.nid); if (!x) return;
-  if (!x.r) { x.r = 1; nbQueue({ ids: [x.id] }); nbPaint(); }
+  const grp = x.k === 'chat' && x.ref ? (NB.items || []).filter(i => i.k === 'chat' && i.ref === x.ref && (i.app || '') === (x.app || '') && !i.r) : (x.r ? [] : [x]);
+  if (grp.length) { grp.forEach(i => { i.r = 1; }); nbQueue({ ids: grp.map(i => i.id) }); nbPaint(); }
   const a = nbAppOf(el.dataset.id);
   if (!el.dataset.id) return;
   if (!a || a.locked) { openModal({ title: ic('info') + '<span>' + esc(t('nbTitle')) + '</span>', body: '<p>' + esc(t('nbNoApp')) + '</p>', foot: '<button class="btn btn-primary" data-act="closeModal">' + ic('check') + '<span>' + esc(S.lang === 'ar' ? 'حسناً' : 'OK') + '</span></button>' }); return; }
@@ -3649,7 +3691,7 @@ function nbLive(rows) {
     const id = String(x && x.id || '');
     if (!/^\d{6,30}$/.test(id) || have[id]) return;
     have[id] = 1; n++;
-    items.push({ id: id, at: String(x.at || new Date().toISOString()), app: x.app && x.app !== 'portal' ? String(x.app) : '', t: String(x.t || ''), b: String(x.b || ''), g: String(x.g || ''), r: 0 });
+    items.push({ id: id, at: String(x.at || new Date().toISOString()), app: x.app && x.app !== 'portal' ? String(x.app) : '', t: String(x.t || ''), b: String(x.b || ''), g: String(x.g || ''), k: String(x.k || ''), ref: String(x.ref || ''), r: 0 });
   });
   if (!n) return;
   items.sort((a, b) => Number(b.id) - Number(a.id));
@@ -7882,7 +7924,7 @@ const ACTIONS = {
   nbClose: () => nbClose(),
   nbItem: el => nbItem(el),
   nbAll: () => nbMarkAll(),
-  nbFilter: el => { NB.filter = el.dataset.f === 'unread' ? 'unread' : 'all'; nbRender(); },
+  nbFilter: el => { NB.filter = ['need', 'upd'].indexOf(el.dataset.f) >= 0 ? el.dataset.f : 'all'; nbRender(); },
   nbGroup: el => { const k = el.dataset.app || ''; NB.grp[k] = !NB.grp[k]; nbRender(); },
   nbRetry: () => { NB.err = ''; nbRefresh(); },
   hvSet: el => { const inMenu = !!el.closest('#userMenu'); hvSet(el.dataset.v); if (inMenu) closeMenu(); },
