@@ -582,7 +582,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   var swr = null, swAt = Date.now(), updGoing = false, swReady = null, swRes = null;
   swReady = new Promise(function (r) { swRes = r; });
   /* (v94) رقم نسخة هذه الصفحة، ويساوي دائماً رقم CACHE في sw.js (يُرفعان معاً) */
-  var APPV = 130;
+  var APPV = 131;
   var UFL = 'siwar_upd_flow', UPN = 'siwar_upd_pend';
   function lsj(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} return null; }
   /* (v107) كوادر والتحليلات والمخازن والرقابة: كل نظام يقارن بصمة واجهته المنشورة بما فُتح به، ويبلّغ مرة واحدة (upd) وهو غير مشغول.
@@ -982,8 +982,22 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     toPortal({ siwar: 'relaunch', id: id, go: go });
   }
   /* (NT) إشعار وصل والتطبيق مفتوح: صفوف الجرس لسوار (يتحدّث جرسها فوراً)، ولكل نظام حي أماكن إشعاراته (يحدّث جرسه ويجهّز المرجع في الخلفية) */
+  /* (v131 · اختيار محمد) صوت التنبيه: ثلاث نغمات صاعدة هادئة عند وصول إشعار جديد والتطبيق ظاهر أمامه.
+     المتصفح لا يسمح بالصوت قبل أول لمسة في الصفحة، فيُجهَّز الصوت مع أول لمسة أو ضغطة زر */
+  var CHIME = { ac: null, at: 0 };
+  function chimeArm() { try { if (!CHIME.ac) { var A = window.AudioContext || window.webkitAudioContext; if (A) CHIME.ac = new A(); } if (CHIME.ac && CHIME.ac.state === 'suspended') CHIME.ac.resume(); } catch (e) {} }
+  ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) { window.addEventListener(ev, chimeArm, { passive: true, capture: true }); });
+  function chime() {
+    var ac = CHIME.ac; if (!ac || ac.state !== 'running' || document.visibilityState !== 'visible') return;
+    var now = Date.now(); if (now - CHIME.at < 4000) return; CHIME.at = now;
+    try { [[784, 0, 0.25], [988, 0.13, 0.25], [1318.5, 0.26, 0.45]].forEach(function (n) {
+      var o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime + n[1];
+      o.type = 'sine'; o.frequency.value = n[0]; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.16, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + n[2]);
+      o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + n[2] + 0.05); }); } catch (e) {}
+  }
   function pushLive(d) {
     var bell = Array.isArray(d.bell) ? d.bell.slice(0, 20) : [];
+    if (!d.quiet && ((Array.isArray(d.ids) && d.ids.length) || bell.length)) chime();
     toPortal({ siwar: 'push', bell: bell });
     pushToFrames(bell.map(function (x) { return { id: String(x.id || ''), app: String(x.app || ''), g: String(x.g || '') }; }));
   }

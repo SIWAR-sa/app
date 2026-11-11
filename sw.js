@@ -1,13 +1,13 @@
 /* عامل الخدمة: يحفظ ملفات صفحة التطبيق وسوار الثابتة فقط (لا يحفظ أي بيانات من سوار أو البرامج).
    النسخة المحفوظة تُعرض فوراً، وأي تحديث على GitHub يصل في الفتح التالي.
    إشعارات الجوال: الإشعار يصل بلا محتوى، فيطلب العامل نصوصه من سوار برمز هذا الجهاز (المحفوظ في siwar-push) ثم يعرضها. */
-const CACHE = 'siwar-app-v130';   // يساوي دائماً APPV في index.html (يُرفعان معاً)
+const CACHE = 'siwar-app-v131';   // يساوي دائماً APPV في index.html (يُرفعان معاً)
 const PUSHC = 'siwar-push', PUSHK = './__push';
 /* (UP) بصمة كل ملف (أول 16 حرفاً من sha256 لمحتواه) تُختم هنا عند كل إصدار (stamp_sw.js). عند تثبيت عامل جديد يُنزَّل الملف الذي تغيّرت بصمته فقط،
    وغير المتغيّر يُنسخ من النسخة المحفوظة على الجهاز. ولا يُعاد تنزيل ملفات التطبيق في كل فتح: النسخة المحفوظة ببصمتها هي الأحدث،
    والتحديث يصل بعامل جديد (sw.js صغير يفحصه المتصفح). فحص احتياطي مرة كل 24 ساعة بطلب مشروط (304 بلا محتوى إن لم يتغيّر) */
 const FILES = {
-  './': '977d5c0f9858c2c0', './index.html': '977d5c0f9858c2c0', './portal.html': '60a0a03751adafe0', './config.js': 'c0607a481ed95db2',
+  './': '3ab37c32e2c628c8', './index.html': '3ab37c32e2c628c8', './portal.html': '60a0a03751adafe0', './config.js': 'c0607a481ed95db2',
   './manifest.webmanifest?v=89': '6fecf35b4a5b5f40', './icons/logo.webp': '8b1d4d5eac530863'
 };
 const HK = f => './__h/' + f.replace(/^\.\//, '').replace(/[?=]/g, '_');
@@ -165,7 +165,7 @@ async function onPush() {
 }
 self.addEventListener('push', e => { e.waitUntil(onPush()); });
 function liveBell(bell, items) {
-  const msg = { siwar: 'push', bell: bell.slice(0, 20), ids: items.map(it => String(it.id || '')) };
+  const msg = { siwar: 'push', bell: bell.slice(0, 20), ids: items.map(it => String(it.id || '')), quiet: items.length > 0 && items.every(it => !!it.quiet) };
   return self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => list.forEach(cl => {
     if (cl.frameType === 'nested' || cl.url.indexOf(self.registration.scope) !== 0 || /portal\.html/.test(cl.url)) return;
     try { cl.postMessage(msg); } catch (x) {}
