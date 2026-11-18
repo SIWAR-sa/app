@@ -582,7 +582,7 @@ a.btn{display:grid;place-items:center;text-decoration:none}
   var swr = null, swAt = Date.now(), updGoing = false, swReady = null, swRes = null;
   swReady = new Promise(function (r) { swRes = r; });
   /* (v94) رقم نسخة هذه الصفحة، ويساوي دائماً رقم CACHE في sw.js (يُرفعان معاً) */
-  var APPV = 132;
+  var APPV = 133;
   var UFL = 'siwar_upd_flow', UPN = 'siwar_upd_pend';
   function lsj(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} return null; }
   /* (v107) كوادر والتحليلات والمخازن والرقابة: كل نظام يقارن بصمة واجهته المنشورة بما فُتح به، ويبلّغ مرة واحدة (upd) وهو غير مشغول.
@@ -1616,7 +1616,9 @@ a.btn{display:grid;place-items:center;text-decoration:none}
     if (d.siwar === 'navok') { if (o.nav !== e.source) { o.nav = e.source; if (o.ready) sendAlive(); } return; }
     if (d.siwar === 'navack') { navAck(fid, d); return; }
     if (d.siwar === 'gone') { if ((SN && SN.id === fid) || Date.now() - (SNLAST[fid] || 0) < 15000) snapToast(snT('gone')); return; }
-    if (d.siwar === 'accp') { accIn(fid, d); return; }   // (UP) تقدم «المسرّع» في النظام
+    if (d.siwar === 'accp') { accIn(fid, d); return; }
+    /* (v133) نظام يطلب تجهيز نظام آخر في الخلفية (الطلبات ← كوادر حين ينتظرك تقييم): الانتقال إليه يصير فوريًا */
+    if (d.siwar === 'warmSys') { var tw = String(d.to || ''); if (/^[a-z][a-z0-9_-]{1,30}$/.test(tw) && tw !== fid && !frames[tw] && !offline()) toPortal({ siwar: 'warmOne', id: tw }); return; }   // (UP) تقدم «المسرّع» في النظام
     if (/^(hold|alive|ready)$/.test(d.siwar)) warmedSay(o, fid);
     if (/^(hold|alive|ready)$/.test(d.siwar) && o.win !== e.source) { o.win = e.source; o.ps = ''; if (!o.netSent) { o.netSent = 1; if (!navigator.onLine) try { e.source.postMessage({ siwar: 'net', on: false }, '*'); } catch (x) {} } setTimeout(syncPause, 0); }
     if (/^(hold|alive|ready)$/.test(d.siwar)) accFrame(fid, o);   // (UP) أول إشارة من النظام: يبدأ تجهيز صفحاته المتغيّرة (النظام نفسه يؤجله حتى تجهز شاشته)

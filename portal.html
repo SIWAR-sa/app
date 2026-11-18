@@ -4111,6 +4111,15 @@ function warmLastApp(acc) {
   warmQ = { todo: todo, id: '', t: 0, acc: !!acc };
   warmStep();
 }
+// (v133) تجهيز نظام واحد بطلب من نظام مفتوح (الطلبات ← كوادر حين ينتظرك تقييم)، حتى والنظام الآخر ظاهر — بلا تجهيز مع «توفير البيانات» أو 2G
+function warmOne(id) {
+  if (!S.inApp || !S.token || !id || S.alive[id]) return;
+  try { const c = navigator.connection; if (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''))) return; } catch (e) {}
+  const app = (S.apps || []).find(a => a.id === id && !a.locked && !a.jisrOnly); if (!app) return;
+  const send = url => { if (!url || S.alive[id]) return; try { window.top.postMessage({ siwar: 'warm', id: app.id, url: withUl(url), name: L(app, 'name'), icon: appIconMsg(app) }, '*'); } catch (e) {} };
+  const url = takeTicket(id);
+  if (url) send(url); else prefetchTickets(true).then(() => send(takeTicket(id)));
+}
 function warmStep() {
   const q = warmQ; if (!q) return;
   clearTimeout(q.t);
@@ -4176,7 +4185,7 @@ function setupInApp() {
   if (!SHELL || setupInApp.done) return;
   setupInApp.done = true;
   const go = SIWAR_PTR(ptrRefresh);
-  window.addEventListener('message', e => { if (e.origin === SHELL && e.source === window.top && e.data) { if (e.data.siwar === 'relaunch') relaunchLast(String(e.data.id || ''), e.data.go); else if (e.data.siwar === 'refresh') go(); else if (e.data.siwar === 'alive') { S.alive = {}; (e.data.ids || []).forEach(x => { S.alive[x] = 1; }); S.navIds = {}; (e.data.nav || []).forEach(x => { S.navIds[x] = 1; }); } else if (e.data.siwar === 'navRes') { const f = NAVW[String(e.data.n || '')]; if (f) f(e.data.ok); } else if (e.data.siwar === 'home') { S.sysOn = false; try { if (S.token && (!S.pendingAt || Date.now() - S.pendingAt > 15000)) setTimeout(() => { if (S.screen === 'home' && !S.sysOn) loadPending(true); }, 1200); } catch (pe) {} prefetchTickets(false).then(() => { if (!isMobileDev()) setTimeout(warmLastApp, 1500); }); } else if (e.data.siwar === 'warmed') warmed(String(e.data.id || '')); else if (e.data.siwar === 'accel') accelRun(); else if (e.data.siwar === 'perf') perfSend(e.data.rows); else if (e.data.siwar === 'pushApi') pushRelay(e.data); else if (e.data.siwar === 'lang') langFromSys(String(e.data.lang || '')); else if (e.data.siwar === 'inst') { S.instSt = e.data.st ? Number(e.data.st) : 0; instSync(); } } });
+  window.addEventListener('message', e => { if (e.origin === SHELL && e.source === window.top && e.data) { if (e.data.siwar === 'relaunch') relaunchLast(String(e.data.id || ''), e.data.go); else if (e.data.siwar === 'warmOne') warmOne(String(e.data.id || '')); else if (e.data.siwar === 'refresh') go(); else if (e.data.siwar === 'alive') { S.alive = {}; (e.data.ids || []).forEach(x => { S.alive[x] = 1; }); S.navIds = {}; (e.data.nav || []).forEach(x => { S.navIds[x] = 1; }); } else if (e.data.siwar === 'navRes') { const f = NAVW[String(e.data.n || '')]; if (f) f(e.data.ok); } else if (e.data.siwar === 'home') { S.sysOn = false; try { if (S.token && (!S.pendingAt || Date.now() - S.pendingAt > 15000)) setTimeout(() => { if (S.screen === 'home' && !S.sysOn) loadPending(true); }, 1200); } catch (pe) {} prefetchTickets(false).then(() => { if (!isMobileDev()) setTimeout(warmLastApp, 1500); }); } else if (e.data.siwar === 'warmed') warmed(String(e.data.id || '')); else if (e.data.siwar === 'accel') accelRun(); else if (e.data.siwar === 'perf') perfSend(e.data.rows); else if (e.data.siwar === 'pushApi') pushRelay(e.data); else if (e.data.siwar === 'lang') langFromSys(String(e.data.lang || '')); else if (e.data.siwar === 'inst') { S.instSt = e.data.st ? Number(e.data.st) : 0; instSync(); } } });
 }
 
 // إشعارات الجوال: غلاف التطبيق يطلب عمليات الاشتراك عبر سوار، لأن الجلسة هنا
